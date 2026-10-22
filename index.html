@@ -13163,7 +13163,7 @@
           card.className = "card";
           var langName = s.lang === "en" ? "English" : "Deutsch";
           card.innerHTML =
-            '<img src="' + s.cover + '" alt="غلاف قصة: ' + s.titleAr + '" loading="lazy" />' +
+            '<img src="' + s.cover + '" alt="غلاف قصة: ' + s.titleAr + '" loading="lazy" decoding="async" />' +
             '<div class="card-body">' +
               '<div class="card-meta">' +
                 '<span class="badge ' + s.lang + '">' + langName + '</span>' +
