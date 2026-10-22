@@ -1,1 +1,18 @@
-{"background_color":"#070a12","description":"قصص قصيرة لتعلم الإنجليزية والألمانية مع ترجمة عربية وقراءة صوتية وبنك مفردات","dir":"rtl","display":"standalone","icons":[{"purpose":"any","sizes":"192x192","src":"assets/icons/icon-192.png","type":"image/png"},{"purpose":"any","sizes":"512x512","src":"assets/icons/icon-512.png","type":"image/png"},{"purpose":"maskable","sizes":"512x512","src":"assets/icons/icon-maskable-512.png","type":"image/png"}],"id":"./index.html","lang":"ar","name":"Tales & Words","orientation":"portrait","scope":"./","short_name":"Tales & Words","start_url":"./index.html","theme_color":"#070a12"}
+{
+  "name": "Tales & Words",
+  "short_name": "TalesWords",
+  "description": "قصص قصيرة لتعلم الإنجليزية والألمانية مع ترجمة عربية وقراءة صوتية وبنك مفردات",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#070a12",
+  "theme_color": "#070a12",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
