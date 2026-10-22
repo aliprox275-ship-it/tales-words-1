@@ -1,0 +1,45 @@
+/*
+  Modern static stylesheet starter.
+  Keep this file small and only contain shared app-shell utilities and future
+  modular UI patterns. The main legacy CSS remains in index.html until the full
+  extraction is completed without risking regressions.
+*/
+
+:root {
+  --shell-surface: #0d1424;
+  --shell-ink: #eaf3fc;
+  --shell-muted: #9db1c9;
+  --shell-border: #24365c;
+  --shell-accent: #22d3ee;
+  --shell-accent-2: #c084fc;
+  --shell-radius: 16px;
+}
+
+body {
+  background: var(--shell-surface);
+  color: var(--shell-ink);
+  font-family: 'Rubik', system-ui, sans-serif;
+}
+
+.modern-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 18px 120px;
+}
+
+.modern-card {
+  background: rgba(13, 20, 36, 0.9);
+  border: 1px solid var(--shell-border);
+  border-radius: var(--shell-radius);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  padding: 16px;
+}
+
+.modern-button {
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(120deg, var(--shell-accent), var(--shell-accent-2));
+  color: #fff;
+  font-weight: 800;
+  padding: 12px 18px;
+}
