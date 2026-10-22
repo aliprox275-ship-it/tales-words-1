@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aliprox75.netlify.app/sitemap.xml
+Sitemap: https://aliprox75.vercel.app/sitemap.xml
