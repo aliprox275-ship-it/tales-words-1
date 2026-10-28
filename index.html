@@ -13618,15 +13618,31 @@
          preferring stored ef/ea when present. Words with no example
          anywhere show nothing, never an error. */
       function revExample(item){
-        if (!item) return null;
-        if (item.ef || item.ea) return { ef: item.ef || "", ea: item.ea || "" };
-        var k = (item.w || "").toLowerCase();
-        for (var i = 0; i < ALL_WORDS.length; i++){
-          var x = ALL_WORDS[i];
-          if (x.lang === item.lang && (x.w || "").toLowerCase() === k) return { ef: x.ef || "", ea: x.ea || "" };
-        }
-        return null;
+  if (!item) return null;
+  if (item.ef || item.ea) return { ef: item.ef || "", ea: item.ea || "" };
+  var k = (item.w || "").toLowerCase();
+  for (var i = 0; i < ALL_WORDS.length; i++){
+    var x = ALL_WORDS[i];
+    if (x.lang === item.lang && (x.w || "").toLowerCase() === k) return { ef: x.ef || "", ea: x.ea || "" };
+  }
+  /* Batch 1b fallback: bank examples (BANK_DATA/BANK_DATA2) so
+     bank-saved words get a model sentence too — sentence cards
+     then appear for them instead of degrading to typing cards. */
+  var bankSets = [];
+  if (typeof BANK_DATA !== "undefined" && BANK_DATA[item.lang]) bankSets.push(BANK_DATA[item.lang]);
+  if (typeof BANK_DATA2 !== "undefined" && BANK_DATA2[item.lang]) bankSets.push(BANK_DATA2[item.lang]);
+  for (var s = 0; s < bankSets.length; s++){
+    var topics = Object.keys(bankSets[s]);
+    for (var ti = 0; ti < topics.length; ti++){
+      var arr = bankSets[s][topics[ti]] || [];
+      for (var bi = 0; bi < arr.length; bi++){
+        var e = arr[bi];
+        if (e && (e[0] || "").toLowerCase() === k) return { ef: e[2] || "", ea: e[3] || "" };
       }
+    }
+  }
+  return null;
+}
       function setRevEx(ex, item){
         var box = $("revEx"); box.innerHTML = "";
         if (!ex || (!ex.ef && !ex.ea)) return;
