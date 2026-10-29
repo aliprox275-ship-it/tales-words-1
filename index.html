@@ -5386,28 +5386,6 @@ var EXAM_DATA = {"passMark": 70, "highMark": 90, "bands": {"fail": {"maxPercent"
         syncSave();
         foot.appendChild(chipEl); foot.appendChild(lvlEl); foot.appendChild(save);
         card.appendChild(top); card.appendChild(mean); card.appendChild(ex);
-        var sIds = (WORD_STORIES[bankLang] && WORD_STORIES[bankLang][bankStoryKey(item.w, bankLang)]) || [];
-        if (sIds.length) {
-          var storiesLine = document.createElement("div");
-          storiesLine.className = "bank-stories";
-          var lbl = document.createElement("span");
-          lbl.textContent = "في القصص:";
-          storiesLine.appendChild(lbl);
-          sIds.slice(0, 3).forEach(function(id){
-            var b = document.createElement("button");
-            b.type = "button"; b.className = "bank-topic-chip bank-story";
-            var t = WORD_STORIES.titles[id];
-            b.textContent = t ? (t.title + " · " + t.titleAr) : id;
-            b.addEventListener("click", function(){ openPrep(id); });
-            storiesLine.appendChild(b);
-          });
-          if (sIds.length > 3) {
-            var more = document.createElement("span");
-            more.textContent = "+" + arNum(sIds.length - 3);
-            storiesLine.appendChild(more);
-          }
-          card.appendChild(storiesLine);
-        }
         card.appendChild(foot);
         return card;
       }
