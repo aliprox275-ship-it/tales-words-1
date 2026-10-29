@@ -575,6 +575,11 @@
 
       /* ---------- Topic filter, prep screen ---------- */
       .topic-filters{display:flex; flex-wrap:wrap; gap:8px; margin:-6px 0 20px; align-items:center}
+.bank-box{border:1px solid var(--line); background:var(--surface); border-radius:18px; margin-bottom:14px; overflow:hidden}
+.bank-box-head{width:100%; display:flex; align-items:center; justify-content:space-between; gap:10px; background:transparent; border:0; cursor:pointer; padding:14px 18px; color:var(--ink); font-weight:700; font-size:1rem; text-align:right}
+.bank-box-sel{font-weight:400; opacity:.75; font-size:.9rem; flex:1; text-align:left}
+.bank-box-arrow{font-size:1rem}
+.bank-box-body{margin:0; padding:0 14px 14px}
       .topic-filters .tf-label{font-weight:800; font-size:.95rem; color:var(--muted)}
       .topic-chip{
         border:1px solid var(--line); background:var(--surface); color:var(--ink);
@@ -1257,12 +1262,6 @@
               <button data-banklang="de" id="bankLangDe">Deutsch · الألمانية</button>
             </div>
           </div>
-          <div class="filters">
-            <div class="switch" role="group" aria-label="وضع بنك الكلمات">
-              <button type="button" id="bankModeWords" class="active-lvl">الكلمات</button>
-              <button type="button" id="bankModeFam">عائلات الكلمات</button>
-            </div>
-          </div>
           <div class="filters" id="bankLevelRow">
             <div class="switch" role="group" aria-label="مستوى بنك الكلمات">
               <button type="button" id="bankLevelAll" class="active-lvl">كل المستويات</button>
@@ -1270,7 +1269,14 @@
               <button type="button" id="bankLevelA2">A2</button>
             </div>
           </div>
-          <div class="topic-filters" id="bankTopics" role="group" aria-label="تصفية بنك الكلمات حسب الموضوع"></div>
+          <div class="bank-box" id="bankTopicsBox">
+            <button type="button" class="bank-box-head" id="bankTopicsHead" aria-expanded="false"><span>📚 المواضيع</span><span class="bank-box-sel" id="bankTopicsSel">كل المواضيع</span><span class="bank-box-arrow" id="bankTopicsArrow">▾</span></button>
+            <div class="topic-filters bank-box-body" id="bankTopics" role="group" aria-label="تصفية بنك الكلمات حسب الموضوع" hidden></div>
+          </div>
+          <div class="bank-box" id="bankFamBox">
+            <button type="button" class="bank-box-head" id="bankFamHead" aria-expanded="false"><span>👨‍👩‍👧 عائلات الكلمات</span><span class="bank-box-sel" id="bankFamSel">كل العائلات</span><span class="bank-box-arrow" id="bankFamArrow">▾</span></button>
+            <div class="topic-filters bank-box-body" id="bankFamTopics" role="group" aria-label="تصفية بنك الكلمات حسب عائلة الكلمات" hidden></div>
+          </div>
           <div class="bank-search">
             <input type="search" id="bankSearch" placeholder="ابحث عن كلمة… بالإنجليزية أو الألمانية أو العربية" aria-label="بحث في بنك الكلمات" />
           </div>
@@ -3488,7 +3494,7 @@
           b.setAttribute("aria-selected", on ? "true" : "false");
         });
         if (name === "home") renderHome();
-        if (name === "bank") { renderBankTopics(); renderBank(); }
+        if (name === "bank") { bankCollapseBoxes(); renderBankBoxes(); renderBank(); }
         if (name === "review") { renderTodayWords(); startReview(); }
         if (name === "reviewweek") renderWeekReview();
         if (name === "reviewmonth") renderMonthReview();
@@ -11464,6 +11470,7 @@ var EXAM_DATA = {"passMark": 70, "highMark": 90, "bands": {"fail": {"maxPercent"
       var BANK_TOPIC_ORDER = ["intro", "food", "home", "clothes", "routine", "weather", "social"];
       var BANK2_TOPIC_ORDER = ["travel", "health", "hobbies", "jobs", "services", "culture"];
       var bankLang = "en", bankTopic = "all", bankQuery = "", bankShown = 150, bankLevel = "all", bankMode = "words";
+      var bankTopicsOpen = false, bankFamOpen = false;
       function bankSets(){
         var sets = [];
         if (bankLevel !== "a2") sets.push({ data: BANK_DATA, order: BANK_TOPIC_ORDER, level: "A1", total: 840 });
@@ -11528,48 +11535,67 @@ var EXAM_DATA = {"passMark": 70, "highMark": 90, "bands": {"fail": {"maxPercent"
           $("bankProg" + pair[1] + "Sub").textContent = "A1: حفظت " + arNum(s1.saved) + " من " + arNum(840) + " · A2: حفظت " + arNum(s2.saved) + " من " + arNum(1000) + " · أتقنت " + arNum(mastered) + " كلمة (تجاوز فاصل مراجعتها 14 يومًا)";
         });
       }
-      function renderBankTopics(){
-        var box = $("bankTopics");
-        if (!box) return;
-        box.innerHTML = "";
-        var lbl = document.createElement("span");
-        lbl.className = "tf-label"; lbl.textContent = "الموضوع:";
-        box.appendChild(lbl);
-        function chip(slug, label, count){
+      function bankCollapseBoxes(){ bankTopicsOpen = false; bankFamOpen = false; }
+      function toggleBankBox(which){
+        if (which === "topics") { bankTopicsOpen = !bankTopicsOpen; if (bankTopicsOpen) bankFamOpen = false; }
+        else { bankFamOpen = !bankFamOpen; if (bankFamOpen) bankTopicsOpen = false; }
+        renderBankBoxes();
+      }
+      function selectBankTopic(slug){
+        bankMode = "words"; bankTopic = slug; bankShown = 150;
+        bankCollapseBoxes(); $("bankLevelRow").hidden = false;
+        renderBankBoxes(); renderBank();
+      }
+      function selectBankFam(slug){
+        bankMode = "fam"; bankTopic = slug; bankShown = 150; bankLevel = "all";
+        $("bankLevelAll").className = "active-lvl"; $("bankLevelA1").className = ""; $("bankLevelA2").className = "";
+        bankCollapseBoxes(); $("bankLevelRow").hidden = true;
+        renderBankBoxes(); renderBank();
+      }
+      function renderBankBoxes(){
+        var topicsBox = $("bankTopics"), famBox = $("bankFamTopics");
+        if (!topicsBox || !famBox) return;
+        $("bankTopicsSel").textContent = (bankMode === "words" && bankTopic !== "all") ? bankTopicMeta(bankTopic).ar : "كل المواضيع";
+        $("bankFamSel").textContent = (bankMode === "fam" && bankTopic !== "all") ? bankTopicMeta(bankTopic).ar : "كل العائلات";
+        $("bankTopicsHead").setAttribute("aria-expanded", bankTopicsOpen ? "true" : "false");
+        $("bankFamHead").setAttribute("aria-expanded", bankFamOpen ? "true" : "false");
+        $("bankTopicsArrow").textContent = bankTopicsOpen ? "▴" : "▾";
+        $("bankFamArrow").textContent = bankFamOpen ? "▴" : "▾";
+        topicsBox.hidden = !bankTopicsOpen;
+        famBox.hidden = !bankFamOpen;
+        $("bankLevelRow").hidden = (bankMode === "fam");
+        function chipInto(box, slug, label, count, active, onClick){
           var b = document.createElement("button");
           b.type = "button";
-          b.className = "topic-chip" + (slug === "all" ? " show-all" : "") + (bankTopic === slug ? " active" : "");
+          b.className = "topic-chip" + (slug === "all" ? " show-all" : "") + (active ? " active" : "");
           b.appendChild(document.createTextNode(label));
           var c = document.createElement("span");
           c.className = "cnt"; c.textContent = arNum(count);
           b.appendChild(c);
-          b.addEventListener("click", function(){
-            bankTopic = slug; bankShown = 150;
-            renderBankTopics(); renderBank();
-          });
+          b.addEventListener("click", onClick);
           box.appendChild(b);
         }
-        if (bankMode === "fam") {
-          var famTotal = 0;
-          WORD_FAMILIES.groups.forEach(function(g){
-            g.words.forEach(function(w){ if (w.lang === bankLang) famTotal++; });
-          });
-          chip("all", "📚 كل العائلات", famTotal);
-          WORD_FAMILIES.groups.forEach(function(g){
-            var cnt = 0;
-            g.words.forEach(function(w){ if (w.lang === bankLang) cnt++; });
-            chip(g.id, (g.emoji ? g.emoji + " " : "") + g.titleAr + " · " + (bankLang === "en" ? g.labelEn : g.labelDe), cnt);
-          });
-          return;
-        }
-        chip("all", "📚 كل المواضيع", bankScopeTotal());
+        topicsBox.innerHTML = "";
+        chipInto(topicsBox, "all", "📚 كل المواضيع", bankScopeTotal(), bankMode === "words" && bankTopic === "all", function(){ selectBankTopic("all"); });
         bankSets().forEach(function(set){
           set.order.forEach(function(tp){
             var m = bankTopicMeta(tp);
-            chip(tp, (m.emoji ? m.emoji + " " : "") + m.ar + " · " + set.level, set.data[bankLang][tp].length);
+            chipInto(topicsBox, tp, (m.emoji ? m.emoji + " " : "") + m.ar + " · " + set.level, set.data[bankLang][tp].length, bankMode === "words" && bankTopic === tp, (function(slug){ return function(){ selectBankTopic(slug); }; })(tp));
           });
         });
+        famBox.innerHTML = "";
+        var famTotal = 0;
+        WORD_FAMILIES.groups.forEach(function(g){
+          g.words.forEach(function(w){ if (w.lang === bankLang) famTotal++; });
+        });
+        chipInto(famBox, "all", "📚 كل العائلات", famTotal, bankMode === "fam" && bankTopic === "all", function(){ selectBankFam("all"); });
+        WORD_FAMILIES.groups.forEach(function(g){
+          var cnt = 0;
+          g.words.forEach(function(w){ if (w.lang === bankLang) cnt++; });
+          chipInto(famBox, g.id, (g.emoji ? g.emoji + " " : "") + g.titleAr + " · " + (bankLang === "en" ? g.labelEn : g.labelDe), cnt, bankMode === "fam" && bankTopic === g.id, (function(slug){ return function(){ selectBankFam(slug); }; })(g.id));
+        });
       }
+      function renderBankTopics(){ renderBankBoxes(); }
       function bankSpeak(text, lang){
         if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
           showToast("النطق الصوتي غير متاح في هذا المتصفح");
@@ -11701,26 +11727,18 @@ var EXAM_DATA = {"passMark": 70, "highMark": 90, "bands": {"fail": {"maxPercent"
       $("bankLangEn").addEventListener("click", function(){
         bankLang = "en"; bankTopic = "all"; bankShown = 150;
         this.className = "active-en"; $("bankLangDe").className = "";
-        renderBankTopics(); renderBank();
+        bankCollapseBoxes(); renderBankBoxes(); renderBank();
       });
       $("bankLangDe").addEventListener("click", function(){
         bankLang = "de"; bankTopic = "all"; bankShown = 150;
         this.className = "active-de"; $("bankLangEn").className = "";
-        renderBankTopics(); renderBank();
+        bankCollapseBoxes(); renderBankBoxes(); renderBank();
       });
       function setBankMode(mode){
-        bankMode = mode; bankTopic = "all"; bankShown = 150;
-        if (mode === "fam") {
-          bankLevel = "all";
-          $("bankLevelAll").className = "active-lvl"; $("bankLevelA1").className = ""; $("bankLevelA2").className = "";
-        }
-        $("bankModeWords").className = mode === "words" ? "active-lvl" : "";
-        $("bankModeFam").className = mode === "fam" ? "active-lvl" : "";
-        $("bankLevelRow").hidden = (mode === "fam");
-        renderBankTopics(); renderBank();
+        if (mode === "fam") selectBankFam("all"); else selectBankTopic("all");
       }
-      $("bankModeWords").addEventListener("click", function(){ setBankMode("words"); });
-      $("bankModeFam").addEventListener("click", function(){ setBankMode("fam"); });
+      $("bankTopicsHead").addEventListener("click", function(){ toggleBankBox("topics"); });
+      $("bankFamHead").addEventListener("click", function(){ toggleBankBox("fam"); });
       $("bankSearch").addEventListener("input", function(){
         bankQuery = this.value; bankShown = 150;
         renderBank();
@@ -11730,7 +11748,7 @@ var EXAM_DATA = {"passMark": 70, "highMark": 90, "bands": {"fail": {"maxPercent"
         renderBank();
       });
       function setBankLevel(lv){
-        bankLevel = lv; bankTopic = "all"; bankShown = 150;
+        bankLevel = lv; bankTopic = "all"; bankShown = 150; bankCollapseBoxes();
         $("bankLevelAll").className = lv === "all" ? "active-lvl" : "";
         $("bankLevelA1").className = lv === "a1" ? "active-lvl" : "";
         $("bankLevelA2").className = lv === "a2" ? "active-lvl" : "";
