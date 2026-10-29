@@ -113,6 +113,9 @@
       .mins{font-size:.85rem; color:var(--muted)}
       .done-tag{font-size:.85rem; font-weight:800; color:var(--ok)}
       .card h3{margin:2px 0 0; font-family:var(--font-serif); font-size:1.3rem; line-height:1.4}
+      .gram-card{width:100%; text-align:inherit; font:inherit; color:inherit; cursor:pointer}
+      .gram-card .card-body{text-align:right}
+      .gram-nav{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0}
       .card h3 .foreign{font-family:var(--font-serif); direction:ltr; unicode-bidi:isolate}
       .card .about{margin:0; color:var(--muted); font-size:.95rem; flex:1}
       .read-btn{
@@ -1280,6 +1283,7 @@
       <button class="bnav-btn" type="button" data-main="stories"><span class="bnav-ico" aria-hidden="true">📚</span><span>القصص</span></button>
       <button class="bnav-btn" type="button" data-main="review"><span class="bnav-ico" aria-hidden="true">🔁</span><span>المراجعة</span></button>
       <button class="bnav-btn" type="button" data-main="bank"><span class="bnav-ico" aria-hidden="true">📖</span><span>بنك الكلمات</span></button>
+      <button class="bnav-btn" type="button" data-main="grammar"><span class="bnav-ico" aria-hidden="true">📘</span><span>قواعد</span></button>
     </nav>
 
     <!-- ======== Reader ======== -->
@@ -3400,7 +3404,7 @@
       /* Batch 8: theme switching removed — the reader has exactly one look,
          the classic cream theme. */
 
-      /* ---------- Navigation: fixed bottom bar (4 tabs) + review sub-tabs ---------- */
+      /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
       var ALL_VIEWS = ["home", "stories", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "exam", "grammar", "conversation"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var curView = "home", curReviewSub = "review";
@@ -3453,7 +3457,7 @@
         hPush({ app: 1, view: curView, guard: true }, "#" + curView);
       });
       function mainOf(name){
-        if (name === "home" || name === "stories" || name === "bank") return name;
+        if (name === "home" || name === "stories" || name === "bank" || name === "grammar") return name;
         if (REVIEW_SUBS.indexOf(name) !== -1) return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
       }
@@ -4791,8 +4795,467 @@
       /* ---------- Vocabulary bank A1+A2: browsing, search, save-to-SRS ---------- */
       var CONV_A1 = {"en": [{"id": "en-introduce", "title": "Introduce yourself", "titleAr": "عرّف بنفسك", "dialog": [{"s": "A", "f": "Hello, my name is Sara.", "a": "مرحبًا، اسمي سارة."}, {"s": "B", "f": "Hello, Sara. My name is Omar.", "a": "مرحبًا، سارة. اسمي عمر."}, {"s": "A", "f": "Nice to meet you, Omar.", "a": "سعيد بلقائك يا عمر."}, {"s": "B", "f": "Nice to meet you too.", "a": "وأنا سعيد بلقائك أيضًا."}, {"s": "A", "f": "Where are you from, Omar?", "a": "من أين أنت يا عمر؟"}, {"s": "B", "f": "I am from Baghdad.", "a": "أنا من بغداد."}, {"s": "A", "f": "I am from Baghdad too.", "a": "وأنا من بغداد أيضًا."}, {"s": "B", "f": "Great! Let us talk again.", "a": "رائع! لنتحدث مجددًا."}], "complete": {"q": "Sara asks: Where are you from, Omar? What does Omar answer?", "options": ["I am from Baghdad.", "I am a teacher.", "I like bread.", "It is Monday."], "answer": 0, "explanationAr": "نقول من أين نحن بـ I am from."}, "qa": {"q": "What is your name?", "keys": ["name", "sara"], "model": "My name is Sara.", "modelAr": "اسمي سارة."}, "change": {"base": "I am from Baghdad.", "baseAr": "أنا من بغداد.", "promptAr": "غيّر Baghdad إلى Berlin، وقل الجملة بصوت عالٍ.", "new": "I am from Berlin.", "newAr": "أنا من برلين."}}, {"id": "en-order-food", "title": "Order food", "titleAr": "اطلب طعامًا", "dialog": [{"s": "A", "f": "Hello. I would like bread, please.", "a": "مرحبًا. أريد خبزًا، من فضلك."}, {"s": "B", "f": "Yes. Do you want cheese too?", "a": "نعم. هل تريد جبنًا أيضًا؟"}, {"s": "A", "f": "Yes, please. And water, please.", "a": "نعم، من فضلك. وماء أيضًا، من فضلك."}, {"s": "B", "f": "Here is your bread and water.", "a": "هذا خبزك وماؤك."}, {"s": "A", "f": "Thank you very much.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "You are welcome. Enjoy your food.", "a": "على الرحب والسعة. استمتع بطعامك."}, {"s": "A", "f": "The bread is very good.", "a": "الخبز جيد جدًا."}, {"s": "B", "f": "Thank you. Come again soon.", "a": "شكرًا. تعال مجددًا قريبًا."}], "complete": {"q": "The waiter asks: Do you want cheese too? What do you answer?", "options": ["No, thank you.", "I am from Baghdad.", "It is Monday.", "Yes, please. And water, please."], "answer": 3, "explanationAr": "نقبل العرض بـ Yes, please، ونضيف ما نريد."}, "qa": {"q": "What do you want?", "keys": ["bread"], "model": "I would like bread, please.", "modelAr": "أريد خبزًا، من فضلك."}, "change": {"base": "I would like bread, please.", "baseAr": "أريد خبزًا، من فضلك.", "promptAr": "غيّر bread إلى cheese، وقل الجملة بصوت عالٍ.", "new": "I would like cheese, please.", "newAr": "أريد جبنًا، من فضلك."}}, {"id": "en-directions", "title": "Ask directions", "titleAr": "اسأل عن الطريق", "dialog": [{"s": "A", "f": "Excuse me. Where is the bank?", "a": "عذرًا. أين البنك؟"}, {"s": "B", "f": "Go straight, then turn left.", "a": "اذهب مباشرة، ثم انعطف يسارًا."}, {"s": "A", "f": "Is it near the market?", "a": "هل هو قريب من السوق؟"}, {"s": "B", "f": "Yes, it is near the market.", "a": "نعم، هو قريب من السوق."}, {"s": "A", "f": "Thank you. Is it far?", "a": "شكرًا. هل هو بعيد؟"}, {"s": "B", "f": "No, it is very near.", "a": "لا، هو قريب جدًا."}, {"s": "A", "f": "Thank you very much.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "You are welcome. Good luck.", "a": "على الرحب والسعة. حظًا سعيدًا."}], "complete": {"q": "You ask: Is it near the market? What is the answer?", "options": ["I like bread.", "It is Monday.", "Yes, it is near the market.", "No, it is far."], "answer": 2, "explanationAr": "near تعني قريب."}, "qa": {"q": "Where is the bank?", "keys": ["near", "market"], "model": "It is near the market.", "modelAr": "هو قريب من السوق."}, "change": {"base": "Go straight, then turn left.", "baseAr": "اذهب مباشرة، ثم انعطف يسارًا.", "promptAr": "غيّر left إلى right، وقل الجملة بصوت عالٍ.", "new": "Go straight, then turn right.", "newAr": "اذهب مباشرة، ثم انعطف يمينًا."}}, {"id": "en-bank", "title": "At the bank", "titleAr": "في البنك", "dialog": [{"s": "A", "f": "Hello. I would like an account.", "a": "مرحبًا. أريد حسابًا."}, {"s": "B", "f": "Yes, of course. Your name, please?", "a": "نعم، بالطبع. اسمك، من فضلك؟"}, {"s": "A", "f": "My name is Sara Ali.", "a": "اسمي سارة علي."}, {"s": "B", "f": "Thank you. Can you sign here?", "a": "شكرًا. هل يمكنك التوقيع هنا؟"}, {"s": "A", "f": "Yes. Can I take money now?", "a": "نعم. هل يمكنني أخذ مال الآن؟"}, {"s": "B", "f": "Yes, you can take money now.", "a": "نعم، يمكنك أخذ مال الآن."}, {"s": "A", "f": "Thank you very much for your help.", "a": "شكرًا جزيلًا على مساعدتك."}, {"s": "B", "f": "You are welcome. Good day.", "a": "على الرحب والسعة. يومًا سعيدًا."}], "complete": {"q": "You ask: Can I take money now? What is the answer?", "options": ["It is Monday.", "Yes, you can take money now.", "No, you cannot.", "I like bread."], "answer": 1, "explanationAr": "Can I تعني هل يمكنني، ونسأل بها بأدب."}, "qa": {"q": "What do you want at the bank?", "keys": ["account"], "model": "I would like an account.", "modelAr": "أريد حسابًا."}, "change": {"base": "I would like an account.", "baseAr": "أريد حسابًا.", "promptAr": "غيّر account إلى money، وقل الجملة بصوت عالٍ.", "new": "I would like money, please.", "newAr": "أريد مالًا، من فضلك."}}, {"id": "en-pharmacy", "title": "At the pharmacy", "titleAr": "في الصيدلية", "dialog": [{"s": "A", "f": "Hello. I have a headache.", "a": "مرحبًا. عندي صداع."}, {"s": "B", "f": "Do you need medicine?", "a": "هل تحتاج دواءً؟"}, {"s": "A", "f": "Yes, please. What medicine is good?", "a": "نعم، من فضلك. أي دواء جيد؟"}, {"s": "B", "f": "Take two tablets in the morning.", "a": "خذ حبتين في الصباح."}, {"s": "A", "f": "And in the evening too?", "a": "وفي المساء أيضًا؟"}, {"s": "B", "f": "Yes, two tablets in the evening.", "a": "نعم، حبتان في المساء."}, {"s": "A", "f": "Thank you very much.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "Get well soon.", "a": "شفاك الله قريبًا."}], "complete": {"q": "The pharmacist asks: Do you need medicine? What do you answer?", "options": ["Yes, please. What medicine is good?", "No, thank you.", "I am from Baghdad.", "It is Monday."], "answer": 0, "explanationAr": "نطلب الدواء بـ medicine، ونقبل بـ Yes, please."}, "qa": {"q": "What is your problem?", "keys": ["headache"], "model": "I have a headache.", "modelAr": "عندي صداع."}, "change": {"base": "I have a headache.", "baseAr": "عندي صداع.", "promptAr": "غيّر headache إلى cold، وقل الجملة بصوت عالٍ.", "new": "I have a cold.", "newAr": "عندي زكام."}}, {"id": "en-borrow-pen", "title": "Borrow a pen", "titleAr": "استعارة قلم", "dialog": [{"s": "A", "f": "Excuse me. Can I borrow your pen?", "a": "عذرًا. هل يمكنني استعارة قلمك؟"}, {"s": "B", "f": "Yes, of course. Here you are.", "a": "نعم، بالطبع. تفضل."}, {"s": "A", "f": "Thank you. I need it now.", "a": "شكرًا. أحتاجه الآن."}, {"s": "B", "f": "No problem. When do you return it?", "a": "لا مشكلة. متى تعيده؟"}, {"s": "A", "f": "I return it after the lesson.", "a": "أعيده بعد الدرس."}, {"s": "B", "f": "Good. Do you like my pen?", "a": "جيد. هل يعجبك قلمي؟"}, {"s": "A", "f": "Yes, it is a nice pen.", "a": "نعم، إنه قلم جميل."}, {"s": "B", "f": "Thank you. Enjoy your lesson.", "a": "شكرًا. استمتع بدرسك."}], "complete": {"q": "You ask: Can I borrow your pen? What is the answer?", "options": ["No, you cannot.", "I like bread.", "It is Monday.", "Yes, of course. Here you are."], "answer": 3, "explanationAr": "borrow تعني يستعير، ونرد بـ Here you are."}, "qa": {"q": "What do you want to borrow?", "keys": ["pen"], "model": "Can I borrow your pen, please?", "modelAr": "هل يمكنني استعارة قلمك، من فضلك؟"}, "change": {"base": "Can I borrow your pen?", "baseAr": "هل يمكنني استعارة قلمك؟", "promptAr": "غيّر pen إلى book، وقل الجملة بصوت عالٍ.", "new": "Can I borrow your book?", "newAr": "هل يمكنني استعارة كتابك؟"}}, {"id": "en-apologize-late", "title": "Apologize for being late", "titleAr": "اعتذر عن التأخر", "dialog": [{"s": "A", "f": "Sorry, I am late today.", "a": "عذرًا، أنا متأخر اليوم."}, {"s": "B", "f": "No problem. Why are you late?", "a": "لا مشكلة. لماذا أنت متأخر؟"}, {"s": "A", "f": "My bus was very late.", "a": "حافلتي كانت متأخرة جدًا."}, {"s": "B", "f": "I understand. Sit down, please.", "a": "أفهم. اجلس، من فضلك."}, {"s": "A", "f": "Thank you. I am sorry again.", "a": "شكرًا. أنا آسف مجددًا."}, {"s": "B", "f": "Do not worry.", "a": "لا تقلق."}, {"s": "A", "f": "I will come early tomorrow.", "a": "سآتي مبكرًا غدًا."}, {"s": "B", "f": "See you tomorrow.", "a": "أراك غدًا."}], "complete": {"q": "You are asked: Why are you late? What do you answer?", "options": ["I am a teacher.", "It is Monday.", "My bus was very late.", "I like bread."], "answer": 2, "explanationAr": "نعتذر بـ Sorry، ونشرح السبب بجملة كاملة."}, "qa": {"q": "Why are you late?", "keys": ["bus", "late"], "model": "My bus was very late.", "modelAr": "حافلتي كانت متأخرة جدًا."}, "change": {"base": "My bus was very late.", "baseAr": "حافلتي كانت متأخرة جدًا.", "promptAr": "غيّر bus إلى train، وقل الجملة بصوت عالٍ.", "new": "My train was very late.", "newAr": "قطاري كان متأخرًا جدًا."}}, {"id": "en-phone-party", "title": "Phone call for a party", "titleAr": "مكالمة هاتفية لحفلة", "dialog": [{"s": "A", "f": "Hello, this is Sara.", "a": "مرحبًا، هذه سارة."}, {"s": "B", "f": "Hello, Sara. How are you?", "a": "مرحبًا، سارة. كيف حالك؟"}, {"s": "A", "f": "I am fine, thank you.", "a": "أنا بخير، شكرًا."}, {"s": "B", "f": "Can I help you?", "a": "هل يمكنني مساعدتك؟"}, {"s": "A", "f": "Can you come to my party?", "a": "هل يمكنك المجيء إلى حفلتي؟"}, {"s": "B", "f": "Yes, I would love to come.", "a": "نعم، أود المجيء كثيرًا."}, {"s": "A", "f": "The party is on Saturday evening.", "a": "الحفلة مساء السبت."}, {"s": "B", "f": "Great. See you on Saturday.", "a": "رائع. أراك يوم السبت."}], "complete": {"q": "You ask: Can you come to my party? What is the answer?", "options": ["It is Monday.", "Yes, I would love to come.", "No, I cannot.", "I like bread."], "answer": 1, "explanationAr": "ندعو بـ Can you come، ونقبل بـ I would love to come."}, "qa": {"q": "When is the party?", "keys": ["saturday"], "model": "The party is on Saturday evening.", "modelAr": "الحفلة مساء السبت."}, "change": {"base": "The party is on Saturday evening.", "baseAr": "الحفلة مساء السبت.", "promptAr": "غيّر Saturday إلى Sunday، وقل الجملة بصوت عالٍ.", "new": "The party is on Sunday evening.", "newAr": "الحفلة مساء الأحد."}}], "de": [{"id": "de-introduce", "title": "Sich vorstellen", "titleAr": "عرّف بنفسك", "dialog": [{"s": "A", "f": "Hallo, ich heiße Sara.", "a": "مرحبًا، اسمي سارة."}, {"s": "B", "f": "Hallo, Sara. Ich heiße Omar.", "a": "مرحبًا، سارة. اسمي عمر."}, {"s": "A", "f": "Freut mich, Omar.", "a": "سعيد بلقائك يا عمر."}, {"s": "B", "f": "Freut mich auch.", "a": "وأنا سعيد بلقائك أيضًا."}, {"s": "A", "f": "Woher kommst du, Omar?", "a": "من أين أنت يا عمر؟"}, {"s": "B", "f": "Ich komme aus Bagdad.", "a": "أنا من بغداد."}, {"s": "A", "f": "Ich komme auch aus Bagdad.", "a": "وأنا من بغداد أيضًا."}, {"s": "B", "f": "Bis bald, Sara.", "a": "إلى اللقاء قريبًا يا سارة."}], "complete": {"q": "Sara fragt: Woher kommst du, Omar? Was antwortet Omar?", "options": ["Ich komme aus Bagdad.", "Ich bin Lehrer.", "Ich mag Brot.", "Es ist Montag."], "answer": 0, "explanationAr": "Wir sagen, woher wir kommen, mit Ich komme aus."}, "qa": {"q": "Wie heißt du?", "keys": ["sara"], "model": "Ich heiße Sara.", "modelAr": "اسمي سارة."}, "change": {"base": "Ich komme aus Bagdad.", "baseAr": "أنا من بغداد.", "promptAr": "غيّر Bagdad إلى Berlin، وقل الجملة بصوت عالٍ.", "new": "Ich komme aus Berlin.", "newAr": "أنا من برلين."}}, {"id": "de-order-food", "title": "Essen bestellen", "titleAr": "اطلب طعامًا", "dialog": [{"s": "A", "f": "Hallo. Ich möchte Brot, bitte.", "a": "مرحبًا. أريد خبزًا، من فضلك."}, {"s": "B", "f": "Ja. Möchtest du auch Käse?", "a": "نعم. هل تريد جبنًا أيضًا؟"}, {"s": "A", "f": "Ja, bitte. Und Wasser, bitte.", "a": "نعم، من فضلك. وماء أيضًا، من فضلك."}, {"s": "B", "f": "Hier ist dein Brot und Wasser.", "a": "هذا خبزك وماؤك."}, {"s": "A", "f": "Vielen Dank.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "Guten Appetit.", "a": "بالهناء والشفاء."}, {"s": "A", "f": "Das Brot ist sehr gut.", "a": "الخبز جيد جدًا."}, {"s": "B", "f": "Danke schön.", "a": "شكرًا جزيلًا."}], "complete": {"q": "Der Kellner fragt: Möchtest du auch Käse? Was antwortest du?", "options": ["Nein, danke.", "Ich komme aus Bagdad.", "Es ist Montag.", "Ja, bitte. Und Wasser, bitte."], "answer": 3, "explanationAr": "Wir nehmen ein Angebot mit Ja, bitte an."}, "qa": {"q": "Was möchtest du?", "keys": ["brot"], "model": "Ich möchte Brot, bitte.", "modelAr": "أريد خبزًا، من فضلك."}, "change": {"base": "Ich möchte Brot, bitte.", "baseAr": "أريد خبزًا، من فضلك.", "promptAr": "غيّر Brot إلى Käse، وقل الجملة بصوت عالٍ.", "new": "Ich möchte Käse, bitte.", "newAr": "أريد جبنًا، من فضلك."}}, {"id": "de-directions", "title": "Nach dem Weg fragen", "titleAr": "اسأل عن الطريق", "dialog": [{"s": "A", "f": "Entschuldigung. Wo ist die Bank?", "a": "عذرًا. أين البنك؟"}, {"s": "B", "f": "Geh geradeaus, dann links.", "a": "اذهب مباشرة، ثم يسارًا."}, {"s": "A", "f": "Ist sie nah am Markt?", "a": "هل هو قريب من السوق؟"}, {"s": "B", "f": "Ja, sie ist nah am Markt.", "a": "نعم، هو قريب من السوق."}, {"s": "A", "f": "Danke. Ist sie weit?", "a": "شكرًا. هل هو بعيد؟"}, {"s": "B", "f": "Nein, sie ist sehr nah.", "a": "لا، هو قريب جدًا."}, {"s": "A", "f": "Vielen Dank.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "Viel Glück.", "a": "حظًا سعيدًا."}], "complete": {"q": "Du fragst: Ist sie nah am Markt? Was ist die Antwort?", "options": ["Ich mag Brot.", "Es ist Montag.", "Ja, sie ist nah am Markt.", "Nein, sie ist weit."], "answer": 2, "explanationAr": "nah bedeutet قريب."}, "qa": {"q": "Wo ist die Bank?", "keys": ["nah", "markt"], "model": "Sie ist nah am Markt.", "modelAr": "هو قريب من السوق."}, "change": {"base": "Geh geradeaus, dann links.", "baseAr": "اذهب مباشرة، ثم يسارًا.", "promptAr": "غيّر links إلى rechts، وقل الجملة بصوت عالٍ.", "new": "Geh geradeaus, dann rechts.", "newAr": "اذهب مباشرة، ثم يمينًا."}}, {"id": "de-bank", "title": "In der Bank", "titleAr": "في البنك", "dialog": [{"s": "A", "f": "Hallo. Ich möchte ein Konto.", "a": "مرحبًا. أريد حسابًا."}, {"s": "B", "f": "Ja, gern. Dein Name, bitte?", "a": "نعم، بكل سرور. اسمك، من فضلك؟"}, {"s": "A", "f": "Mein Name ist Sara Ali.", "a": "اسمي سارة علي."}, {"s": "B", "f": "Danke. Kannst du hier unterschreiben?", "a": "شكرًا. هل يمكنك التوقيع هنا؟"}, {"s": "A", "f": "Ja. Kann ich jetzt Geld nehmen?", "a": "نعم. هل يمكنني أخذ مال الآن؟"}, {"s": "B", "f": "Ja, du kannst jetzt Geld nehmen.", "a": "نعم، يمكنك أخذ مال الآن."}, {"s": "A", "f": "Vielen Dank für deine Hilfe.", "a": "شكرًا جزيلًا على مساعدتك."}, {"s": "B", "f": "Schönen Tag.", "a": "يومًا سعيدًا."}], "complete": {"q": "Du fragst: Kann ich jetzt Geld nehmen? Was ist die Antwort?", "options": ["Es ist Montag.", "Ja, du kannst jetzt Geld nehmen.", "Nein, du kannst nicht.", "Ich mag Brot."], "answer": 1, "explanationAr": "Kann ich bedeutet هل يمكنني، ونطلب بها بأدب."}, "qa": {"q": "Was möchtest du in der Bank?", "keys": ["konto"], "model": "Ich möchte ein Konto.", "modelAr": "أريد حسابًا."}, "change": {"base": "Ich möchte ein Konto.", "baseAr": "أريد حسابًا.", "promptAr": "غيّر Konto إلى Geld، وقل الجملة بصوت عالٍ.", "new": "Ich möchte Geld, bitte.", "newAr": "أريد مالًا، من فضلك."}}, {"id": "de-pharmacy", "title": "In der Apotheke", "titleAr": "في الصيدلية", "dialog": [{"s": "A", "f": "Hallo. Ich habe Kopfschmerzen.", "a": "مرحبًا. عندي صداع."}, {"s": "B", "f": "Brauchst du Medizin?", "a": "هل تحتاج دواءً؟"}, {"s": "A", "f": "Ja, bitte.", "a": "نعم، من فضلك."}, {"s": "B", "f": "Nimm zwei Tabletten am Morgen.", "a": "خذ حبتين في الصباح."}, {"s": "A", "f": "Und am Abend auch?", "a": "وفي المساء أيضًا؟"}, {"s": "B", "f": "Ja, zwei Tabletten am Abend.", "a": "نعم، حبتان في المساء."}, {"s": "A", "f": "Vielen Dank.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "Gute Besserung.", "a": "شفاك الله قريبًا."}], "complete": {"q": "Der Apotheker fragt: Brauchst du Medizin? Was antwortest du?", "options": ["Ja, bitte.", "Nein, danke.", "Ich komme aus Bagdad.", "Es ist Montag."], "answer": 0, "explanationAr": "Wir nehmen Hilfe mit Ja, bitte an."}, "qa": {"q": "Was ist dein Problem?", "keys": ["kopfschmerzen"], "model": "Ich habe Kopfschmerzen.", "modelAr": "عندي صداع."}, "change": {"base": "Ich habe Kopfschmerzen.", "baseAr": "عندي صداع.", "promptAr": "غيّر Kopfschmerzen إلى krank، وقل الجملة بصوت عالٍ.", "new": "Ich bin krank.", "newAr": "أنا مريض."}}, {"id": "de-borrow-pen", "title": "Einen Stift leihen", "titleAr": "استعارة قلم", "dialog": [{"s": "A", "f": "Entschuldigung. Kann ich deinen Stift leihen?", "a": "عذرًا. هل يمكنني استعارة قلمك؟"}, {"s": "B", "f": "Ja, gern. Hier ist er.", "a": "نعم، بكل سرور. تفضل."}, {"s": "A", "f": "Danke. Ich brauche ihn jetzt.", "a": "شكرًا. أحتاجه الآن."}, {"s": "B", "f": "Kein Problem. Wann gibst du ihn zurück?", "a": "لا مشكلة. متى تعيده؟"}, {"s": "A", "f": "Ich gebe ihn nach der Stunde zurück.", "a": "أعيده بعد الدرس."}, {"s": "B", "f": "Gut. Magst du meinen Stift?", "a": "جيد. هل يعجبك قلمي؟"}, {"s": "A", "f": "Ja, er ist ein schöner Stift.", "a": "نعم، إنه قلم جميل."}, {"s": "B", "f": "Danke. Viel Spaß in der Stunde.", "a": "شكرًا. استمتع بدرسك."}], "complete": {"q": "Du fragst: Kann ich deinen Stift leihen? Was ist die Antwort?", "options": ["Nein, du kannst nicht.", "Ich mag Brot.", "Es ist Montag.", "Ja, gern. Hier ist er."], "answer": 3, "explanationAr": "leihen bedeutet يستعير، ونرد بـ Hier ist er."}, "qa": {"q": "Was möchtest du leihen?", "keys": ["stift"], "model": "Kann ich deinen Stift leihen?", "modelAr": "هل يمكنني استعارة قلمك؟"}, "change": {"base": "Kann ich deinen Stift leihen?", "baseAr": "هل يمكنني استعارة قلمك؟", "promptAr": "غيّر Stift إلى Buch، وقل الجملة بصوت عالٍ.", "new": "Kann ich dein Buch leihen?", "newAr": "هل يمكنني استعارة كتابك؟"}}, {"id": "de-apologize-late", "title": "Entschuldigung für Verspätung", "titleAr": "اعتذر عن التأخر", "dialog": [{"s": "A", "f": "Entschuldigung, ich bin heute spät.", "a": "عذرًا، أنا متأخر اليوم."}, {"s": "B", "f": "Kein Problem. Warum bist du spät?", "a": "لا مشكلة. لماذا أنت متأخر؟"}, {"s": "A", "f": "Mein Bus war sehr spät.", "a": "حافلتي كانت متأخرة جدًا."}, {"s": "B", "f": "Ich verstehe. Setz dich, bitte.", "a": "أفهم. اجلس، من فضلك."}, {"s": "A", "f": "Es tut mir leid.", "a": "أنا آسف."}, {"s": "B", "f": "Mach dir keine Sorgen.", "a": "لا تقلق."}, {"s": "A", "f": "Ich komme morgen früh.", "a": "سآتي مبكرًا غدًا."}, {"s": "B", "f": "Bis morgen.", "a": "إلى الغد."}], "complete": {"q": "Du wirst gefragt: Warum bist du spät? Was antwortest du?", "options": ["Ich bin Lehrer.", "Es ist Montag.", "Mein Bus war sehr spät.", "Ich mag Brot."], "answer": 2, "explanationAr": "Wir entschuldigen uns mit Entschuldigung und erklären den Grund."}, "qa": {"q": "Warum bist du spät?", "keys": ["bus", "spät"], "model": "Mein Bus war sehr spät.", "modelAr": "حافلتي كانت متأخرة جدًا."}, "change": {"base": "Mein Bus war sehr spät.", "baseAr": "حافلتي كانت متأخرة جدًا.", "promptAr": "غيّر Bus إلى Zug، وقل الجملة بصوت عالٍ.", "new": "Mein Zug war sehr spät.", "newAr": "قطاري كان متأخرًا جدًا."}}, {"id": "de-phone-party", "title": "Anruf für eine Party", "titleAr": "مكالمة هاتفية لحفلة", "dialog": [{"s": "A", "f": "Hallo, hier ist Sara.", "a": "مرحبًا، هذه سارة."}, {"s": "B", "f": "Hallo, Sara. Wie geht es dir?", "a": "مرحبًا، سارة. كيف حالك؟"}, {"s": "A", "f": "Mir geht es gut, danke.", "a": "أنا بخير، شكرًا."}, {"s": "B", "f": "Gut. Kann ich dir helfen?", "a": "جيد. هل يمكنني مساعدتك؟"}, {"s": "A", "f": "Kannst du zu meiner Party kommen?", "a": "هل يمكنك المجيء إلى حفلتي؟"}, {"s": "B", "f": "Ja, ich komme sehr gern.", "a": "نعم، آتي بكل سرور."}, {"s": "A", "f": "Die Party ist am Samstagabend.", "a": "الحفلة مساء السبت."}, {"s": "B", "f": "Bis Samstag.", "a": "إلى السبت."}], "complete": {"q": "Du fragst: Kannst du zu meiner Party kommen? Was ist die Antwort?", "options": ["Es ist Montag.", "Ja, ich komme sehr gern.", "Nein, ich kann nicht.", "Ich mag Brot."], "answer": 1, "explanationAr": "Wir laden mit Kannst du kommen ein und nehmen mit gern an."}, "qa": {"q": "Wann ist die Party?", "keys": ["samstagabend"], "model": "Die Party ist am Samstagabend.", "modelAr": "الحفلة مساء السبت."}, "change": {"base": "Die Party ist am Samstagabend.", "baseAr": "الحفلة مساء السبت.", "promptAr": "غيّر Samstagabend إلى Sonntagabend، وقل الجملة بصوت عالٍ.", "new": "Die Party ist am Sonntagabend.", "newAr": "الحفلة مساء الأحد."}}], "talk": {"en": {"starters": ["My name is ...", "I live in ...", "I like ...", "I am a student."], "check": ["I said 3 or 4 sentences.", "I said my name.", "I said where I live.", "I said what I like."]}, "de": {"starters": ["Ich heiße ...", "Ich wohne in ...", "Ich mag ...", "Ich bin Student."], "check": ["Ich habe 3 oder 4 Sätze gesagt.", "Ich habe meinen Namen gesagt.", "Ich habe gesagt, wo ich wohne.", "Ich habe gesagt, was ich mag."]}}};
 var GRAMMAR_A1 = {
- "en": [
-  {
+ "en": [{
+   "id": "en-a-an-the",
+   "title": "a / an / the",
+   "titleAr": "أدوات التعريف والتنكير",
+   "explanationAr": "نستخدم a قبل شيء غير محدد يبدأ بحرف ساكن، وan قبل حرف علة، وthe قبل شيء معروف أو ذُكر من قبل: A new neighbor lives near Mia. The neighbor is Rosa.",
+   "examples": [
+    {
+     "f": "A new neighbor lives near Mia.",
+     "a": "جار جديد يسكن قرب ميا.",
+     "story": "en-intro-4"
+    },
+    {
+     "f": "The neighbor is Rosa.",
+     "a": "الجارة هي روزا.",
+     "story": "en-intro-4"
+    },
+    {
+     "f": "I am a teacher.",
+     "a": "أنا معلمة.",
+     "story": "en-jobs-a1-1"
+    },
+    {
+     "f": "This cake is for you.",
+     "a": "هذه الكعكة لك.",
+     "story": "en-intro-4"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "I need ___ apple.",
+     "options": [
+      "a",
+      "the",
+      "an"
+     ],
+     "answer": "an",
+     "explanationAr": "apple يبدأ بحرف علة."
+    },
+    {
+     "q": "He is ___ teacher.",
+     "options": [
+      "the",
+      "a",
+      "an"
+     ],
+     "answer": "a",
+     "explanationAr": "قبل مهنة غير محددة نستخدم a."
+    },
+    {
+     "q": "___ neighbor is Rosa.",
+     "options": [
+      "The",
+      "A",
+      "An"
+     ],
+     "answer": "The",
+     "explanationAr": "الجارة معروفة الآن، فنستخدم The."
+    },
+    {
+     "q": "I see ___ book.",
+     "options": [
+      "an",
+      "the",
+      "a"
+     ],
+     "answer": "a",
+     "explanationAr": "كتاب غير محدد يبدأ بساكن: a."
+    },
+    {
+     "q": "I like ___ cake.",
+     "options": [
+      "an",
+      "the",
+      "a"
+     ],
+     "answer": "the",
+     "explanationAr": "إذا كان المقصود كعكة معروفة: the."
+    },
+    {
+     "q": "She has ___ orange.",
+     "options": [
+      "an",
+      "a",
+      "the"
+     ],
+     "answer": "an",
+     "explanationAr": "orange يبدأ بحرف علة."
+    }
+   ],
+   "functionWords": [
+    "I",
+    "a",
+    "all",
+    "am",
+    "and",
+    "are",
+    "at",
+    "do",
+    "every",
+    "for",
+    "from",
+    "has",
+    "her",
+    "his",
+    "how",
+    "i",
+    "in",
+    "is",
+    "my",
+    "one",
+    "the",
+    "this",
+    "to",
+    "two",
+    "what",
+    "where",
+    "with",
+    "yes",
+    "you",
+    "your"
+   ],
+   "stories": [
+    "en-intro-4",
+    "en-jobs-a1-1",
+    "en-market-1"
+   ]
+  }, {
+   "id": "en-plurals",
+   "title": "Plurals -s",
+   "titleAr": "الجمع بإضافة s",
+   "explanationAr": "للجمع نضيف s للاسم في الغالب: friend تصبح friends، candle تصبح candles، song تصبح songs، gift تصبح gifts.",
+   "examples": [
+    {
+     "f": "Friends come to the party.",
+     "a": "الأصدقاء يأتون إلى الحفلة.",
+     "story": "en-intro-5"
+    },
+    {
+     "f": "Seven candles are on the cake.",
+     "a": "سبع شموع على الكعكة.",
+     "story": "en-intro-5"
+    },
+    {
+     "f": "Now the friends sing happy songs.",
+     "a": "الآن الأصدقاء يغنون أغاني سعيدة.",
+     "story": "en-intro-5"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "One friend, two ___",
+     "options": [
+      "friendes",
+      "friends",
+      "friend"
+     ],
+     "answer": "friends",
+     "explanationAr": "الجمع بإضافة s."
+    },
+    {
+     "q": "One candle, seven ___",
+     "options": [
+      "candles",
+      "candle",
+      "candless"
+     ],
+     "answer": "candles",
+     "explanationAr": "candle + s."
+    },
+    {
+     "q": "One song, many ___",
+     "options": [
+      "song",
+      "songes",
+      "songs"
+     ],
+     "answer": "songs",
+     "explanationAr": "song + s."
+    },
+    {
+     "q": "One gift, two ___",
+     "options": [
+      "giftss",
+      "gifts",
+      "gift"
+     ],
+     "answer": "gifts",
+     "explanationAr": "gift + s."
+    },
+    {
+     "q": "One book, three ___",
+     "options": [
+      "books",
+      "book",
+      "bookes"
+     ],
+     "answer": "books",
+     "explanationAr": "book + s."
+    },
+    {
+     "q": "One cat, two ___",
+     "options": [
+      "cat",
+      "catts",
+      "cats"
+     ],
+     "answer": "cats",
+     "explanationAr": "cat + s."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "after",
+    "am",
+    "and",
+    "are",
+    "do",
+    "every",
+    "for",
+    "from",
+    "his",
+    "how",
+    "i",
+    "in",
+    "is",
+    "it",
+    "my",
+    "on",
+    "the",
+    "this",
+    "to",
+    "too",
+    "we",
+    "what",
+    "yes",
+    "you",
+    "your"
+   ],
+   "stories": [
+    "en-intro-5"
+   ]
+  }, {
+   "id": "en-demonstratives",
+   "title": "Demonstratives",
+   "titleAr": "this/that/these/those",
+   "explanationAr": "للقريب: this للمفرد وthese للجمع. للبعيد: that للمفرد وthose للجمع: This cake is for you. These shoes are new.",
+   "examples": [
+    {
+     "f": "This cake is for you.",
+     "a": "هذه الكعكة لك.",
+     "story": "en-intro-4"
+    },
+    {
+     "f": "These shoes are new.",
+     "a": "هذه الأحذية جديدة.",
+     "story": "en-clothes-2"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "___ cake is for you.",
+     "options": [
+      "These",
+      "Those",
+      "This"
+     ],
+     "answer": "This",
+     "explanationAr": "cake مفرد قريب: This."
+    },
+    {
+     "q": "___ shoes are new.",
+     "options": [
+      "That",
+      "These",
+      "This"
+     ],
+     "answer": "These",
+     "explanationAr": "shoes جمع قريب: These."
+    },
+    {
+     "q": "___ book is mine.",
+     "options": [
+      "That",
+      "Those",
+      "These"
+     ],
+     "answer": "That",
+     "explanationAr": "book مفرد بعيد: That."
+    },
+    {
+     "q": "___ shoes are old.",
+     "options": [
+      "This",
+      "That",
+      "Those"
+     ],
+     "answer": "Those",
+     "explanationAr": "shoes جمع بعيد: Those."
+    },
+    {
+     "q": "Is ___ a book?",
+     "options": [
+      "those",
+      "this",
+      "these"
+     ],
+     "answer": "this",
+     "explanationAr": "مفرد قريب: this."
+    },
+    {
+     "q": "Are ___ your shoes?",
+     "options": [
+      "these",
+      "this",
+      "that"
+     ],
+     "answer": "these",
+     "explanationAr": "shoes جمع: these."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "and",
+    "are",
+    "at",
+    "for",
+    "has",
+    "he",
+    "him",
+    "his",
+    "how",
+    "i",
+    "in",
+    "like",
+    "much",
+    "my",
+    "now",
+    "on",
+    "the",
+    "there",
+    "these",
+    "to",
+    "too",
+    "with"
+   ],
+   "stories": [
+    "en-clothes-2"
+   ]
+  }, {
+   "id": "en-possessives",
+   "title": "Possessives",
+   "titleAr": "الملكية my/your/his/her",
+   "explanationAr": "نضع my/your/his/her قبل الاسم لبيان الملكية: my ball (كرتي)، your dog (كلبك)، his name (اسمه). لا نضيف s للضمير هنا.",
+   "examples": [
+    {
+     "f": "Omar takes his red ball.",
+     "a": "عمر يأخذ كرته الحمراء.",
+     "story": "en-intro-6"
+    },
+    {
+     "f": "Your dog is very nice.",
+     "a": "كلبك لطيف جداً.",
+     "story": "en-intro-6"
+    },
+    {
+     "f": "His name is Rex.",
+     "a": "اسمه ريكس.",
+     "story": "en-intro-6"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "This is ___ ball.",
+     "options": [
+      "my",
+      "me",
+      "mine"
+     ],
+     "answer": "my",
+     "explanationAr": "قبل الاسم: my."
+    },
+    {
+     "q": "___ dog is very nice.",
+     "options": [
+      "You",
+      "Yours",
+      "Your"
+     ],
+     "answer": "Your",
+     "explanationAr": "قبل الاسم: your."
+    },
+    {
+     "q": "Omar takes ___ red ball.",
+     "options": [
+      "him",
+      "his",
+      "he"
+     ],
+     "answer": "his",
+     "explanationAr": "عمر = his."
+    },
+    {
+     "q": "This is ___ book.",
+     "options": [
+      "her",
+      "she",
+      "hers"
+     ],
+     "answer": "her",
+     "explanationAr": "قبل الاسم: her."
+    },
+    {
+     "q": "We love ___ school.",
+     "options": [
+      "we",
+      "us",
+      "our"
+     ],
+     "answer": "our",
+     "explanationAr": "قبل الاسم: our."
+    },
+    {
+     "q": "They take ___ bags.",
+     "options": [
+      "them",
+      "their",
+      "they"
+     ],
+     "answer": "their",
+     "explanationAr": "قبل الاسم: their."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "am",
+    "and",
+    "at",
+    "do",
+    "his",
+    "i",
+    "in",
+    "is",
+    "my",
+    "on",
+    "the",
+    "they",
+    "this",
+    "to",
+    "too",
+    "under",
+    "we",
+    "what",
+    "with",
+    "yes",
+    "you",
+    "your"
+   ],
+   "stories": [
+    "en-intro-6"
+   ]
+  }, {
    "id": "en-be",
    "title": "am / is / are",
    "titleAr": "فعل الكون am/is/are",
@@ -4909,8 +5372,114 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-intro-1"
    ]
-  },
-  {
+  }, {
+   "id": "en-there-is-are",
+   "title": "There is / There are",
+   "titleAr": "هناك There is/are",
+   "explanationAr": "مع المفرد نستخدم There is، ومع الجمع There are: There is a kitchen. There are bags of fruit at home.",
+   "examples": [
+    {
+     "f": "There is a kitchen.",
+     "a": "هناك مطبخ.",
+     "story": "en-home-1"
+    },
+    {
+     "f": "There are bags of fruit at home.",
+     "a": "هناك أكياس فاكهة في البيت.",
+     "story": "en-market-2"
+    },
+    {
+     "f": "There is fresh food here.",
+     "a": "هناك طعام طازج هنا.",
+     "story": "en-market-2"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "___ a kitchen.",
+     "options": [
+      "There are",
+      "There am",
+      "There is"
+     ],
+     "answer": "There is",
+     "explanationAr": "kitchen مفرد: is."
+    },
+    {
+     "q": "___ bags of fruit.",
+     "options": [
+      "There am",
+      "There are",
+      "There is"
+     ],
+     "answer": "There are",
+     "explanationAr": "bags جمع: are."
+    },
+    {
+     "q": "___ a teacher here.",
+     "options": [
+      "There is",
+      "There are",
+      "There be"
+     ],
+     "answer": "There is",
+     "explanationAr": "teacher مفرد: is."
+    },
+    {
+     "q": "___ two books here.",
+     "options": [
+      "There is",
+      "There am",
+      "There are"
+     ],
+     "answer": "There are",
+     "explanationAr": "two books جمع: are."
+    },
+    {
+     "q": "___ fresh food here.",
+     "options": [
+      "There am",
+      "There is",
+      "There are"
+     ],
+     "answer": "There is",
+     "explanationAr": "food غير معدود: is."
+    },
+    {
+     "q": "Is ___ a market here?",
+     "options": [
+      "there",
+      "here",
+      "it"
+     ],
+     "answer": "there",
+     "explanationAr": "السؤال: Is there...؟"
+    }
+   ],
+   "functionWords": [
+    "a",
+    "and",
+    "are",
+    "at",
+    "every",
+    "for",
+    "has",
+    "here",
+    "i",
+    "in",
+    "is",
+    "my",
+    "of",
+    "the",
+    "there",
+    "we",
+    "with"
+   ],
+   "stories": [
+    "en-home-1",
+    "en-market-2"
+   ]
+  }, {
    "id": "en-present-simple-s",
    "title": "Present simple -s",
    "titleAr": "المضارع البسيط مع he/she",
@@ -5061,8 +5630,227 @@ var GRAMMAR_A1 = {
     "en-routine-2",
     "en-routine-3"
    ]
-  },
-  {
+  }, {
+   "id": "en-habits",
+   "title": "Present simple for habits",
+   "titleAr": "المضارع للعادات",
+   "explanationAr": "للعادات والروتين نستخدم المضارع البسيط: I play / I read / I draw. ونذكر اليوم: on Saturday، on Sunday، every day.",
+   "examples": [
+    {
+     "f": "I play football on Saturday.",
+     "a": "ألعب كرة القدم يوم السبت."
+    },
+    {
+     "f": "What do you do at the weekend?",
+     "a": "ماذا تفعل في عطلة نهاية الأسبوع؟",
+     "story": "en-hobbies-a1-1"
+    },
+    {
+     "f": "She plays every day.",
+     "a": "هي تلعب كل يوم.",
+     "story": "en-intro-2"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "I ___ on Saturday.",
+     "options": [
+      "play",
+      "plays",
+      "played"
+     ],
+     "answer": "play",
+     "explanationAr": "مع I: play."
+    },
+    {
+     "q": "She ___ every day.",
+     "options": [
+      "play",
+      "played",
+      "plays"
+     ],
+     "answer": "plays",
+     "explanationAr": "مع she: plays."
+    },
+    {
+     "q": "We play ___ Sunday.",
+     "options": [
+      "at",
+      "on",
+      "in"
+     ],
+     "answer": "on",
+     "explanationAr": "أيام الأسبوع مع on."
+    },
+    {
+     "q": "He ___ to school every day.",
+     "options": [
+      "goes",
+      "go",
+      "going"
+     ],
+     "answer": "goes",
+     "explanationAr": "مع he: goes."
+    },
+    {
+     "q": "They ___ every day.",
+     "options": [
+      "reads",
+      "reading",
+      "read"
+     ],
+     "answer": "read",
+     "explanationAr": "مع they: read."
+    },
+    {
+     "q": "What do you do ___ the weekend?",
+     "options": [
+      "in",
+      "at",
+      "on"
+     ],
+     "answer": "at",
+     "explanationAr": "at the weekend تعبير ثابت."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "after",
+    "and",
+    "are",
+    "at",
+    "behind",
+    "can",
+    "do",
+    "every",
+    "for",
+    "he",
+    "i",
+    "in",
+    "into",
+    "is",
+    "my",
+    "no",
+    "on",
+    "our",
+    "over",
+    "the",
+    "this",
+    "to",
+    "too",
+    "under",
+    "us",
+    "we",
+    "what",
+    "with",
+    "yes",
+    "you"
+   ],
+   "stories": [
+    "en-hobbies-a1-1",
+    "en-home-6"
+   ]
+  }, {
+   "id": "en-frequency",
+   "title": "Adverbs of frequency",
+   "titleAr": "ظروف التكرار",
+   "explanationAr": "ظروف التكرار تأتي قبل الفعل الرئيسي، وبعد be: I always play on Saturday. She usually reads. I never play on Sunday. الترتيب: always > usually > often > sometimes > never.",
+   "examples": [
+    {
+     "f": "I play every day.",
+     "a": "ألعب كل يوم."
+    },
+    {
+     "f": "She plays every day.",
+     "a": "هي تلعب كل يوم.",
+     "story": "en-intro-2"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "I ___ play on Saturday.",
+     "options": [
+      "play always",
+      "always",
+      "always play"
+     ],
+     "answer": "always",
+     "explanationAr": "الظرف قبل الفعل."
+    },
+    {
+     "q": "She ___ reads.",
+     "options": [
+      "usually",
+      "usually read",
+      "read usually"
+     ],
+     "answer": "usually",
+     "explanationAr": "الظرف قبل الفعل."
+    },
+    {
+     "q": "I ___ play on Sunday.",
+     "options": [
+      "never play",
+      "play never",
+      "never"
+     ],
+     "answer": "never",
+     "explanationAr": "never قبل الفعل."
+    },
+    {
+     "q": "He is ___ happy.",
+     "options": [
+      "is always happy",
+      "always",
+      "always is"
+     ],
+     "answer": "always",
+     "explanationAr": "بعد be يأتي الظرف."
+    },
+    {
+     "q": "We ___ play football.",
+     "options": [
+      "often",
+      "often play",
+      "play often"
+     ],
+     "answer": "often",
+     "explanationAr": "often قبل الفعل."
+    },
+    {
+     "q": "She ___ watches TV.",
+     "options": [
+      "sometimes watch",
+      "watch sometimes",
+      "sometimes"
+     ],
+     "answer": "sometimes",
+     "explanationAr": "sometimes قبل الفعل."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "and",
+    "are",
+    "at",
+    "can",
+    "do",
+    "i",
+    "in",
+    "is",
+    "no",
+    "on",
+    "the",
+    "too",
+    "we",
+    "what",
+    "yes",
+    "you"
+   ],
+   "stories": [
+    "en-hobbies-a1-1"
+   ]
+  }, {
    "id": "en-be-questions",
    "title": "be-questions",
    "titleAr": "أسئلة be",
@@ -5187,8 +5975,129 @@ var GRAMMAR_A1 = {
     "en-home-5",
     "en-intro-3"
    ]
-  },
-  {
+  }, {
+   "id": "en-do-does",
+   "title": "do / does auxiliary",
+   "titleAr": "do/does كفعل مساعد",
+   "explanationAr": "في الأسئلة والنفي: مع I/you/we/they نستخدم do، ومع he/she/it نستخدم does + فعل بدون s: Do you like school؟ Does it fit me؟ What do you do؟",
+   "examples": [
+    {
+     "f": "Do you like school?",
+     "a": "هل تحب المدرسة؟",
+     "story": "en-intro-7"
+    },
+    {
+     "f": "Does it fit me?",
+     "a": "هل يناسبني؟",
+     "story": "en-clothes-4"
+    },
+    {
+     "f": "What do you do?",
+     "a": "ماذا تعمل؟",
+     "story": "en-jobs-a1-1"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "___ you like school?",
+     "options": [
+      "Is",
+      "Do",
+      "Does"
+     ],
+     "answer": "Do",
+     "explanationAr": "مع you: Do."
+    },
+    {
+     "q": "___ it fit me?",
+     "options": [
+      "Does",
+      "Do",
+      "Is"
+     ],
+     "answer": "Does",
+     "explanationAr": "مع it: Does."
+    },
+    {
+     "q": "What ___ you do?",
+     "options": [
+      "does",
+      "is",
+      "do"
+     ],
+     "answer": "do",
+     "explanationAr": "مع you: do."
+    },
+    {
+     "q": "___ she play today?",
+     "options": [
+      "Is",
+      "Does",
+      "Do"
+     ],
+     "answer": "Does",
+     "explanationAr": "مع she: Does."
+    },
+    {
+     "q": "Does he ___ today?",
+     "options": [
+      "play",
+      "plays",
+      "played"
+     ],
+     "answer": "play",
+     "explanationAr": "بعد Does فعل بدون s."
+    },
+    {
+     "q": "Do they ___ today?",
+     "options": [
+      "plays",
+      "played",
+      "play"
+     ],
+     "answer": "play",
+     "explanationAr": "بعد Do فعل بدون s."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "all",
+    "am",
+    "and",
+    "are",
+    "at",
+    "do",
+    "every",
+    "for",
+    "have",
+    "here",
+    "herself",
+    "how",
+    "i",
+    "in",
+    "is",
+    "much",
+    "no",
+    "off",
+    "on",
+    "our",
+    "please",
+    "she",
+    "the",
+    "this",
+    "to",
+    "we",
+    "what",
+    "where",
+    "yes",
+    "you"
+   ],
+   "stories": [
+    "en-clothes-4",
+    "en-jobs-a1-1",
+    "en-travel-a1-2"
+   ]
+  }, {
    "id": "en-yes-no-questions",
    "title": "Yes / No questions",
    "titleAr": "أسئلة نعم / لا",
@@ -5304,121 +6213,354 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-intro-7"
    ]
-  },
-  {
-   "id": "en-a-an-the",
-   "title": "a / an / the",
-   "titleAr": "أدوات التعريف والتنكير",
-   "explanationAr": "نستخدم a قبل شيء غير محدد يبدأ بحرف ساكن، وan قبل حرف علة، وthe قبل شيء معروف أو ذُكر من قبل: A new neighbor lives near Mia. The neighbor is Rosa.",
+  }, {
+   "id": "en-negation",
+   "title": "Negation don't / doesn't",
+   "titleAr": "النفي don't/doesn't",
+   "explanationAr": "للنفي في المضارع: مع I/you/we/they نستخدم don't + فعل، ومع he/she/it نستخدم doesn't + فعل بدون s: I don't like tea. She doesn't like tea. ولا نقول She doesn't likes.",
    "examples": [
     {
-     "f": "A new neighbor lives near Mia.",
-     "a": "جار جديد يسكن قرب ميا.",
-     "story": "en-intro-4"
+     "f": "Don't be afraid.",
+     "a": "لا تخف.",
+     "story": "en-weather-4"
     },
     {
-     "f": "The neighbor is Rosa.",
-     "a": "الجارة هي روزا.",
-     "story": "en-intro-4"
+     "f": "I don't like tea.",
+     "a": "أنا لا أحب الشاي."
     },
     {
-     "f": "I am a teacher.",
-     "a": "أنا معلمة.",
-     "story": "en-jobs-a1-1"
-    },
-    {
-     "f": "This cake is for you.",
-     "a": "هذه الكعكة لك.",
-     "story": "en-intro-4"
+     "f": "She doesn't like tea.",
+     "a": "هي لا تحب الشاي."
     }
    ],
    "exercises": [
     {
-     "q": "I need ___ apple.",
+     "q": "I ___ like tea.",
      "options": [
-      "a",
-      "the",
-      "an"
+      "doesn't",
+      "not",
+      "don't"
      ],
-     "answer": "an",
-     "explanationAr": "apple يبدأ بحرف علة."
+     "answer": "don't",
+     "explanationAr": "مع I: don't."
     },
     {
-     "q": "He is ___ teacher.",
+     "q": "She ___ like tea.",
+     "options": [
+      "not",
+      "doesn't",
+      "don't"
+     ],
+     "answer": "doesn't",
+     "explanationAr": "مع she: doesn't."
+    },
+    {
+     "q": "He ___ play today.",
+     "options": [
+      "doesn't",
+      "don't",
+      "not"
+     ],
+     "answer": "doesn't",
+     "explanationAr": "مع he: doesn't."
+    },
+    {
+     "q": "They ___ play today.",
+     "options": [
+      "doesn't",
+      "not",
+      "don't"
+     ],
+     "answer": "don't",
+     "explanationAr": "مع they: don't."
+    },
+    {
+     "q": "Don't ___ afraid.",
+     "options": [
+      "are",
+      "be",
+      "is"
+     ],
+     "answer": "be",
+     "explanationAr": "بعد Don't فعل بدون تصريف."
+    },
+    {
+     "q": "She doesn't ___ tea.",
+     "options": [
+      "like",
+      "likes",
+      "liked"
+     ],
+     "answer": "like",
+     "explanationAr": "بعد doesn't فعل بدون s."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "all",
+    "am",
+    "and",
+    "at",
+    "be",
+    "don't",
+    "her",
+    "here",
+    "i",
+    "is",
+    "not",
+    "now",
+    "of",
+    "on",
+    "over",
+    "she",
+    "the",
+    "then",
+    "there"
+   ],
+   "stories": [
+    "en-weather-4"
+   ]
+  }, {
+   "id": "en-have-has",
+   "title": "have / has and have got",
+   "titleAr": "have/has و have got",
+   "explanationAr": "مع I/you/we/they نستخدم have، ومع he/she/it نستخدم has. have got تعني have نفسها: I have got a book = I have a book. ولا نستخدم has مع I.",
+   "examples": [
+    {
+     "f": "I have a cold.",
+     "a": "عندي زكام.",
+     "story": "en-health-a1-1"
+    },
+    {
+     "f": "I have ten minutes!",
+     "a": "عندي عشر دقائق!",
+     "story": "en-routine-6"
+    },
+    {
+     "f": "She has a book.",
+     "a": "عندها كتاب."
+    }
+   ],
+   "exercises": [
+    {
+     "q": "I ___ a cold.",
+     "options": [
+      "have",
+      "has",
+      "having"
+     ],
+     "answer": "have",
+     "explanationAr": "مع I: have."
+    },
+    {
+     "q": "She ___ a book.",
+     "options": [
+      "have",
+      "having",
+      "has"
+     ],
+     "answer": "has",
+     "explanationAr": "مع she: has."
+    },
+    {
+     "q": "He ___ a cold.",
+     "options": [
+      "having",
+      "has",
+      "have"
+     ],
+     "answer": "has",
+     "explanationAr": "مع he: has."
+    },
+    {
+     "q": "They ___ books.",
+     "options": [
+      "have",
+      "has",
+      "having"
+     ],
+     "answer": "have",
+     "explanationAr": "مع they: have."
+    },
+    {
+     "q": "I have ___ a book.",
+     "options": [
+      "get",
+      "gets",
+      "got"
+     ],
+     "answer": "got",
+     "explanationAr": "have got = have."
+    },
+    {
+     "q": "She has got ___ cold.",
      "options": [
       "the",
       "a",
       "an"
      ],
      "answer": "a",
-     "explanationAr": "قبل مهنة غير محددة نستخدم a."
+     "explanationAr": "a cold تعبير ثابت."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "again",
+    "almost",
+    "always",
+    "and",
+    "are",
+    "at",
+    "by",
+    "can",
+    "do",
+    "does",
+    "every",
+    "for",
+    "has",
+    "have",
+    "he",
+    "his",
+    "i",
+    "in",
+    "is",
+    "it",
+    "must",
+    "my",
+    "never",
+    "no",
+    "not",
+    "now",
+    "on",
+    "still",
+    "the",
+    "to",
+    "tomorrow",
+    "too",
+    "up",
+    "well",
+    "what",
+    "will",
+    "yes",
+    "you",
+    "your"
+   ],
+   "stories": [
+    "en-health-a1-1",
+    "en-routine-6"
+   ]
+  }, {
+   "id": "en-can",
+   "title": "can for polite requests",
+   "titleAr": "can للطلب بأدب",
+   "explanationAr": "مع can نطلب شيئاً بأدب، ويأتي بعدها فعل بدون to: Can you help me؟ Can I borrow your pen؟",
+   "examples": [
+    {
+     "f": "Can I borrow your pen?",
+     "a": "هل يمكنني استعارة قلمك؟",
+     "story": "en-social-1"
     },
     {
-     "q": "___ neighbor is Rosa.",
-     "options": [
-      "The",
-      "A",
-      "An"
-     ],
-     "answer": "The",
-     "explanationAr": "الجارة معروفة الآن، فنستخدم The."
+     "f": "Can you help me?",
+     "a": "هل يمكنك مساعدتي؟",
+     "story": "en-social-1"
     },
     {
-     "q": "I see ___ book.",
+     "f": "Can I have the bill?",
+     "a": "هل يمكنني الحصول على الفاتورة؟",
+     "story": "en-market-4"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "Can you ___ me?",
      "options": [
-      "an",
-      "the",
-      "a"
+      "helps",
+      "to help",
+      "help"
      ],
-     "answer": "a",
-     "explanationAr": "كتاب غير محدد يبدأ بساكن: a."
+     "answer": "help",
+     "explanationAr": "بعد can فعل بدون to."
     },
     {
-     "q": "I like ___ cake.",
+     "q": "Can I ___ your pen?",
      "options": [
-      "an",
-      "the",
-      "a"
+      "to borrow",
+      "borrow",
+      "borrows"
      ],
-     "answer": "the",
-     "explanationAr": "إذا كان المقصود كعكة معروفة: the."
+     "answer": "borrow",
+     "explanationAr": "بعد can فعل بدون to."
     },
     {
-     "q": "She has ___ orange.",
+     "q": "___ you help me?",
      "options": [
-      "an",
-      "a",
-      "the"
+      "Can",
+      "Cans",
+      "Do can"
      ],
-     "answer": "an",
-     "explanationAr": "orange يبدأ بحرف علة."
+     "answer": "Can",
+     "explanationAr": "السؤال يبدأ بـ Can."
+    },
+    {
+     "q": "Can she ___ today?",
+     "options": [
+      "comes",
+      "to come",
+      "come"
+     ],
+     "answer": "come",
+     "explanationAr": "بعد can فعل بدون to."
+    },
+    {
+     "q": "Yes, you ___",
+     "options": [
+      "can to",
+      "can",
+      "cans"
+     ],
+     "answer": "can",
+     "explanationAr": "الجواب: Yes, you can."
+    },
+    {
+     "q": "Can I ___ water, please?",
+     "options": [
+      "have",
+      "has",
+      "to have"
+     ],
+     "answer": "have",
+     "explanationAr": "بعد can فعل بدون to."
     }
    ],
    "functionWords": [
     "I",
     "a",
-    "all",
     "am",
     "and",
     "are",
     "at",
+    "can",
     "do",
-    "every",
     "for",
-    "from",
     "has",
+    "have",
     "her",
     "his",
-    "how",
     "i",
     "in",
     "is",
+    "me",
     "my",
-    "one",
+    "no",
+    "not",
+    "of",
+    "our",
+    "please",
     "the",
-    "this",
     "to",
-    "two",
+    "too",
+    "we",
     "what",
     "where",
     "with",
@@ -5427,349 +6569,538 @@ var GRAMMAR_A1 = {
     "your"
    ],
    "stories": [
-    "en-intro-4",
-    "en-jobs-a1-1",
-    "en-market-1"
+    "en-market-4",
+    "en-social-1",
+    "en-social-3"
    ]
-  },
-  {
-   "id": "en-plurals",
-   "title": "Plurals -s",
-   "titleAr": "الجمع بإضافة s",
-   "explanationAr": "للجمع نضيف s للاسم في الغالب: friend تصبح friends، candle تصبح candles، song تصبح songs، gift تصبح gifts.",
+  }, {
+   "id": "en-would-like",
+   "title": "Would like",
+   "titleAr": "Would like للطلب المهذب",
+   "explanationAr": "للطلب بأدب نقول I would like…, please. وفي العرض: Would you like some؟",
    "examples": [
     {
-     "f": "Friends come to the party.",
-     "a": "الأصدقاء يأتون إلى الحفلة.",
-     "story": "en-intro-5"
+     "f": "I would like some cake, please.",
+     "a": "أريد بعض الكعكة، من فضلك."
     },
     {
-     "f": "Seven candles are on the cake.",
-     "a": "سبع شموع على الكعكة.",
-     "story": "en-intro-5"
+     "f": "Would you like some?",
+     "a": "هل تريد بعضاً؟",
+     "story": "en-food-6"
     },
     {
-     "f": "Now the friends sing happy songs.",
-     "a": "الآن الأصدقاء يغنون أغاني سعيدة.",
-     "story": "en-intro-5"
+     "f": "I would like tea, please.",
+     "a": "أريد شاياً، من فضلك."
     }
    ],
    "exercises": [
     {
-     "q": "One friend, two ___",
+     "q": "I ___ like tea, please.",
      "options": [
-      "friendes",
-      "friends",
-      "friend"
+      "will",
+      "woulds",
+      "would"
      ],
-     "answer": "friends",
-     "explanationAr": "الجمع بإضافة s."
+     "answer": "would",
+     "explanationAr": "الطلب المهذب: would like."
     },
     {
-     "q": "One candle, seven ___",
+     "q": "___ you like some cake?",
      "options": [
-      "candles",
-      "candle",
-      "candless"
+      "Woulds",
+      "Would",
+      "Will"
      ],
-     "answer": "candles",
-     "explanationAr": "candle + s."
+     "answer": "Would",
+     "explanationAr": "العرض: Would you like...؟"
     },
     {
-     "q": "One song, many ___",
+     "q": "I would like ___, please.",
      "options": [
-      "song",
-      "songes",
-      "songs"
+      "water",
+      "waters",
+      "a water"
      ],
-     "answer": "songs",
-     "explanationAr": "song + s."
+     "answer": "water",
+     "explanationAr": "water غير معدود."
     },
     {
-     "q": "One gift, two ___",
+     "q": "Would you like ___?",
      "options": [
-      "giftss",
-      "gifts",
-      "gift"
+      "any",
+      "a",
+      "some"
      ],
-     "answer": "gifts",
-     "explanationAr": "gift + s."
+     "answer": "some",
+     "explanationAr": "في العرض نستخدم some."
     },
     {
-     "q": "One book, three ___",
+     "q": "She ___ like coffee.",
+     "options": [
+      "woulds",
+      "would",
+      "wills"
+     ],
+     "answer": "would",
+     "explanationAr": "would لا تتغير مع she."
+    },
+    {
+     "q": "I would like a ___, please.",
+     "options": [
+      "book",
+      "books",
+      "bookes"
+     ],
+     "answer": "book",
+     "explanationAr": "a + اسم مفرد."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "and",
+    "are",
+    "but",
+    "for",
+    "from",
+    "has",
+    "her",
+    "his",
+    "i",
+    "in",
+    "is",
+    "it",
+    "me",
+    "on",
+    "our",
+    "please",
+    "the",
+    "them",
+    "this",
+    "to",
+    "with",
+    "would",
+    "you"
+   ],
+   "stories": [
+    "en-food-2",
+    "en-food-6"
+   ]
+  }, {
+   "id": "en-object-pronouns",
+   "title": "Object pronouns",
+   "titleAr": "ضمائر المفعول به",
+   "explanationAr": "بعد الفعل أو حرف الجر نستخدم ضمير المفعول: me (لي)، you (لك)، him (له)، her (لها)، us (لنا)، them (لهم). لا نستخدم I/he/she في هذا الموضع.",
+   "examples": [
+    {
+     "f": "Please give me the water.",
+     "a": "من فضلك أعطني الماء.",
+     "story": "en-food-4"
+    },
+    {
+     "f": "Can you help me?",
+     "a": "هل يمكنك مساعدتي؟",
+     "story": "en-social-1"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "Please give ___ the water.",
+     "options": [
+      "me",
+      "I",
+      "my"
+     ],
+     "answer": "me",
+     "explanationAr": "بعد الفعل: me."
+    },
+    {
+     "q": "Can you help ___?",
+     "options": [
+      "I",
+      "my",
+      "me"
+     ],
+     "answer": "me",
+     "explanationAr": "بعد الفعل: me."
+    },
+    {
+     "q": "I see ___.",
+     "options": [
+      "his",
+      "him",
+      "he"
+     ],
+     "answer": "him",
+     "explanationAr": "المفعول: him."
+    },
+    {
+     "q": "This is for ___.",
+     "options": [
+      "you",
+      "your",
+      "yours"
+     ],
+     "answer": "you",
+     "explanationAr": "بعد for: you."
+    },
+    {
+     "q": "We help ___.",
+     "options": [
+      "they",
+      "their",
+      "them"
+     ],
+     "answer": "them",
+     "explanationAr": "المفعول: them."
+    },
+    {
+     "q": "She likes ___.",
+     "options": [
+      "our",
+      "us",
+      "we"
+     ],
+     "answer": "us",
+     "explanationAr": "المفعول: us."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "and",
+    "for",
+    "from",
+    "her",
+    "i",
+    "in",
+    "is",
+    "on",
+    "our",
+    "she",
+    "the",
+    "with"
+   ],
+   "stories": [
+    "en-food-4"
+   ]
+  }, {
+   "id": "en-countable",
+   "title": "Countable and uncountable nouns",
+   "titleAr": "المعدود وغير المعدود",
+   "explanationAr": "بعض الأطعمة لا تُعدّ (bread, water, milk) فلا نضع a قبلها ولا نجمعها، وبعضها يُعدّ (eggs, apples) فنجمعها ونعدّها: some bread، three eggs.",
+   "examples": [
+    {
+     "f": "I need some bread.",
+     "a": "أحتاج بعض الخبز."
+    },
+    {
+     "f": "I have three eggs.",
+     "a": "عندي ثلاث بيضات."
+    }
+   ],
+   "exercises": [
+    {
+     "q": "I need some ___.",
+     "options": [
+      "breads",
+      "a bread",
+      "bread"
+     ],
+     "answer": "bread",
+     "explanationAr": "bread غير معدود."
+    },
+    {
+     "q": "I have three ___.",
+     "options": [
+      "egges",
+      "eggs",
+      "egg"
+     ],
+     "answer": "eggs",
+     "explanationAr": "eggs معدودة وجمع."
+    },
+    {
+     "q": "She drinks some ___.",
+     "options": [
+      "water",
+      "waters",
+      "a water"
+     ],
+     "answer": "water",
+     "explanationAr": "water غير معدود."
+    },
+    {
+     "q": "He eats two ___.",
+     "options": [
+      "apple",
+      "appless",
+      "apples"
+     ],
+     "answer": "apples",
+     "explanationAr": "apples معدودة وجمع."
+    },
+    {
+     "q": "I want some ___.",
+     "options": [
+      "a milk",
+      "milk",
+      "milks"
+     ],
+     "answer": "milk",
+     "explanationAr": "milk غير معدود."
+    },
+    {
+     "q": "There are three ___ here.",
      "options": [
       "books",
       "book",
       "bookes"
      ],
      "answer": "books",
-     "explanationAr": "book + s."
-    },
-    {
-     "q": "One cat, two ___",
-     "options": [
-      "cat",
-      "catts",
-      "cats"
-     ],
-     "answer": "cats",
-     "explanationAr": "cat + s."
+     "explanationAr": "books معدودة وجمع."
     }
    ],
    "functionWords": [
     "a",
-    "after",
     "am",
     "and",
     "are",
-    "do",
-    "every",
     "for",
-    "from",
+    "he",
+    "his",
+    "i",
+    "in",
+    "is",
+    "not",
+    "on",
+    "she",
+    "the",
+    "to",
+    "us",
+    "with"
+   ],
+   "stories": [
+    "en-food-1"
+   ]
+  }, {
+   "id": "en-some-any",
+   "title": "some / any",
+   "titleAr": "some و any",
+   "explanationAr": "مع الجمل المثبتة والطلبات نستخدم some، ومع الأسئلة والنفي نستخدم any: Sara packs some fruit. Do you want any kiwi؟",
+   "examples": [
+    {
+     "f": "Sara packs some fruit in bags.",
+     "a": "سارة تعبئ بعض الفاكهة في أكياس.",
+     "story": "en-market-3"
+    },
+    {
+     "f": "Do you want any kiwi?",
+     "a": "هل تريد أي كيوي؟",
+     "story": "en-market-3"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "I have ___ fruit.",
+     "options": [
+      "a",
+      "some",
+      "any"
+     ],
+     "answer": "some",
+     "explanationAr": "جملة مثبتة: some."
+    },
+    {
+     "q": "Do you want ___ kiwi?",
+     "options": [
+      "any",
+      "some",
+      "a"
+     ],
+     "answer": "any",
+     "explanationAr": "سؤال: any."
+    },
+    {
+     "q": "I do not have ___ money.",
+     "options": [
+      "some",
+      "a",
+      "any"
+     ],
+     "answer": "any",
+     "explanationAr": "نفي: any."
+    },
+    {
+     "q": "Would you like ___ cake?",
+     "options": [
+      "a",
+      "some",
+      "any"
+     ],
+     "answer": "some",
+     "explanationAr": "طلب مهذب: some."
+    },
+    {
+     "q": "She has ___ books.",
+     "options": [
+      "some",
+      "any",
+      "a"
+     ],
+     "answer": "some",
+     "explanationAr": "جملة مثبتة: some."
+    },
+    {
+     "q": "Is there ___ milk?",
+     "options": [
+      "some",
+      "a",
+      "any"
+     ],
+     "answer": "any",
+     "explanationAr": "سؤال: any."
+    }
+   ],
+   "functionWords": [
+    "I",
+    "a",
+    "and",
+    "any",
+    "are",
+    "do",
+    "for",
+    "in",
+    "is",
+    "some",
+    "the",
+    "to",
+    "you"
+   ],
+   "stories": [
+    "en-market-3"
+   ]
+  }, {
+   "id": "en-how-much-many",
+   "title": "How much / How many",
+   "titleAr": "How much و How many",
+   "explanationAr": "مع الأشياء غير المعدودة نستخدم How much، ومع المعدودة نستخدم How many: How much is the pie؟ How many noodles do we need؟",
+   "examples": [
+    {
+     "f": "How much is it?",
+     "a": "كم سعره؟",
+     "story": "en-clothes-1"
+    },
+    {
+     "f": "How much is the pie?",
+     "a": "كم سعر الفطيرة؟",
+     "story": "en-market-6"
+    },
+    {
+     "f": "How many noodles do we need?",
+     "a": "كم عدد النودلز التي نحتاجها؟",
+     "story": "en-market-6"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "___ is the pie?",
+     "options": [
+      "How much",
+      "How many",
+      "How long"
+     ],
+     "answer": "How much",
+     "explanationAr": "pie غير معدود هنا: much."
+    },
+    {
+     "q": "___ noodles do we need?",
+     "options": [
+      "How much",
+      "How long",
+      "How many"
+     ],
+     "answer": "How many",
+     "explanationAr": "noodles معدودة: many."
+    },
+    {
+     "q": "___ is it?",
+     "options": [
+      "How old",
+      "How much",
+      "How many"
+     ],
+     "answer": "How much",
+     "explanationAr": "السعر: How much."
+    },
+    {
+     "q": "___ apples are there?",
+     "options": [
+      "How many",
+      "How much",
+      "How long"
+     ],
+     "answer": "How many",
+     "explanationAr": "apples معدودة: many."
+    },
+    {
+     "q": "___ water do you want?",
+     "options": [
+      "How many",
+      "How long",
+      "How much"
+     ],
+     "answer": "How much",
+     "explanationAr": "water غير معدود: much."
+    },
+    {
+     "q": "___ books do you have?",
+     "options": [
+      "How long",
+      "How many",
+      "How much"
+     ],
+     "answer": "How many",
+     "explanationAr": "books معدودة: many."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "and",
+    "are",
+    "at",
+    "do",
+    "for",
+    "he",
+    "her",
+    "him",
     "his",
     "how",
     "i",
     "in",
     "is",
     "it",
-    "my",
-    "on",
-    "the",
-    "this",
-    "to",
-    "too",
-    "we",
-    "what",
-    "yes",
-    "you",
-    "your"
-   ],
-   "stories": [
-    "en-intro-5"
-   ]
-  },
-  {
-   "id": "en-possessives",
-   "title": "Possessives",
-   "titleAr": "الملكية my/your/his/her",
-   "explanationAr": "نضع my/your/his/her قبل الاسم لبيان الملكية: my ball (كرتي)، your dog (كلبك)، his name (اسمه). لا نضيف s للضمير هنا.",
-   "examples": [
-    {
-     "f": "Omar takes his red ball.",
-     "a": "عمر يأخذ كرته الحمراء.",
-     "story": "en-intro-6"
-    },
-    {
-     "f": "Your dog is very nice.",
-     "a": "كلبك لطيف جداً.",
-     "story": "en-intro-6"
-    },
-    {
-     "f": "His name is Rex.",
-     "a": "اسمه ريكس.",
-     "story": "en-intro-6"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "This is ___ ball.",
-     "options": [
-      "my",
-      "me",
-      "mine"
-     ],
-     "answer": "my",
-     "explanationAr": "قبل الاسم: my."
-    },
-    {
-     "q": "___ dog is very nice.",
-     "options": [
-      "You",
-      "Yours",
-      "Your"
-     ],
-     "answer": "Your",
-     "explanationAr": "قبل الاسم: your."
-    },
-    {
-     "q": "Omar takes ___ red ball.",
-     "options": [
-      "him",
-      "his",
-      "he"
-     ],
-     "answer": "his",
-     "explanationAr": "عمر = his."
-    },
-    {
-     "q": "This is ___ book.",
-     "options": [
-      "her",
-      "she",
-      "hers"
-     ],
-     "answer": "her",
-     "explanationAr": "قبل الاسم: her."
-    },
-    {
-     "q": "We love ___ school.",
-     "options": [
-      "we",
-      "us",
-      "our"
-     ],
-     "answer": "our",
-     "explanationAr": "قبل الاسم: our."
-    },
-    {
-     "q": "They take ___ bags.",
-     "options": [
-      "them",
-      "their",
-      "they"
-     ],
-     "answer": "their",
-     "explanationAr": "قبل الاسم: their."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "am",
-    "and",
-    "at",
-    "do",
-    "his",
-    "i",
-    "in",
-    "is",
-    "my",
-    "on",
-    "the",
-    "they",
-    "this",
-    "to",
-    "too",
-    "under",
-    "we",
-    "what",
-    "with",
-    "yes",
-    "you",
-    "your"
-   ],
-   "stories": [
-    "en-intro-6"
-   ]
-  },
-  {
-   "id": "en-there-is-are",
-   "title": "There is / There are",
-   "titleAr": "هناك There is/are",
-   "explanationAr": "مع المفرد نستخدم There is، ومع الجمع There are: There is a kitchen. There are bags of fruit at home.",
-   "examples": [
-    {
-     "f": "There is a kitchen.",
-     "a": "هناك مطبخ.",
-     "story": "en-home-1"
-    },
-    {
-     "f": "There are bags of fruit at home.",
-     "a": "هناك أكياس فاكهة في البيت.",
-     "story": "en-market-2"
-    },
-    {
-     "f": "There is fresh food here.",
-     "a": "هناك طعام طازج هنا.",
-     "story": "en-market-2"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "___ a kitchen.",
-     "options": [
-      "There are",
-      "There am",
-      "There is"
-     ],
-     "answer": "There is",
-     "explanationAr": "kitchen مفرد: is."
-    },
-    {
-     "q": "___ bags of fruit.",
-     "options": [
-      "There am",
-      "There are",
-      "There is"
-     ],
-     "answer": "There are",
-     "explanationAr": "bags جمع: are."
-    },
-    {
-     "q": "___ a teacher here.",
-     "options": [
-      "There is",
-      "There are",
-      "There be"
-     ],
-     "answer": "There is",
-     "explanationAr": "teacher مفرد: is."
-    },
-    {
-     "q": "___ two books here.",
-     "options": [
-      "There is",
-      "There am",
-      "There are"
-     ],
-     "answer": "There are",
-     "explanationAr": "two books جمع: are."
-    },
-    {
-     "q": "___ fresh food here.",
-     "options": [
-      "There am",
-      "There is",
-      "There are"
-     ],
-     "answer": "There is",
-     "explanationAr": "food غير معدود: is."
-    },
-    {
-     "q": "Is ___ a market here?",
-     "options": [
-      "there",
-      "here",
-      "it"
-     ],
-     "answer": "there",
-     "explanationAr": "السؤال: Is there...؟"
-    }
-   ],
-   "functionWords": [
-    "a",
-    "and",
-    "are",
-    "at",
-    "every",
-    "for",
-    "has",
-    "here",
-    "i",
-    "in",
-    "is",
-    "my",
+    "just",
+    "many",
+    "much",
     "of",
+    "on",
+    "please",
+    "she",
     "the",
-    "there",
+    "then",
+    "this",
+    "to",
+    "too",
     "we",
-    "with"
+    "with",
+    "you",
+    "your"
    ],
    "stories": [
-    "en-home-1",
-    "en-market-2"
+    "en-clothes-1",
+    "en-food-5",
+    "en-market-6"
    ]
-  },
-  {
+  }, {
    "id": "en-prepositions-place",
    "title": "Prepositions of place",
    "titleAr": "حروف جر المكان",
@@ -5868,8 +7199,145 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-home-2"
    ]
-  },
-  {
+  }, {
+   "id": "en-time-expressions",
+   "title": "Time expressions",
+   "titleAr": "تعابير الوقت",
+   "explanationAr": "لأجزاء اليوم: in the morning / in the afternoon / at night. لأيام الأسبوع: on Monday. للساعة الكاملة: It is seven o'clock. وo'clock مع الساعات الكاملة فقط.",
+   "examples": [
+    {
+     "f": "In the morning, I go to school.",
+     "a": "في الصباح أذهب إلى المدرسة."
+    },
+    {
+     "f": "It is seven o'clock.",
+     "a": "الساعة السابعة تماماً.",
+     "story": "en-weather-3"
+    },
+    {
+     "f": "What time is it?",
+     "a": "كم الساعة؟",
+     "story": "en-weather-3"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "I go to school ___ the morning.",
+     "options": [
+      "in",
+      "on",
+      "at"
+     ],
+     "answer": "in",
+     "explanationAr": "أجزاء اليوم مع in."
+    },
+    {
+     "q": "We play ___ Saturday.",
+     "options": [
+      "in",
+      "at",
+      "on"
+     ],
+     "answer": "on",
+     "explanationAr": "أيام الأسبوع مع on."
+    },
+    {
+     "q": "It is seven ___.",
+     "options": [
+      "o'clocks",
+      "o'clock",
+      "clock"
+     ],
+     "answer": "o'clock",
+     "explanationAr": "الساعة الكاملة: o'clock."
+    },
+    {
+     "q": "I sleep ___ night.",
+     "options": [
+      "at",
+      "in",
+      "on"
+     ],
+     "answer": "at",
+     "explanationAr": "at night تعبير ثابت."
+    },
+    {
+     "q": "What ___ is it?",
+     "options": [
+      "times",
+      "timing",
+      "time"
+     ],
+     "answer": "time",
+     "explanationAr": "What time is it؟"
+    },
+    {
+     "q": "School is ___ Monday.",
+     "options": [
+      "at",
+      "on",
+      "in"
+     ],
+     "answer": "on",
+     "explanationAr": "أيام الأسبوع مع on."
+    }
+   ],
+   "functionWords": [
+    "a",
+    "about",
+    "above",
+    "after",
+    "again",
+    "all",
+    "am",
+    "and",
+    "are",
+    "at",
+    "away",
+    "do",
+    "does",
+    "every",
+    "for",
+    "from",
+    "goodbye",
+    "has",
+    "he",
+    "his",
+    "i",
+    "in",
+    "is",
+    "it",
+    "like",
+    "me",
+    "my",
+    "never",
+    "no",
+    "not",
+    "of",
+    "on",
+    "out",
+    "that",
+    "the",
+    "then",
+    "there",
+    "to",
+    "today",
+    "up",
+    "we",
+    "what",
+    "where",
+    "will",
+    "with",
+    "you"
+   ],
+   "stories": [
+    "en-routine-1",
+    "en-routine-4",
+    "en-weather-1",
+    "en-weather-2",
+    "en-weather-3"
+   ]
+  }, {
    "id": "en-adjectives",
    "title": "Adjectives before nouns",
    "titleAr": "الصفة قبل الاسم",
@@ -6011,467 +7479,7 @@ var GRAMMAR_A1 = {
     "en-weather-5",
     "en-weather-7"
    ]
-  },
-  {
-   "id": "en-can",
-   "title": "can for polite requests",
-   "titleAr": "can للطلب بأدب",
-   "explanationAr": "مع can نطلب شيئاً بأدب، ويأتي بعدها فعل بدون to: Can you help me؟ Can I borrow your pen؟",
-   "examples": [
-    {
-     "f": "Can I borrow your pen?",
-     "a": "هل يمكنني استعارة قلمك؟",
-     "story": "en-social-1"
-    },
-    {
-     "f": "Can you help me?",
-     "a": "هل يمكنك مساعدتي؟",
-     "story": "en-social-1"
-    },
-    {
-     "f": "Can I have the bill?",
-     "a": "هل يمكنني الحصول على الفاتورة؟",
-     "story": "en-market-4"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "Can you ___ me?",
-     "options": [
-      "helps",
-      "to help",
-      "help"
-     ],
-     "answer": "help",
-     "explanationAr": "بعد can فعل بدون to."
-    },
-    {
-     "q": "Can I ___ your pen?",
-     "options": [
-      "to borrow",
-      "borrow",
-      "borrows"
-     ],
-     "answer": "borrow",
-     "explanationAr": "بعد can فعل بدون to."
-    },
-    {
-     "q": "___ you help me?",
-     "options": [
-      "Can",
-      "Cans",
-      "Do can"
-     ],
-     "answer": "Can",
-     "explanationAr": "السؤال يبدأ بـ Can."
-    },
-    {
-     "q": "Can she ___ today?",
-     "options": [
-      "comes",
-      "to come",
-      "come"
-     ],
-     "answer": "come",
-     "explanationAr": "بعد can فعل بدون to."
-    },
-    {
-     "q": "Yes, you ___",
-     "options": [
-      "can to",
-      "can",
-      "cans"
-     ],
-     "answer": "can",
-     "explanationAr": "الجواب: Yes, you can."
-    },
-    {
-     "q": "Can I ___ water, please?",
-     "options": [
-      "have",
-      "has",
-      "to have"
-     ],
-     "answer": "have",
-     "explanationAr": "بعد can فعل بدون to."
-    }
-   ],
-   "functionWords": [
-    "I",
-    "a",
-    "am",
-    "and",
-    "are",
-    "at",
-    "can",
-    "do",
-    "for",
-    "has",
-    "have",
-    "her",
-    "his",
-    "i",
-    "in",
-    "is",
-    "me",
-    "my",
-    "no",
-    "not",
-    "of",
-    "our",
-    "please",
-    "the",
-    "to",
-    "too",
-    "we",
-    "what",
-    "where",
-    "with",
-    "yes",
-    "you",
-    "your"
-   ],
-   "stories": [
-    "en-market-4",
-    "en-social-1",
-    "en-social-3"
-   ]
-  },
-  {
-   "id": "en-some-any",
-   "title": "some / any",
-   "titleAr": "some و any",
-   "explanationAr": "مع الجمل المثبتة والطلبات نستخدم some، ومع الأسئلة والنفي نستخدم any: Sara packs some fruit. Do you want any kiwi؟",
-   "examples": [
-    {
-     "f": "Sara packs some fruit in bags.",
-     "a": "سارة تعبئ بعض الفاكهة في أكياس.",
-     "story": "en-market-3"
-    },
-    {
-     "f": "Do you want any kiwi?",
-     "a": "هل تريد أي كيوي؟",
-     "story": "en-market-3"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "I have ___ fruit.",
-     "options": [
-      "a",
-      "some",
-      "any"
-     ],
-     "answer": "some",
-     "explanationAr": "جملة مثبتة: some."
-    },
-    {
-     "q": "Do you want ___ kiwi?",
-     "options": [
-      "any",
-      "some",
-      "a"
-     ],
-     "answer": "any",
-     "explanationAr": "سؤال: any."
-    },
-    {
-     "q": "I do not have ___ money.",
-     "options": [
-      "some",
-      "a",
-      "any"
-     ],
-     "answer": "any",
-     "explanationAr": "نفي: any."
-    },
-    {
-     "q": "Would you like ___ cake?",
-     "options": [
-      "a",
-      "some",
-      "any"
-     ],
-     "answer": "some",
-     "explanationAr": "طلب مهذب: some."
-    },
-    {
-     "q": "She has ___ books.",
-     "options": [
-      "some",
-      "any",
-      "a"
-     ],
-     "answer": "some",
-     "explanationAr": "جملة مثبتة: some."
-    },
-    {
-     "q": "Is there ___ milk?",
-     "options": [
-      "some",
-      "a",
-      "any"
-     ],
-     "answer": "any",
-     "explanationAr": "سؤال: any."
-    }
-   ],
-   "functionWords": [
-    "I",
-    "a",
-    "and",
-    "any",
-    "are",
-    "do",
-    "for",
-    "in",
-    "is",
-    "some",
-    "the",
-    "to",
-    "you"
-   ],
-   "stories": [
-    "en-market-3"
-   ]
-  },
-  {
-   "id": "en-how-much-many",
-   "title": "How much / How many",
-   "titleAr": "How much و How many",
-   "explanationAr": "مع الأشياء غير المعدودة نستخدم How much، ومع المعدودة نستخدم How many: How much is the pie؟ How many noodles do we need؟",
-   "examples": [
-    {
-     "f": "How much is it?",
-     "a": "كم سعره؟",
-     "story": "en-clothes-1"
-    },
-    {
-     "f": "How much is the pie?",
-     "a": "كم سعر الفطيرة؟",
-     "story": "en-market-6"
-    },
-    {
-     "f": "How many noodles do we need?",
-     "a": "كم عدد النودلز التي نحتاجها؟",
-     "story": "en-market-6"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "___ is the pie?",
-     "options": [
-      "How much",
-      "How many",
-      "How long"
-     ],
-     "answer": "How much",
-     "explanationAr": "pie غير معدود هنا: much."
-    },
-    {
-     "q": "___ noodles do we need?",
-     "options": [
-      "How much",
-      "How long",
-      "How many"
-     ],
-     "answer": "How many",
-     "explanationAr": "noodles معدودة: many."
-    },
-    {
-     "q": "___ is it?",
-     "options": [
-      "How old",
-      "How much",
-      "How many"
-     ],
-     "answer": "How much",
-     "explanationAr": "السعر: How much."
-    },
-    {
-     "q": "___ apples are there?",
-     "options": [
-      "How many",
-      "How much",
-      "How long"
-     ],
-     "answer": "How many",
-     "explanationAr": "apples معدودة: many."
-    },
-    {
-     "q": "___ water do you want?",
-     "options": [
-      "How many",
-      "How long",
-      "How much"
-     ],
-     "answer": "How much",
-     "explanationAr": "water غير معدود: much."
-    },
-    {
-     "q": "___ books do you have?",
-     "options": [
-      "How long",
-      "How many",
-      "How much"
-     ],
-     "answer": "How many",
-     "explanationAr": "books معدودة: many."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "and",
-    "are",
-    "at",
-    "do",
-    "for",
-    "he",
-    "her",
-    "him",
-    "his",
-    "how",
-    "i",
-    "in",
-    "is",
-    "it",
-    "just",
-    "many",
-    "much",
-    "of",
-    "on",
-    "please",
-    "she",
-    "the",
-    "then",
-    "this",
-    "to",
-    "too",
-    "we",
-    "with",
-    "you",
-    "your"
-   ],
-   "stories": [
-    "en-clothes-1",
-    "en-food-5",
-    "en-market-6"
-   ]
-  },
-  {
-   "id": "en-would-like",
-   "title": "Would like",
-   "titleAr": "Would like للطلب المهذب",
-   "explanationAr": "للطلب بأدب نقول I would like…, please. وفي العرض: Would you like some؟",
-   "examples": [
-    {
-     "f": "I would like some cake, please.",
-     "a": "أريد بعض الكعكة، من فضلك."
-    },
-    {
-     "f": "Would you like some?",
-     "a": "هل تريد بعضاً؟",
-     "story": "en-food-6"
-    },
-    {
-     "f": "I would like tea, please.",
-     "a": "أريد شاياً، من فضلك."
-    }
-   ],
-   "exercises": [
-    {
-     "q": "I ___ like tea, please.",
-     "options": [
-      "will",
-      "woulds",
-      "would"
-     ],
-     "answer": "would",
-     "explanationAr": "الطلب المهذب: would like."
-    },
-    {
-     "q": "___ you like some cake?",
-     "options": [
-      "Woulds",
-      "Would",
-      "Will"
-     ],
-     "answer": "Would",
-     "explanationAr": "العرض: Would you like...؟"
-    },
-    {
-     "q": "I would like ___, please.",
-     "options": [
-      "water",
-      "waters",
-      "a water"
-     ],
-     "answer": "water",
-     "explanationAr": "water غير معدود."
-    },
-    {
-     "q": "Would you like ___?",
-     "options": [
-      "any",
-      "a",
-      "some"
-     ],
-     "answer": "some",
-     "explanationAr": "في العرض نستخدم some."
-    },
-    {
-     "q": "She ___ like coffee.",
-     "options": [
-      "woulds",
-      "would",
-      "wills"
-     ],
-     "answer": "would",
-     "explanationAr": "would لا تتغير مع she."
-    },
-    {
-     "q": "I would like a ___, please.",
-     "options": [
-      "book",
-      "books",
-      "bookes"
-     ],
-     "answer": "book",
-     "explanationAr": "a + اسم مفرد."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "and",
-    "are",
-    "but",
-    "for",
-    "from",
-    "has",
-    "her",
-    "his",
-    "i",
-    "in",
-    "is",
-    "it",
-    "me",
-    "on",
-    "our",
-    "please",
-    "the",
-    "them",
-    "this",
-    "to",
-    "with",
-    "would",
-    "you"
-   ],
-   "stories": [
-    "en-food-2",
-    "en-food-6"
-   ]
-  },
-  {
+  }, {
    "id": "en-imperatives",
    "title": "Imperatives",
    "titleAr": "الأمر Imperatives",
@@ -6640,129 +7648,7 @@ var GRAMMAR_A1 = {
     "en-routine-7",
     "en-weather-6"
    ]
-  },
-  {
-   "id": "en-habits",
-   "title": "Present simple for habits",
-   "titleAr": "المضارع للعادات",
-   "explanationAr": "للعادات والروتين نستخدم المضارع البسيط: I play / I read / I draw. ونذكر اليوم: on Saturday، on Sunday، every day.",
-   "examples": [
-    {
-     "f": "I play football on Saturday.",
-     "a": "ألعب كرة القدم يوم السبت."
-    },
-    {
-     "f": "What do you do at the weekend?",
-     "a": "ماذا تفعل في عطلة نهاية الأسبوع؟",
-     "story": "en-hobbies-a1-1"
-    },
-    {
-     "f": "She plays every day.",
-     "a": "هي تلعب كل يوم.",
-     "story": "en-intro-2"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "I ___ on Saturday.",
-     "options": [
-      "play",
-      "plays",
-      "played"
-     ],
-     "answer": "play",
-     "explanationAr": "مع I: play."
-    },
-    {
-     "q": "She ___ every day.",
-     "options": [
-      "play",
-      "played",
-      "plays"
-     ],
-     "answer": "plays",
-     "explanationAr": "مع she: plays."
-    },
-    {
-     "q": "We play ___ Sunday.",
-     "options": [
-      "at",
-      "on",
-      "in"
-     ],
-     "answer": "on",
-     "explanationAr": "أيام الأسبوع مع on."
-    },
-    {
-     "q": "He ___ to school every day.",
-     "options": [
-      "goes",
-      "go",
-      "going"
-     ],
-     "answer": "goes",
-     "explanationAr": "مع he: goes."
-    },
-    {
-     "q": "They ___ every day.",
-     "options": [
-      "reads",
-      "reading",
-      "read"
-     ],
-     "answer": "read",
-     "explanationAr": "مع they: read."
-    },
-    {
-     "q": "What do you do ___ the weekend?",
-     "options": [
-      "in",
-      "at",
-      "on"
-     ],
-     "answer": "at",
-     "explanationAr": "at the weekend تعبير ثابت."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "after",
-    "and",
-    "are",
-    "at",
-    "behind",
-    "can",
-    "do",
-    "every",
-    "for",
-    "he",
-    "i",
-    "in",
-    "into",
-    "is",
-    "my",
-    "no",
-    "on",
-    "our",
-    "over",
-    "the",
-    "this",
-    "to",
-    "too",
-    "under",
-    "us",
-    "we",
-    "what",
-    "with",
-    "yes",
-    "you"
-   ],
-   "stories": [
-    "en-hobbies-a1-1",
-    "en-home-6"
-   ]
-  },
-  {
+  }, {
    "id": "en-directions",
    "title": "Directions and bus phrases",
    "titleAr": "الاتجاهات والحافلة",
@@ -6880,8 +7766,7 @@ var GRAMMAR_A1 = {
     "en-travel-a1-1",
     "en-travel-a1-2"
    ]
-  },
-  {
+  }, {
    "id": "en-phone-apology",
    "title": "Phone, invitation and apology phrases",
    "titleAr": "الهاتف والدعوة والاعتذار",
@@ -7007,1042 +7892,8 @@ var GRAMMAR_A1 = {
     "en-social-2",
     "en-social-4"
    ]
-  },
-  {
-   "id": "en-have-has",
-   "title": "have / has and have got",
-   "titleAr": "have/has و have got",
-   "explanationAr": "مع I/you/we/they نستخدم have، ومع he/she/it نستخدم has. have got تعني have نفسها: I have got a book = I have a book. ولا نستخدم has مع I.",
-   "examples": [
-    {
-     "f": "I have a cold.",
-     "a": "عندي زكام.",
-     "story": "en-health-a1-1"
-    },
-    {
-     "f": "I have ten minutes!",
-     "a": "عندي عشر دقائق!",
-     "story": "en-routine-6"
-    },
-    {
-     "f": "She has a book.",
-     "a": "عندها كتاب."
-    }
-   ],
-   "exercises": [
-    {
-     "q": "I ___ a cold.",
-     "options": [
-      "have",
-      "has",
-      "having"
-     ],
-     "answer": "have",
-     "explanationAr": "مع I: have."
-    },
-    {
-     "q": "She ___ a book.",
-     "options": [
-      "have",
-      "having",
-      "has"
-     ],
-     "answer": "has",
-     "explanationAr": "مع she: has."
-    },
-    {
-     "q": "He ___ a cold.",
-     "options": [
-      "having",
-      "has",
-      "have"
-     ],
-     "answer": "has",
-     "explanationAr": "مع he: has."
-    },
-    {
-     "q": "They ___ books.",
-     "options": [
-      "have",
-      "has",
-      "having"
-     ],
-     "answer": "have",
-     "explanationAr": "مع they: have."
-    },
-    {
-     "q": "I have ___ a book.",
-     "options": [
-      "get",
-      "gets",
-      "got"
-     ],
-     "answer": "got",
-     "explanationAr": "have got = have."
-    },
-    {
-     "q": "She has got ___ cold.",
-     "options": [
-      "the",
-      "a",
-      "an"
-     ],
-     "answer": "a",
-     "explanationAr": "a cold تعبير ثابت."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "again",
-    "almost",
-    "always",
-    "and",
-    "are",
-    "at",
-    "by",
-    "can",
-    "do",
-    "does",
-    "every",
-    "for",
-    "has",
-    "have",
-    "he",
-    "his",
-    "i",
-    "in",
-    "is",
-    "it",
-    "must",
-    "my",
-    "never",
-    "no",
-    "not",
-    "now",
-    "on",
-    "still",
-    "the",
-    "to",
-    "tomorrow",
-    "too",
-    "up",
-    "well",
-    "what",
-    "will",
-    "yes",
-    "you",
-    "your"
-   ],
-   "stories": [
-    "en-health-a1-1",
-    "en-routine-6"
-   ]
-  },
-  {
-   "id": "en-negation",
-   "title": "Negation don't / doesn't",
-   "titleAr": "النفي don't/doesn't",
-   "explanationAr": "للنفي في المضارع: مع I/you/we/they نستخدم don't + فعل، ومع he/she/it نستخدم doesn't + فعل بدون s: I don't like tea. She doesn't like tea. ولا نقول She doesn't likes.",
-   "examples": [
-    {
-     "f": "Don't be afraid.",
-     "a": "لا تخف.",
-     "story": "en-weather-4"
-    },
-    {
-     "f": "I don't like tea.",
-     "a": "أنا لا أحب الشاي."
-    },
-    {
-     "f": "She doesn't like tea.",
-     "a": "هي لا تحب الشاي."
-    }
-   ],
-   "exercises": [
-    {
-     "q": "I ___ like tea.",
-     "options": [
-      "doesn't",
-      "not",
-      "don't"
-     ],
-     "answer": "don't",
-     "explanationAr": "مع I: don't."
-    },
-    {
-     "q": "She ___ like tea.",
-     "options": [
-      "not",
-      "doesn't",
-      "don't"
-     ],
-     "answer": "doesn't",
-     "explanationAr": "مع she: doesn't."
-    },
-    {
-     "q": "He ___ play today.",
-     "options": [
-      "doesn't",
-      "don't",
-      "not"
-     ],
-     "answer": "doesn't",
-     "explanationAr": "مع he: doesn't."
-    },
-    {
-     "q": "They ___ play today.",
-     "options": [
-      "doesn't",
-      "not",
-      "don't"
-     ],
-     "answer": "don't",
-     "explanationAr": "مع they: don't."
-    },
-    {
-     "q": "Don't ___ afraid.",
-     "options": [
-      "are",
-      "be",
-      "is"
-     ],
-     "answer": "be",
-     "explanationAr": "بعد Don't فعل بدون تصريف."
-    },
-    {
-     "q": "She doesn't ___ tea.",
-     "options": [
-      "like",
-      "likes",
-      "liked"
-     ],
-     "answer": "like",
-     "explanationAr": "بعد doesn't فعل بدون s."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "all",
-    "am",
-    "and",
-    "at",
-    "be",
-    "don't",
-    "her",
-    "here",
-    "i",
-    "is",
-    "not",
-    "now",
-    "of",
-    "on",
-    "over",
-    "she",
-    "the",
-    "then",
-    "there"
-   ],
-   "stories": [
-    "en-weather-4"
-   ]
-  },
-  {
-   "id": "en-do-does",
-   "title": "do / does auxiliary",
-   "titleAr": "do/does كفعل مساعد",
-   "explanationAr": "في الأسئلة والنفي: مع I/you/we/they نستخدم do، ومع he/she/it نستخدم does + فعل بدون s: Do you like school؟ Does it fit me؟ What do you do؟",
-   "examples": [
-    {
-     "f": "Do you like school?",
-     "a": "هل تحب المدرسة؟",
-     "story": "en-intro-7"
-    },
-    {
-     "f": "Does it fit me?",
-     "a": "هل يناسبني؟",
-     "story": "en-clothes-4"
-    },
-    {
-     "f": "What do you do?",
-     "a": "ماذا تعمل؟",
-     "story": "en-jobs-a1-1"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "___ you like school?",
-     "options": [
-      "Is",
-      "Do",
-      "Does"
-     ],
-     "answer": "Do",
-     "explanationAr": "مع you: Do."
-    },
-    {
-     "q": "___ it fit me?",
-     "options": [
-      "Does",
-      "Do",
-      "Is"
-     ],
-     "answer": "Does",
-     "explanationAr": "مع it: Does."
-    },
-    {
-     "q": "What ___ you do?",
-     "options": [
-      "does",
-      "is",
-      "do"
-     ],
-     "answer": "do",
-     "explanationAr": "مع you: do."
-    },
-    {
-     "q": "___ she play today?",
-     "options": [
-      "Is",
-      "Does",
-      "Do"
-     ],
-     "answer": "Does",
-     "explanationAr": "مع she: Does."
-    },
-    {
-     "q": "Does he ___ today?",
-     "options": [
-      "play",
-      "plays",
-      "played"
-     ],
-     "answer": "play",
-     "explanationAr": "بعد Does فعل بدون s."
-    },
-    {
-     "q": "Do they ___ today?",
-     "options": [
-      "plays",
-      "played",
-      "play"
-     ],
-     "answer": "play",
-     "explanationAr": "بعد Do فعل بدون s."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "all",
-    "am",
-    "and",
-    "are",
-    "at",
-    "do",
-    "every",
-    "for",
-    "have",
-    "here",
-    "herself",
-    "how",
-    "i",
-    "in",
-    "is",
-    "much",
-    "no",
-    "off",
-    "on",
-    "our",
-    "please",
-    "she",
-    "the",
-    "this",
-    "to",
-    "we",
-    "what",
-    "where",
-    "yes",
-    "you"
-   ],
-   "stories": [
-    "en-clothes-4",
-    "en-jobs-a1-1",
-    "en-travel-a1-2"
-   ]
-  },
-  {
-   "id": "en-object-pronouns",
-   "title": "Object pronouns",
-   "titleAr": "ضمائر المفعول به",
-   "explanationAr": "بعد الفعل أو حرف الجر نستخدم ضمير المفعول: me (لي)، you (لك)، him (له)، her (لها)، us (لنا)، them (لهم). لا نستخدم I/he/she في هذا الموضع.",
-   "examples": [
-    {
-     "f": "Please give me the water.",
-     "a": "من فضلك أعطني الماء.",
-     "story": "en-food-4"
-    },
-    {
-     "f": "Can you help me?",
-     "a": "هل يمكنك مساعدتي؟",
-     "story": "en-social-1"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "Please give ___ the water.",
-     "options": [
-      "me",
-      "I",
-      "my"
-     ],
-     "answer": "me",
-     "explanationAr": "بعد الفعل: me."
-    },
-    {
-     "q": "Can you help ___?",
-     "options": [
-      "I",
-      "my",
-      "me"
-     ],
-     "answer": "me",
-     "explanationAr": "بعد الفعل: me."
-    },
-    {
-     "q": "I see ___.",
-     "options": [
-      "his",
-      "him",
-      "he"
-     ],
-     "answer": "him",
-     "explanationAr": "المفعول: him."
-    },
-    {
-     "q": "This is for ___.",
-     "options": [
-      "you",
-      "your",
-      "yours"
-     ],
-     "answer": "you",
-     "explanationAr": "بعد for: you."
-    },
-    {
-     "q": "We help ___.",
-     "options": [
-      "they",
-      "their",
-      "them"
-     ],
-     "answer": "them",
-     "explanationAr": "المفعول: them."
-    },
-    {
-     "q": "She likes ___.",
-     "options": [
-      "our",
-      "us",
-      "we"
-     ],
-     "answer": "us",
-     "explanationAr": "المفعول: us."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "and",
-    "for",
-    "from",
-    "her",
-    "i",
-    "in",
-    "is",
-    "on",
-    "our",
-    "she",
-    "the",
-    "with"
-   ],
-   "stories": [
-    "en-food-4"
-   ]
-  },
-  {
-   "id": "en-demonstratives",
-   "title": "Demonstratives",
-   "titleAr": "this/that/these/those",
-   "explanationAr": "للقريب: this للمفرد وthese للجمع. للبعيد: that للمفرد وthose للجمع: This cake is for you. These shoes are new.",
-   "examples": [
-    {
-     "f": "This cake is for you.",
-     "a": "هذه الكعكة لك.",
-     "story": "en-intro-4"
-    },
-    {
-     "f": "These shoes are new.",
-     "a": "هذه الأحذية جديدة.",
-     "story": "en-clothes-2"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "___ cake is for you.",
-     "options": [
-      "These",
-      "Those",
-      "This"
-     ],
-     "answer": "This",
-     "explanationAr": "cake مفرد قريب: This."
-    },
-    {
-     "q": "___ shoes are new.",
-     "options": [
-      "That",
-      "These",
-      "This"
-     ],
-     "answer": "These",
-     "explanationAr": "shoes جمع قريب: These."
-    },
-    {
-     "q": "___ book is mine.",
-     "options": [
-      "That",
-      "Those",
-      "These"
-     ],
-     "answer": "That",
-     "explanationAr": "book مفرد بعيد: That."
-    },
-    {
-     "q": "___ shoes are old.",
-     "options": [
-      "This",
-      "That",
-      "Those"
-     ],
-     "answer": "Those",
-     "explanationAr": "shoes جمع بعيد: Those."
-    },
-    {
-     "q": "Is ___ a book?",
-     "options": [
-      "those",
-      "this",
-      "these"
-     ],
-     "answer": "this",
-     "explanationAr": "مفرد قريب: this."
-    },
-    {
-     "q": "Are ___ your shoes?",
-     "options": [
-      "these",
-      "this",
-      "that"
-     ],
-     "answer": "these",
-     "explanationAr": "shoes جمع: these."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "and",
-    "are",
-    "at",
-    "for",
-    "has",
-    "he",
-    "him",
-    "his",
-    "how",
-    "i",
-    "in",
-    "like",
-    "much",
-    "my",
-    "now",
-    "on",
-    "the",
-    "there",
-    "these",
-    "to",
-    "too",
-    "with"
-   ],
-   "stories": [
-    "en-clothes-2"
-   ]
-  },
-  {
-   "id": "en-frequency",
-   "title": "Adverbs of frequency",
-   "titleAr": "ظروف التكرار",
-   "explanationAr": "ظروف التكرار تأتي قبل الفعل الرئيسي، وبعد be: I always play on Saturday. She usually reads. I never play on Sunday. الترتيب: always > usually > often > sometimes > never.",
-   "examples": [
-    {
-     "f": "I play every day.",
-     "a": "ألعب كل يوم."
-    },
-    {
-     "f": "She plays every day.",
-     "a": "هي تلعب كل يوم.",
-     "story": "en-intro-2"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "I ___ play on Saturday.",
-     "options": [
-      "play always",
-      "always",
-      "always play"
-     ],
-     "answer": "always",
-     "explanationAr": "الظرف قبل الفعل."
-    },
-    {
-     "q": "She ___ reads.",
-     "options": [
-      "usually",
-      "usually read",
-      "read usually"
-     ],
-     "answer": "usually",
-     "explanationAr": "الظرف قبل الفعل."
-    },
-    {
-     "q": "I ___ play on Sunday.",
-     "options": [
-      "never play",
-      "play never",
-      "never"
-     ],
-     "answer": "never",
-     "explanationAr": "never قبل الفعل."
-    },
-    {
-     "q": "He is ___ happy.",
-     "options": [
-      "is always happy",
-      "always",
-      "always is"
-     ],
-     "answer": "always",
-     "explanationAr": "بعد be يأتي الظرف."
-    },
-    {
-     "q": "We ___ play football.",
-     "options": [
-      "often",
-      "often play",
-      "play often"
-     ],
-     "answer": "often",
-     "explanationAr": "often قبل الفعل."
-    },
-    {
-     "q": "She ___ watches TV.",
-     "options": [
-      "sometimes watch",
-      "watch sometimes",
-      "sometimes"
-     ],
-     "answer": "sometimes",
-     "explanationAr": "sometimes قبل الفعل."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "and",
-    "are",
-    "at",
-    "can",
-    "do",
-    "i",
-    "in",
-    "is",
-    "no",
-    "on",
-    "the",
-    "too",
-    "we",
-    "what",
-    "yes",
-    "you"
-   ],
-   "stories": [
-    "en-hobbies-a1-1"
-   ]
-  },
-  {
-   "id": "en-time-expressions",
-   "title": "Time expressions",
-   "titleAr": "تعابير الوقت",
-   "explanationAr": "لأجزاء اليوم: in the morning / in the afternoon / at night. لأيام الأسبوع: on Monday. للساعة الكاملة: It is seven o'clock. وo'clock مع الساعات الكاملة فقط.",
-   "examples": [
-    {
-     "f": "In the morning, I go to school.",
-     "a": "في الصباح أذهب إلى المدرسة."
-    },
-    {
-     "f": "It is seven o'clock.",
-     "a": "الساعة السابعة تماماً.",
-     "story": "en-weather-3"
-    },
-    {
-     "f": "What time is it?",
-     "a": "كم الساعة؟",
-     "story": "en-weather-3"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "I go to school ___ the morning.",
-     "options": [
-      "in",
-      "on",
-      "at"
-     ],
-     "answer": "in",
-     "explanationAr": "أجزاء اليوم مع in."
-    },
-    {
-     "q": "We play ___ Saturday.",
-     "options": [
-      "in",
-      "at",
-      "on"
-     ],
-     "answer": "on",
-     "explanationAr": "أيام الأسبوع مع on."
-    },
-    {
-     "q": "It is seven ___.",
-     "options": [
-      "o'clocks",
-      "o'clock",
-      "clock"
-     ],
-     "answer": "o'clock",
-     "explanationAr": "الساعة الكاملة: o'clock."
-    },
-    {
-     "q": "I sleep ___ night.",
-     "options": [
-      "at",
-      "in",
-      "on"
-     ],
-     "answer": "at",
-     "explanationAr": "at night تعبير ثابت."
-    },
-    {
-     "q": "What ___ is it?",
-     "options": [
-      "times",
-      "timing",
-      "time"
-     ],
-     "answer": "time",
-     "explanationAr": "What time is it؟"
-    },
-    {
-     "q": "School is ___ Monday.",
-     "options": [
-      "at",
-      "on",
-      "in"
-     ],
-     "answer": "on",
-     "explanationAr": "أيام الأسبوع مع on."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "about",
-    "above",
-    "after",
-    "again",
-    "all",
-    "am",
-    "and",
-    "are",
-    "at",
-    "away",
-    "do",
-    "does",
-    "every",
-    "for",
-    "from",
-    "goodbye",
-    "has",
-    "he",
-    "his",
-    "i",
-    "in",
-    "is",
-    "it",
-    "like",
-    "me",
-    "my",
-    "never",
-    "no",
-    "not",
-    "of",
-    "on",
-    "out",
-    "that",
-    "the",
-    "then",
-    "there",
-    "to",
-    "today",
-    "up",
-    "we",
-    "what",
-    "where",
-    "will",
-    "with",
-    "you"
-   ],
-   "stories": [
-    "en-routine-1",
-    "en-routine-4",
-    "en-weather-1",
-    "en-weather-2",
-    "en-weather-3"
-   ]
-  },
-  {
-   "id": "en-countable",
-   "title": "Countable and uncountable nouns",
-   "titleAr": "المعدود وغير المعدود",
-   "explanationAr": "بعض الأطعمة لا تُعدّ (bread, water, milk) فلا نضع a قبلها ولا نجمعها، وبعضها يُعدّ (eggs, apples) فنجمعها ونعدّها: some bread، three eggs.",
-   "examples": [
-    {
-     "f": "I need some bread.",
-     "a": "أحتاج بعض الخبز."
-    },
-    {
-     "f": "I have three eggs.",
-     "a": "عندي ثلاث بيضات."
-    }
-   ],
-   "exercises": [
-    {
-     "q": "I need some ___.",
-     "options": [
-      "breads",
-      "a bread",
-      "bread"
-     ],
-     "answer": "bread",
-     "explanationAr": "bread غير معدود."
-    },
-    {
-     "q": "I have three ___.",
-     "options": [
-      "egges",
-      "eggs",
-      "egg"
-     ],
-     "answer": "eggs",
-     "explanationAr": "eggs معدودة وجمع."
-    },
-    {
-     "q": "She drinks some ___.",
-     "options": [
-      "water",
-      "waters",
-      "a water"
-     ],
-     "answer": "water",
-     "explanationAr": "water غير معدود."
-    },
-    {
-     "q": "He eats two ___.",
-     "options": [
-      "apple",
-      "appless",
-      "apples"
-     ],
-     "answer": "apples",
-     "explanationAr": "apples معدودة وجمع."
-    },
-    {
-     "q": "I want some ___.",
-     "options": [
-      "a milk",
-      "milk",
-      "milks"
-     ],
-     "answer": "milk",
-     "explanationAr": "milk غير معدود."
-    },
-    {
-     "q": "There are three ___ here.",
-     "options": [
-      "books",
-      "book",
-      "bookes"
-     ],
-     "answer": "books",
-     "explanationAr": "books معدودة وجمع."
-    }
-   ],
-   "functionWords": [
-    "a",
-    "am",
-    "and",
-    "are",
-    "for",
-    "he",
-    "his",
-    "i",
-    "in",
-    "is",
-    "not",
-    "on",
-    "she",
-    "the",
-    "to",
-    "us",
-    "with"
-   ],
-   "stories": [
-    "en-food-1"
-   ]
-  }
- ],
- "de": [
-  {
-   "id": "de-verbzweit",
-   "title": "Verbzweit",
-   "titleAr": "الفعل في المرتبة الثانية Verbzweit",
-   "explanationAr": "في الجملة الألمانية يأتي الفعل المصريف في المرتبة الثانية، بعد الفاعل أو بعد كلمة الاستفهام: Ich lerne Deutsch. Wir treffen uns im Park.",
-   "examples": [
-    {
-     "f": "Ich heiße Ben.",
-     "a": "اسمي بن.",
-     "story": "de-intro-1"
-    },
-    {
-     "f": "Ich lerne Deutsch.",
-     "a": "أتعلم الألمانية."
-    },
-    {
-     "f": "Wir treffen uns im Park.",
-     "a": "نلتقي في الحديقة.",
-     "story": "de-intro-3"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "Ich ___ Deutsch.",
-     "options": [
-      "lerne",
-      "lernen",
-      "lernst"
-     ],
-     "answer": "lerne",
-     "explanationAr": "مع ich: -e."
-    },
-    {
-     "q": "Wir ___ uns im Park.",
-     "options": [
-      "trefft",
-      "treffe",
-      "treffen"
-     ],
-     "answer": "treffen",
-     "explanationAr": "مع wir: -en."
-    },
-    {
-     "q": "Sara ___ Deutsch.",
-     "options": [
-      "lernen",
-      "lernt",
-      "lerne"
-     ],
-     "answer": "lernt",
-     "explanationAr": "مع sie: -t."
-    },
-    {
-     "q": "Du ___ Deutsch.",
-     "options": [
-      "lernst",
-      "lerne",
-      "lernt"
-     ],
-     "answer": "lernst",
-     "explanationAr": "مع du: -st."
-    },
-    {
-     "q": "Ich heiße ___.",
-     "options": [
-      "Bens",
-      "Ben ist",
-      "Ben"
-     ],
-     "answer": "Ben",
-     "explanationAr": "الاسم بعد الفعل."
-    },
-    {
-     "q": "Wir ___ heute.",
-     "options": [
-      "komme",
-      "kommen",
-      "kommt"
-     ],
-     "answer": "kommen",
-     "explanationAr": "مع wir: -en."
-    }
-   ],
-   "functionWords": [
-    "auch",
-    "auf",
-    "bis",
-    "bist",
-    "danke",
-    "das",
-    "dem",
-    "den",
-    "der",
-    "die",
-    "dir",
-    "du",
-    "es",
-    "für",
-    "gern",
-    "heute",
-    "ich",
-    "ihr",
-    "im",
-    "in",
-    "ja",
-    "mein",
-    "meine",
-    "mir",
-    "mit",
-    "morgen",
-    "nach",
-    "nein",
-    "nur",
-    "und",
-    "uns",
-    "wie",
-    "wieder",
-    "wir",
-    "wo"
-   ],
-   "stories": [
-    "de-intro-1",
-    "de-market-3"
-   ]
-  },
-  {
+  }],
+ "de": [{
    "id": "de-der-die-das",
    "title": "der / die / das",
    "titleAr": "أدوات التعريف der/die/das",
@@ -8198,8 +8049,578 @@ var GRAMMAR_A1 = {
     "de-market-1",
     "de-weather-1"
    ]
-  },
-  {
+  }, {
+   "id": "de-ein-eine",
+   "title": "ein / eine",
+   "titleAr": "أداة النكرة ein/eine",
+   "explanationAr": "ein تأتي مع الاسم المذكر والمحايد، وeine تأتي مع الاسم المؤنث: ein Mann، ein Haus، eine Frau. وفي حالة المفعول: einen Mann، eine Frau.",
+   "examples": [
+    {
+     "f": "Ich kaufe eine Banane.",
+     "a": "أشتري موزة.",
+     "story": "de-market-2"
+    },
+    {
+     "f": "Ich kaufe ein Brot.",
+     "a": "أشتري خبزاً."
+    },
+    {
+     "f": "Ich kaufe rote Schuhe.",
+     "a": "أشتري أحذية حمراء.",
+     "story": "de-intro-4"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "___ Mann",
+     "options": [
+      "eine",
+      "einen",
+      "ein"
+     ],
+     "answer": "ein",
+     "explanationAr": "Mann مذكر في الفاعل: ein."
+    },
+    {
+     "q": "___ Frau",
+     "options": [
+      "einen",
+      "eine",
+      "ein"
+     ],
+     "answer": "eine",
+     "explanationAr": "Frau مؤنث: eine."
+    },
+    {
+     "q": "___ Haus",
+     "options": [
+      "ein",
+      "eine",
+      "einen"
+     ],
+     "answer": "ein",
+     "explanationAr": "Haus محايد: ein."
+    },
+    {
+     "q": "___ Banane",
+     "options": [
+      "ein",
+      "einen",
+      "eine"
+     ],
+     "answer": "eine",
+     "explanationAr": "Banane مؤنث: eine."
+    },
+    {
+     "q": "Ich kaufe ___ Banane.",
+     "options": [
+      "einen",
+      "eine",
+      "ein"
+     ],
+     "answer": "eine",
+     "explanationAr": "Banane مؤنث في المفعول: eine."
+    },
+    {
+     "q": "Ich kaufe ___ Brot.",
+     "options": [
+      "ein",
+      "eine",
+      "einen"
+     ],
+     "answer": "ein",
+     "explanationAr": "Brot محايد: ein."
+    }
+   ],
+   "functionWords": [
+    "am",
+    "an",
+    "auch",
+    "auf",
+    "bis",
+    "bitte",
+    "dem",
+    "den",
+    "der",
+    "die",
+    "dir",
+    "du",
+    "ein",
+    "eine",
+    "es",
+    "für",
+    "heute",
+    "hier",
+    "ich",
+    "im",
+    "in",
+    "ist",
+    "ja",
+    "mich",
+    "mir",
+    "morgen",
+    "neben",
+    "nein",
+    "nur",
+    "sind",
+    "und",
+    "was",
+    "wie",
+    "wo",
+    "zur"
+   ],
+   "stories": [
+    "de-intro-4",
+    "de-market-2"
+   ]
+  }, {
+   "id": "de-plurale",
+   "title": "Plurale",
+   "titleAr": "الجمع Plurale",
+   "explanationAr": "للجمع أشكال مختلفة، منها إضافة -n أو -en أو -er أو تغيير حرف العلة: Apfel تصبح Äpfel، Schwester تصبح Schwestern، Blume تصبح Blumen، Kind تصبح Kinder. نحفظ الجمع مع الاسم.",
+   "examples": [
+    {
+     "f": "Die Schwestern pflücken Blumen.",
+     "a": "الأختان تقطفان الزهور.",
+     "story": "de-intro-5"
+    },
+    {
+     "f": "Die Äpfel sind rot.",
+     "a": "التفاح أحمر."
+    }
+   ],
+   "exercises": [
+    {
+     "q": "Apfel -> ___",
+     "options": [
+      "Apfeln",
+      "Äpfel",
+      "Apfels"
+     ],
+     "answer": "Äpfel",
+     "explanationAr": "Apfel جمعه Äpfel."
+    },
+    {
+     "q": "Schwester -> ___",
+     "options": [
+      "Schwestern",
+      "Schwester",
+      "Schwesters"
+     ],
+     "answer": "Schwestern",
+     "explanationAr": "Schwester جمعها Schwestern."
+    },
+    {
+     "q": "Blume -> ___",
+     "options": [
+      "Blume",
+      "Blumes",
+      "Blumen"
+     ],
+     "answer": "Blumen",
+     "explanationAr": "Blume جمعها Blumen."
+    },
+    {
+     "q": "Kind -> ___",
+     "options": [
+      "Kinden",
+      "Kinder",
+      "Kinds"
+     ],
+     "answer": "Kinder",
+     "explanationAr": "Kind جمعه Kinder."
+    },
+    {
+     "q": "Haus -> ___",
+     "options": [
+      "Häuser",
+      "Hauss",
+      "Hausen"
+     ],
+     "answer": "Häuser",
+     "explanationAr": "Haus جمعه Häuser."
+    },
+    {
+     "q": "Frau -> ___",
+     "options": [
+      "Fraus",
+      "Frauens",
+      "Frauen"
+     ],
+     "answer": "Frauen",
+     "explanationAr": "Frau جمعها Frauen."
+    }
+   ],
+   "functionWords": [
+    "alle",
+    "am",
+    "auch",
+    "bin",
+    "das",
+    "dein",
+    "den",
+    "der",
+    "die",
+    "du",
+    "ein",
+    "eine",
+    "einen",
+    "euch",
+    "euer",
+    "ich",
+    "ihr",
+    "ihrer",
+    "im",
+    "ist",
+    "ja",
+    "mit",
+    "sind",
+    "und",
+    "uns",
+    "wir"
+   ],
+   "stories": [
+    "de-intro-5"
+   ]
+  }, {
+   "id": "de-name-s",
+   "title": "Name + s",
+   "titleAr": "الملكية بإضافة s لاسم العلم",
+   "explanationAr": "نضيف s إلى اسم العلم للملكية، من دون فاصلة: Omars Geburtstag (عيد ميلاد عمر). لا نكتب Omar's.",
+   "examples": [
+    {
+     "f": "Heute ist Omars Geburtstag.",
+     "a": "اليوم عيد ميلاد عمر.",
+     "story": "de-intro-6"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "___ Geburtstag",
+     "options": [
+      "Omars",
+      "Omar's",
+      "Omar"
+     ],
+     "answer": "Omars",
+     "explanationAr": "اسم العلم + s بلا فاصلة."
+    },
+    {
+     "q": "Das ist ___ Buch.",
+     "options": [
+      "Omar's",
+      "Omar",
+      "Omars"
+     ],
+     "answer": "Omars",
+     "explanationAr": "اسم العلم + s."
+    },
+    {
+     "q": "___ Haus ist groß.",
+     "options": [
+      "Sara",
+      "Saras",
+      "Sara's"
+     ],
+     "answer": "Saras",
+     "explanationAr": "اسم العلم + s."
+    },
+    {
+     "q": "Das ist ___ Hund.",
+     "options": [
+      "Bens",
+      "Ben's",
+      "Ben"
+     ],
+     "answer": "Bens",
+     "explanationAr": "اسم العلم + s."
+    },
+    {
+     "q": "Das ist ___ Ball.",
+     "options": [
+      "Omar's",
+      "Omar",
+      "Omars"
+     ],
+     "answer": "Omars",
+     "explanationAr": "اسم العلم + s بلا فاصلة."
+    },
+    {
+     "q": "Omars Geburtstag ist ___.",
+     "options": [
+      "schöner",
+      "schön",
+      "schöne"
+     ],
+     "answer": "schön",
+     "explanationAr": "بعد ist تأتي الصفة بدون نهاية."
+    }
+   ],
+   "functionWords": [
+    "alle",
+    "am",
+    "auf",
+    "bin",
+    "bitte",
+    "danke",
+    "das",
+    "dem",
+    "dich",
+    "die",
+    "dir",
+    "du",
+    "ein",
+    "für",
+    "heute",
+    "ich",
+    "ihr",
+    "im",
+    "ist",
+    "ja",
+    "jedes",
+    "mein",
+    "meinen",
+    "mir",
+    "mit",
+    "sind",
+    "und",
+    "will",
+    "wir",
+    "zum"
+   ],
+   "stories": [
+    "de-intro-6"
+   ]
+  }, {
+   "id": "de-profession-no-article",
+   "title": "Berufe ohne Artikel",
+   "titleAr": "المهن بدون أداة",
+   "explanationAr": "في الألمانية لا نضع أداة قبل المهنة بعد sein: Ich bin Lehrerin. Ich bin Arzt. بالإنجليزية نقول I am a teacher، لكن بالألمانية بلا أداة.",
+   "examples": [
+    {
+     "f": "Ich bin Lehrerin.",
+     "a": "أنا معلمة.",
+     "story": "de-jobs-a1-1"
+    },
+    {
+     "f": "Ich bin Arzt.",
+     "a": "أنا طبيب.",
+     "story": "de-jobs-a1-1"
+    },
+    {
+     "f": "Was bist du von Beruf?",
+     "a": "ماذا تعمل؟",
+     "story": "de-jobs-a1-1"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "Ich bin ___.",
+     "options": [
+      "Lehrerin",
+      "eine Lehrerin",
+      "die Lehrerin"
+     ],
+     "answer": "Lehrerin",
+     "explanationAr": "بعد sein بلا أداة."
+    },
+    {
+     "q": "Ich bin ___.",
+     "options": [
+      "ein Arzt",
+      "der Arzt",
+      "Arzt"
+     ],
+     "answer": "Arzt",
+     "explanationAr": "بعد sein بلا أداة."
+    },
+    {
+     "q": "Was bist du von ___?",
+     "options": [
+      "der Beruf",
+      "Beruf",
+      "einem Beruf"
+     ],
+     "answer": "Beruf",
+     "explanationAr": "von Beruf تعبير ثابت."
+    },
+    {
+     "q": "Er ist ___.",
+     "options": [
+      "Bäcker",
+      "ein Bäcker",
+      "der Bäcker"
+     ],
+     "answer": "Bäcker",
+     "explanationAr": "بعد sein بلا أداة."
+    },
+    {
+     "q": "Sie ist ___.",
+     "options": [
+      "eine Ärztin",
+      "die Ärztin",
+      "Ärztin"
+     ],
+     "answer": "Ärztin",
+     "explanationAr": "بعد sein بلا أداة."
+    },
+    {
+     "q": "Ich bin ___.",
+     "options": [
+      "der Busfahrer",
+      "Busfahrer",
+      "ein Busfahrer"
+     ],
+     "answer": "Busfahrer",
+     "explanationAr": "بعد sein بلا أداة."
+    }
+   ],
+   "functionWords": [
+    "alle",
+    "auf",
+    "bin",
+    "bist",
+    "danke",
+    "den",
+    "der",
+    "du",
+    "heute",
+    "ich",
+    "in",
+    "ja",
+    "jetzt",
+    "nach",
+    "von",
+    "was"
+   ],
+   "stories": [
+    "de-jobs-a1-1"
+   ]
+  }, {
+   "id": "de-verbzweit",
+   "title": "Verbzweit",
+   "titleAr": "الفعل في المرتبة الثانية Verbzweit",
+   "explanationAr": "في الجملة الألمانية يأتي الفعل المصريف في المرتبة الثانية، بعد الفاعل أو بعد كلمة الاستفهام: Ich lerne Deutsch. Wir treffen uns im Park.",
+   "examples": [
+    {
+     "f": "Ich heiße Ben.",
+     "a": "اسمي بن.",
+     "story": "de-intro-1"
+    },
+    {
+     "f": "Ich lerne Deutsch.",
+     "a": "أتعلم الألمانية."
+    },
+    {
+     "f": "Wir treffen uns im Park.",
+     "a": "نلتقي في الحديقة.",
+     "story": "de-intro-3"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "Ich ___ Deutsch.",
+     "options": [
+      "lerne",
+      "lernen",
+      "lernst"
+     ],
+     "answer": "lerne",
+     "explanationAr": "مع ich: -e."
+    },
+    {
+     "q": "Wir ___ uns im Park.",
+     "options": [
+      "trefft",
+      "treffe",
+      "treffen"
+     ],
+     "answer": "treffen",
+     "explanationAr": "مع wir: -en."
+    },
+    {
+     "q": "Sara ___ Deutsch.",
+     "options": [
+      "lernen",
+      "lernt",
+      "lerne"
+     ],
+     "answer": "lernt",
+     "explanationAr": "مع sie: -t."
+    },
+    {
+     "q": "Du ___ Deutsch.",
+     "options": [
+      "lernst",
+      "lerne",
+      "lernt"
+     ],
+     "answer": "lernst",
+     "explanationAr": "مع du: -st."
+    },
+    {
+     "q": "Ich heiße ___.",
+     "options": [
+      "Bens",
+      "Ben ist",
+      "Ben"
+     ],
+     "answer": "Ben",
+     "explanationAr": "الاسم بعد الفعل."
+    },
+    {
+     "q": "Wir ___ heute.",
+     "options": [
+      "komme",
+      "kommen",
+      "kommt"
+     ],
+     "answer": "kommen",
+     "explanationAr": "مع wir: -en."
+    }
+   ],
+   "functionWords": [
+    "auch",
+    "auf",
+    "bis",
+    "bist",
+    "danke",
+    "das",
+    "dem",
+    "den",
+    "der",
+    "die",
+    "dir",
+    "du",
+    "es",
+    "für",
+    "gern",
+    "heute",
+    "ich",
+    "ihr",
+    "im",
+    "in",
+    "ja",
+    "mein",
+    "meine",
+    "mir",
+    "mit",
+    "morgen",
+    "nach",
+    "nein",
+    "nur",
+    "und",
+    "uns",
+    "wie",
+    "wieder",
+    "wir",
+    "wo"
+   ],
+   "stories": [
+    "de-intro-1",
+    "de-market-3"
+   ]
+  }, {
    "id": "de-verbendungen",
    "title": "Verbendungen",
    "titleAr": "نهايات الفعل Verbendungen",
@@ -8330,8 +8751,7 @@ var GRAMMAR_A1 = {
     "de-intro-3",
     "de-routine-2"
    ]
-  },
-  {
+  }, {
    "id": "de-sein-haben",
    "title": "sein / haben",
    "titleAr": "sein و haben الشاذان",
@@ -8501,1595 +8921,7 @@ var GRAMMAR_A1 = {
     "de-weather-5",
     "de-weather-6"
    ]
-  },
-  {
-   "id": "de-ein-eine",
-   "title": "ein / eine",
-   "titleAr": "أداة النكرة ein/eine",
-   "explanationAr": "ein تأتي مع الاسم المذكر والمحايد، وeine تأتي مع الاسم المؤنث: ein Mann، ein Haus، eine Frau. وفي حالة المفعول: einen Mann، eine Frau.",
-   "examples": [
-    {
-     "f": "Ich kaufe eine Banane.",
-     "a": "أشتري موزة.",
-     "story": "de-market-2"
-    },
-    {
-     "f": "Ich kaufe ein Brot.",
-     "a": "أشتري خبزاً."
-    },
-    {
-     "f": "Ich kaufe rote Schuhe.",
-     "a": "أشتري أحذية حمراء.",
-     "story": "de-intro-4"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "___ Mann",
-     "options": [
-      "eine",
-      "einen",
-      "ein"
-     ],
-     "answer": "ein",
-     "explanationAr": "Mann مذكر في الفاعل: ein."
-    },
-    {
-     "q": "___ Frau",
-     "options": [
-      "einen",
-      "eine",
-      "ein"
-     ],
-     "answer": "eine",
-     "explanationAr": "Frau مؤنث: eine."
-    },
-    {
-     "q": "___ Haus",
-     "options": [
-      "ein",
-      "eine",
-      "einen"
-     ],
-     "answer": "ein",
-     "explanationAr": "Haus محايد: ein."
-    },
-    {
-     "q": "___ Banane",
-     "options": [
-      "ein",
-      "einen",
-      "eine"
-     ],
-     "answer": "eine",
-     "explanationAr": "Banane مؤنث: eine."
-    },
-    {
-     "q": "Ich kaufe ___ Banane.",
-     "options": [
-      "einen",
-      "eine",
-      "ein"
-     ],
-     "answer": "eine",
-     "explanationAr": "Banane مؤنث في المفعول: eine."
-    },
-    {
-     "q": "Ich kaufe ___ Brot.",
-     "options": [
-      "ein",
-      "eine",
-      "einen"
-     ],
-     "answer": "ein",
-     "explanationAr": "Brot محايد: ein."
-    }
-   ],
-   "functionWords": [
-    "am",
-    "an",
-    "auch",
-    "auf",
-    "bis",
-    "bitte",
-    "dem",
-    "den",
-    "der",
-    "die",
-    "dir",
-    "du",
-    "ein",
-    "eine",
-    "es",
-    "für",
-    "heute",
-    "hier",
-    "ich",
-    "im",
-    "in",
-    "ist",
-    "ja",
-    "mich",
-    "mir",
-    "morgen",
-    "neben",
-    "nein",
-    "nur",
-    "sind",
-    "und",
-    "was",
-    "wie",
-    "wo",
-    "zur"
-   ],
-   "stories": [
-    "de-intro-4",
-    "de-market-2"
-   ]
-  },
-  {
-   "id": "de-plurale",
-   "title": "Plurale",
-   "titleAr": "الجمع Plurale",
-   "explanationAr": "للجمع أشكال مختلفة، منها إضافة -n أو -en أو -er أو تغيير حرف العلة: Apfel تصبح Äpfel، Schwester تصبح Schwestern، Blume تصبح Blumen، Kind تصبح Kinder. نحفظ الجمع مع الاسم.",
-   "examples": [
-    {
-     "f": "Die Schwestern pflücken Blumen.",
-     "a": "الأختان تقطفان الزهور.",
-     "story": "de-intro-5"
-    },
-    {
-     "f": "Die Äpfel sind rot.",
-     "a": "التفاح أحمر."
-    }
-   ],
-   "exercises": [
-    {
-     "q": "Apfel -> ___",
-     "options": [
-      "Apfeln",
-      "Äpfel",
-      "Apfels"
-     ],
-     "answer": "Äpfel",
-     "explanationAr": "Apfel جمعه Äpfel."
-    },
-    {
-     "q": "Schwester -> ___",
-     "options": [
-      "Schwestern",
-      "Schwester",
-      "Schwesters"
-     ],
-     "answer": "Schwestern",
-     "explanationAr": "Schwester جمعها Schwestern."
-    },
-    {
-     "q": "Blume -> ___",
-     "options": [
-      "Blume",
-      "Blumes",
-      "Blumen"
-     ],
-     "answer": "Blumen",
-     "explanationAr": "Blume جمعها Blumen."
-    },
-    {
-     "q": "Kind -> ___",
-     "options": [
-      "Kinden",
-      "Kinder",
-      "Kinds"
-     ],
-     "answer": "Kinder",
-     "explanationAr": "Kind جمعه Kinder."
-    },
-    {
-     "q": "Haus -> ___",
-     "options": [
-      "Häuser",
-      "Hauss",
-      "Hausen"
-     ],
-     "answer": "Häuser",
-     "explanationAr": "Haus جمعه Häuser."
-    },
-    {
-     "q": "Frau -> ___",
-     "options": [
-      "Fraus",
-      "Frauens",
-      "Frauen"
-     ],
-     "answer": "Frauen",
-     "explanationAr": "Frau جمعها Frauen."
-    }
-   ],
-   "functionWords": [
-    "alle",
-    "am",
-    "auch",
-    "bin",
-    "das",
-    "dein",
-    "den",
-    "der",
-    "die",
-    "du",
-    "ein",
-    "eine",
-    "einen",
-    "euch",
-    "euer",
-    "ich",
-    "ihr",
-    "ihrer",
-    "im",
-    "ist",
-    "ja",
-    "mit",
-    "sind",
-    "und",
-    "uns",
-    "wir"
-   ],
-   "stories": [
-    "de-intro-5"
-   ]
-  },
-  {
-   "id": "de-name-s",
-   "title": "Name + s",
-   "titleAr": "الملكية بإضافة s لاسم العلم",
-   "explanationAr": "نضيف s إلى اسم العلم للملكية، من دون فاصلة: Omars Geburtstag (عيد ميلاد عمر). لا نكتب Omar's.",
-   "examples": [
-    {
-     "f": "Heute ist Omars Geburtstag.",
-     "a": "اليوم عيد ميلاد عمر.",
-     "story": "de-intro-6"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "___ Geburtstag",
-     "options": [
-      "Omars",
-      "Omar's",
-      "Omar"
-     ],
-     "answer": "Omars",
-     "explanationAr": "اسم العلم + s بلا فاصلة."
-    },
-    {
-     "q": "Das ist ___ Buch.",
-     "options": [
-      "Omar's",
-      "Omar",
-      "Omars"
-     ],
-     "answer": "Omars",
-     "explanationAr": "اسم العلم + s."
-    },
-    {
-     "q": "___ Haus ist groß.",
-     "options": [
-      "Sara",
-      "Saras",
-      "Sara's"
-     ],
-     "answer": "Saras",
-     "explanationAr": "اسم العلم + s."
-    },
-    {
-     "q": "Das ist ___ Hund.",
-     "options": [
-      "Bens",
-      "Ben's",
-      "Ben"
-     ],
-     "answer": "Bens",
-     "explanationAr": "اسم العلم + s."
-    },
-    {
-     "q": "Das ist ___ Ball.",
-     "options": [
-      "Omar's",
-      "Omar",
-      "Omars"
-     ],
-     "answer": "Omars",
-     "explanationAr": "اسم العلم + s بلا فاصلة."
-    },
-    {
-     "q": "Omars Geburtstag ist ___.",
-     "options": [
-      "schöner",
-      "schön",
-      "schöne"
-     ],
-     "answer": "schön",
-     "explanationAr": "بعد ist تأتي الصفة بدون نهاية."
-    }
-   ],
-   "functionWords": [
-    "alle",
-    "am",
-    "auf",
-    "bin",
-    "bitte",
-    "danke",
-    "das",
-    "dem",
-    "dich",
-    "die",
-    "dir",
-    "du",
-    "ein",
-    "für",
-    "heute",
-    "ich",
-    "ihr",
-    "im",
-    "ist",
-    "ja",
-    "jedes",
-    "mein",
-    "meinen",
-    "mir",
-    "mit",
-    "sind",
-    "und",
-    "will",
-    "wir",
-    "zum"
-   ],
-   "stories": [
-    "de-intro-6"
-   ]
-  },
-  {
-   "id": "de-ja-nein-fragen",
-   "title": "Ja / Nein-Fragen",
-   "titleAr": "أسئلة نعم/لا Ja/Nein",
-   "explanationAr": "نبدأ السؤال بالفعل المصريف، ونجيب Ja أو Nein ثم جملة كاملة: Kommst du aus Berlin؟ Ja, ich komme aus Berlin.",
-   "examples": [
-    {
-     "f": "Kommst du aus Berlin?",
-     "a": "هل تأتي من برلين؟",
-     "story": "de-intro-7"
-    },
-    {
-     "f": "Ja, ich komme aus Berlin.",
-     "a": "نعم، أنا قادم من برلين.",
-     "story": "de-intro-7"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "___ du aus Berlin?",
-     "options": [
-      "Komme",
-      "Kommt",
-      "Kommst"
-     ],
-     "answer": "Kommst",
-     "explanationAr": "السؤال يبدأ بالفعل، مع du: -st."
-    },
-    {
-     "q": "Ja, ich ___ aus Berlin.",
-     "options": [
-      "kommt",
-      "komme",
-      "kommst"
-     ],
-     "answer": "komme",
-     "explanationAr": "مع ich: -e."
-    },
-    {
-     "q": "Nein, ich komme ___ aus Berlin.",
-     "options": [
-      "nicht",
-      "kein",
-      "nicht aus"
-     ],
-     "answer": "nicht",
-     "explanationAr": "النفي مع الفعل: nicht."
-    },
-    {
-     "q": "Bist du Sara? Ja, ___",
-     "options": [
-      "ich bist Sara",
-      "ich ist Sara",
-      "ich bin Sara"
-     ],
-     "answer": "ich bin Sara",
-     "explanationAr": "مع ich: bin."
-    },
-    {
-     "q": "Kommst du? Nein, ___",
-     "options": [
-      "ich kommt nicht",
-      "ich komme nicht",
-      "ich kommst nicht"
-     ],
-     "answer": "ich komme nicht",
-     "explanationAr": "مع ich: komme."
-    },
-    {
-     "q": "Ist das dein Buch? Ja, ___",
-     "options": [
-      "das ist mein Buch",
-      "das ist meine Buch",
-      "das ist mein Bücher"
-     ],
-     "answer": "das ist mein Buch",
-     "explanationAr": "Buch محايد: mein Buch."
-    }
-   ],
-   "functionWords": [
-    "alle",
-    "am",
-    "auch",
-    "auf",
-    "aus",
-    "bin",
-    "bist",
-    "danke",
-    "das",
-    "dem",
-    "den",
-    "der",
-    "die",
-    "du",
-    "ein",
-    "eine",
-    "einmal",
-    "es",
-    "für",
-    "heute",
-    "hier",
-    "ich",
-    "im",
-    "in",
-    "ist",
-    "ja",
-    "jetzt",
-    "kein",
-    "können",
-    "mir",
-    "mit",
-    "morgen",
-    "nach",
-    "nein",
-    "nicht",
-    "noch",
-    "sind",
-    "und",
-    "war",
-    "warum",
-    "wie",
-    "wieder",
-    "wir",
-    "woher",
-    "zum",
-    "zur"
-   ],
-   "stories": [
-    "de-intro-7",
-    "de-social-2"
-   ]
-  },
-  {
-   "id": "de-w-fragen",
-   "title": "W-Fragen",
-   "titleAr": "أسئلة الاستفهام W-Fragen",
-   "explanationAr": "سؤال الاستفهام يبدأ بكلمة مثل Was أو Wo أو Woher أو Wann أو Wie، ثم يأتي الفعل ثانياً: Was trinkst du؟ Wo ist das Picknick؟",
-   "examples": [
-    {
-     "f": "Was trinkst du?",
-     "a": "ماذا تشرب؟",
-     "story": "de-market-6"
-    },
-    {
-     "f": "Wo ist das Picknick?",
-     "a": "أين النزهة؟",
-     "story": "de-market-6"
-    },
-    {
-     "f": "Woher kommst du?",
-     "a": "من أين تأتي؟",
-     "story": "de-intro-3"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "___ trinkst du?",
-     "options": [
-      "Wann",
-      "Was",
-      "Wo"
-     ],
-     "answer": "Was",
-     "explanationAr": "Was تسأل عن الشيء."
-    },
-    {
-     "q": "___ ist das Picknick?",
-     "options": [
-      "Wo",
-      "Was",
-      "Wann"
-     ],
-     "answer": "Wo",
-     "explanationAr": "Wo تسأل عن المكان."
-    },
-    {
-     "q": "___ kommst du?",
-     "options": [
-      "Wo",
-      "Was",
-      "Woher"
-     ],
-     "answer": "Woher",
-     "explanationAr": "Woher تسأل عن الأصل."
-    },
-    {
-     "q": "___ ist die Party?",
-     "options": [
-      "Wo",
-      "Wann",
-      "Was"
-     ],
-     "answer": "Wann",
-     "explanationAr": "Wann تسأل عن الوقت."
-    },
-    {
-     "q": "___ geht es dir?",
-     "options": [
-      "Wie",
-      "Was",
-      "Wo"
-     ],
-     "answer": "Wie",
-     "explanationAr": "Wie تسأل عن الحال."
-    },
-    {
-     "q": "Was ___ du?",
-     "options": [
-      "esse",
-      "esst",
-      "isst"
-     ],
-     "answer": "isst",
-     "explanationAr": "بعد Was الفعل ثانياً، مع du: -st."
-    }
-   ],
-   "functionWords": [
-    "alle",
-    "am",
-    "auf",
-    "bis",
-    "bitte",
-    "das",
-    "dem",
-    "den",
-    "der",
-    "die",
-    "du",
-    "ein",
-    "eine",
-    "einen",
-    "er",
-    "es",
-    "für",
-    "gern",
-    "heute",
-    "ich",
-    "in",
-    "ist",
-    "jeder",
-    "jetzt",
-    "mich",
-    "morgen",
-    "nach",
-    "seinen",
-    "selbst",
-    "und",
-    "was",
-    "wir",
-    "wo",
-    "zu"
-   ],
-   "stories": [
-    "de-food-6",
-    "de-market-6"
-   ]
-  },
-  {
-   "id": "de-akkusativ",
-   "title": "Akkusativ",
-   "titleAr": "حالة المفعول به Akkusativ",
-   "explanationAr": "بعد فعل مثل brauchen يأتي الاسم المذكر مع den، والاسم المؤنث مع die، والمحايد مع das: Ich brauche den Topf. Ich brauche die Pfanne. Ich brauche das Messer. التغيير الوحيد في المفرد هو der -> den.",
-   "examples": [
-    {
-     "f": "Ich brauche den Topf.",
-     "a": "أحتاج القدر.",
-     "story": "de-market-5"
-    },
-    {
-     "f": "Ich brauche die Pfanne.",
-     "a": "أحتاج المقلاة.",
-     "story": "de-market-5"
-    },
-    {
-     "f": "Ich brauche das Messer.",
-     "a": "أحتاج السكين.",
-     "story": "de-market-5"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "Ich brauche ___ Topf.",
-     "options": [
-      "den",
-      "der",
-      "das"
-     ],
-     "answer": "den",
-     "explanationAr": "Topf مذكر في المفعول: den."
-    },
-    {
-     "q": "Ich brauche ___ Pfanne.",
-     "options": [
-      "der",
-      "den",
-      "die"
-     ],
-     "answer": "die",
-     "explanationAr": "Pfanne مؤنث: die."
-    },
-    {
-     "q": "Ich brauche ___ Messer.",
-     "options": [
-      "den",
-      "das",
-      "der"
-     ],
-     "answer": "das",
-     "explanationAr": "Messer محايد: das."
-    },
-    {
-     "q": "Ich sehe ___ Mann.",
-     "options": [
-      "den",
-      "der",
-      "das"
-     ],
-     "answer": "den",
-     "explanationAr": "Mann مذكر في المفعول: den."
-    },
-    {
-     "q": "Ich sehe ___ Frau.",
-     "options": [
-      "der",
-      "den",
-      "die"
-     ],
-     "answer": "die",
-     "explanationAr": "Frau مؤنث: die."
-    },
-    {
-     "q": "Ich kaufe ___ Brot.",
-     "options": [
-      "den",
-      "das",
-      "der"
-     ],
-     "answer": "das",
-     "explanationAr": "Brot محايد: das."
-    }
-   ],
-   "functionWords": [
-    "auf",
-    "danke",
-    "das",
-    "dem",
-    "den",
-    "der",
-    "die",
-    "heute",
-    "ich",
-    "in",
-    "und",
-    "wir"
-   ],
-   "stories": [
-    "de-market-5"
-   ]
-  },
-  {
-   "id": "de-dativ",
-   "title": "Dativ",
-   "titleAr": "حالة الجر Dativ",
-   "explanationAr": "مع mit ومع حروف المكان in/auf/unter عندما نتحدث عن مكان ثابت، نستخدم Dativ: mit dem Bus، in der Küche، auf dem Stuhl. التغيير: der -> dem، die -> der، das -> dem. ومع الأشخاص: mir, dir.",
-   "examples": [
-    {
-     "f": "Mit dem Bus.",
-     "a": "بالحافلة.",
-     "story": "de-routine-3"
-    },
-    {
-     "f": "In der Küche.",
-     "a": "في المطبخ.",
-     "story": "de-home-2"
-    },
-    {
-     "f": "Auf dem Stuhl.",
-     "a": "على الكرسي.",
-     "story": "de-home-2"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "Mit ___ Bus.",
-     "options": [
-      "der",
-      "den",
-      "dem"
-     ],
-     "answer": "dem",
-     "explanationAr": "Bus مذكر في Dativ: dem."
-    },
-    {
-     "q": "In ___ Küche.",
-     "options": [
-      "den",
-      "der",
-      "dem"
-     ],
-     "answer": "der",
-     "explanationAr": "Küche مؤنث في Dativ: der."
-    },
-    {
-     "q": "Auf ___ Stuhl.",
-     "options": [
-      "dem",
-      "der",
-      "den"
-     ],
-     "answer": "dem",
-     "explanationAr": "Stuhl مذكر في Dativ: dem."
-    },
-    {
-     "q": "Ich helfe ___.",
-     "options": [
-      "du",
-      "dich",
-      "dir"
-     ],
-     "answer": "dir",
-     "explanationAr": "مساعدة شخص: dir في Dativ."
-    },
-    {
-     "q": "Mit ___ Frau.",
-     "options": [
-      "den",
-      "der",
-      "dem"
-     ],
-     "answer": "der",
-     "explanationAr": "Frau مؤنث في Dativ: der."
-    },
-    {
-     "q": "In ___ Haus.",
-     "options": [
-      "dem",
-      "der",
-      "den"
-     ],
-     "answer": "dem",
-     "explanationAr": "Haus محايد في Dativ: dem."
-    }
-   ],
-   "functionWords": [
-    "am",
-    "auch",
-    "auf",
-    "aus",
-    "bei",
-    "dann",
-    "das",
-    "dein",
-    "deine",
-    "dem",
-    "den",
-    "der",
-    "die",
-    "ein",
-    "eine",
-    "einem",
-    "einer",
-    "er",
-    "es",
-    "hier",
-    "ich",
-    "im",
-    "in",
-    "ist",
-    "jetzt",
-    "mit",
-    "morgen",
-    "möchte",
-    "nach",
-    "nicht",
-    "seine",
-    "sie",
-    "sind",
-    "um",
-    "und",
-    "unsere",
-    "unter",
-    "viele",
-    "vor",
-    "war",
-    "wie",
-    "zu",
-    "zur",
-    "über"
-   ],
-   "stories": [
-    "de-home-2",
-    "de-routine-3"
-   ]
-  },
-  {
-   "id": "de-nicht-kein",
-   "title": "nicht / kein",
-   "titleAr": "النفي nicht/kein",
-   "explanationAr": "nicht تنفي الفعل أو الصفة: Ich komme nicht aus Berlin. وkein تنفي الاسم: Das ist kein Problem. Ich habe keine Zeit. kein يتصرف مثل ein: kein, keine.",
-   "examples": [
-    {
-     "f": "Ich komme nicht aus Berlin.",
-     "a": "أنا لا آتي من برلين."
-    },
-    {
-     "f": "Das ist kein Problem.",
-     "a": "ليست مشكلة."
-    },
-    {
-     "f": "Ich habe keine Zeit.",
-     "a": "ليس عندي وقت."
-    }
-   ],
-   "exercises": [
-    {
-     "q": "Ich komme ___ aus Berlin.",
-     "options": [
-      "keine",
-      "nicht",
-      "kein"
-     ],
-     "answer": "nicht",
-     "explanationAr": "نفي الفعل: nicht."
-    },
-    {
-     "q": "Das ist ___ Problem.",
-     "options": [
-      "kein",
-      "nicht",
-      "keine"
-     ],
-     "answer": "kein",
-     "explanationAr": "نفي الاسم المذكر: kein."
-    },
-    {
-     "q": "Ich habe ___ Zeit.",
-     "options": [
-      "kein",
-      "nicht",
-      "keine"
-     ],
-     "answer": "keine",
-     "explanationAr": "Zeit مؤنث: keine."
-    },
-    {
-     "q": "Er ist ___ Lehrer.",
-     "options": [
-      "keine",
-      "nicht",
-      "kein"
-     ],
-     "answer": "nicht",
-     "explanationAr": "نفي الفعل sein: nicht."
-    },
-    {
-     "q": "Das ist ___ Buch.",
-     "options": [
-      "kein",
-      "nicht",
-      "keine"
-     ],
-     "answer": "kein",
-     "explanationAr": "Buch محايد: kein."
-    },
-    {
-     "q": "Ich spiele ___ heute.",
-     "options": [
-      "kein",
-      "keine",
-      "nicht"
-     ],
-     "answer": "nicht",
-     "explanationAr": "نفي الفعل: nicht."
-    }
-   ],
-   "functionWords": [
-    "alle",
-    "am",
-    "auch",
-    "auf",
-    "aus",
-    "bin",
-    "bist",
-    "danke",
-    "das",
-    "dem",
-    "den",
-    "der",
-    "die",
-    "du",
-    "ein",
-    "eine",
-    "einmal",
-    "es",
-    "für",
-    "heute",
-    "hier",
-    "ich",
-    "im",
-    "in",
-    "ist",
-    "ja",
-    "jetzt",
-    "kein",
-    "können",
-    "mir",
-    "mit",
-    "morgen",
-    "nach",
-    "nein",
-    "nicht",
-    "noch",
-    "sind",
-    "und",
-    "war",
-    "warum",
-    "wie",
-    "wieder",
-    "wir",
-    "woher",
-    "zum",
-    "zur"
-   ],
-   "stories": [
-    "de-intro-7",
-    "de-social-2"
-   ]
-  },
-  {
-   "id": "de-modalverben",
-   "title": "Modalverben",
-   "titleAr": "الأفعال المساعدة Modalverben",
-   "explanationAr": "الأفعال المساعدة تأتي في المرتبة الثانية، والفعل الرئيسي في آخر الجملة بدون تصريف: Ich kann dir helfen. Ich möchte ein Brot. ويمكن: müssen (يجب)، wollen (يريد)، dürfen (يسمح)، sollen (ينبغي).",
-   "examples": [
-    {
-     "f": "Kannst du mir helfen?",
-     "a": "هل يمكنك مساعدتي؟",
-     "story": "de-social-1"
-    },
-    {
-     "f": "Ich möchte die Mahlzeit.",
-     "a": "أريد الوجبة.",
-     "story": "de-market-4"
-    },
-    {
-     "f": "Ich kann dir helfen.",
-     "a": "أستطيع مساعدتك."
-    }
-   ],
-   "exercises": [
-    {
-     "q": "Ich ___ dir helfen.",
-     "options": [
-      "kann",
-      "kannst",
-      "können"
-     ],
-     "answer": "kann",
-     "explanationAr": "مع ich: kann."
-    },
-    {
-     "q": "___ du mir helfen?",
-     "options": [
-      "Kann",
-      "Können",
-      "Kannst"
-     ],
-     "answer": "Kannst",
-     "explanationAr": "مع du: Kannst."
-    },
-    {
-     "q": "Ich ___ ein Brot.",
-     "options": [
-      "möchten",
-      "möchte",
-      "möchtest"
-     ],
-     "answer": "möchte",
-     "explanationAr": "مع ich: möchte."
-    },
-    {
-     "q": "Ich ___ nach Hause.",
-     "options": [
-      "muss",
-      "musst",
-      "müssen"
-     ],
-     "answer": "muss",
-     "explanationAr": "مع ich: muss."
-    },
-    {
-     "q": "Darf ich hier ___?",
-     "options": [
-      "schlafe",
-      "schläfst",
-      "schlafen"
-     ],
-     "answer": "schlafen",
-     "explanationAr": "الفعل الرئيسي في الآخر بدون تصريف."
-    },
-    {
-     "q": "Ich will heute ___.",
-     "options": [
-      "spielst",
-      "spielen",
-      "spiele"
-     ],
-     "answer": "spielen",
-     "explanationAr": "الفعل الرئيسي في الآخر بدون تصريف."
-    }
-   ],
-   "functionWords": [
-    "aber",
-    "am",
-    "an",
-    "auch",
-    "auf",
-    "bei",
-    "bis",
-    "bist",
-    "bitte",
-    "dank",
-    "danke",
-    "das",
-    "dein",
-    "deine",
-    "deinen",
-    "dem",
-    "den",
-    "der",
-    "die",
-    "dies",
-    "dir",
-    "dorthin",
-    "du",
-    "ein",
-    "eine",
-    "einen",
-    "er",
-    "es",
-    "eure",
-    "für",
-    "gern",
-    "habe",
-    "haben",
-    "habt",
-    "hat",
-    "heute",
-    "hier",
-    "ich",
-    "ihnen",
-    "ihr",
-    "im",
-    "immer",
-    "in",
-    "ist",
-    "ja",
-    "jeden",
-    "jetzt",
-    "kann",
-    "kannst",
-    "keinen",
-    "können",
-    "mein",
-    "meine",
-    "meinen",
-    "meiner",
-    "mich",
-    "mir",
-    "mit",
-    "morgen",
-    "nach",
-    "nicht",
-    "schon",
-    "sein",
-    "seinen",
-    "seiner",
-    "sie",
-    "sind",
-    "um",
-    "und",
-    "unsere",
-    "unserem",
-    "viel",
-    "vielen",
-    "wann",
-    "was",
-    "wie",
-    "will",
-    "wir",
-    "wohin",
-    "zu",
-    "zum",
-    "zur"
-   ],
-   "stories": [
-    "de-food-2",
-    "de-food-4",
-    "de-home-5",
-    "de-market-4",
-    "de-social-1",
-    "de-social-3",
-    "de-social-4"
-   ]
-  },
-  {
-   "id": "de-es-gibt",
-   "title": "Es gibt",
-   "titleAr": "Es gibt",
-   "explanationAr": "Es gibt تعني يوجد، وتأتي مع حالة المفعول: Es gibt eine Küche. Es gibt einen Markt.",
-   "examples": [
-    {
-     "f": "Es gibt eine Küche.",
-     "a": "يوجد مطبخ.",
-     "story": "de-home-1"
-    },
-    {
-     "f": "Es gibt einen Markt.",
-     "a": "يوجد سوق."
-    }
-   ],
-   "exercises": [
-    {
-     "q": "Es gibt ___ Küche.",
-     "options": [
-      "ein",
-      "einen",
-      "eine"
-     ],
-     "answer": "eine",
-     "explanationAr": "Küche مؤنث: eine."
-    },
-    {
-     "q": "Es gibt ___ Markt.",
-     "options": [
-      "eine",
-      "einen",
-      "ein"
-     ],
-     "answer": "einen",
-     "explanationAr": "Markt مذكر في المفعول: einen."
-    },
-    {
-     "q": "Es gibt ___ Haus.",
-     "options": [
-      "ein",
-      "eine",
-      "einen"
-     ],
-     "answer": "ein",
-     "explanationAr": "Haus محايد: ein."
-    },
-    {
-     "q": "___ gibt eine Schule.",
-     "options": [
-      "Er",
-      "Sie",
-      "Es"
-     ],
-     "answer": "Es",
-     "explanationAr": "التعبير الثابت: Es gibt."
-    },
-    {
-     "q": "Es gibt ___ Kinder.",
-     "options": [
-      "vielen",
-      "viele",
-      "viel"
-     ],
-     "answer": "viele",
-     "explanationAr": "viele مع الجمع."
-    },
-    {
-     "q": "Gibt es ___ Markt hier?",
-     "options": [
-      "einen",
-      "ein",
-      "eine"
-     ],
-     "answer": "einen",
-     "explanationAr": "السؤال: Gibt es einen...؟"
-    }
-   ],
-   "functionWords": [
-    "am",
-    "bei",
-    "der",
-    "die",
-    "ein",
-    "eine",
-    "einem",
-    "einen",
-    "es",
-    "hat",
-    "ich",
-    "im",
-    "in",
-    "ist",
-    "jedes",
-    "mein",
-    "meine",
-    "meinem",
-    "meiner",
-    "mit",
-    "und",
-    "wir"
-   ],
-   "stories": [
-    "de-home-1"
-   ]
-  },
-  {
-   "id": "de-adjectives",
-   "title": "Adjektive vor Nomen",
-   "titleAr": "الصفة قبل الاسم",
-   "explanationAr": "الصفة تأتي قبل الاسم: rote Äpfel، süßer Kuchen. وبعد أداة التعريف تأتي الصفة بنهاية -e في الغالب للمبتدئين: die roten Schuhe.",
-   "examples": [
-    {
-     "f": "Rote Äpfel sind gut.",
-     "a": "التفاح الأحمر جيد."
-    },
-    {
-     "f": "Die roten Schuhe sind neu.",
-     "a": "الأحذية الحمراء جديدة.",
-     "story": "de-intro-4"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "___ Äpfel",
-     "options": [
-      "roten",
-      "rote",
-      "rot"
-     ],
-     "answer": "rote",
-     "explanationAr": "الصفة قبل الاسم، بدون أداة: rote."
-    },
-    {
-     "q": "Die ___ Schuhe",
-     "options": [
-      "roten",
-      "rote",
-      "rot"
-     ],
-     "answer": "roten",
-     "explanationAr": "بعد die تأتي الصفة بـ -en هنا."
-    },
-    {
-     "q": "Ein ___ Kuchen",
-     "options": [
-      "süße",
-      "süß",
-      "süßer"
-     ],
-     "answer": "süßer",
-     "explanationAr": "بعد ein مع المذكر: süßer."
-    },
-    {
-     "q": "Die Sonne ist ___.",
-     "options": [
-      "heißen",
-      "heiß",
-      "heiße"
-     ],
-     "answer": "heiß",
-     "explanationAr": "بعد ist الصفة بدون نهاية."
-    },
-    {
-     "q": "Ein ___ Haus",
-     "options": [
-      "großes",
-      "große",
-      "groß"
-     ],
-     "answer": "großes",
-     "explanationAr": "بعد ein مع المحايد: großes."
-    },
-    {
-     "q": "Die ___ Blume",
-     "options": [
-      "roten",
-      "rot",
-      "rote"
-     ],
-     "answer": "rote",
-     "explanationAr": "بعد die مع المؤنث: rote."
-    }
-   ],
-   "functionWords": [
-    "aber",
-    "alle",
-    "am",
-    "an",
-    "auch",
-    "auf",
-    "aus",
-    "bitte",
-    "da",
-    "danke",
-    "das",
-    "dem",
-    "den",
-    "der",
-    "des",
-    "die",
-    "dies",
-    "diese",
-    "dieser",
-    "ein",
-    "eine",
-    "einem",
-    "einen",
-    "einer",
-    "er",
-    "es",
-    "für",
-    "ganz",
-    "hat",
-    "heute",
-    "ich",
-    "ihn",
-    "ihr",
-    "ihre",
-    "ihrem",
-    "ihrer",
-    "im",
-    "immer",
-    "in",
-    "ist",
-    "ja",
-    "jede",
-    "jetzt",
-    "kann",
-    "kein",
-    "mehr",
-    "mein",
-    "meine",
-    "mich",
-    "mit",
-    "morgen",
-    "möchte",
-    "nein",
-    "nicht",
-    "sehr",
-    "sein",
-    "seine",
-    "seinen",
-    "seiner",
-    "sich",
-    "sie",
-    "sind",
-    "später",
-    "tschüss",
-    "und",
-    "unserer",
-    "viele",
-    "vor",
-    "waren",
-    "weg",
-    "wie",
-    "will",
-    "wir",
-    "wird",
-    "zu",
-    "zum",
-    "zusammen",
-    "überall"
-   ],
-   "stories": [
-    "de-clothes-3",
-    "de-clothes-7",
-    "de-food-3",
-    "de-food-7",
-    "de-weather-4",
-    "de-weather-7"
-   ]
-  },
-  {
-   "id": "de-time-am-um",
-   "title": "Zeit: am / um",
-   "titleAr": "الوقت am/um",
-   "explanationAr": "لأيام الأسبوع وأجزاء اليوم: am Samstag، am Morgen، am Abend. للساعة المحددة: um sieben Uhr. والفعل يأتي ثانياً بعد ظرف الوقت.",
-   "examples": [
-    {
-     "f": "Am Samstag gehen wir zum Markt.",
-     "a": "يوم السبت نذهب إلى السوق.",
-     "story": "de-routine-4"
-    },
-    {
-     "f": "Es ist sieben Uhr.",
-     "a": "الساعة السابعة.",
-     "story": "de-weather-3"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "___ Samstag gehen wir.",
-     "options": [
-      "Am",
-      "Um",
-      "In"
-     ],
-     "answer": "Am",
-     "explanationAr": "أيام الأسبوع مع am."
-    },
-    {
-     "q": "Es ist sieben ___.",
-     "options": [
-      "Uhrs",
-      "Uhren",
-      "Uhr"
-     ],
-     "answer": "Uhr",
-     "explanationAr": "الساعة: sieben Uhr."
-    },
-    {
-     "q": "Am Morgen ___ ich.",
-     "options": [
-      "gehst",
-      "gehe",
-      "gehen"
-     ],
-     "answer": "gehe",
-     "explanationAr": "مع ich: -e، والفعل ثانياً."
-    },
-    {
-     "q": "Wir gehen ___ sieben Uhr.",
-     "options": [
-      "um",
-      "am",
-      "in"
-     ],
-     "answer": "um",
-     "explanationAr": "الساعة المحددة مع um."
-    },
-    {
-     "q": "Am Abend ___ wir.",
-     "options": [
-      "spielt",
-      "spiele",
-      "spielen"
-     ],
-     "answer": "spielen",
-     "explanationAr": "مع wir: -en."
-    },
-    {
-     "q": "___ Morgen ist es kalt.",
-     "options": [
-      "In",
-      "Am",
-      "Um"
-     ],
-     "answer": "Am",
-     "explanationAr": "أجزاء اليوم مع am."
-    }
-   ],
-   "functionWords": [
-    "alle",
-    "am",
-    "an",
-    "auch",
-    "auf",
-    "bald",
-    "bei",
-    "bin",
-    "bis",
-    "bist",
-    "da",
-    "dann",
-    "das",
-    "dem",
-    "den",
-    "der",
-    "die",
-    "du",
-    "ein",
-    "eine",
-    "einen",
-    "einer",
-    "er",
-    "es",
-    "etwas",
-    "für",
-    "fürs",
-    "hat",
-    "heraus",
-    "heute",
-    "ich",
-    "ihm",
-    "im",
-    "immer",
-    "in",
-    "ins",
-    "ist",
-    "jede",
-    "jeden",
-    "jeder",
-    "mein",
-    "meine",
-    "meinen",
-    "meiner",
-    "mir",
-    "mit",
-    "morgen",
-    "nach",
-    "neben",
-    "sein",
-    "seine",
-    "seinen",
-    "seiner",
-    "selbst",
-    "sie",
-    "sind",
-    "tschüss",
-    "um",
-    "und",
-    "uns",
-    "viel",
-    "vom",
-    "von",
-    "vor",
-    "war",
-    "weg",
-    "wie",
-    "wieder",
-    "wir",
-    "wo",
-    "zu",
-    "zum",
-    "zur",
-    "über"
-   ],
-   "stories": [
-    "de-routine-1",
-    "de-routine-4",
-    "de-routine-5",
-    "de-routine-6",
-    "de-weather-2",
-    "de-weather-3"
-   ]
-  },
-  {
+  }, {
    "id": "de-separable",
    "title": "Trennbare Verben",
    "titleAr": "الأفعال المنفصلة",
@@ -10269,8 +9101,1240 @@ var GRAMMAR_A1 = {
     "de-travel-a1-1",
     "de-travel-a1-2"
    ]
-  },
-  {
+  }, {
+   "id": "de-ja-nein-fragen",
+   "title": "Ja / Nein-Fragen",
+   "titleAr": "أسئلة نعم/لا Ja/Nein",
+   "explanationAr": "نبدأ السؤال بالفعل المصريف، ونجيب Ja أو Nein ثم جملة كاملة: Kommst du aus Berlin؟ Ja, ich komme aus Berlin.",
+   "examples": [
+    {
+     "f": "Kommst du aus Berlin?",
+     "a": "هل تأتي من برلين؟",
+     "story": "de-intro-7"
+    },
+    {
+     "f": "Ja, ich komme aus Berlin.",
+     "a": "نعم، أنا قادم من برلين.",
+     "story": "de-intro-7"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "___ du aus Berlin?",
+     "options": [
+      "Komme",
+      "Kommt",
+      "Kommst"
+     ],
+     "answer": "Kommst",
+     "explanationAr": "السؤال يبدأ بالفعل، مع du: -st."
+    },
+    {
+     "q": "Ja, ich ___ aus Berlin.",
+     "options": [
+      "kommt",
+      "komme",
+      "kommst"
+     ],
+     "answer": "komme",
+     "explanationAr": "مع ich: -e."
+    },
+    {
+     "q": "Nein, ich komme ___ aus Berlin.",
+     "options": [
+      "nicht",
+      "kein",
+      "nicht aus"
+     ],
+     "answer": "nicht",
+     "explanationAr": "النفي مع الفعل: nicht."
+    },
+    {
+     "q": "Bist du Sara? Ja, ___",
+     "options": [
+      "ich bist Sara",
+      "ich ist Sara",
+      "ich bin Sara"
+     ],
+     "answer": "ich bin Sara",
+     "explanationAr": "مع ich: bin."
+    },
+    {
+     "q": "Kommst du? Nein, ___",
+     "options": [
+      "ich kommt nicht",
+      "ich komme nicht",
+      "ich kommst nicht"
+     ],
+     "answer": "ich komme nicht",
+     "explanationAr": "مع ich: komme."
+    },
+    {
+     "q": "Ist das dein Buch? Ja, ___",
+     "options": [
+      "das ist mein Buch",
+      "das ist meine Buch",
+      "das ist mein Bücher"
+     ],
+     "answer": "das ist mein Buch",
+     "explanationAr": "Buch محايد: mein Buch."
+    }
+   ],
+   "functionWords": [
+    "alle",
+    "am",
+    "auch",
+    "auf",
+    "aus",
+    "bin",
+    "bist",
+    "danke",
+    "das",
+    "dem",
+    "den",
+    "der",
+    "die",
+    "du",
+    "ein",
+    "eine",
+    "einmal",
+    "es",
+    "für",
+    "heute",
+    "hier",
+    "ich",
+    "im",
+    "in",
+    "ist",
+    "ja",
+    "jetzt",
+    "kein",
+    "können",
+    "mir",
+    "mit",
+    "morgen",
+    "nach",
+    "nein",
+    "nicht",
+    "noch",
+    "sind",
+    "und",
+    "war",
+    "warum",
+    "wie",
+    "wieder",
+    "wir",
+    "woher",
+    "zum",
+    "zur"
+   ],
+   "stories": [
+    "de-intro-7",
+    "de-social-2"
+   ]
+  }, {
+   "id": "de-w-fragen",
+   "title": "W-Fragen",
+   "titleAr": "أسئلة الاستفهام W-Fragen",
+   "explanationAr": "سؤال الاستفهام يبدأ بكلمة مثل Was أو Wo أو Woher أو Wann أو Wie، ثم يأتي الفعل ثانياً: Was trinkst du؟ Wo ist das Picknick؟",
+   "examples": [
+    {
+     "f": "Was trinkst du?",
+     "a": "ماذا تشرب؟",
+     "story": "de-market-6"
+    },
+    {
+     "f": "Wo ist das Picknick?",
+     "a": "أين النزهة؟",
+     "story": "de-market-6"
+    },
+    {
+     "f": "Woher kommst du?",
+     "a": "من أين تأتي؟",
+     "story": "de-intro-3"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "___ trinkst du?",
+     "options": [
+      "Wann",
+      "Was",
+      "Wo"
+     ],
+     "answer": "Was",
+     "explanationAr": "Was تسأل عن الشيء."
+    },
+    {
+     "q": "___ ist das Picknick?",
+     "options": [
+      "Wo",
+      "Was",
+      "Wann"
+     ],
+     "answer": "Wo",
+     "explanationAr": "Wo تسأل عن المكان."
+    },
+    {
+     "q": "___ kommst du?",
+     "options": [
+      "Wo",
+      "Was",
+      "Woher"
+     ],
+     "answer": "Woher",
+     "explanationAr": "Woher تسأل عن الأصل."
+    },
+    {
+     "q": "___ ist die Party?",
+     "options": [
+      "Wo",
+      "Wann",
+      "Was"
+     ],
+     "answer": "Wann",
+     "explanationAr": "Wann تسأل عن الوقت."
+    },
+    {
+     "q": "___ geht es dir?",
+     "options": [
+      "Wie",
+      "Was",
+      "Wo"
+     ],
+     "answer": "Wie",
+     "explanationAr": "Wie تسأل عن الحال."
+    },
+    {
+     "q": "Was ___ du?",
+     "options": [
+      "esse",
+      "esst",
+      "isst"
+     ],
+     "answer": "isst",
+     "explanationAr": "بعد Was الفعل ثانياً، مع du: -st."
+    }
+   ],
+   "functionWords": [
+    "alle",
+    "am",
+    "auf",
+    "bis",
+    "bitte",
+    "das",
+    "dem",
+    "den",
+    "der",
+    "die",
+    "du",
+    "ein",
+    "eine",
+    "einen",
+    "er",
+    "es",
+    "für",
+    "gern",
+    "heute",
+    "ich",
+    "in",
+    "ist",
+    "jeder",
+    "jetzt",
+    "mich",
+    "morgen",
+    "nach",
+    "seinen",
+    "selbst",
+    "und",
+    "was",
+    "wir",
+    "wo",
+    "zu"
+   ],
+   "stories": [
+    "de-food-6",
+    "de-market-6"
+   ]
+  }, {
+   "id": "de-nicht-kein",
+   "title": "nicht / kein",
+   "titleAr": "النفي nicht/kein",
+   "explanationAr": "nicht تنفي الفعل أو الصفة: Ich komme nicht aus Berlin. وkein تنفي الاسم: Das ist kein Problem. Ich habe keine Zeit. kein يتصرف مثل ein: kein, keine.",
+   "examples": [
+    {
+     "f": "Ich komme nicht aus Berlin.",
+     "a": "أنا لا آتي من برلين."
+    },
+    {
+     "f": "Das ist kein Problem.",
+     "a": "ليست مشكلة."
+    },
+    {
+     "f": "Ich habe keine Zeit.",
+     "a": "ليس عندي وقت."
+    }
+   ],
+   "exercises": [
+    {
+     "q": "Ich komme ___ aus Berlin.",
+     "options": [
+      "keine",
+      "nicht",
+      "kein"
+     ],
+     "answer": "nicht",
+     "explanationAr": "نفي الفعل: nicht."
+    },
+    {
+     "q": "Das ist ___ Problem.",
+     "options": [
+      "kein",
+      "nicht",
+      "keine"
+     ],
+     "answer": "kein",
+     "explanationAr": "نفي الاسم المذكر: kein."
+    },
+    {
+     "q": "Ich habe ___ Zeit.",
+     "options": [
+      "kein",
+      "nicht",
+      "keine"
+     ],
+     "answer": "keine",
+     "explanationAr": "Zeit مؤنث: keine."
+    },
+    {
+     "q": "Er ist ___ Lehrer.",
+     "options": [
+      "keine",
+      "nicht",
+      "kein"
+     ],
+     "answer": "nicht",
+     "explanationAr": "نفي الفعل sein: nicht."
+    },
+    {
+     "q": "Das ist ___ Buch.",
+     "options": [
+      "kein",
+      "nicht",
+      "keine"
+     ],
+     "answer": "kein",
+     "explanationAr": "Buch محايد: kein."
+    },
+    {
+     "q": "Ich spiele ___ heute.",
+     "options": [
+      "kein",
+      "keine",
+      "nicht"
+     ],
+     "answer": "nicht",
+     "explanationAr": "نفي الفعل: nicht."
+    }
+   ],
+   "functionWords": [
+    "alle",
+    "am",
+    "auch",
+    "auf",
+    "aus",
+    "bin",
+    "bist",
+    "danke",
+    "das",
+    "dem",
+    "den",
+    "der",
+    "die",
+    "du",
+    "ein",
+    "eine",
+    "einmal",
+    "es",
+    "für",
+    "heute",
+    "hier",
+    "ich",
+    "im",
+    "in",
+    "ist",
+    "ja",
+    "jetzt",
+    "kein",
+    "können",
+    "mir",
+    "mit",
+    "morgen",
+    "nach",
+    "nein",
+    "nicht",
+    "noch",
+    "sind",
+    "und",
+    "war",
+    "warum",
+    "wie",
+    "wieder",
+    "wir",
+    "woher",
+    "zum",
+    "zur"
+   ],
+   "stories": [
+    "de-intro-7",
+    "de-social-2"
+   ]
+  }, {
+   "id": "de-akkusativ",
+   "title": "Akkusativ",
+   "titleAr": "حالة المفعول به Akkusativ",
+   "explanationAr": "بعد فعل مثل brauchen يأتي الاسم المذكر مع den، والاسم المؤنث مع die، والمحايد مع das: Ich brauche den Topf. Ich brauche die Pfanne. Ich brauche das Messer. التغيير الوحيد في المفرد هو der -> den.",
+   "examples": [
+    {
+     "f": "Ich brauche den Topf.",
+     "a": "أحتاج القدر.",
+     "story": "de-market-5"
+    },
+    {
+     "f": "Ich brauche die Pfanne.",
+     "a": "أحتاج المقلاة.",
+     "story": "de-market-5"
+    },
+    {
+     "f": "Ich brauche das Messer.",
+     "a": "أحتاج السكين.",
+     "story": "de-market-5"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "Ich brauche ___ Topf.",
+     "options": [
+      "den",
+      "der",
+      "das"
+     ],
+     "answer": "den",
+     "explanationAr": "Topf مذكر في المفعول: den."
+    },
+    {
+     "q": "Ich brauche ___ Pfanne.",
+     "options": [
+      "der",
+      "den",
+      "die"
+     ],
+     "answer": "die",
+     "explanationAr": "Pfanne مؤنث: die."
+    },
+    {
+     "q": "Ich brauche ___ Messer.",
+     "options": [
+      "den",
+      "das",
+      "der"
+     ],
+     "answer": "das",
+     "explanationAr": "Messer محايد: das."
+    },
+    {
+     "q": "Ich sehe ___ Mann.",
+     "options": [
+      "den",
+      "der",
+      "das"
+     ],
+     "answer": "den",
+     "explanationAr": "Mann مذكر في المفعول: den."
+    },
+    {
+     "q": "Ich sehe ___ Frau.",
+     "options": [
+      "der",
+      "den",
+      "die"
+     ],
+     "answer": "die",
+     "explanationAr": "Frau مؤنث: die."
+    },
+    {
+     "q": "Ich kaufe ___ Brot.",
+     "options": [
+      "den",
+      "das",
+      "der"
+     ],
+     "answer": "das",
+     "explanationAr": "Brot محايد: das."
+    }
+   ],
+   "functionWords": [
+    "auf",
+    "danke",
+    "das",
+    "dem",
+    "den",
+    "der",
+    "die",
+    "heute",
+    "ich",
+    "in",
+    "und",
+    "wir"
+   ],
+   "stories": [
+    "de-market-5"
+   ]
+  }, {
+   "id": "de-dativ",
+   "title": "Dativ",
+   "titleAr": "حالة الجر Dativ",
+   "explanationAr": "مع mit ومع حروف المكان in/auf/unter عندما نتحدث عن مكان ثابت، نستخدم Dativ: mit dem Bus، in der Küche، auf dem Stuhl. التغيير: der -> dem، die -> der، das -> dem. ومع الأشخاص: mir, dir.",
+   "examples": [
+    {
+     "f": "Mit dem Bus.",
+     "a": "بالحافلة.",
+     "story": "de-routine-3"
+    },
+    {
+     "f": "In der Küche.",
+     "a": "في المطبخ.",
+     "story": "de-home-2"
+    },
+    {
+     "f": "Auf dem Stuhl.",
+     "a": "على الكرسي.",
+     "story": "de-home-2"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "Mit ___ Bus.",
+     "options": [
+      "der",
+      "den",
+      "dem"
+     ],
+     "answer": "dem",
+     "explanationAr": "Bus مذكر في Dativ: dem."
+    },
+    {
+     "q": "In ___ Küche.",
+     "options": [
+      "den",
+      "der",
+      "dem"
+     ],
+     "answer": "der",
+     "explanationAr": "Küche مؤنث في Dativ: der."
+    },
+    {
+     "q": "Auf ___ Stuhl.",
+     "options": [
+      "dem",
+      "der",
+      "den"
+     ],
+     "answer": "dem",
+     "explanationAr": "Stuhl مذكر في Dativ: dem."
+    },
+    {
+     "q": "Ich helfe ___.",
+     "options": [
+      "du",
+      "dich",
+      "dir"
+     ],
+     "answer": "dir",
+     "explanationAr": "مساعدة شخص: dir في Dativ."
+    },
+    {
+     "q": "Mit ___ Frau.",
+     "options": [
+      "den",
+      "der",
+      "dem"
+     ],
+     "answer": "der",
+     "explanationAr": "Frau مؤنث في Dativ: der."
+    },
+    {
+     "q": "In ___ Haus.",
+     "options": [
+      "dem",
+      "der",
+      "den"
+     ],
+     "answer": "dem",
+     "explanationAr": "Haus محايد في Dativ: dem."
+    }
+   ],
+   "functionWords": [
+    "am",
+    "auch",
+    "auf",
+    "aus",
+    "bei",
+    "dann",
+    "das",
+    "dein",
+    "deine",
+    "dem",
+    "den",
+    "der",
+    "die",
+    "ein",
+    "eine",
+    "einem",
+    "einer",
+    "er",
+    "es",
+    "hier",
+    "ich",
+    "im",
+    "in",
+    "ist",
+    "jetzt",
+    "mit",
+    "morgen",
+    "möchte",
+    "nach",
+    "nicht",
+    "seine",
+    "sie",
+    "sind",
+    "um",
+    "und",
+    "unsere",
+    "unter",
+    "viele",
+    "vor",
+    "war",
+    "wie",
+    "zu",
+    "zur",
+    "über"
+   ],
+   "stories": [
+    "de-home-2",
+    "de-routine-3"
+   ]
+  }, {
+   "id": "de-modalverben",
+   "title": "Modalverben",
+   "titleAr": "الأفعال المساعدة Modalverben",
+   "explanationAr": "الأفعال المساعدة تأتي في المرتبة الثانية، والفعل الرئيسي في آخر الجملة بدون تصريف: Ich kann dir helfen. Ich möchte ein Brot. ويمكن: müssen (يجب)، wollen (يريد)، dürfen (يسمح)، sollen (ينبغي).",
+   "examples": [
+    {
+     "f": "Kannst du mir helfen?",
+     "a": "هل يمكنك مساعدتي؟",
+     "story": "de-social-1"
+    },
+    {
+     "f": "Ich möchte die Mahlzeit.",
+     "a": "أريد الوجبة.",
+     "story": "de-market-4"
+    },
+    {
+     "f": "Ich kann dir helfen.",
+     "a": "أستطيع مساعدتك."
+    }
+   ],
+   "exercises": [
+    {
+     "q": "Ich ___ dir helfen.",
+     "options": [
+      "kann",
+      "kannst",
+      "können"
+     ],
+     "answer": "kann",
+     "explanationAr": "مع ich: kann."
+    },
+    {
+     "q": "___ du mir helfen?",
+     "options": [
+      "Kann",
+      "Können",
+      "Kannst"
+     ],
+     "answer": "Kannst",
+     "explanationAr": "مع du: Kannst."
+    },
+    {
+     "q": "Ich ___ ein Brot.",
+     "options": [
+      "möchten",
+      "möchte",
+      "möchtest"
+     ],
+     "answer": "möchte",
+     "explanationAr": "مع ich: möchte."
+    },
+    {
+     "q": "Ich ___ nach Hause.",
+     "options": [
+      "muss",
+      "musst",
+      "müssen"
+     ],
+     "answer": "muss",
+     "explanationAr": "مع ich: muss."
+    },
+    {
+     "q": "Darf ich hier ___?",
+     "options": [
+      "schlafe",
+      "schläfst",
+      "schlafen"
+     ],
+     "answer": "schlafen",
+     "explanationAr": "الفعل الرئيسي في الآخر بدون تصريف."
+    },
+    {
+     "q": "Ich will heute ___.",
+     "options": [
+      "spielst",
+      "spielen",
+      "spiele"
+     ],
+     "answer": "spielen",
+     "explanationAr": "الفعل الرئيسي في الآخر بدون تصريف."
+    }
+   ],
+   "functionWords": [
+    "aber",
+    "am",
+    "an",
+    "auch",
+    "auf",
+    "bei",
+    "bis",
+    "bist",
+    "bitte",
+    "dank",
+    "danke",
+    "das",
+    "dein",
+    "deine",
+    "deinen",
+    "dem",
+    "den",
+    "der",
+    "die",
+    "dies",
+    "dir",
+    "dorthin",
+    "du",
+    "ein",
+    "eine",
+    "einen",
+    "er",
+    "es",
+    "eure",
+    "für",
+    "gern",
+    "habe",
+    "haben",
+    "habt",
+    "hat",
+    "heute",
+    "hier",
+    "ich",
+    "ihnen",
+    "ihr",
+    "im",
+    "immer",
+    "in",
+    "ist",
+    "ja",
+    "jeden",
+    "jetzt",
+    "kann",
+    "kannst",
+    "keinen",
+    "können",
+    "mein",
+    "meine",
+    "meinen",
+    "meiner",
+    "mich",
+    "mir",
+    "mit",
+    "morgen",
+    "nach",
+    "nicht",
+    "schon",
+    "sein",
+    "seinen",
+    "seiner",
+    "sie",
+    "sind",
+    "um",
+    "und",
+    "unsere",
+    "unserem",
+    "viel",
+    "vielen",
+    "wann",
+    "was",
+    "wie",
+    "will",
+    "wir",
+    "wohin",
+    "zu",
+    "zum",
+    "zur"
+   ],
+   "stories": [
+    "de-food-2",
+    "de-food-4",
+    "de-home-5",
+    "de-market-4",
+    "de-social-1",
+    "de-social-3",
+    "de-social-4"
+   ]
+  }, {
+   "id": "de-es-gibt",
+   "title": "Es gibt",
+   "titleAr": "Es gibt",
+   "explanationAr": "Es gibt تعني يوجد، وتأتي مع حالة المفعول: Es gibt eine Küche. Es gibt einen Markt.",
+   "examples": [
+    {
+     "f": "Es gibt eine Küche.",
+     "a": "يوجد مطبخ.",
+     "story": "de-home-1"
+    },
+    {
+     "f": "Es gibt einen Markt.",
+     "a": "يوجد سوق."
+    }
+   ],
+   "exercises": [
+    {
+     "q": "Es gibt ___ Küche.",
+     "options": [
+      "ein",
+      "einen",
+      "eine"
+     ],
+     "answer": "eine",
+     "explanationAr": "Küche مؤنث: eine."
+    },
+    {
+     "q": "Es gibt ___ Markt.",
+     "options": [
+      "eine",
+      "einen",
+      "ein"
+     ],
+     "answer": "einen",
+     "explanationAr": "Markt مذكر في المفعول: einen."
+    },
+    {
+     "q": "Es gibt ___ Haus.",
+     "options": [
+      "ein",
+      "eine",
+      "einen"
+     ],
+     "answer": "ein",
+     "explanationAr": "Haus محايد: ein."
+    },
+    {
+     "q": "___ gibt eine Schule.",
+     "options": [
+      "Er",
+      "Sie",
+      "Es"
+     ],
+     "answer": "Es",
+     "explanationAr": "التعبير الثابت: Es gibt."
+    },
+    {
+     "q": "Es gibt ___ Kinder.",
+     "options": [
+      "vielen",
+      "viele",
+      "viel"
+     ],
+     "answer": "viele",
+     "explanationAr": "viele مع الجمع."
+    },
+    {
+     "q": "Gibt es ___ Markt hier?",
+     "options": [
+      "einen",
+      "ein",
+      "eine"
+     ],
+     "answer": "einen",
+     "explanationAr": "السؤال: Gibt es einen...؟"
+    }
+   ],
+   "functionWords": [
+    "am",
+    "bei",
+    "der",
+    "die",
+    "ein",
+    "eine",
+    "einem",
+    "einen",
+    "es",
+    "hat",
+    "ich",
+    "im",
+    "in",
+    "ist",
+    "jedes",
+    "mein",
+    "meine",
+    "meinem",
+    "meiner",
+    "mit",
+    "und",
+    "wir"
+   ],
+   "stories": [
+    "de-home-1"
+   ]
+  }, {
+   "id": "de-time-am-um",
+   "title": "Zeit: am / um",
+   "titleAr": "الوقت am/um",
+   "explanationAr": "لأيام الأسبوع وأجزاء اليوم: am Samstag، am Morgen، am Abend. للساعة المحددة: um sieben Uhr. والفعل يأتي ثانياً بعد ظرف الوقت.",
+   "examples": [
+    {
+     "f": "Am Samstag gehen wir zum Markt.",
+     "a": "يوم السبت نذهب إلى السوق.",
+     "story": "de-routine-4"
+    },
+    {
+     "f": "Es ist sieben Uhr.",
+     "a": "الساعة السابعة.",
+     "story": "de-weather-3"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "___ Samstag gehen wir.",
+     "options": [
+      "Am",
+      "Um",
+      "In"
+     ],
+     "answer": "Am",
+     "explanationAr": "أيام الأسبوع مع am."
+    },
+    {
+     "q": "Es ist sieben ___.",
+     "options": [
+      "Uhrs",
+      "Uhren",
+      "Uhr"
+     ],
+     "answer": "Uhr",
+     "explanationAr": "الساعة: sieben Uhr."
+    },
+    {
+     "q": "Am Morgen ___ ich.",
+     "options": [
+      "gehst",
+      "gehe",
+      "gehen"
+     ],
+     "answer": "gehe",
+     "explanationAr": "مع ich: -e، والفعل ثانياً."
+    },
+    {
+     "q": "Wir gehen ___ sieben Uhr.",
+     "options": [
+      "um",
+      "am",
+      "in"
+     ],
+     "answer": "um",
+     "explanationAr": "الساعة المحددة مع um."
+    },
+    {
+     "q": "Am Abend ___ wir.",
+     "options": [
+      "spielt",
+      "spiele",
+      "spielen"
+     ],
+     "answer": "spielen",
+     "explanationAr": "مع wir: -en."
+    },
+    {
+     "q": "___ Morgen ist es kalt.",
+     "options": [
+      "In",
+      "Am",
+      "Um"
+     ],
+     "answer": "Am",
+     "explanationAr": "أجزاء اليوم مع am."
+    }
+   ],
+   "functionWords": [
+    "alle",
+    "am",
+    "an",
+    "auch",
+    "auf",
+    "bald",
+    "bei",
+    "bin",
+    "bis",
+    "bist",
+    "da",
+    "dann",
+    "das",
+    "dem",
+    "den",
+    "der",
+    "die",
+    "du",
+    "ein",
+    "eine",
+    "einen",
+    "einer",
+    "er",
+    "es",
+    "etwas",
+    "für",
+    "fürs",
+    "hat",
+    "heraus",
+    "heute",
+    "ich",
+    "ihm",
+    "im",
+    "immer",
+    "in",
+    "ins",
+    "ist",
+    "jede",
+    "jeden",
+    "jeder",
+    "mein",
+    "meine",
+    "meinen",
+    "meiner",
+    "mir",
+    "mit",
+    "morgen",
+    "nach",
+    "neben",
+    "sein",
+    "seine",
+    "seinen",
+    "seiner",
+    "selbst",
+    "sie",
+    "sind",
+    "tschüss",
+    "um",
+    "und",
+    "uns",
+    "viel",
+    "vom",
+    "von",
+    "vor",
+    "war",
+    "weg",
+    "wie",
+    "wieder",
+    "wir",
+    "wo",
+    "zu",
+    "zum",
+    "zur",
+    "über"
+   ],
+   "stories": [
+    "de-routine-1",
+    "de-routine-4",
+    "de-routine-5",
+    "de-routine-6",
+    "de-weather-2",
+    "de-weather-3"
+   ]
+  }, {
+   "id": "de-adjectives",
+   "title": "Adjektive vor Nomen",
+   "titleAr": "الصفة قبل الاسم",
+   "explanationAr": "الصفة تأتي قبل الاسم: rote Äpfel، süßer Kuchen. وبعد أداة التعريف تأتي الصفة بنهاية -e في الغالب للمبتدئين: die roten Schuhe.",
+   "examples": [
+    {
+     "f": "Rote Äpfel sind gut.",
+     "a": "التفاح الأحمر جيد."
+    },
+    {
+     "f": "Die roten Schuhe sind neu.",
+     "a": "الأحذية الحمراء جديدة.",
+     "story": "de-intro-4"
+    }
+   ],
+   "exercises": [
+    {
+     "q": "___ Äpfel",
+     "options": [
+      "roten",
+      "rote",
+      "rot"
+     ],
+     "answer": "rote",
+     "explanationAr": "الصفة قبل الاسم، بدون أداة: rote."
+    },
+    {
+     "q": "Die ___ Schuhe",
+     "options": [
+      "roten",
+      "rote",
+      "rot"
+     ],
+     "answer": "roten",
+     "explanationAr": "بعد die تأتي الصفة بـ -en هنا."
+    },
+    {
+     "q": "Ein ___ Kuchen",
+     "options": [
+      "süße",
+      "süß",
+      "süßer"
+     ],
+     "answer": "süßer",
+     "explanationAr": "بعد ein مع المذكر: süßer."
+    },
+    {
+     "q": "Die Sonne ist ___.",
+     "options": [
+      "heißen",
+      "heiß",
+      "heiße"
+     ],
+     "answer": "heiß",
+     "explanationAr": "بعد ist الصفة بدون نهاية."
+    },
+    {
+     "q": "Ein ___ Haus",
+     "options": [
+      "großes",
+      "große",
+      "groß"
+     ],
+     "answer": "großes",
+     "explanationAr": "بعد ein مع المحايد: großes."
+    },
+    {
+     "q": "Die ___ Blume",
+     "options": [
+      "roten",
+      "rot",
+      "rote"
+     ],
+     "answer": "rote",
+     "explanationAr": "بعد die مع المؤنث: rote."
+    }
+   ],
+   "functionWords": [
+    "aber",
+    "alle",
+    "am",
+    "an",
+    "auch",
+    "auf",
+    "aus",
+    "bitte",
+    "da",
+    "danke",
+    "das",
+    "dem",
+    "den",
+    "der",
+    "des",
+    "die",
+    "dies",
+    "diese",
+    "dieser",
+    "ein",
+    "eine",
+    "einem",
+    "einen",
+    "einer",
+    "er",
+    "es",
+    "für",
+    "ganz",
+    "hat",
+    "heute",
+    "ich",
+    "ihn",
+    "ihr",
+    "ihre",
+    "ihrem",
+    "ihrer",
+    "im",
+    "immer",
+    "in",
+    "ist",
+    "ja",
+    "jede",
+    "jetzt",
+    "kann",
+    "kein",
+    "mehr",
+    "mein",
+    "meine",
+    "mich",
+    "mit",
+    "morgen",
+    "möchte",
+    "nein",
+    "nicht",
+    "sehr",
+    "sein",
+    "seine",
+    "seinen",
+    "seiner",
+    "sich",
+    "sie",
+    "sind",
+    "später",
+    "tschüss",
+    "und",
+    "unserer",
+    "viele",
+    "vor",
+    "waren",
+    "weg",
+    "wie",
+    "will",
+    "wir",
+    "wird",
+    "zu",
+    "zum",
+    "zusammen",
+    "überall"
+   ],
+   "stories": [
+    "de-clothes-3",
+    "de-clothes-7",
+    "de-food-3",
+    "de-food-7",
+    "de-weather-4",
+    "de-weather-7"
+   ]
+  }, {
    "id": "de-imperative",
    "title": "Imperativ",
    "titleAr": "الأمر Imperativ",
@@ -10394,114 +10458,7 @@ var GRAMMAR_A1 = {
    "stories": [
     "de-health-a1-2"
    ]
-  },
-  {
-   "id": "de-profession-no-article",
-   "title": "Berufe ohne Artikel",
-   "titleAr": "المهن بدون أداة",
-   "explanationAr": "في الألمانية لا نضع أداة قبل المهنة بعد sein: Ich bin Lehrerin. Ich bin Arzt. بالإنجليزية نقول I am a teacher، لكن بالألمانية بلا أداة.",
-   "examples": [
-    {
-     "f": "Ich bin Lehrerin.",
-     "a": "أنا معلمة.",
-     "story": "de-jobs-a1-1"
-    },
-    {
-     "f": "Ich bin Arzt.",
-     "a": "أنا طبيب.",
-     "story": "de-jobs-a1-1"
-    },
-    {
-     "f": "Was bist du von Beruf?",
-     "a": "ماذا تعمل؟",
-     "story": "de-jobs-a1-1"
-    }
-   ],
-   "exercises": [
-    {
-     "q": "Ich bin ___.",
-     "options": [
-      "Lehrerin",
-      "eine Lehrerin",
-      "die Lehrerin"
-     ],
-     "answer": "Lehrerin",
-     "explanationAr": "بعد sein بلا أداة."
-    },
-    {
-     "q": "Ich bin ___.",
-     "options": [
-      "ein Arzt",
-      "der Arzt",
-      "Arzt"
-     ],
-     "answer": "Arzt",
-     "explanationAr": "بعد sein بلا أداة."
-    },
-    {
-     "q": "Was bist du von ___?",
-     "options": [
-      "der Beruf",
-      "Beruf",
-      "einem Beruf"
-     ],
-     "answer": "Beruf",
-     "explanationAr": "von Beruf تعبير ثابت."
-    },
-    {
-     "q": "Er ist ___.",
-     "options": [
-      "Bäcker",
-      "ein Bäcker",
-      "der Bäcker"
-     ],
-     "answer": "Bäcker",
-     "explanationAr": "بعد sein بلا أداة."
-    },
-    {
-     "q": "Sie ist ___.",
-     "options": [
-      "eine Ärztin",
-      "die Ärztin",
-      "Ärztin"
-     ],
-     "answer": "Ärztin",
-     "explanationAr": "بعد sein بلا أداة."
-    },
-    {
-     "q": "Ich bin ___.",
-     "options": [
-      "der Busfahrer",
-      "Busfahrer",
-      "ein Busfahrer"
-     ],
-     "answer": "Busfahrer",
-     "explanationAr": "بعد sein بلا أداة."
-    }
-   ],
-   "functionWords": [
-    "alle",
-    "auf",
-    "bin",
-    "bist",
-    "danke",
-    "den",
-    "der",
-    "du",
-    "heute",
-    "ich",
-    "in",
-    "ja",
-    "jetzt",
-    "nach",
-    "von",
-    "was"
-   ],
-   "stories": [
-    "de-jobs-a1-1"
-   ]
-  }
- ],
+  }],
  "mapping": {
   "en": {
    "en-intro-1": [
@@ -10878,37 +10835,89 @@ var GRAMMAR_A1 = {
         var count = document.createElement("p");
         count.textContent = gramRules().length + " قاعدة";
         box.appendChild(count);
-        gramRules().forEach(function(rule){
+        var grid = document.createElement("div");
+        grid.className = "grid";
+        box.appendChild(grid);
+        gramRules().forEach(function(rule, ri){
           var b = document.createElement("button");
-          b.className = "more-link"; b.type = "button";
-          b.textContent = rule.titleAr + " — " + rule.title;
+          b.className = "card gram-card"; b.type = "button";
+          var body = document.createElement("div");
+          body.className = "card-body";
+          var meta = document.createElement("div");
+          meta.className = "card-meta";
+          var num = document.createElement("span");
+          num.className = "badge " + gramLang;
+          num.textContent = (ri + 1);
+          meta.appendChild(num);
+          var exCount = document.createElement("span");
+          exCount.className = "mins";
+          exCount.textContent = (rule.exercises ? rule.exercises.length : 0) + " تمارين";
+          meta.appendChild(exCount);
+          body.appendChild(meta);
+          var h = document.createElement("h3");
+          h.textContent = rule.titleAr;
+          body.appendChild(h);
+          var f = document.createElement("p");
+          f.setAttribute("dir", "ltr");
+          f.textContent = rule.title;
+          body.appendChild(f);
+          b.appendChild(body);
           b.addEventListener("click", function(){ renderGrammarRule(rule.id); });
-          box.appendChild(b);
+          grid.appendChild(b);
         });
       }
       function renderGrammarRule(ruleId){
-        var rule = null;
-        gramRules().forEach(function(r){ if (r.id === ruleId) rule = r; });
+        var rules = gramRules();
+        var rule = null; var ruleIdx = -1;
+        rules.forEach(function(r, ri){ if (r.id === ruleId) { rule = r; ruleIdx = ri; } });
         if (!rule) return;
         gramRule = rule;
         $("gramHome").hidden = true;
         var area = $("gramArea");
         area.innerHTML = "";
+        function gramNav(){
+          var nav = document.createElement("div");
+          nav.className = "gram-nav";
+          if (ruleIdx > 0) {
+            var pv = document.createElement("button");
+            pv.className = "more-link"; pv.type = "button";
+            pv.textContent = "القاعدة السابقة: " + rules[ruleIdx - 1].titleAr;
+            pv.addEventListener("click", function(){ renderGrammarRule(rules[ruleIdx - 1].id); });
+            nav.appendChild(pv);
+          }
+          if (ruleIdx < rules.length - 1) {
+            var nx = document.createElement("button");
+            nx.className = "more-link"; nx.type = "button";
+            nx.textContent = "القاعدة التالية: " + rules[ruleIdx + 1].titleAr;
+            nx.addEventListener("click", function(){ renderGrammarRule(rules[ruleIdx + 1].id); });
+            nav.appendChild(nx);
+          }
+          return nav;
+        }
         var back = document.createElement("button");
         back.className = "more-link"; back.type = "button"; back.textContent = "عودة";
         back.addEventListener("click", function(){ renderGrammarHome(); });
         area.appendChild(back);
         var title = document.createElement("h3");
         title.className = "sub-title";
-        title.textContent = rule.titleAr + " — " + rule.title;
+        title.textContent = (ruleIdx + 1) + ". " + rule.titleAr + " — " + rule.title;
         area.appendChild(title);
+        area.appendChild(gramNav());
+        var explBox = document.createElement("div");
+        explBox.className = "lesson-box";
+        var explHead = document.createElement("h3");
+        explHead.textContent = "الشرح";
+        explBox.appendChild(explHead);
         var expl = document.createElement("p");
         expl.textContent = rule.explanationAr || "";
-        area.appendChild(expl);
+        explBox.appendChild(expl);
+        area.appendChild(explBox);
         if (rule.examples && rule.examples.length) {
+          var exBox = document.createElement("div");
+          exBox.className = "vocab-box";
           var exHead = document.createElement("h3");
-          exHead.className = "sub-title"; exHead.textContent = "أمثلة";
-          area.appendChild(exHead);
+          exHead.textContent = "أمثلة";
+          exBox.appendChild(exHead);
           rule.examples.forEach(function(ex){
             var d = document.createElement("div");
             d.className = "q";
@@ -10934,22 +10943,28 @@ var GRAMMAR_A1 = {
               sp2.textContent = "من قصة: " + st;
               d.appendChild(sp2);
             }
-            area.appendChild(d);
+            exBox.appendChild(d);
           });
+          area.appendChild(exBox);
         }
         if (rule.functionWords && rule.functionWords.length) {
+          var fwBox = document.createElement("div");
+          fwBox.className = "lesson-box";
           var fwHead = document.createElement("h3");
-          fwHead.className = "sub-title"; fwHead.textContent = "كلمات صغيرة";
-          area.appendChild(fwHead);
+          fwHead.textContent = "كلمات صغيرة";
+          fwBox.appendChild(fwHead);
           var fw = document.createElement("p");
           fw.setAttribute("dir", "ltr");
           fw.textContent = rule.functionWords.join(" · ");
-          area.appendChild(fw);
+          fwBox.appendChild(fw);
+          area.appendChild(fwBox);
         }
         if (rule.exercises && rule.exercises.length) {
+          var qBox = document.createElement("div");
+          qBox.className = "quiz-box";
           var qHead = document.createElement("h3");
-          qHead.className = "sub-title"; qHead.textContent = "تمارين";
-          area.appendChild(qHead);
+          qHead.textContent = "تمارين";
+          qBox.appendChild(qHead);
           rule.exercises.forEach(function(item, qi){
             var q = document.createElement("div");
             q.className = "q";
@@ -10980,9 +10995,11 @@ var GRAMMAR_A1 = {
               opts.appendChild(b);
             });
             q.appendChild(opts);
-            area.appendChild(q);
+            qBox.appendChild(q);
           });
+          area.appendChild(qBox);
         }
+        area.appendChild(gramNav());
       }
       $("gramLangEn").addEventListener("click", function(){
         gramLang = "en"; $("gramLangEn").className = "active-en"; $("gramLangDe").className = ""; renderGrammarHome();
