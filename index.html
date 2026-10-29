@@ -1929,6 +1929,15 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
           var ea = document.createElement("span");
           ea.textContent = res.ea || "";
           ex.appendChild(ef); ex.appendChild(ea);
+          var exSp = document.createElement("button");
+          exSp.type = "button"; exSp.className = "bank-speak"; exSp.setAttribute("aria-label", "استمع إلى المثال"); exSp.textContent = "🔊";
+          exSp.addEventListener("click", function(){
+            stopVocab();
+            var w = (typeof popCtx !== "undefined" && popCtx) ? popCtx.w : "";
+            var u = (story.level === "A1" && w) ? bankBundleExample(w, res.ef, story.lang) : null;
+            if (u) playBundle(u, res.ef, story.lang); else bankSpeak(res.ef, story.lang);
+          });
+          ex.appendChild(exSp);
         } else {
           ex.hidden = true;
         }
@@ -2033,6 +2042,11 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
       /* Pronounce the tapped word with the correct language voice (en / de) */
       $("wpSpeak").addEventListener("click", function(){
         if (!popCtx) return;
+        if (currentStory && currentStory.level === "A1") {
+          var wseg = null;
+          try { wseg = bankWordBundle(popCtx.w, popCtx.lang); } catch (e) { wseg = null; }
+          if (wseg) { playBundle(wseg, popCtx.w, popCtx.lang); return; }
+        }
         if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
           showToast("النطق الصوتي غير متاح في هذا المتصفح");
           return;
