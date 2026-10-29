@@ -116,6 +116,12 @@
       .gram-card{width:100%; text-align:inherit; font:inherit; color:inherit; cursor:pointer}
       .gram-card .card-body{text-align:right}
       .gram-nav{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0}
+      .gram-title{font-family:var(--font-serif); font-size:1.5rem; margin:22px 0 6px}
+      .gram-expl{line-height:1.9; margin:0 0 22px}
+      .gram-sec{font-family:var(--font-serif); font-size:1.2rem; margin:28px 0 4px}
+      .gram-ex{padding:14px 0; border-bottom:1px solid var(--line)}
+      .gram-ex .gram-f{font-family:var(--font-serif); direction:ltr; text-align:left; font-weight:700; margin:0}
+      .gram-ex .gram-a{margin:5px 0 0; opacity:.75}
       .card h3 .foreign{font-family:var(--font-serif); direction:ltr; unicode-bidi:isolate}
       .card .about{margin:0; color:var(--muted); font-size:.95rem; flex:1}
       .read-btn{
@@ -4795,7 +4801,8 @@
       /* ---------- Vocabulary bank A1+A2: browsing, search, save-to-SRS ---------- */
       var CONV_A1 = {"en": [{"id": "en-introduce", "title": "Introduce yourself", "titleAr": "عرّف بنفسك", "dialog": [{"s": "A", "f": "Hello, my name is Sara.", "a": "مرحبًا، اسمي سارة."}, {"s": "B", "f": "Hello, Sara. My name is Omar.", "a": "مرحبًا، سارة. اسمي عمر."}, {"s": "A", "f": "Nice to meet you, Omar.", "a": "سعيد بلقائك يا عمر."}, {"s": "B", "f": "Nice to meet you too.", "a": "وأنا سعيد بلقائك أيضًا."}, {"s": "A", "f": "Where are you from, Omar?", "a": "من أين أنت يا عمر؟"}, {"s": "B", "f": "I am from Baghdad.", "a": "أنا من بغداد."}, {"s": "A", "f": "I am from Baghdad too.", "a": "وأنا من بغداد أيضًا."}, {"s": "B", "f": "Great! Let us talk again.", "a": "رائع! لنتحدث مجددًا."}], "complete": {"q": "Sara asks: Where are you from, Omar? What does Omar answer?", "options": ["I am from Baghdad.", "I am a teacher.", "I like bread.", "It is Monday."], "answer": 0, "explanationAr": "نقول من أين نحن بـ I am from."}, "qa": {"q": "What is your name?", "keys": ["name", "sara"], "model": "My name is Sara.", "modelAr": "اسمي سارة."}, "change": {"base": "I am from Baghdad.", "baseAr": "أنا من بغداد.", "promptAr": "غيّر Baghdad إلى Berlin، وقل الجملة بصوت عالٍ.", "new": "I am from Berlin.", "newAr": "أنا من برلين."}}, {"id": "en-order-food", "title": "Order food", "titleAr": "اطلب طعامًا", "dialog": [{"s": "A", "f": "Hello. I would like bread, please.", "a": "مرحبًا. أريد خبزًا، من فضلك."}, {"s": "B", "f": "Yes. Do you want cheese too?", "a": "نعم. هل تريد جبنًا أيضًا؟"}, {"s": "A", "f": "Yes, please. And water, please.", "a": "نعم، من فضلك. وماء أيضًا، من فضلك."}, {"s": "B", "f": "Here is your bread and water.", "a": "هذا خبزك وماؤك."}, {"s": "A", "f": "Thank you very much.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "You are welcome. Enjoy your food.", "a": "على الرحب والسعة. استمتع بطعامك."}, {"s": "A", "f": "The bread is very good.", "a": "الخبز جيد جدًا."}, {"s": "B", "f": "Thank you. Come again soon.", "a": "شكرًا. تعال مجددًا قريبًا."}], "complete": {"q": "The waiter asks: Do you want cheese too? What do you answer?", "options": ["No, thank you.", "I am from Baghdad.", "It is Monday.", "Yes, please. And water, please."], "answer": 3, "explanationAr": "نقبل العرض بـ Yes, please، ونضيف ما نريد."}, "qa": {"q": "What do you want?", "keys": ["bread"], "model": "I would like bread, please.", "modelAr": "أريد خبزًا، من فضلك."}, "change": {"base": "I would like bread, please.", "baseAr": "أريد خبزًا، من فضلك.", "promptAr": "غيّر bread إلى cheese، وقل الجملة بصوت عالٍ.", "new": "I would like cheese, please.", "newAr": "أريد جبنًا، من فضلك."}}, {"id": "en-directions", "title": "Ask directions", "titleAr": "اسأل عن الطريق", "dialog": [{"s": "A", "f": "Excuse me. Where is the bank?", "a": "عذرًا. أين البنك؟"}, {"s": "B", "f": "Go straight, then turn left.", "a": "اذهب مباشرة، ثم انعطف يسارًا."}, {"s": "A", "f": "Is it near the market?", "a": "هل هو قريب من السوق؟"}, {"s": "B", "f": "Yes, it is near the market.", "a": "نعم، هو قريب من السوق."}, {"s": "A", "f": "Thank you. Is it far?", "a": "شكرًا. هل هو بعيد؟"}, {"s": "B", "f": "No, it is very near.", "a": "لا، هو قريب جدًا."}, {"s": "A", "f": "Thank you very much.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "You are welcome. Good luck.", "a": "على الرحب والسعة. حظًا سعيدًا."}], "complete": {"q": "You ask: Is it near the market? What is the answer?", "options": ["I like bread.", "It is Monday.", "Yes, it is near the market.", "No, it is far."], "answer": 2, "explanationAr": "near تعني قريب."}, "qa": {"q": "Where is the bank?", "keys": ["near", "market"], "model": "It is near the market.", "modelAr": "هو قريب من السوق."}, "change": {"base": "Go straight, then turn left.", "baseAr": "اذهب مباشرة، ثم انعطف يسارًا.", "promptAr": "غيّر left إلى right، وقل الجملة بصوت عالٍ.", "new": "Go straight, then turn right.", "newAr": "اذهب مباشرة، ثم انعطف يمينًا."}}, {"id": "en-bank", "title": "At the bank", "titleAr": "في البنك", "dialog": [{"s": "A", "f": "Hello. I would like an account.", "a": "مرحبًا. أريد حسابًا."}, {"s": "B", "f": "Yes, of course. Your name, please?", "a": "نعم، بالطبع. اسمك، من فضلك؟"}, {"s": "A", "f": "My name is Sara Ali.", "a": "اسمي سارة علي."}, {"s": "B", "f": "Thank you. Can you sign here?", "a": "شكرًا. هل يمكنك التوقيع هنا؟"}, {"s": "A", "f": "Yes. Can I take money now?", "a": "نعم. هل يمكنني أخذ مال الآن؟"}, {"s": "B", "f": "Yes, you can take money now.", "a": "نعم، يمكنك أخذ مال الآن."}, {"s": "A", "f": "Thank you very much for your help.", "a": "شكرًا جزيلًا على مساعدتك."}, {"s": "B", "f": "You are welcome. Good day.", "a": "على الرحب والسعة. يومًا سعيدًا."}], "complete": {"q": "You ask: Can I take money now? What is the answer?", "options": ["It is Monday.", "Yes, you can take money now.", "No, you cannot.", "I like bread."], "answer": 1, "explanationAr": "Can I تعني هل يمكنني، ونسأل بها بأدب."}, "qa": {"q": "What do you want at the bank?", "keys": ["account"], "model": "I would like an account.", "modelAr": "أريد حسابًا."}, "change": {"base": "I would like an account.", "baseAr": "أريد حسابًا.", "promptAr": "غيّر account إلى money، وقل الجملة بصوت عالٍ.", "new": "I would like money, please.", "newAr": "أريد مالًا، من فضلك."}}, {"id": "en-pharmacy", "title": "At the pharmacy", "titleAr": "في الصيدلية", "dialog": [{"s": "A", "f": "Hello. I have a headache.", "a": "مرحبًا. عندي صداع."}, {"s": "B", "f": "Do you need medicine?", "a": "هل تحتاج دواءً؟"}, {"s": "A", "f": "Yes, please. What medicine is good?", "a": "نعم، من فضلك. أي دواء جيد؟"}, {"s": "B", "f": "Take two tablets in the morning.", "a": "خذ حبتين في الصباح."}, {"s": "A", "f": "And in the evening too?", "a": "وفي المساء أيضًا؟"}, {"s": "B", "f": "Yes, two tablets in the evening.", "a": "نعم، حبتان في المساء."}, {"s": "A", "f": "Thank you very much.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "Get well soon.", "a": "شفاك الله قريبًا."}], "complete": {"q": "The pharmacist asks: Do you need medicine? What do you answer?", "options": ["Yes, please. What medicine is good?", "No, thank you.", "I am from Baghdad.", "It is Monday."], "answer": 0, "explanationAr": "نطلب الدواء بـ medicine، ونقبل بـ Yes, please."}, "qa": {"q": "What is your problem?", "keys": ["headache"], "model": "I have a headache.", "modelAr": "عندي صداع."}, "change": {"base": "I have a headache.", "baseAr": "عندي صداع.", "promptAr": "غيّر headache إلى cold، وقل الجملة بصوت عالٍ.", "new": "I have a cold.", "newAr": "عندي زكام."}}, {"id": "en-borrow-pen", "title": "Borrow a pen", "titleAr": "استعارة قلم", "dialog": [{"s": "A", "f": "Excuse me. Can I borrow your pen?", "a": "عذرًا. هل يمكنني استعارة قلمك؟"}, {"s": "B", "f": "Yes, of course. Here you are.", "a": "نعم، بالطبع. تفضل."}, {"s": "A", "f": "Thank you. I need it now.", "a": "شكرًا. أحتاجه الآن."}, {"s": "B", "f": "No problem. When do you return it?", "a": "لا مشكلة. متى تعيده؟"}, {"s": "A", "f": "I return it after the lesson.", "a": "أعيده بعد الدرس."}, {"s": "B", "f": "Good. Do you like my pen?", "a": "جيد. هل يعجبك قلمي؟"}, {"s": "A", "f": "Yes, it is a nice pen.", "a": "نعم، إنه قلم جميل."}, {"s": "B", "f": "Thank you. Enjoy your lesson.", "a": "شكرًا. استمتع بدرسك."}], "complete": {"q": "You ask: Can I borrow your pen? What is the answer?", "options": ["No, you cannot.", "I like bread.", "It is Monday.", "Yes, of course. Here you are."], "answer": 3, "explanationAr": "borrow تعني يستعير، ونرد بـ Here you are."}, "qa": {"q": "What do you want to borrow?", "keys": ["pen"], "model": "Can I borrow your pen, please?", "modelAr": "هل يمكنني استعارة قلمك، من فضلك؟"}, "change": {"base": "Can I borrow your pen?", "baseAr": "هل يمكنني استعارة قلمك؟", "promptAr": "غيّر pen إلى book، وقل الجملة بصوت عالٍ.", "new": "Can I borrow your book?", "newAr": "هل يمكنني استعارة كتابك؟"}}, {"id": "en-apologize-late", "title": "Apologize for being late", "titleAr": "اعتذر عن التأخر", "dialog": [{"s": "A", "f": "Sorry, I am late today.", "a": "عذرًا، أنا متأخر اليوم."}, {"s": "B", "f": "No problem. Why are you late?", "a": "لا مشكلة. لماذا أنت متأخر؟"}, {"s": "A", "f": "My bus was very late.", "a": "حافلتي كانت متأخرة جدًا."}, {"s": "B", "f": "I understand. Sit down, please.", "a": "أفهم. اجلس، من فضلك."}, {"s": "A", "f": "Thank you. I am sorry again.", "a": "شكرًا. أنا آسف مجددًا."}, {"s": "B", "f": "Do not worry.", "a": "لا تقلق."}, {"s": "A", "f": "I will come early tomorrow.", "a": "سآتي مبكرًا غدًا."}, {"s": "B", "f": "See you tomorrow.", "a": "أراك غدًا."}], "complete": {"q": "You are asked: Why are you late? What do you answer?", "options": ["I am a teacher.", "It is Monday.", "My bus was very late.", "I like bread."], "answer": 2, "explanationAr": "نعتذر بـ Sorry، ونشرح السبب بجملة كاملة."}, "qa": {"q": "Why are you late?", "keys": ["bus", "late"], "model": "My bus was very late.", "modelAr": "حافلتي كانت متأخرة جدًا."}, "change": {"base": "My bus was very late.", "baseAr": "حافلتي كانت متأخرة جدًا.", "promptAr": "غيّر bus إلى train، وقل الجملة بصوت عالٍ.", "new": "My train was very late.", "newAr": "قطاري كان متأخرًا جدًا."}}, {"id": "en-phone-party", "title": "Phone call for a party", "titleAr": "مكالمة هاتفية لحفلة", "dialog": [{"s": "A", "f": "Hello, this is Sara.", "a": "مرحبًا، هذه سارة."}, {"s": "B", "f": "Hello, Sara. How are you?", "a": "مرحبًا، سارة. كيف حالك؟"}, {"s": "A", "f": "I am fine, thank you.", "a": "أنا بخير، شكرًا."}, {"s": "B", "f": "Can I help you?", "a": "هل يمكنني مساعدتك؟"}, {"s": "A", "f": "Can you come to my party?", "a": "هل يمكنك المجيء إلى حفلتي؟"}, {"s": "B", "f": "Yes, I would love to come.", "a": "نعم، أود المجيء كثيرًا."}, {"s": "A", "f": "The party is on Saturday evening.", "a": "الحفلة مساء السبت."}, {"s": "B", "f": "Great. See you on Saturday.", "a": "رائع. أراك يوم السبت."}], "complete": {"q": "You ask: Can you come to my party? What is the answer?", "options": ["It is Monday.", "Yes, I would love to come.", "No, I cannot.", "I like bread."], "answer": 1, "explanationAr": "ندعو بـ Can you come، ونقبل بـ I would love to come."}, "qa": {"q": "When is the party?", "keys": ["saturday"], "model": "The party is on Saturday evening.", "modelAr": "الحفلة مساء السبت."}, "change": {"base": "The party is on Saturday evening.", "baseAr": "الحفلة مساء السبت.", "promptAr": "غيّر Saturday إلى Sunday، وقل الجملة بصوت عالٍ.", "new": "The party is on Sunday evening.", "newAr": "الحفلة مساء الأحد."}}], "de": [{"id": "de-introduce", "title": "Sich vorstellen", "titleAr": "عرّف بنفسك", "dialog": [{"s": "A", "f": "Hallo, ich heiße Sara.", "a": "مرحبًا، اسمي سارة."}, {"s": "B", "f": "Hallo, Sara. Ich heiße Omar.", "a": "مرحبًا، سارة. اسمي عمر."}, {"s": "A", "f": "Freut mich, Omar.", "a": "سعيد بلقائك يا عمر."}, {"s": "B", "f": "Freut mich auch.", "a": "وأنا سعيد بلقائك أيضًا."}, {"s": "A", "f": "Woher kommst du, Omar?", "a": "من أين أنت يا عمر؟"}, {"s": "B", "f": "Ich komme aus Bagdad.", "a": "أنا من بغداد."}, {"s": "A", "f": "Ich komme auch aus Bagdad.", "a": "وأنا من بغداد أيضًا."}, {"s": "B", "f": "Bis bald, Sara.", "a": "إلى اللقاء قريبًا يا سارة."}], "complete": {"q": "Sara fragt: Woher kommst du, Omar? Was antwortet Omar?", "options": ["Ich komme aus Bagdad.", "Ich bin Lehrer.", "Ich mag Brot.", "Es ist Montag."], "answer": 0, "explanationAr": "Wir sagen, woher wir kommen, mit Ich komme aus."}, "qa": {"q": "Wie heißt du?", "keys": ["sara"], "model": "Ich heiße Sara.", "modelAr": "اسمي سارة."}, "change": {"base": "Ich komme aus Bagdad.", "baseAr": "أنا من بغداد.", "promptAr": "غيّر Bagdad إلى Berlin، وقل الجملة بصوت عالٍ.", "new": "Ich komme aus Berlin.", "newAr": "أنا من برلين."}}, {"id": "de-order-food", "title": "Essen bestellen", "titleAr": "اطلب طعامًا", "dialog": [{"s": "A", "f": "Hallo. Ich möchte Brot, bitte.", "a": "مرحبًا. أريد خبزًا، من فضلك."}, {"s": "B", "f": "Ja. Möchtest du auch Käse?", "a": "نعم. هل تريد جبنًا أيضًا؟"}, {"s": "A", "f": "Ja, bitte. Und Wasser, bitte.", "a": "نعم، من فضلك. وماء أيضًا، من فضلك."}, {"s": "B", "f": "Hier ist dein Brot und Wasser.", "a": "هذا خبزك وماؤك."}, {"s": "A", "f": "Vielen Dank.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "Guten Appetit.", "a": "بالهناء والشفاء."}, {"s": "A", "f": "Das Brot ist sehr gut.", "a": "الخبز جيد جدًا."}, {"s": "B", "f": "Danke schön.", "a": "شكرًا جزيلًا."}], "complete": {"q": "Der Kellner fragt: Möchtest du auch Käse? Was antwortest du?", "options": ["Nein, danke.", "Ich komme aus Bagdad.", "Es ist Montag.", "Ja, bitte. Und Wasser, bitte."], "answer": 3, "explanationAr": "Wir nehmen ein Angebot mit Ja, bitte an."}, "qa": {"q": "Was möchtest du?", "keys": ["brot"], "model": "Ich möchte Brot, bitte.", "modelAr": "أريد خبزًا، من فضلك."}, "change": {"base": "Ich möchte Brot, bitte.", "baseAr": "أريد خبزًا، من فضلك.", "promptAr": "غيّر Brot إلى Käse، وقل الجملة بصوت عالٍ.", "new": "Ich möchte Käse, bitte.", "newAr": "أريد جبنًا، من فضلك."}}, {"id": "de-directions", "title": "Nach dem Weg fragen", "titleAr": "اسأل عن الطريق", "dialog": [{"s": "A", "f": "Entschuldigung. Wo ist die Bank?", "a": "عذرًا. أين البنك؟"}, {"s": "B", "f": "Geh geradeaus, dann links.", "a": "اذهب مباشرة، ثم يسارًا."}, {"s": "A", "f": "Ist sie nah am Markt?", "a": "هل هو قريب من السوق؟"}, {"s": "B", "f": "Ja, sie ist nah am Markt.", "a": "نعم، هو قريب من السوق."}, {"s": "A", "f": "Danke. Ist sie weit?", "a": "شكرًا. هل هو بعيد؟"}, {"s": "B", "f": "Nein, sie ist sehr nah.", "a": "لا، هو قريب جدًا."}, {"s": "A", "f": "Vielen Dank.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "Viel Glück.", "a": "حظًا سعيدًا."}], "complete": {"q": "Du fragst: Ist sie nah am Markt? Was ist die Antwort?", "options": ["Ich mag Brot.", "Es ist Montag.", "Ja, sie ist nah am Markt.", "Nein, sie ist weit."], "answer": 2, "explanationAr": "nah bedeutet قريب."}, "qa": {"q": "Wo ist die Bank?", "keys": ["nah", "markt"], "model": "Sie ist nah am Markt.", "modelAr": "هو قريب من السوق."}, "change": {"base": "Geh geradeaus, dann links.", "baseAr": "اذهب مباشرة، ثم يسارًا.", "promptAr": "غيّر links إلى rechts، وقل الجملة بصوت عالٍ.", "new": "Geh geradeaus, dann rechts.", "newAr": "اذهب مباشرة، ثم يمينًا."}}, {"id": "de-bank", "title": "In der Bank", "titleAr": "في البنك", "dialog": [{"s": "A", "f": "Hallo. Ich möchte ein Konto.", "a": "مرحبًا. أريد حسابًا."}, {"s": "B", "f": "Ja, gern. Dein Name, bitte?", "a": "نعم، بكل سرور. اسمك، من فضلك؟"}, {"s": "A", "f": "Mein Name ist Sara Ali.", "a": "اسمي سارة علي."}, {"s": "B", "f": "Danke. Kannst du hier unterschreiben?", "a": "شكرًا. هل يمكنك التوقيع هنا؟"}, {"s": "A", "f": "Ja. Kann ich jetzt Geld nehmen?", "a": "نعم. هل يمكنني أخذ مال الآن؟"}, {"s": "B", "f": "Ja, du kannst jetzt Geld nehmen.", "a": "نعم، يمكنك أخذ مال الآن."}, {"s": "A", "f": "Vielen Dank für deine Hilfe.", "a": "شكرًا جزيلًا على مساعدتك."}, {"s": "B", "f": "Schönen Tag.", "a": "يومًا سعيدًا."}], "complete": {"q": "Du fragst: Kann ich jetzt Geld nehmen? Was ist die Antwort?", "options": ["Es ist Montag.", "Ja, du kannst jetzt Geld nehmen.", "Nein, du kannst nicht.", "Ich mag Brot."], "answer": 1, "explanationAr": "Kann ich bedeutet هل يمكنني، ونطلب بها بأدب."}, "qa": {"q": "Was möchtest du in der Bank?", "keys": ["konto"], "model": "Ich möchte ein Konto.", "modelAr": "أريد حسابًا."}, "change": {"base": "Ich möchte ein Konto.", "baseAr": "أريد حسابًا.", "promptAr": "غيّر Konto إلى Geld، وقل الجملة بصوت عالٍ.", "new": "Ich möchte Geld, bitte.", "newAr": "أريد مالًا، من فضلك."}}, {"id": "de-pharmacy", "title": "In der Apotheke", "titleAr": "في الصيدلية", "dialog": [{"s": "A", "f": "Hallo. Ich habe Kopfschmerzen.", "a": "مرحبًا. عندي صداع."}, {"s": "B", "f": "Brauchst du Medizin?", "a": "هل تحتاج دواءً؟"}, {"s": "A", "f": "Ja, bitte.", "a": "نعم، من فضلك."}, {"s": "B", "f": "Nimm zwei Tabletten am Morgen.", "a": "خذ حبتين في الصباح."}, {"s": "A", "f": "Und am Abend auch?", "a": "وفي المساء أيضًا؟"}, {"s": "B", "f": "Ja, zwei Tabletten am Abend.", "a": "نعم، حبتان في المساء."}, {"s": "A", "f": "Vielen Dank.", "a": "شكرًا جزيلًا."}, {"s": "B", "f": "Gute Besserung.", "a": "شفاك الله قريبًا."}], "complete": {"q": "Der Apotheker fragt: Brauchst du Medizin? Was antwortest du?", "options": ["Ja, bitte.", "Nein, danke.", "Ich komme aus Bagdad.", "Es ist Montag."], "answer": 0, "explanationAr": "Wir nehmen Hilfe mit Ja, bitte an."}, "qa": {"q": "Was ist dein Problem?", "keys": ["kopfschmerzen"], "model": "Ich habe Kopfschmerzen.", "modelAr": "عندي صداع."}, "change": {"base": "Ich habe Kopfschmerzen.", "baseAr": "عندي صداع.", "promptAr": "غيّر Kopfschmerzen إلى krank، وقل الجملة بصوت عالٍ.", "new": "Ich bin krank.", "newAr": "أنا مريض."}}, {"id": "de-borrow-pen", "title": "Einen Stift leihen", "titleAr": "استعارة قلم", "dialog": [{"s": "A", "f": "Entschuldigung. Kann ich deinen Stift leihen?", "a": "عذرًا. هل يمكنني استعارة قلمك؟"}, {"s": "B", "f": "Ja, gern. Hier ist er.", "a": "نعم، بكل سرور. تفضل."}, {"s": "A", "f": "Danke. Ich brauche ihn jetzt.", "a": "شكرًا. أحتاجه الآن."}, {"s": "B", "f": "Kein Problem. Wann gibst du ihn zurück?", "a": "لا مشكلة. متى تعيده؟"}, {"s": "A", "f": "Ich gebe ihn nach der Stunde zurück.", "a": "أعيده بعد الدرس."}, {"s": "B", "f": "Gut. Magst du meinen Stift?", "a": "جيد. هل يعجبك قلمي؟"}, {"s": "A", "f": "Ja, er ist ein schöner Stift.", "a": "نعم، إنه قلم جميل."}, {"s": "B", "f": "Danke. Viel Spaß in der Stunde.", "a": "شكرًا. استمتع بدرسك."}], "complete": {"q": "Du fragst: Kann ich deinen Stift leihen? Was ist die Antwort?", "options": ["Nein, du kannst nicht.", "Ich mag Brot.", "Es ist Montag.", "Ja, gern. Hier ist er."], "answer": 3, "explanationAr": "leihen bedeutet يستعير، ونرد بـ Hier ist er."}, "qa": {"q": "Was möchtest du leihen?", "keys": ["stift"], "model": "Kann ich deinen Stift leihen?", "modelAr": "هل يمكنني استعارة قلمك؟"}, "change": {"base": "Kann ich deinen Stift leihen?", "baseAr": "هل يمكنني استعارة قلمك؟", "promptAr": "غيّر Stift إلى Buch، وقل الجملة بصوت عالٍ.", "new": "Kann ich dein Buch leihen?", "newAr": "هل يمكنني استعارة كتابك؟"}}, {"id": "de-apologize-late", "title": "Entschuldigung für Verspätung", "titleAr": "اعتذر عن التأخر", "dialog": [{"s": "A", "f": "Entschuldigung, ich bin heute spät.", "a": "عذرًا، أنا متأخر اليوم."}, {"s": "B", "f": "Kein Problem. Warum bist du spät?", "a": "لا مشكلة. لماذا أنت متأخر؟"}, {"s": "A", "f": "Mein Bus war sehr spät.", "a": "حافلتي كانت متأخرة جدًا."}, {"s": "B", "f": "Ich verstehe. Setz dich, bitte.", "a": "أفهم. اجلس، من فضلك."}, {"s": "A", "f": "Es tut mir leid.", "a": "أنا آسف."}, {"s": "B", "f": "Mach dir keine Sorgen.", "a": "لا تقلق."}, {"s": "A", "f": "Ich komme morgen früh.", "a": "سآتي مبكرًا غدًا."}, {"s": "B", "f": "Bis morgen.", "a": "إلى الغد."}], "complete": {"q": "Du wirst gefragt: Warum bist du spät? Was antwortest du?", "options": ["Ich bin Lehrer.", "Es ist Montag.", "Mein Bus war sehr spät.", "Ich mag Brot."], "answer": 2, "explanationAr": "Wir entschuldigen uns mit Entschuldigung und erklären den Grund."}, "qa": {"q": "Warum bist du spät?", "keys": ["bus", "spät"], "model": "Mein Bus war sehr spät.", "modelAr": "حافلتي كانت متأخرة جدًا."}, "change": {"base": "Mein Bus war sehr spät.", "baseAr": "حافلتي كانت متأخرة جدًا.", "promptAr": "غيّر Bus إلى Zug، وقل الجملة بصوت عالٍ.", "new": "Mein Zug war sehr spät.", "newAr": "قطاري كان متأخرًا جدًا."}}, {"id": "de-phone-party", "title": "Anruf für eine Party", "titleAr": "مكالمة هاتفية لحفلة", "dialog": [{"s": "A", "f": "Hallo, hier ist Sara.", "a": "مرحبًا، هذه سارة."}, {"s": "B", "f": "Hallo, Sara. Wie geht es dir?", "a": "مرحبًا، سارة. كيف حالك؟"}, {"s": "A", "f": "Mir geht es gut, danke.", "a": "أنا بخير، شكرًا."}, {"s": "B", "f": "Gut. Kann ich dir helfen?", "a": "جيد. هل يمكنني مساعدتك؟"}, {"s": "A", "f": "Kannst du zu meiner Party kommen?", "a": "هل يمكنك المجيء إلى حفلتي؟"}, {"s": "B", "f": "Ja, ich komme sehr gern.", "a": "نعم، آتي بكل سرور."}, {"s": "A", "f": "Die Party ist am Samstagabend.", "a": "الحفلة مساء السبت."}, {"s": "B", "f": "Bis Samstag.", "a": "إلى السبت."}], "complete": {"q": "Du fragst: Kannst du zu meiner Party kommen? Was ist die Antwort?", "options": ["Es ist Montag.", "Ja, ich komme sehr gern.", "Nein, ich kann nicht.", "Ich mag Brot."], "answer": 1, "explanationAr": "Wir laden mit Kannst du kommen ein und nehmen mit gern an."}, "qa": {"q": "Wann ist die Party?", "keys": ["samstagabend"], "model": "Die Party ist am Samstagabend.", "modelAr": "الحفلة مساء السبت."}, "change": {"base": "Die Party ist am Samstagabend.", "baseAr": "الحفلة مساء السبت.", "promptAr": "غيّر Samstagabend إلى Sonntagabend، وقل الجملة بصوت عالٍ.", "new": "Die Party ist am Sonntagabend.", "newAr": "الحفلة مساء الأحد."}}], "talk": {"en": {"starters": ["My name is ...", "I live in ...", "I like ...", "I am a student."], "check": ["I said 3 or 4 sentences.", "I said my name.", "I said where I live.", "I said what I like."]}, "de": {"starters": ["Ich heiße ...", "Ich wohne in ...", "Ich mag ...", "Ich bin Student."], "check": ["Ich habe 3 oder 4 Sätze gesagt.", "Ich habe meinen Namen gesagt.", "Ich habe gesagt, wo ich wohne.", "Ich habe gesagt, was ich mag."]}}};
 var GRAMMAR_A1 = {
- "en": [{
+ "en": [
+  {
    "id": "en-a-an-the",
    "title": "a / an / the",
    "titleAr": "أدوات التعريف والتنكير",
@@ -4820,6 +4827,10 @@ var GRAMMAR_A1 = {
      "f": "This cake is for you.",
      "a": "هذه الكعكة لك.",
      "story": "en-intro-4"
+    },
+    {
+     "f": "An apple is red.",
+     "a": "تفاحة حمراء."
     }
    ],
    "exercises": [
@@ -4921,7 +4932,8 @@ var GRAMMAR_A1 = {
     "en-jobs-a1-1",
     "en-market-1"
    ]
-  }, {
+  },
+  {
    "id": "en-plurals",
    "title": "Plurals -s",
    "titleAr": "الجمع بإضافة s",
@@ -5036,7 +5048,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-intro-5"
    ]
-  }, {
+  },
+  {
    "id": "en-demonstratives",
    "title": "Demonstratives",
    "titleAr": "this/that/these/those",
@@ -5051,6 +5064,14 @@ var GRAMMAR_A1 = {
      "f": "These shoes are new.",
      "a": "هذه الأحذية جديدة.",
      "story": "en-clothes-2"
+    },
+    {
+     "f": "That book is old.",
+     "a": "ذلك الكتاب قديم."
+    },
+    {
+     "f": "Those books are new.",
+     "a": "تلك الكتب جديدة."
     }
    ],
    "exercises": [
@@ -5143,7 +5164,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-clothes-2"
    ]
-  }, {
+  },
+  {
    "id": "en-possessives",
    "title": "Possessives",
    "titleAr": "الملكية my/your/his/her",
@@ -5163,6 +5185,14 @@ var GRAMMAR_A1 = {
      "f": "His name is Rex.",
      "a": "اسمه ريكس.",
      "story": "en-intro-6"
+    },
+    {
+     "f": "My name is Sara.",
+     "a": "اسمي سارة."
+    },
+    {
+     "f": "Her bag is red.",
+     "a": "حقيبتها حمراء."
     }
    ],
    "exercises": [
@@ -5255,7 +5285,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-intro-6"
    ]
-  }, {
+  },
+  {
    "id": "en-be",
    "title": "am / is / are",
    "titleAr": "فعل الكون am/is/are",
@@ -5280,6 +5311,10 @@ var GRAMMAR_A1 = {
      "f": "You are good friends.",
      "a": "أنتم أصدقاء جيدون.",
      "story": "en-intro-1"
+    },
+    {
+     "f": "They are friends.",
+     "a": "هم أصدقاء."
     }
    ],
    "exercises": [
@@ -5372,7 +5407,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-intro-1"
    ]
-  }, {
+  },
+  {
    "id": "en-there-is-are",
    "title": "There is / There are",
    "titleAr": "هناك There is/are",
@@ -5479,7 +5515,8 @@ var GRAMMAR_A1 = {
     "en-home-1",
     "en-market-2"
    ]
-  }, {
+  },
+  {
    "id": "en-present-simple-s",
    "title": "Present simple -s",
    "titleAr": "المضارع البسيط مع he/she",
@@ -5504,6 +5541,14 @@ var GRAMMAR_A1 = {
      "f": "I like jam and toast.",
      "a": "أنا أحب المربى والخبز المحمص.",
      "story": "en-market-5"
+    },
+    {
+     "f": "He reads a book.",
+     "a": "هو يقرأ كتاباً."
+    },
+    {
+     "f": "She likes tea.",
+     "a": "هي تحب الشاي."
     }
    ],
    "exercises": [
@@ -5630,7 +5675,8 @@ var GRAMMAR_A1 = {
     "en-routine-2",
     "en-routine-3"
    ]
-  }, {
+  },
+  {
    "id": "en-habits",
    "title": "Present simple for habits",
    "titleAr": "المضارع للعادات",
@@ -5649,6 +5695,10 @@ var GRAMMAR_A1 = {
      "f": "She plays every day.",
      "a": "هي تلعب كل يوم.",
      "story": "en-intro-2"
+    },
+    {
+     "f": "I play on Sunday.",
+     "a": "ألعب يوم الأحد."
     }
    ],
    "exercises": [
@@ -5750,7 +5800,8 @@ var GRAMMAR_A1 = {
     "en-hobbies-a1-1",
     "en-home-6"
    ]
-  }, {
+  },
+  {
    "id": "en-frequency",
    "title": "Adverbs of frequency",
    "titleAr": "ظروف التكرار",
@@ -5764,6 +5815,26 @@ var GRAMMAR_A1 = {
      "f": "She plays every day.",
      "a": "هي تلعب كل يوم.",
      "story": "en-intro-2"
+    },
+    {
+     "f": "I always play on Saturday.",
+     "a": "ألعب دائماً يوم السبت."
+    },
+    {
+     "f": "She usually reads.",
+     "a": "هي تقرأ عادةً."
+    },
+    {
+     "f": "We often play football.",
+     "a": "نلعب كرة القدم غالباً."
+    },
+    {
+     "f": "Sometimes I read.",
+     "a": "أحياناً أقرأ."
+    },
+    {
+     "f": "I never play on Sunday.",
+     "a": "لا ألعب أبداً يوم الأحد."
     }
    ],
    "exercises": [
@@ -5850,7 +5921,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-hobbies-a1-1"
    ]
-  }, {
+  },
+  {
    "id": "en-be-questions",
    "title": "be-questions",
    "titleAr": "أسئلة be",
@@ -5975,7 +6047,8 @@ var GRAMMAR_A1 = {
     "en-home-5",
     "en-intro-3"
    ]
-  }, {
+  },
+  {
    "id": "en-do-does",
    "title": "do / does auxiliary",
    "titleAr": "do/does كفعل مساعد",
@@ -6097,7 +6170,8 @@ var GRAMMAR_A1 = {
     "en-jobs-a1-1",
     "en-travel-a1-2"
    ]
-  }, {
+  },
+  {
    "id": "en-yes-no-questions",
    "title": "Yes / No questions",
    "titleAr": "أسئلة نعم / لا",
@@ -6122,6 +6196,10 @@ var GRAMMAR_A1 = {
      "f": "Yes, I like school.",
      "a": "نعم، أحب المدرسة.",
      "story": "en-intro-7"
+    },
+    {
+     "f": "No, I do not like tea.",
+     "a": "لا، لا أحب الشاي."
     }
    ],
    "exercises": [
@@ -6213,7 +6291,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-intro-7"
    ]
-  }, {
+  },
+  {
    "id": "en-negation",
    "title": "Negation don't / doesn't",
    "titleAr": "النفي don't/doesn't",
@@ -6320,7 +6399,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-weather-4"
    ]
-  }, {
+  },
+  {
    "id": "en-have-has",
    "title": "have / has and have got",
    "titleAr": "have/has و have got",
@@ -6339,6 +6419,10 @@ var GRAMMAR_A1 = {
     {
      "f": "She has a book.",
      "a": "عندها كتاب."
+    },
+    {
+     "f": "I have got a book.",
+     "a": "عندي كتاب."
     }
    ],
    "exercises": [
@@ -6449,7 +6533,8 @@ var GRAMMAR_A1 = {
     "en-health-a1-1",
     "en-routine-6"
    ]
-  }, {
+  },
+  {
    "id": "en-can",
    "title": "can for polite requests",
    "titleAr": "can للطلب بأدب",
@@ -6573,7 +6658,8 @@ var GRAMMAR_A1 = {
     "en-social-1",
     "en-social-3"
    ]
-  }, {
+  },
+  {
    "id": "en-would-like",
    "title": "Would like",
    "titleAr": "Would like للطلب المهذب",
@@ -6685,7 +6771,8 @@ var GRAMMAR_A1 = {
     "en-food-2",
     "en-food-6"
    ]
-  }, {
+  },
+  {
    "id": "en-object-pronouns",
    "title": "Object pronouns",
    "titleAr": "ضمائر المفعول به",
@@ -6700,6 +6787,22 @@ var GRAMMAR_A1 = {
      "f": "Can you help me?",
      "a": "هل يمكنك مساعدتي؟",
      "story": "en-social-1"
+    },
+    {
+     "f": "Please help him.",
+     "a": "ساعدْه من فضلك."
+    },
+    {
+     "f": "Give her the book.",
+     "a": "أعطِها الكتاب."
+    },
+    {
+     "f": "Tell us the story.",
+     "a": "احكِ لنا القصة."
+    },
+    {
+     "f": "I see them today.",
+     "a": "أراهم اليوم."
     }
    ],
    "exercises": [
@@ -6782,7 +6885,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-food-4"
    ]
-  }, {
+  },
+  {
    "id": "en-countable",
    "title": "Countable and uncountable nouns",
    "titleAr": "المعدود وغير المعدود",
@@ -6795,6 +6899,10 @@ var GRAMMAR_A1 = {
     {
      "f": "I have three eggs.",
      "a": "عندي ثلاث بيضات."
+    },
+    {
+     "f": "I drink some milk.",
+     "a": "أشرب بعض الحليب."
     }
    ],
    "exercises": [
@@ -6881,7 +6989,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-food-1"
    ]
-  }, {
+  },
+  {
    "id": "en-some-any",
    "title": "some / any",
    "titleAr": "some و any",
@@ -6978,7 +7087,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-market-3"
    ]
-  }, {
+  },
+  {
    "id": "en-how-much-many",
    "title": "How much / How many",
    "titleAr": "How much و How many",
@@ -7100,7 +7210,8 @@ var GRAMMAR_A1 = {
     "en-food-5",
     "en-market-6"
    ]
-  }, {
+  },
+  {
    "id": "en-prepositions-place",
    "title": "Prepositions of place",
    "titleAr": "حروف جر المكان",
@@ -7115,6 +7226,10 @@ var GRAMMAR_A1 = {
      "f": "Look under the table!",
      "a": "انظر تحت الطاولة!",
      "story": "en-home-5"
+    },
+    {
+     "f": "The book is on the table.",
+     "a": "الكتاب على الطاولة."
     }
    ],
    "exercises": [
@@ -7199,7 +7314,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "en-home-2"
    ]
-  }, {
+  },
+  {
    "id": "en-time-expressions",
    "title": "Time expressions",
    "titleAr": "تعابير الوقت",
@@ -7218,6 +7334,18 @@ var GRAMMAR_A1 = {
      "f": "What time is it?",
      "a": "كم الساعة؟",
      "story": "en-weather-3"
+    },
+    {
+     "f": "In the afternoon, I play.",
+     "a": "بعد الظهر ألعب."
+    },
+    {
+     "f": "I sleep at night.",
+     "a": "أنام ليلاً."
+    },
+    {
+     "f": "On Monday, I go to school.",
+     "a": "يوم الاثنين أذهب إلى المدرسة."
     }
    ],
    "exercises": [
@@ -7337,7 +7465,8 @@ var GRAMMAR_A1 = {
     "en-weather-2",
     "en-weather-3"
    ]
-  }, {
+  },
+  {
    "id": "en-adjectives",
    "title": "Adjectives before nouns",
    "titleAr": "الصفة قبل الاسم",
@@ -7479,7 +7608,8 @@ var GRAMMAR_A1 = {
     "en-weather-5",
     "en-weather-7"
    ]
-  }, {
+  },
+  {
    "id": "en-imperatives",
    "title": "Imperatives",
    "titleAr": "الأمر Imperatives",
@@ -7648,7 +7778,8 @@ var GRAMMAR_A1 = {
     "en-routine-7",
     "en-weather-6"
    ]
-  }, {
+  },
+  {
    "id": "en-directions",
    "title": "Directions and bus phrases",
    "titleAr": "الاتجاهات والحافلة",
@@ -7672,6 +7803,14 @@ var GRAMMAR_A1 = {
     {
      "f": "Get off at the market.",
      "a": "انزل عند السوق."
+    },
+    {
+     "f": "It is on the right.",
+     "a": "إنه على اليمين."
+    },
+    {
+     "f": "Get on the bus.",
+     "a": "اركب الحافلة."
     }
    ],
    "exercises": [
@@ -7766,7 +7905,8 @@ var GRAMMAR_A1 = {
     "en-travel-a1-1",
     "en-travel-a1-2"
    ]
-  }, {
+  },
+  {
    "id": "en-phone-apology",
    "title": "Phone, invitation and apology phrases",
    "titleAr": "الهاتف والدعوة والاعتذار",
@@ -7791,6 +7931,10 @@ var GRAMMAR_A1 = {
      "f": "That is okay.",
      "a": "لا مشكلة.",
      "story": "en-social-2"
+    },
+    {
+     "f": "No problem, my friend.",
+     "a": "لا مشكلة يا صديقي."
     }
    ],
    "exercises": [
@@ -7892,8 +8036,10 @@ var GRAMMAR_A1 = {
     "en-social-2",
     "en-social-4"
    ]
-  }],
- "de": [{
+  }
+ ],
+ "de": [
+  {
    "id": "de-der-die-das",
    "title": "der / die / das",
    "titleAr": "أدوات التعريف der/die/das",
@@ -7913,6 +8059,14 @@ var GRAMMAR_A1 = {
      "f": "Der Salat ist frisch.",
      "a": "السلطة طازجة.",
      "story": "de-market-1"
+    },
+    {
+     "f": "Die Mutter ist hier.",
+     "a": "الأم هنا."
+    },
+    {
+     "f": "Das Haus ist groß.",
+     "a": "البيت كبير."
     }
    ],
    "exercises": [
@@ -8049,7 +8203,8 @@ var GRAMMAR_A1 = {
     "de-market-1",
     "de-weather-1"
    ]
-  }, {
+  },
+  {
    "id": "de-ein-eine",
    "title": "ein / eine",
    "titleAr": "أداة النكرة ein/eine",
@@ -8068,6 +8223,10 @@ var GRAMMAR_A1 = {
      "f": "Ich kaufe rote Schuhe.",
      "a": "أشتري أحذية حمراء.",
      "story": "de-intro-4"
+    },
+    {
+     "f": "Ich kaufe einen Apfel.",
+     "a": "أشتري تفاحةً."
     }
    ],
    "exercises": [
@@ -8173,7 +8332,8 @@ var GRAMMAR_A1 = {
     "de-intro-4",
     "de-market-2"
    ]
-  }, {
+  },
+  {
    "id": "de-plurale",
    "title": "Plurale",
    "titleAr": "الجمع Plurale",
@@ -8187,6 +8347,10 @@ var GRAMMAR_A1 = {
     {
      "f": "Die Äpfel sind rot.",
      "a": "التفاح أحمر."
+    },
+    {
+     "f": "Die Kinder spielen.",
+     "a": "الأطفال يلعبون."
     }
    ],
    "exercises": [
@@ -8282,7 +8446,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "de-intro-5"
    ]
-  }, {
+  },
+  {
    "id": "de-name-s",
    "title": "Name + s",
    "titleAr": "الملكية بإضافة s لاسم العلم",
@@ -8391,7 +8556,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "de-intro-6"
    ]
-  }, {
+  },
+  {
    "id": "de-profession-no-article",
    "title": "Berufe ohne Artikel",
    "titleAr": "المهن بدون أداة",
@@ -8496,7 +8662,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "de-jobs-a1-1"
    ]
-  }, {
+  },
+  {
    "id": "de-verbzweit",
    "title": "Verbzweit",
    "titleAr": "الفعل في المرتبة الثانية Verbzweit",
@@ -8515,6 +8682,10 @@ var GRAMMAR_A1 = {
      "f": "Wir treffen uns im Park.",
      "a": "نلتقي في الحديقة.",
      "story": "de-intro-3"
+    },
+    {
+     "f": "Heute lerne ich Deutsch.",
+     "a": "اليوم أتعلم الألمانية."
     }
    ],
    "exercises": [
@@ -8620,7 +8791,8 @@ var GRAMMAR_A1 = {
     "de-intro-1",
     "de-market-3"
    ]
-  }, {
+  },
+  {
    "id": "de-verbendungen",
    "title": "Verbendungen",
    "titleAr": "نهايات الفعل Verbendungen",
@@ -8635,6 +8807,14 @@ var GRAMMAR_A1 = {
      "f": "Woher kommst du?",
      "a": "من أين تأتي؟",
      "story": "de-intro-3"
+    },
+    {
+     "f": "Er kommt aus Berlin.",
+     "a": "هو يأتي من برلين."
+    },
+    {
+     "f": "Wir kommen aus Berlin.",
+     "a": "نحن نأتي من برلين."
     }
    ],
    "exercises": [
@@ -8751,7 +8931,8 @@ var GRAMMAR_A1 = {
     "de-intro-3",
     "de-routine-2"
    ]
-  }, {
+  },
+  {
    "id": "de-sein-haben",
    "title": "sein / haben",
    "titleAr": "sein و haben الشاذان",
@@ -8769,6 +8950,38 @@ var GRAMMAR_A1 = {
     {
      "f": "Er ist Lehrer.",
      "a": "هو معلم."
+    },
+    {
+     "f": "Du bist mein Freund.",
+     "a": "أنت صديقي."
+    },
+    {
+     "f": "Wir sind zu Hause.",
+     "a": "نحن في البيت."
+    },
+    {
+     "f": "Ihr seid nett.",
+     "a": "أنتم لطفاء."
+    },
+    {
+     "f": "Sie sind hier.",
+     "a": "هم هنا."
+    },
+    {
+     "f": "Du hast ein Buch.",
+     "a": "عندك كتاب."
+    },
+    {
+     "f": "Er hat Zeit.",
+     "a": "عنده وقت."
+    },
+    {
+     "f": "Wir haben Hunger.",
+     "a": "نحن جائعون."
+    },
+    {
+     "f": "Ihr habt Wasser.",
+     "a": "عندكم ماء."
     }
    ],
    "exercises": [
@@ -8921,7 +9134,8 @@ var GRAMMAR_A1 = {
     "de-weather-5",
     "de-weather-6"
    ]
-  }, {
+  },
+  {
    "id": "de-separable",
    "title": "Trennbare Verben",
    "titleAr": "الأفعال المنفصلة",
@@ -8941,6 +9155,10 @@ var GRAMMAR_A1 = {
      "f": "Bieg links ab.",
      "a": "انعطف يساراً.",
      "story": "de-travel-a1-1"
+    },
+    {
+     "f": "Ich probiere das Kleid an.",
+     "a": "أجرّب الفستان."
     }
    ],
    "exercises": [
@@ -9101,7 +9319,8 @@ var GRAMMAR_A1 = {
     "de-travel-a1-1",
     "de-travel-a1-2"
    ]
-  }, {
+  },
+  {
    "id": "de-ja-nein-fragen",
    "title": "Ja / Nein-Fragen",
    "titleAr": "أسئلة نعم/لا Ja/Nein",
@@ -9116,6 +9335,10 @@ var GRAMMAR_A1 = {
      "f": "Ja, ich komme aus Berlin.",
      "a": "نعم، أنا قادم من برلين.",
      "story": "de-intro-7"
+    },
+    {
+     "f": "Nein, ich komme nicht aus Berlin.",
+     "a": "لا، أنا لا آتي من برلين."
     }
    ],
    "exercises": [
@@ -9232,7 +9455,8 @@ var GRAMMAR_A1 = {
     "de-intro-7",
     "de-social-2"
    ]
-  }, {
+  },
+  {
    "id": "de-w-fragen",
    "title": "W-Fragen",
    "titleAr": "أسئلة الاستفهام W-Fragen",
@@ -9252,6 +9476,14 @@ var GRAMMAR_A1 = {
      "f": "Woher kommst du?",
      "a": "من أين تأتي؟",
      "story": "de-intro-3"
+    },
+    {
+     "f": "Wann kommst du?",
+     "a": "متى تأتي؟"
+    },
+    {
+     "f": "Wie geht es dir?",
+     "a": "كيف حالك؟"
     }
    ],
    "exercises": [
@@ -9356,7 +9588,8 @@ var GRAMMAR_A1 = {
     "de-food-6",
     "de-market-6"
    ]
-  }, {
+  },
+  {
    "id": "de-nicht-kein",
    "title": "nicht / kein",
    "titleAr": "النفي nicht/kein",
@@ -9489,7 +9722,8 @@ var GRAMMAR_A1 = {
     "de-intro-7",
     "de-social-2"
    ]
-  }, {
+  },
+  {
    "id": "de-akkusativ",
    "title": "Akkusativ",
    "titleAr": "حالة المفعول به Akkusativ",
@@ -9590,7 +9824,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "de-market-5"
    ]
-  }, {
+  },
+  {
    "id": "de-dativ",
    "title": "Dativ",
    "titleAr": "حالة الجر Dativ",
@@ -9610,6 +9845,14 @@ var GRAMMAR_A1 = {
      "f": "Auf dem Stuhl.",
      "a": "على الكرسي.",
      "story": "de-home-2"
+    },
+    {
+     "f": "Gib mir das Buch.",
+     "a": "أعطني الكتاب."
+    },
+    {
+     "f": "Ich helfe dir.",
+     "a": "أساعدك."
     }
    ],
    "exercises": [
@@ -9724,7 +9967,8 @@ var GRAMMAR_A1 = {
     "de-home-2",
     "de-routine-3"
    ]
-  }, {
+  },
+  {
    "id": "de-modalverben",
    "title": "Modalverben",
    "titleAr": "الأفعال المساعدة Modalverben",
@@ -9743,6 +9987,22 @@ var GRAMMAR_A1 = {
     {
      "f": "Ich kann dir helfen.",
      "a": "أستطيع مساعدتك."
+    },
+    {
+     "f": "Ich muss gehen.",
+     "a": "يجب أن أذهب."
+    },
+    {
+     "f": "Ich will Wasser.",
+     "a": "أريد ماءً."
+    },
+    {
+     "f": "Ich darf hier spielen.",
+     "a": "يُسمح لي أن ألعب هنا."
+    },
+    {
+     "f": "Wir sollen lernen.",
+     "a": "ينبغي أن نتعلم."
     }
    ],
    "exercises": [
@@ -9900,7 +10160,8 @@ var GRAMMAR_A1 = {
     "de-social-3",
     "de-social-4"
    ]
-  }, {
+  },
+  {
    "id": "de-es-gibt",
    "title": "Es gibt",
    "titleAr": "Es gibt",
@@ -10005,7 +10266,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "de-home-1"
    ]
-  }, {
+  },
+  {
    "id": "de-time-am-um",
    "title": "Zeit: am / um",
    "titleAr": "الوقت am/um",
@@ -10020,6 +10282,18 @@ var GRAMMAR_A1 = {
      "f": "Es ist sieben Uhr.",
      "a": "الساعة السابعة.",
      "story": "de-weather-3"
+    },
+    {
+     "f": "Am Morgen trinke ich Tee.",
+     "a": "في الصباح أشرب الشاي."
+    },
+    {
+     "f": "Am Abend lese ich.",
+     "a": "في المساء أقرأ."
+    },
+    {
+     "f": "Um sieben Uhr esse ich.",
+     "a": "في السابعة آكل."
     }
    ],
    "exercises": [
@@ -10168,7 +10442,8 @@ var GRAMMAR_A1 = {
     "de-weather-2",
     "de-weather-3"
    ]
-  }, {
+  },
+  {
    "id": "de-adjectives",
    "title": "Adjektive vor Nomen",
    "titleAr": "الصفة قبل الاسم",
@@ -10182,6 +10457,10 @@ var GRAMMAR_A1 = {
      "f": "Die roten Schuhe sind neu.",
      "a": "الأحذية الحمراء جديدة.",
      "story": "de-intro-4"
+    },
+    {
+     "f": "Ein süßer Kuchen ist gut.",
+     "a": "كعكة حلوة جيدة."
     }
    ],
    "exercises": [
@@ -10334,7 +10613,8 @@ var GRAMMAR_A1 = {
     "de-weather-4",
     "de-weather-7"
    ]
-  }, {
+  },
+  {
    "id": "de-imperative",
    "title": "Imperativ",
    "titleAr": "الأمر Imperativ",
@@ -10458,7 +10738,8 @@ var GRAMMAR_A1 = {
    "stories": [
     "de-health-a1-2"
    ]
-  }],
+  }
+ ],
  "mapping": {
   "en": {
    "en-intro-1": [
@@ -10832,9 +11113,6 @@ var GRAMMAR_A1 = {
         $("gramLangDe").className = gramLang === "de" ? "active-de" : "";
         var box = $("gramHome");
         box.innerHTML = "";
-        var count = document.createElement("p");
-        count.textContent = gramRules().length + " قاعدة";
-        box.appendChild(count);
         var grid = document.createElement("div");
         grid.className = "grid";
         box.appendChild(grid);
@@ -10849,10 +11127,6 @@ var GRAMMAR_A1 = {
           num.className = "badge " + gramLang;
           num.textContent = (ri + 1);
           meta.appendChild(num);
-          var exCount = document.createElement("span");
-          exCount.className = "mins";
-          exCount.textContent = (rule.exercises ? rule.exercises.length : 0) + " تمارين";
-          meta.appendChild(exCount);
           body.appendChild(meta);
           var h = document.createElement("h3");
           h.textContent = rule.titleAr;
@@ -10899,29 +11173,24 @@ var GRAMMAR_A1 = {
         back.addEventListener("click", function(){ renderGrammarHome(); });
         area.appendChild(back);
         var title = document.createElement("h3");
-        title.className = "sub-title";
+        title.className = "gram-title";
         title.textContent = (ruleIdx + 1) + ". " + rule.titleAr + " — " + rule.title;
         area.appendChild(title);
         area.appendChild(gramNav());
-        var explBox = document.createElement("div");
-        explBox.className = "lesson-box";
-        var explHead = document.createElement("h3");
-        explHead.textContent = "الشرح";
-        explBox.appendChild(explHead);
         var expl = document.createElement("p");
+        expl.className = "gram-expl";
         expl.textContent = rule.explanationAr || "";
-        explBox.appendChild(expl);
-        area.appendChild(explBox);
+        area.appendChild(expl);
         if (rule.examples && rule.examples.length) {
-          var exBox = document.createElement("div");
-          exBox.className = "vocab-box";
           var exHead = document.createElement("h3");
+          exHead.className = "gram-sec";
           exHead.textContent = "أمثلة";
-          exBox.appendChild(exHead);
+          area.appendChild(exHead);
           rule.examples.forEach(function(ex){
             var d = document.createElement("div");
-            d.className = "q";
+            d.className = "gram-ex";
             var fp = document.createElement("p");
+            fp.className = "gram-f";
             fp.setAttribute("dir", "ltr"); fp.setAttribute("lang", gramLang);
             fp.textContent = ex.f;
             d.appendChild(fp);
@@ -10932,37 +11201,17 @@ var GRAMMAR_A1 = {
             sp.addEventListener("click", function(){ bankSpeak(ex.f, gramLang); });
             d.appendChild(sp);
             var ap = document.createElement("p");
+            ap.className = "gram-a";
             ap.textContent = ex.a;
             d.appendChild(ap);
-            if (ex.story) {
-              var st = ex.story;
-              try {
-                if (typeof WORD_STORIES !== "undefined" && WORD_STORIES.titles && WORD_STORIES.titles[ex.story] && WORD_STORIES.titles[ex.story].titleAr) st = WORD_STORIES.titles[ex.story].titleAr;
-              } catch (e) { /* keep story id */ }
-              var sp2 = document.createElement("p");
-              sp2.textContent = "من قصة: " + st;
-              d.appendChild(sp2);
-            }
-            exBox.appendChild(d);
+            area.appendChild(d);
           });
-          area.appendChild(exBox);
         }
-        if (rule.functionWords && rule.functionWords.length) {
-          var fwBox = document.createElement("div");
-          fwBox.className = "lesson-box";
-          var fwHead = document.createElement("h3");
-          fwHead.textContent = "كلمات صغيرة";
-          fwBox.appendChild(fwHead);
-          var fw = document.createElement("p");
-          fw.setAttribute("dir", "ltr");
-          fw.textContent = rule.functionWords.join(" · ");
-          fwBox.appendChild(fw);
-          area.appendChild(fwBox);
-        }
+
         if (rule.exercises && rule.exercises.length) {
           var qBox = document.createElement("div");
-          qBox.className = "quiz-box";
           var qHead = document.createElement("h3");
+          qHead.className = "gram-sec";
           qHead.textContent = "تمارين";
           qBox.appendChild(qHead);
           rule.exercises.forEach(function(item, qi){
