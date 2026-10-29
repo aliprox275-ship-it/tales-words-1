@@ -2320,17 +2320,17 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
           }));
         } catch (e) { /* storage unavailable: keep the learned rates in memory */ }
       }
-      var kara = { queue: [], idx: -1, playing: false, paused: false, curSpan: null, curKey: null, everStarted: false,
+      var kara = { queue: [], idx: -1, playing: false, paused: false, curSpan: null, curKey: null, lastWasRecorded: false, everStarted: false,
                    timer: null, anchorT: 0, anchorClock: 0, anchorScale: 1, clockStart: 0, pausedAccum: 0, pauseBegan: 0,
                    startedFlag: false, rateFactor: karaLoadRates() };
       function karaSupported(){
         return "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
       }
-      function karaBuildItem(box, lang, key){
+      function karaBuildItem(box, lang, key, fromFi){
         var spans = [], text = "";
         var fps = box.querySelectorAll(".para-f");
-        for (var fi = 0; fi < fps.length; fi++) {
-          if (fi > 0) text += " ";
+        for (var fi = (fromFi || 0); fi < fps.length; fi++) {
+          if (fi > (fromFi || 0)) text += " ";
           var nodes = fps[fi].childNodes;
           for (var ni = 0; ni < nodes.length; ni++) {
             var nd = nodes[ni];
@@ -2548,7 +2548,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
           var rseg = null;
           try { rseg = bundleSeg("stories/" + currentStory.id + ".mp3", "p" + ("0" + (item.key + 1)).slice(-2)); } catch (e) { rseg = null; }
           if (rseg) {
-            kara.playing = true; kara.paused = false; kara.curKey = item.key;
+            kara.playing = true; kara.paused = false; kara.curKey = item.key; kara.lastWasRecorded = true;
             karaSyncUI();
             var rGen = kara.suppressGen || 0;
             playBundle(rseg, item.text, item.lang, function(){
@@ -2566,6 +2566,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
           }
         }
         kara.ttsForced = false;
+        kara.lastWasRecorded = false;
         var synth = window.speechSynthesis;
         var u = new SpeechSynthesisUtterance(item.text);
         u.lang = item.lang === "de" ? "de-DE" : "en-US";
@@ -2661,17 +2662,35 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
       }
       var karaRepeatToken = 0;
       function karaRepeatSentence(){
-        if (!karaSupported()) { showToast("النطق الصوتي غير متاح في هذا المتصفح"); return; }
-        var sent = null, lang = null;
         var cur = (kara.idx >= 0 && kara.queue[kara.idx]) ? kara.queue[kara.idx] : null;
-        if (kara.curSpan) {
-          sent = karaSentText(kara.curSpan);
-          lang = cur ? cur.lang : (currentStory ? currentStory.lang : "en");
-        } else if (kara.lastSent) {
-          sent = kara.lastSent.text; lang = kara.lastSent.lang;
-        } else if (cur) {
-          sent = cur.text; lang = cur.lang;
+        if (kara.playing && cur && currentStory && currentStory.level === "A1" && !currentStory.branching && typeof cur.key === "number" && kara.lastWasRecorded) {
+          var rseg = null;
+          try { rseg = bundleSeg("stories/" + currentStory.id + ".mp3", "p" + ("0" + (cur.key + 1)).slice(-2)); } catch (e) { rseg = null; }
+          if (rseg) {
+            var tokR = ++karaRepeatToken;
+            try { stopRecorded(); } catch (e) {}
+            try { window.speechSynthesis.cancel(); } catch (e) {}
+            karaTimerStop();
+            kara.playing = true; kara.paused = false;
+            cur.box.classList.add("playing"); followBox(cur.box); karaSyncUI();
+            playBundle(rseg, cur.text, cur.lang, function(){ if (!kara.playing) return; kara.ttsForced = true; karaSpeakCurrent(); }, function(){ if (!kara.playing || tokR !== karaRepeatToken) return; cur.box.classList.remove("playing"); kara.idx++; if (kara.idx < kara.queue.length) karaSpeakCurrent(); else karaFinish(true); }, true);
+            return;
+          }
         }
+        if (!karaSupported()) { showToast("النطق الصوتي غير متاح في هذا المتصفح"); return; }
+        var sent = null, lang = null, sentIdx = -1;
+        if (cur) {
+          var sents = cur.box ? cur.box.querySelectorAll(".sent") : [];
+          if (kara.curSpan) {
+            for (var si = 0; si < sents.length; si++) { if (sents[si] === kara.curSpan) { sentIdx = si; break; } }
+            if (sentIdx >= 0) { sent = karaSentText(kara.curSpan); lang = cur.lang; }
+          }
+          if (sent === null && kara.lastSent) {
+            for (var sj = 0; sj < sents.length; sj++) { if (karaSentText(sents[sj]) === kara.lastSent.text) { sentIdx = sj; break; } }
+            if (sentIdx >= 0) { sent = kara.lastSent.text; lang = kara.lastSent.lang; }
+          }
+          if (sent === null) { sent = cur.text; lang = cur.lang; sentIdx = -1; }
+        } else if (kara.lastSent) { sent = kara.lastSent.text; lang = kara.lastSent.lang; }
         if (!sent) { showToast("شغّل القراءة أولًا"); return; }
         var resumePara = kara.playing && !!cur;
         var tok = ++karaRepeatToken;
@@ -2687,7 +2706,13 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
           pickVoice(u, lang);
           u.onend = function(){
             if (tok !== karaRepeatToken) return;
-            if (resumePara && kara.queue.length && kara.idx >= 0 && kara.everStarted) karaSpeakCurrent();
+            if (!resumePara || !kara.queue.length || kara.idx < 0 || !kara.everStarted) return;
+            if (sentIdx >= 0 && cur) {
+              var total = cur.box ? cur.box.querySelectorAll(".sent").length : 0;
+              if (sentIdx + 1 < total) { kara.queue[kara.idx] = karaBuildItem(cur.box, cur.lang, cur.key, sentIdx + 1); karaSpeakCurrent(); return; }
+            }
+            kara.idx++;
+            if (kara.idx < kara.queue.length) karaSpeakCurrent(); else karaFinish(true);
           };
           synth.speak(u);
         } catch (e) { showToast("تعذّر تشغيل النطق"); }
@@ -2933,7 +2958,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
           }
           tEl.appendChild(document.createTextNode(v.t));
           item.querySelector(".ef").textContent = v.ef;
-          item.querySelector(".ea").textContent = v.ea; var vb = document.createElement("button"); vb.type = "button"; vb.className = "bank-speak"; vb.setAttribute("aria-label", "استمع إلى المثال"); vb.textContent = "🔊"; vb.addEventListener("click", function(){ var u = (s.level === "A1") ? bankBundleExample(v.w, v.ef, s.lang) : null; if (u) playBundle(u, v.ef, s.lang); else bankSpeak(v.ef, s.lang); }); item.appendChild(vb);
+          item.querySelector(".ea").textContent = v.ea; var vb = document.createElement("button"); vb.type = "button"; vb.className = "bank-speak"; vb.setAttribute("aria-label", "استمع إلى المثال"); vb.textContent = "🔊"; vb.addEventListener("click", function(){ stopVocab(); var u = (s.level === "A1") ? bankBundleExample(v.w, v.ef, s.lang) : null; if (u) playBundle(u, v.ef, s.lang); else bankSpeak(v.ef, s.lang); }); item.appendChild(vb);
           vl.appendChild(item);
         });
         var start = $("prepStart");
@@ -3089,7 +3114,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
         vocabSeq.playing = true;
         syncVocabBtns();
         var entries = story.vocab || [];
-        var ei = 0, step = 0;
+        var ei = 0, step = 0; var spokenExamples = {}; var stepId = 0;
         function finish(){ if (sess !== vocabSeq.session) return; vocabSeq.playing = false; syncVocabBtns(); }
         function speakTTS(text, nextFn){
           if (sess !== vocabSeq.session) return;
@@ -3098,22 +3123,25 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
           u.lang = story.lang === "de" ? "de-DE" : "en-US";
           u.rate = audioSpeed;
           pickVoice(u, story.lang);
-          u.onend = function(){ nextFn(); };
-          u.onerror = function(){ nextFn(); };
+          var ttsDone = false; function ttsOnce(){ if (ttsDone) return; ttsDone = true; nextFn(); }
+          u.onend = ttsOnce;
+          u.onerror = ttsOnce;
           try { window.speechSynthesis.speak(u); } catch (e) { nextFn(); }
         }
-        function advance(){ if (sess !== vocabSeq.session) return; if (step === 0) { step = 1; } else { step = 0; ei++; } next(); }
+        function advance(myId){ if (sess !== vocabSeq.session || myId !== stepId) return; if (step === 0) { step = 1; } else { step = 0; ei++; } next(); }
         function next(){
           if (sess !== vocabSeq.session) return;
+          var myId = ++stepId;
           if (ei >= entries.length) { finish(); return; }
           var v = entries[ei];
           var text = step === 0 ? v.w : v.ef;
           if (!text) { ei++; step = 0; next(); return; }
+          if (step === 1) { if (spokenExamples[text]) { ei++; step = 0; next(); return; } spokenExamples[text] = true; }
           if (story.level === "A1") {
             var seg = step === 0 ? bankWordBundle(v.w, story.lang) : bankBundleExample(v.w, v.ef, story.lang);
-            if (seg) { playBundle(seg, text, story.lang, function(){ speakTTS(text, advance); }, function(){ advance(); }); return; }
+            if (seg) { playBundle(seg, text, story.lang, function(){ speakTTS(text, function(){ advance(myId); }); }, function(){ advance(myId); }); return; }
           }
-          speakTTS(text, advance);
+          speakTTS(text, function(){ advance(myId); });
         }
         next();
       }
@@ -3316,7 +3344,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
           }
           tEl.appendChild(document.createTextNode(v.t));
           item.querySelector(".ef").textContent = v.ef;
-          item.querySelector(".ea").textContent = v.ea; var vb = document.createElement("button"); vb.type = "button"; vb.className = "bank-speak"; vb.setAttribute("aria-label", "استمع إلى المثال"); vb.textContent = "🔊"; vb.addEventListener("click", function(){ var u = (s.level === "A1") ? bankBundleExample(v.w, v.ef, s.lang) : null; if (u) playBundle(u, v.ef, s.lang); else bankSpeak(v.ef, s.lang); }); item.appendChild(vb);
+          item.querySelector(".ea").textContent = v.ea; var vb = document.createElement("button"); vb.type = "button"; vb.className = "bank-speak"; vb.setAttribute("aria-label", "استمع إلى المثال"); vb.textContent = "🔊"; vb.addEventListener("click", function(){ stopVocab(); var u = (s.level === "A1") ? bankBundleExample(v.w, v.ef, s.lang) : null; if (u) playBundle(u, v.ef, s.lang); else bankSpeak(v.ef, s.lang); }); item.appendChild(vb);
           vl.appendChild(item);
         });
 
@@ -5819,7 +5847,7 @@ function bankSpeak(text, lang){
         sp.type = "button"; sp.className = "bank-speak";
         sp.setAttribute("aria-label", "نطق الكلمة");
         sp.textContent = "🔊";
-        sp.addEventListener("click", function(){ if (item.level === "A1") { var seg = bankWordBundle(item.w, bankLang); if (seg) playBundle(seg, item.w, bankLang); else bankSpeak(item.w, bankLang); } else bankSpeak(item.w, bankLang); });
+        sp.addEventListener("click", function(){ stopVocab(); if (item.level === "A1") { var seg = bankWordBundle(item.w, bankLang); if (seg) playBundle(seg, item.w, bankLang); else bankSpeak(item.w, bankLang); } else bankSpeak(item.w, bankLang); });
         top.appendChild(em); top.appendChild(wEl); top.appendChild(sp);
         var mean = document.createElement("div");
         mean.className = "bank-mean"; mean.textContent = item.t;
@@ -5829,7 +5857,7 @@ function bankSpeak(text, lang){
         ef.className = "ef"; ef.setAttribute("lang", bankLang); ef.textContent = item.ef;
         var ea = document.createElement("span");
         ea.textContent = item.ea;
-        ex.appendChild(ef); ex.appendChild(ea); var exSp = document.createElement("button"); exSp.type = "button"; exSp.className = "bank-speak"; exSp.setAttribute("aria-label", "استمع إلى المثال"); exSp.textContent = "🔊"; exSp.addEventListener("click", function(){ var u = (item.level === "A1") ? bankBundleExample(item.w, item.ef, bankLang) : null; if (u) playBundle(u, item.ef, bankLang); else bankSpeak(item.ef, bankLang); }); ex.appendChild(exSp);
+        ex.appendChild(ef); ex.appendChild(ea); var exSp = document.createElement("button"); exSp.type = "button"; exSp.className = "bank-speak"; exSp.setAttribute("aria-label", "استمع إلى المثال"); exSp.textContent = "🔊"; exSp.addEventListener("click", function(){ stopVocab(); var u = (item.level === "A1") ? bankBundleExample(item.w, item.ef, bankLang) : null; if (u) playBundle(u, item.ef, bankLang); else bankSpeak(item.ef, bankLang); }); ex.appendChild(exSp);
         var foot = document.createElement("div");
         foot.className = "bank-card-foot";
         var m = bankTopicMeta(item.topic);
