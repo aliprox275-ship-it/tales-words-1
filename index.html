@@ -2536,6 +2536,36 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
         kara.queue.forEach(function(q){ q.box.classList.remove("playing"); });
         item.box.classList.add("playing");
         followBox(item.box);
+        /* Recorded autoplay: an A1 non-branching story plays its recorded
+           paragraphs in order (Gong voice), advancing on each segment's
+           end exactly like the TTS onend path below. Sentence-by-sentence
+           karaoke highlighting stays a TTS feature (recorded audio carries
+           no word timings), so during recorded paragraphs only the whole
+           paragraph box is highlighted. If the recording is missing or
+           fails, that paragraph falls back to device TTS and the rest
+           continues recorded. */
+        if (currentStory && currentStory.level === "A1" && !currentStory.branching && typeof item.key === "number" && !kara.ttsForced) {
+          var rseg = null;
+          try { rseg = bundleSeg("stories/" + currentStory.id + ".mp3", "p" + ("0" + (item.key + 1)).slice(-2)); } catch (e) { rseg = null; }
+          if (rseg) {
+            kara.playing = true; kara.paused = false; kara.curKey = item.key;
+            karaSyncUI();
+            var rGen = kara.suppressGen || 0;
+            playBundle(rseg, item.text, item.lang, function(){
+              if (!kara.playing) return;
+              kara.ttsForced = true;
+              karaSpeakCurrent();
+            }, function(){
+              if (!kara.playing) return;
+              if ((kara.suppressGen || 0) > rGen) return;
+              item.box.classList.remove("playing");
+              kara.idx++;
+              if (kara.idx < kara.queue.length) karaSpeakCurrent(); else karaFinish(true);
+            }, true);
+            return;
+          }
+        }
+        kara.ttsForced = false;
         var synth = window.speechSynthesis;
         var u = new SpeechSynthesisUtterance(item.text);
         u.lang = item.lang === "de" ? "de-DE" : "en-US";
@@ -2664,7 +2694,10 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
       }
       $("repeatSentBtn").addEventListener("click", karaRepeatSentence);
       function karaStart(items){
-        if (!karaSupported()) {
+        /* Device TTS is only required when no recorded paragraphs are
+           available: an A1 non-branching story can autoplay fully
+           recorded even on a device without speech synthesis. */
+        if (!karaSupported() && !(currentStory && currentStory.level === "A1" && !currentStory.branching)) {
           showToast("النطق الصوتي غير متاح في هذا المتصفح");
           return;
         }
@@ -2681,6 +2714,21 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
       }
       function karaPauseResume(){
         if (!kara.playing) return;
+        /* Recorded paragraph in progress: pause/resume the audio element
+           itself. The stop timer is cleared on pause and re-armed by the
+           `playing` event on resume, so a paused paragraph is never cut
+           short by the old timer. */
+        if (typeof recAudio !== "undefined" && recAudio) {
+          try {
+            if (kara.paused) { recAudio.play(); kara.paused = false; }
+            else {
+              if (typeof recTimer !== "undefined" && recTimer) { try { clearTimeout(recTimer); } catch (e) {} }
+              recAudio.pause(); kara.paused = true;
+            }
+          } catch (e) { /* keep playing state */ }
+          karaSyncUI();
+          return;
+        }
         try {
           if (kara.paused) {
             window.speechSynthesis.resume();
@@ -2961,6 +3009,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
       document.querySelectorAll(".speed-group button").forEach(function(b){
         b.addEventListener("click", function(){
           audioSpeed = parseFloat(b.getAttribute("data-speed"));
+           try { if (typeof recAudio !== "undefined" && recAudio) recAudio.playbackRate = audioSpeed; } catch (e) {}
           try { localStorage.setItem(SPEED_KEY, String(audioSpeed)); }
           catch (e) { /* storage unavailable: keep for this session */ }
           applySpeed();
@@ -3004,7 +3053,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
         karaStart(paraEls.map(function(p, i){ return karaBuildItem(p.box, currentStory.lang, i); }));
       });
 
-      /* ----- Vocab listening: device TTS -----
+      /* ----- Vocab listening: recorded A1 first, device TTS fallback -----
          The prep screen and the reader share one sequence player: it
          speaks each vocab word, then its example sentence, in order. */
       var vocabSeq = { session: 0, playing: false };
@@ -3029,30 +3078,42 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
         if (!vocabSeq.playing) return;
         vocabSeq.session++;
         vocabSeq.playing = false;
-        try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+        try { window.speechSynthesis.cancel(); try { stopRecorded(); } catch (e) {} } catch (e) { /* ignore */ }
         syncVocabBtns();
       }
       function speakVocabList(story){
         if (!story) return;
-        if (!karaSupported()) { showToast("النطق الصوتي غير متاح في هذا المتصفح"); return; }
+        if (!karaSupported() && story.level !== "A1") { showToast("النطق الصوتي غير متاح في هذا المتصفح"); return; }
         karaStop();
         var sess = ++vocabSeq.session;
         vocabSeq.playing = true;
         syncVocabBtns();
-        var items = [];
-        story.vocab.forEach(function(v){ items.push(v.w); if (v.ef) items.push(v.ef); });
-        var i = 0;
-        var synth = window.speechSynthesis;
-        function next(){
+        var entries = story.vocab || [];
+        var ei = 0, step = 0;
+        function finish(){ if (sess !== vocabSeq.session) return; vocabSeq.playing = false; syncVocabBtns(); }
+        function speakTTS(text, nextFn){
           if (sess !== vocabSeq.session) return;
-          if (i >= items.length) { vocabSeq.playing = false; syncVocabBtns(); return; }
-          var u = new SpeechSynthesisUtterance(items[i]);
+          if (!karaSupported()) { nextFn(); return; }
+          var u = new SpeechSynthesisUtterance(text);
           u.lang = story.lang === "de" ? "de-DE" : "en-US";
           u.rate = audioSpeed;
           pickVoice(u, story.lang);
-          u.onend = function(){ i++; next(); };
-          u.onerror = function(){ i++; next(); };
-          try { synth.speak(u); } catch (e) { vocabSeq.playing = false; syncVocabBtns(); }
+          u.onend = function(){ nextFn(); };
+          u.onerror = function(){ nextFn(); };
+          try { window.speechSynthesis.speak(u); } catch (e) { nextFn(); }
+        }
+        function advance(){ if (sess !== vocabSeq.session) return; if (step === 0) { step = 1; } else { step = 0; ei++; } next(); }
+        function next(){
+          if (sess !== vocabSeq.session) return;
+          if (ei >= entries.length) { finish(); return; }
+          var v = entries[ei];
+          var text = step === 0 ? v.w : v.ef;
+          if (!text) { ei++; step = 0; next(); return; }
+          if (story.level === "A1") {
+            var seg = step === 0 ? bankWordBundle(v.w, story.lang) : bankBundleExample(v.w, v.ef, story.lang);
+            if (seg) { playBundle(seg, text, story.lang, function(){ speakTTS(text, advance); }, function(){ advance(); }); return; }
+          }
+          speakTTS(text, advance);
         }
         next();
       }
@@ -5609,11 +5670,12 @@ var BANK_CHUNK_MAP = {"en":{"intro":{"hello":"en-intro-chunk01.mp3","hi":"en-int
         a.addEventListener("error", fallback);
         a.src = url;
         try {
-          var pr = a.play();
+          try { a.playbackRate = audioSpeed || 1; } catch (e) {}
+             var pr = a.play();
           if (pr && pr.catch) pr.catch(fallback);
         } catch (e) { fallback(); }
       }
-      function playBundle(seg, fallbackText, lang, fallbackFn){
+      function playBundle(seg, fallbackText, lang, fallbackFn, onDone, keepKara){
         /* Plays one segment of a bundle, with a seeked gate and a dual stop:
            (a) after loadedmetadata, currentTime is set and play() is only
            called once the `seeked` event fires; if `seeked` does not fire
@@ -5631,7 +5693,7 @@ var BANK_CHUNK_MAP = {"en":{"intro":{"hello":"en-intro-chunk01.mp3","hi":"en-int
         if (!seg) { if (fallbackFn) fallbackFn(); else bankSpeak(fallbackText, lang); return; }
         stopRecorded();
         try { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); } catch (e) {}
-        karaStop();
+        if (!keepKara) karaStop();
         var a = null;
         try { a = new Audio(); } catch (e) { if (fallbackFn) fallbackFn(); else bankSpeak(fallbackText, lang); return; }
         recAudio = a;
@@ -5656,14 +5718,21 @@ var BANK_CHUNK_MAP = {"en":{"intro":{"hello":"en-intro-chunk01.mp3","hi":"en-int
           try { a.pause(); } catch (e) {}
           if (fallbackFn) fallbackFn(); else bankSpeak(fallbackText, lang);
         }
+        var doneCalled = false;
+        function callDone(){
+          if (doneCalled || fellBack) return; doneCalled = true;
+          try { if (onDone) onDone(); } catch (e) {}
+        }
         function stopSeg(){
           if (fellBack) return;
           cleanup();
           try { a.pause(); } catch (e) {}
+          callDone();
         }
         function startPlayback(){
           try {
-            var pr = a.play();
+            try { a.playbackRate = audioSpeed || 1; } catch (e) {}
+             var pr = a.play();
             if (pr && pr.catch) pr.catch(fallback);
           } catch (e) { fallback(); }
         }
@@ -5689,7 +5758,7 @@ var BANK_CHUNK_MAP = {"en":{"intro":{"hello":"en-intro-chunk01.mp3","hi":"en-int
           startPlayback();
         };
         handlers.playing = function(){
-          var remain = (seg.end - a.currentTime) * 1000;
+          var remain = (seg.end - a.currentTime) * 1000 / (a.playbackRate || 1);
           if (remain < 0) remain = 0;
           if (recTimer) { try { clearTimeout(recTimer); } catch (e) {} }
           recTimer = setTimeout(function(){ stopSeg(); }, remain);
@@ -5697,7 +5766,7 @@ var BANK_CHUNK_MAP = {"en":{"intro":{"hello":"en-intro-chunk01.mp3","hi":"en-int
         handlers.timeupdate = function(){
           if (!fellBack && a.currentTime >= seg.end) stopSeg();
         };
-        handlers.ended = function(){ cleanup(); };
+        handlers.ended = function(){ cleanup(); callDone(); };
         a.addEventListener("error", handlers.error);
         a.addEventListener("loadedmetadata", handlers.loadedmetadata);
         a.addEventListener("seeked", handlers.seeked);
