@@ -610,10 +610,6 @@
         border:1px solid var(--line); background:var(--surface); color:var(--ink);
         border-radius:12px; padding:12px 20px; font-weight:700; font-size:1rem; flex:1;
       }
-      .prep-listen{
-        border:1.5px solid var(--accent); background:transparent; color:var(--ink);
-        border-radius:12px; padding:12px 20px; font-weight:800; font-size:1rem; flex:1;
-      }
       .prep-top{
         position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:10px;
         min-height:var(--bar-h); padding:8px 16px;
@@ -1412,7 +1408,6 @@
         <div class="vocab-list" id="prepVocab"></div>
         <button class="prep-start" id="prepStart" type="button">ابدأ القراءة ←</button>
         <div class="prep-actions">
-          <button class="prep-listen" id="prepListen" type="button">🔊 استمع إلى المفردات</button>
           <button class="prep-back" id="prepBack" type="button">→ رجوع للمكتبة</button>
         </div>
       </div>
@@ -2931,11 +2926,6 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
       /* ---------- Batch 1: prep screen (target vocabulary before reading) ---------- */
       var prepStory = null;
 
-      function prepSetLabel(){
-        var b = $("prepListen");
-        if (!b) return;
-        b.textContent = vocabSeq.playing ? "⏹ إيقاف" : "🔊 استمع إلى المفردات";
-      }
       function prepStop(){ stopVocab(); }
       function openPrep(id){
         var s = null;
@@ -2979,7 +2969,6 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
         start.className = "prep-start " + s.lang;
         start.textContent = "ابدأ القراءة ←";
         prepStop();
-        prepSetLabel();
         var prep = $("prep");
         prep.hidden = false;
         prep.scrollTop = 0;
@@ -3010,12 +2999,6 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
         closePrepNow();
         openStory(id, true);
       });
-      $("prepListen").addEventListener("click", function(){
-        if (!prepStory) return;
-        if (vocabSeq.playing) { stopVocab(); return; }
-        speakVocabList(prepStory);
-      });
-
       /* ---------- Reader ---------- */
       var REDUCED_MOTION = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
@@ -3107,7 +3090,6 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"كسر الجليد (حرفيًا:
       function syncVocabBtns(){
         var b = $("vocabPlayBtn");
         if (b) b.textContent = vocabSeq.playing ? "⏹ إيقاف" : "▶ استمع إلى المفردات";
-        prepSetLabel();
       }
       function resetVocabBtn(){
         var b = $("vocabPlayBtn");
