@@ -3178,11 +3178,13 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
               /* A1/A2 non-branching: plays ONLY this paragraph's recorded
                  mp3 and stops at its end (on error, or when the paragraph
                  has no recording -- e.g. a failed A2 para -- falls back to
-                 startPara TTS below). Other levels / branching stories:
+                 one-shot TTS of ONLY this paragraph via speakText, never a
+                 sequence and never a neighbouring segment; fallback-fix
+                 2026-11-02). Other levels / branching stories:
                  (re)start TTS at this paragraph and continue to the end
                  of the story, as before. Stopping is the floating dock's
                  single button's job. */
-              if ((s.level === "A1" || s.level === "A2") && !s.branching) { var seg = storyParaSeg(s, "p" + ("0" + (idx + 1)).slice(-2)); if (seg) playBundle(seg, p.f, s.lang, function(){ startPara(idx); }); else startPara(idx); }
+              if ((s.level === "A1" || s.level === "A2") && !s.branching) { var seg = storyParaSeg(s, "p" + ("0" + (idx + 1)).slice(-2)); if (seg) playBundle(seg, p.f, s.lang, function(){ speakText(p.f, s.lang); }); else speakText(p.f, s.lang); }
               else startPara(idx);
             });
           })(i, btn);
