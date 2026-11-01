@@ -1,7 +1,7 @@
 /* تطبيق القراءة — Service Worker
    - التثبيت: يخزّن هيكل التطبيق فقط (الصفحة + manifest + الأيقونات).
-   - الصوت المسجل (A1): ملفات audio-a1-bundles/ لا تُعترض ولا تُخزَّن
-     إطلاقًا في v6 — طلباتها تذهب مباشرة إلى الشبكة (fetch) بلا
+   - الصوت المسجل (A1 + A2): ملفات audio-a1-bundles/ و audio-a2-bundles/
+     لا تُعترض ولا تُخزَّن إطلاقًا في v7 — طلباتها تذهب مباشرة إلى الشبكة (fetch) بلا
      cache.put، لأن تخزين استجابات Range الجزئية كان يُفسد التشغيل
      (تكرار/توقف) داخل الحزم الكبيرة.
    - التشغيل: network-first للصفحة والتنقلات؛ والأصول الثابتة
@@ -13,7 +13,7 @@
      فيُمسح أي mp3 مخزّن قديمًا من أجهزة المستخدمين، وتُفعّل نفسها
      (skipWaiting + clients.claim) فيتحدث التطبيق المثبت تلقائيًا. */
 
-var VERSION = "v6";
+var VERSION = "v7";
 var SHELL_CACHE = "reading-shell-" + VERSION;
 
 var SHELL_FILES = [
@@ -95,9 +95,10 @@ self.addEventListener("fetch", function (event) {
   try { url = new URL(request.url); } catch (e) { return; }
   if (url.origin !== self.location.origin) return; // خطوط Google وغيرها تمر كما هي
 
-  /* v6: audio bundles bypass the service worker entirely -- range
-     requests go straight to the network, never cached, never rewritten. */
-  if (url.pathname.indexOf("/audio-a1-bundles/") === 0) {
+  /* v7: audio bundles bypass the service worker entirely -- range
+     requests go straight to the network, never cached, never rewritten.
+     Covers both A1 and A2 bundle roots. */
+  if (url.pathname.indexOf("/audio-a1-bundles/") === 0 || url.pathname.indexOf("/audio-a2-bundles/") === 0) {
     event.respondWith(fetch(request));
     return;
   }
