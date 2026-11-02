@@ -1034,14 +1034,19 @@
 
         <!-- ======== Phrases ======== -->
         <section id="view-phrases" hidden>
-          <div class="phrase-group">
-            <h2><span class="en">English</span> · عبارات إنجليزية ليومك</h2>
-            <div class="phrase-list" id="phrasesEn"></div>
+          <h2 class="view-title">عبارات مفيدة 💬</h2>
+          <div class="filters">
+            <div class="switch" role="group" aria-label="لغة العبارات">
+              <button class="active-en" id="phraseLangEn">English · الإنجليزية</button>
+              <button id="phraseLangDe">Deutsch · الألمانية</button>
+            </div>
+            <div class="switch" role="group" aria-label="مستوى العبارات">
+              <button class="active-lvl" id="phraseLvlA1">A1</button>
+              <button id="phraseLvlA2">A2</button>
+            </div>
           </div>
-          <div class="phrase-group">
-            <h2><span class="de">Deutsch</span> · عبارات ألمانية ليومك</h2>
-            <div class="phrase-list" id="phrasesDe"></div>
-          </div>
+          <p class="gram-hint" id="phraseCount"></p>
+          <div id="phrasesBox"></div>
         </section>
 
         <!-- ======== Review hub chrome: sub-tabs + extra tools ======== -->
@@ -1497,6 +1502,56 @@ var NEW_STORIES_3 = [{"about":"سارة لا تستطيع الدخول إلى ح
 { f: "I need some help.", a: "أحتاج بعض المساعدة." },
 { f: "Could you show me?", a: "هل يمكنك أن تريني؟" },
 { f: "That's all, thanks.", a: "هذا كل شيء، شكرًا." },
+{ f: "Morning!", a: "صباح الخير!" },
+{ f: "Good evening!", a: "مساء الخير!" },
+{ f: "How are you today?", a: "كيف حالك اليوم؟" },
+{ f: "I'm fine, thanks.", a: "أنا بخير، شكرًا." },
+{ f: "And you?", a: "وأنت؟" },
+{ f: "Nice to meet you!", a: "سعيد بلقائك!" },
+{ f: "What's your name?", a: "ما اسمك؟" },
+{ f: "Where do you come from?", a: "من أين أنت؟" },
+{ f: "Do you speak English?", a: "هل تتحدث الإنجليزية؟" },
+{ f: "A little.", a: "قليلًا." },
+{ f: "Please wait a moment.", a: "انتظر لحظة من فضلك." },
+{ f: "Come in, please.", a: "تفضل بالدخول." },
+{ f: "Sit down, please.", a: "تفضل بالجلوس." },
+{ f: "Help yourself.", a: "تفضل." },
+{ f: "I'm hungry.", a: "أنا جائع." },
+{ f: "I'm thirsty.", a: "أنا عطشان." },
+{ f: "I want some water, please.", a: "أريد بعض الماء من فضلك." },
+{ f: "It's delicious!", a: "إنه لذيذ!" },
+{ f: "I'm full, thanks.", a: "شبعت، شكرًا." },
+{ f: "I understand a little.", a: "أفهم قليلًا." },
+{ f: "What's the time?", a: "كم الساعة؟" },
+{ f: "It's early.", a: "الوقت مبكر." },
+{ f: "It's late.", a: "الوقت متأخر." },
+{ f: "What day is it today?", a: "أي يوم اليوم؟" },
+{ f: "It's sunny today.", a: "الجو مشمس اليوم." },
+{ f: "It's raining.", a: "إنها تمطر." },
+{ f: "It's cold today.", a: "الجو بارد اليوم." },
+{ f: "It's hot today.", a: "الجو حار اليوم." },
+{ f: "I like this weather.", a: "يعجبني هذا الطقس." },
+{ f: "Let's stay at home.", a: "لنبقَ في البيت." },
+{ f: "Let's go outside.", a: "لنخرج." },
+{ f: "I have to go now.", a: "يجب أن أذهب الآن." },
+{ f: "I'm coming!", a: "أنا قادم!" },
+{ f: "Wait for me!", a: "انتظرني!" },
+{ f: "Hurry up!", a: "أسرع!" },
+{ f: "Slow down, please.", a: "تمهل من فضلك." },
+{ f: "Take a left.", a: "انعطف يسارًا." },
+{ f: "Turn right.", a: "انعطف يمينًا." },
+{ f: "Go straight ahead.", a: "اذهب مباشرة." },
+{ f: "It's over there.", a: "إنه هناك." },
+{ f: "It's near here.", a: "إنه قريب من هنا." },
+{ f: "It's far from here.", a: "إنه بعيد من هنا." },
+{ f: "I lost my way.", a: "ضللت الطريق." },
+{ f: "Call me, please.", a: "اتصل بي من فضلك." },
+{ f: "Here's my number.", a: "هذا رقمي." },
+{ f: "Send me a message.", a: "أرسل لي رسالة." },
+{ f: "I don't have time.", a: "ليس لدي وقت." },
+{ f: "See you next week!", a: "أراك الأسبوع المقبل!" },
+{ f: "Have a good trip!", a: "رحلة سعيدة!" },
+{ f: "Good luck!", a: "حظًا سعيدًا!" },
           ],
           A2: [
 { f: "By the way...", a: "بالمناسبة..." },
@@ -1599,6 +1654,106 @@ var NEW_STORIES_3 = [{"about":"سارة لا تستطيع الدخول إلى ح
 { f: "That was close!", a: "كان ذلك وشيكًا!" },
 { f: "It's getting late.", a: "الوقت يتأخر." },
 { f: "Time flies!", a: "الوقت يمر بسرعة!" },
+{ f: "I'm sorry, I'm late.", a: "آسف، تأخرت." },
+{ f: "Let's start the meeting.", a: "لنبدأ الاجتماع." },
+{ f: "Could you send me the file?", a: "هل يمكنك إرسال الملف لي؟" },
+{ f: "I'll send it right away.", a: "سأرسله فورًا." },
+{ f: "I have a question about this.", a: "لدي سؤال حول هذا." },
+{ f: "Let me explain it again.", a: "دعني أشرحه مجددًا." },
+{ f: "That makes more sense now.", a: "الآن صار أوضح." },
+{ f: "I need to focus.", a: "أحتاج إلى التركيز." },
+{ f: "I finished my homework.", a: "أنهيت واجبي." },
+{ f: "I'm studying for an exam.", a: "أدرس لامتحان." },
+{ f: "I passed the exam!", a: "نجحت في الامتحان!" },
+{ f: "I failed the exam.", a: "رسبت في الامتحان." },
+{ f: "I have a lot to do today.", a: "لدي الكثير لأفعله اليوم." },
+{ f: "I'm almost done.", a: "أوشكت على الانتهاء." },
+{ f: "Let's take a break.", a: "لنأخذ استراحة." },
+{ f: "Back to work!", a: "عودة إلى العمل!" },
+{ f: "I work from home.", a: "أعمل من البيت." },
+{ f: "I have a job interview tomorrow.", a: "لدي مقابلة عمل غدًا." },
+{ f: "I got the job!", a: "حصلت على الوظيفة!" },
+{ f: "I'm looking for a job.", a: "أبحث عن وظيفة." },
+{ f: "Where can I buy a ticket?", a: "أين يمكنني شراء تذكرة؟" },
+{ f: "Two tickets, please.", a: "تذكرتان من فضلك." },
+{ f: "I missed my train.", a: "فاتني القطار." },
+{ f: "The train is delayed.", a: "القطار متأخر." },
+{ f: "I need a taxi.", a: "أحتاج سيارة أجرة." },
+{ f: "How long does it take?", a: "كم يستغرق الأمر؟" },
+{ f: "I'm on my way.", a: "أنا في الطريق." },
+{ f: "I just arrived.", a: "وصلت للتو." },
+{ f: "Do you take credit cards?", a: "هل تقبلون البطاقات؟" },
+{ f: "I paid too much.", a: "دفعت أكثر من اللازم." },
+{ f: "Keep the change.", a: "احتفظ بالباقي." },
+{ f: "That's too expensive.", a: "هذا غالٍ جدًا." },
+{ f: "Is there a discount?", a: "هل يوجد تخفيض؟" },
+{ f: "I need to change money.", a: "أحتاج إلى صرف نقود." },
+{ f: "Where is the nearest bank?", a: "أين أقرب مصرف؟" },
+{ f: "I lost my wallet.", a: "أضعت محفظتي." },
+{ f: "I need a doctor.", a: "أحتاج طبيبًا." },
+{ f: "I don't feel well.", a: "لا أشعر أنني بخير." },
+{ f: "I have a headache.", a: "رأسي يؤلمني." },
+{ f: "Get well soon!", a: "أتمنى لك الشفاء العاجل!" },
+{ f: "I totally disagree.", a: "لا أتفق أبدًا." },
+{ f: "That's exactly what I thought.", a: "هذا بالضبط ما فكرت فيه." },
+{ f: "I'm not convinced.", a: "لست مقتنعًا." },
+{ f: "That could be true.", a: "قد يكون ذلك صحيحًا." },
+{ f: "I doubt it.", a: "أشك في ذلك." },
+{ f: "It's hard to say.", a: "من الصعب القول." },
+{ f: "In general, I agree.", a: "بشكل عام، أتفق." },
+{ f: "Generally speaking...", a: "بشكل عام..." },
+{ f: "Personally, I prefer...", a: "شخصيًا، أفضل..." },
+{ f: "I don't mind.", a: "لا أمانع." },
+{ f: "It doesn't bother me.", a: "لا يزعجني." },
+{ f: "That's a matter of opinion.", a: "هذه مسألة رأي." },
+{ f: "Everyone has their own taste.", a: "لكل شخص ذوقه." },
+{ f: "I see your point, but...", a: "أفهم وجهة نظرك، لكن..." },
+{ f: "Let's look at it another way.", a: "لننظر إليه بطريقة أخرى." },
+{ f: "What matters most is...", a: "الأهم هو..." },
+{ f: "The problem is...", a: "المشكلة هي..." },
+{ f: "The good thing is...", a: "الشيء الجيد هو..." },
+{ f: "On the bright side...", a: "من الجانب المشرق..." },
+{ f: "It's better than nothing.", a: "أفضل من لا شيء." },
+{ f: "What's new?", a: "ما الجديد؟" },
+{ f: "Same as always.", a: "كالمعتاد." },
+{ f: "Not much.", a: "ليس كثيرًا." },
+{ f: "Tell me about yourself.", a: "أخبرني عن نفسك." },
+{ f: "I come from a small town.", a: "أنا من بلدة صغيرة." },
+{ f: "I have two brothers.", a: "لدي أخوان." },
+{ f: "I'm an only child.", a: "أنا طفل وحيد." },
+{ f: "We get along well.", a: "نتفاهم جيدًا." },
+{ f: "We lost touch.", a: "انقطع التواصل بيننا." },
+{ f: "I miss you.", a: "أفتقدك." },
+{ f: "I miss home.", a: "أفتقد البيت." },
+{ f: "Don't be shy.", a: "لا تخجل." },
+{ f: "Feel free to ask me.", a: "لا تتردد في سؤالي." },
+{ f: "I'll keep that in mind.", a: "سأضع ذلك في اعتباري." },
+{ f: "I'll let you know.", a: "سأعلمك." },
+{ f: "No news yet.", a: "لا أخبار بعد." },
+{ f: "I'll call you back.", a: "سأتصل بك لاحقًا." },
+{ f: "Are you free to talk?", a: "هل أنت متفرغ للكلام؟" },
+{ f: "Sorry, I was busy.", a: "آسف، كنت مشغولًا." },
+{ f: "Let's catch up soon.", a: "لنتحدث قريبًا ونتبادل الأخبار." },
+{ f: "I learned something new today.", a: "تعلمت شيئًا جديدًا اليوم." },
+{ f: "That word is new to me.", a: "هذه الكلمة جديدة عليّ." },
+{ f: "I keep forgetting this word.", a: "أنسى هذه الكلمة دائمًا." },
+{ f: "How do you pronounce this?", a: "كيف تنطق هذا؟" },
+{ f: "I need to practise more.", a: "أحتاج إلى ممارسة أكثر." },
+{ f: "My English is getting better.", a: "إنجليزيتي تتحسن." },
+{ f: "I can express myself better now.", a: "أستطيع التعبير عن نفسي أفضل الآن." },
+{ f: "I want to speak more fluently.", a: "أريد أن أتحدث بطلاقة أكثر." },
+{ f: "Don't be afraid of mistakes.", a: "لا تخف من الأخطاء." },
+{ f: "Mistakes help you learn.", a: "الأخطاء تساعدك على التعلم." },
+{ f: "I'm proud of my progress.", a: "أنا فخور بتقدمي." },
+{ f: "Step by step.", a: "خطوة بخطوة." },
+{ f: "Little by little.", a: "شيئًا فشيئًا." },
+{ f: "I did my best.", a: "بذلت قصارى جهدي." },
+{ f: "It takes time.", a: "الأمر يحتاج وقتًا." },
+{ f: "Be patient with yourself.", a: "كن صبورًا مع نفسك." },
+{ f: "You are making progress.", a: "أنت تحرز تقدمًا." },
+{ f: "Never stop learning.", a: "لا تتوقف عن التعلم أبدًا." },
+{ f: "Knowledge is power.", a: "المعرفة قوة." },
+{ f: "Believe in yourself.", a: "ثق بنفسك." },
           ]
         },
         de: {
@@ -1653,6 +1808,56 @@ var NEW_STORIES_3 = [{"about":"سارة لا تستطيع الدخول إلى ح
 { f: "Ich brauche Hilfe.", a: "أحتاج مساعدة." },
 { f: "Kannst du mir das zeigen?", a: "هل يمكنك أن تريني؟" },
 { f: "Das ist alles, danke.", a: "هذا كل شيء، شكرًا." },
+{ f: "Morgen!", a: "صباح الخير!" },
+{ f: "Guten Abend!", a: "مساء الخير!" },
+{ f: "Wie geht es dir heute?", a: "كيف حالك اليوم؟" },
+{ f: "Mir geht es gut, danke.", a: "أنا بخير، شكرًا." },
+{ f: "Und dir?", a: "وأنت؟" },
+{ f: "Freut mich!", a: "سعيد بلقائك!" },
+{ f: "Wie heißt du?", a: "ما اسمك؟" },
+{ f: "Aus welchem Land kommst du?", a: "من أين أنت؟" },
+{ f: "Sprichst du Deutsch?", a: "هل تتحدث الألمانية؟" },
+{ f: "Ein bisschen.", a: "قليلًا." },
+{ f: "Warte bitte einen Moment.", a: "انتظر لحظة من فضلك." },
+{ f: "Komm bitte rein.", a: "تفضل بالدخول." },
+{ f: "Setz dich bitte.", a: "تفضل بالجلوس." },
+{ f: "Bediene dich.", a: "تفضل." },
+{ f: "Ich habe richtig Hunger.", a: "أنا جائع." },
+{ f: "Ich habe Durst.", a: "أنا عطشان." },
+{ f: "Ich möchte bitte Wasser.", a: "أريد بعض الماء من فضلك." },
+{ f: "Es ist lecker!", a: "إنه لذيذ!" },
+{ f: "Ich bin satt, danke.", a: "شبعت، شكرًا." },
+{ f: "Ich verstehe ein bisschen.", a: "أفهم قليلًا." },
+{ f: "Wie spät ist es?", a: "كم الساعة؟" },
+{ f: "Es ist früh.", a: "الوقت مبكر." },
+{ f: "Es ist spät.", a: "الوقت متأخر." },
+{ f: "Welcher Tag ist heute?", a: "أي يوم اليوم؟" },
+{ f: "Heute ist es sonnig.", a: "الجو مشمس اليوم." },
+{ f: "Es regnet gerade.", a: "إنها تمطر." },
+{ f: "Heute ist es kalt.", a: "الجو بارد اليوم." },
+{ f: "Heute ist es heiß.", a: "الجو حار اليوم." },
+{ f: "Das Wetter gefällt mir.", a: "يعجبني هذا الطقس." },
+{ f: "Lass uns zu Hause bleiben.", a: "لنبقَ في البيت." },
+{ f: "Lass uns rausgehen.", a: "لنخرج." },
+{ f: "Ich muss jetzt gehen.", a: "يجب أن أذهب الآن." },
+{ f: "Ich komme!", a: "أنا قادم!" },
+{ f: "Warte auf mich!", a: "انتظرني!" },
+{ f: "Beeil dich!", a: "أسرع!" },
+{ f: "Langsamer, bitte.", a: "تمهل من فضلك." },
+{ f: "Links abbiegen.", a: "انعطف يسارًا." },
+{ f: "Rechts abbiegen.", a: "انعطف يمينًا." },
+{ f: "Geradeaus gehen.", a: "اذهب مباشرة." },
+{ f: "Es ist dort drüben.", a: "إنه هناك." },
+{ f: "Es ist hier in der Nähe.", a: "إنه قريب من هنا." },
+{ f: "Es ist weit von hier.", a: "إنه بعيد من هنا." },
+{ f: "Ich habe mich verlaufen.", a: "ضللت الطريق." },
+{ f: "Ruf mich bitte an.", a: "اتصل بي من فضلك." },
+{ f: "Hier ist meine Nummer.", a: "هذا رقمي." },
+{ f: "Schick mir eine Nachricht.", a: "أرسل لي رسالة." },
+{ f: "Ich habe gerade keine Zeit.", a: "ليس لدي وقت." },
+{ f: "Bis nächste Woche!", a: "أراك الأسبوع المقبل!" },
+{ f: "Schöne Reise!", a: "رحلة سعيدة!" },
+{ f: "Viel Glück!", a: "حظًا سعيدًا!" },
           ],
           A2: [
 { f: "Übrigens...", a: "بالمناسبة..." },
@@ -1755,6 +1960,106 @@ var NEW_STORIES_3 = [{"about":"سارة لا تستطيع الدخول إلى ح
 { f: "Das war knapp!", a: "كان ذلك وشيكًا!" },
 { f: "Es wird spät.", a: "الوقت يتأخر." },
 { f: "Die Zeit vergeht wie im Flug!", a: "الوقت يمر بسرعة!" },
+{ f: "Es tut mir leid, ich bin spät.", a: "آسف، تأخرت." },
+{ f: "Lass uns das Meeting beginnen.", a: "لنبدأ الاجتماع." },
+{ f: "Kannst du mir die Datei schicken?", a: "هل يمكنك إرسال الملف لي؟" },
+{ f: "Ich schicke sie sofort.", a: "سأرسله فورًا." },
+{ f: "Ich habe eine Frage dazu.", a: "لدي سؤال حول هذا." },
+{ f: "Lass mich das noch einmal erklären.", a: "دعني أشرحه مجددًا." },
+{ f: "Jetzt ergibt es mehr Sinn.", a: "الآن صار أوضح." },
+{ f: "Ich muss mich konzentrieren.", a: "أحتاج إلى التركيز." },
+{ f: "Ich habe meine Hausaufgaben fertig.", a: "أنهيت واجبي." },
+{ f: "Ich lerne für eine Prüfung.", a: "أدرس لامتحان." },
+{ f: "Ich habe die Prüfung bestanden!", a: "نجحت في الامتحان!" },
+{ f: "Ich bin durch die Prüfung gefallen.", a: "رسبت في الامتحان." },
+{ f: "Ich habe heute viel zu tun.", a: "لدي الكثير لأفعله اليوم." },
+{ f: "Ich bin fast fertig.", a: "أوشكت على الانتهاء." },
+{ f: "Lass uns eine Pause machen.", a: "لنأخذ استراحة." },
+{ f: "Zurück an die Arbeit!", a: "عودة إلى العمل!" },
+{ f: "Ich arbeite von zu Hause.", a: "أعمل من البيت." },
+{ f: "Ich habe morgen ein Vorstellungsgespräch.", a: "لدي مقابلة عمل غدًا." },
+{ f: "Ich habe den Job bekommen!", a: "حصلت على الوظيفة!" },
+{ f: "Ich suche einen Job.", a: "أبحث عن وظيفة." },
+{ f: "Wo kann ich ein Ticket kaufen?", a: "أين يمكنني شراء تذكرة؟" },
+{ f: "Zwei Tickets, bitte.", a: "تذكرتان من فضلك." },
+{ f: "Ich habe meinen Zug verpasst.", a: "فاتني القطار." },
+{ f: "Der Zug hat Verspätung.", a: "القطار متأخر." },
+{ f: "Ich brauche ein Taxi.", a: "أحتاج سيارة أجرة." },
+{ f: "Wie lange dauert das?", a: "كم يستغرق الأمر؟" },
+{ f: "Ich bin unterwegs.", a: "أنا في الطريق." },
+{ f: "Ich bin gerade angekommen.", a: "وصلت للتو." },
+{ f: "Akzeptieren Sie Kreditkarten?", a: "هل تقبلون البطاقات؟" },
+{ f: "Ich habe zu viel bezahlt.", a: "دفعت أكثر من اللازم." },
+{ f: "Stimmt so.", a: "احتفظ بالباقي." },
+{ f: "Das ist zu teuer.", a: "هذا غالٍ جدًا." },
+{ f: "Gibt es einen Rabatt?", a: "هل يوجد تخفيض؟" },
+{ f: "Ich muss Geld wechseln.", a: "أحتاج إلى صرف نقود." },
+{ f: "Wo ist die nächste Bank?", a: "أين أقرب مصرف؟" },
+{ f: "Ich habe mein Portemonnaie verloren.", a: "أضعت محفظتي." },
+{ f: "Ich brauche einen Arzt.", a: "أحتاج طبيبًا." },
+{ f: "Mir geht es nicht gut.", a: "لا أشعر أنني بخير." },
+{ f: "Ich habe Kopfschmerzen.", a: "رأسي يؤلمني." },
+{ f: "Gute Besserung!", a: "أتمنى لك الشفاء العاجل!" },
+{ f: "Ich stimme überhaupt nicht zu.", a: "لا أتفق أبدًا." },
+{ f: "Genau das habe ich gedacht.", a: "هذا بالضبط ما فكرت فيه." },
+{ f: "Ich bin nicht überzeugt.", a: "لست مقتنعًا." },
+{ f: "Das könnte stimmen.", a: "قد يكون ذلك صحيحًا." },
+{ f: "Ich bezweifle es.", a: "أشك في ذلك." },
+{ f: "Das ist schwer zu sagen.", a: "من الصعب القول." },
+{ f: "Im Allgemeinen stimme ich zu.", a: "بشكل عام، أتفق." },
+{ f: "Im Allgemeinen...", a: "بشكل عام..." },
+{ f: "Persönlich bevorzuge ich...", a: "شخصيًا، أفضل..." },
+{ f: "Das macht mir nichts aus.", a: "لا أمانع." },
+{ f: "Das stört mich nicht.", a: "لا يزعجني." },
+{ f: "Das ist Ansichtssache.", a: "هذه مسألة رأي." },
+{ f: "Jeder hat seinen eigenen Geschmack.", a: "لكل شخص ذوقه." },
+{ f: "Ich verstehe deinen Punkt, aber...", a: "أفهم وجهة نظرك، لكن..." },
+{ f: "Lass uns das anders betrachten.", a: "لننظر إليه بطريقة أخرى." },
+{ f: "Am wichtigsten ist...", a: "الأهم هو..." },
+{ f: "Das Problem ist...", a: "المشكلة هي..." },
+{ f: "Das Gute ist...", a: "الشيء الجيد هو..." },
+{ f: "Positiv gesehen...", a: "من الجانب المشرق..." },
+{ f: "Besser als nichts.", a: "أفضل من لا شيء." },
+{ f: "Was gibt's Neues?", a: "ما الجديد؟" },
+{ f: "Wie immer.", a: "كالمعتاد." },
+{ f: "Nicht viel.", a: "ليس كثيرًا." },
+{ f: "Erzähl mir von dir.", a: "أخبرني عن نفسك." },
+{ f: "Ich komme aus einer kleinen Stadt.", a: "أنا من بلدة صغيرة." },
+{ f: "Ich habe zwei Brüder.", a: "لدي أخوان." },
+{ f: "Ich bin ein Einzelkind.", a: "أنا طفل وحيد." },
+{ f: "Wir verstehen uns gut.", a: "نتفاهم جيدًا." },
+{ f: "Wir haben den Kontakt verloren.", a: "انقطع التواصل بيننا." },
+{ f: "Ich vermisse dich.", a: "أفتقدك." },
+{ f: "Ich vermisse mein Zuhause.", a: "أفتقد البيت." },
+{ f: "Sei nicht schüchtern.", a: "لا تخجل." },
+{ f: "Frag mich gern.", a: "لا تتردد في سؤالي." },
+{ f: "Das merke ich mir.", a: "سأضع ذلك في اعتباري." },
+{ f: "Ich sage dir Bescheid.", a: "سأعلمك." },
+{ f: "Noch keine Neuigkeiten.", a: "لا أخبار بعد." },
+{ f: "Ich rufe dich zurück.", a: "سأتصل بك لاحقًا." },
+{ f: "Hast du Zeit zum Reden?", a: "هل أنت متفرغ للكلام؟" },
+{ f: "Entschuldigung, ich war beschäftigt.", a: "آسف، كنت مشغولًا." },
+{ f: "Lass uns bald wieder quatschen.", a: "لنتحدث قريبًا ونتبادل الأخبار." },
+{ f: "Ich habe heute etwas Neues gelernt.", a: "تعلمت شيئًا جديدًا اليوم." },
+{ f: "Dieses Wort ist neu für mich.", a: "هذه الكلمة جديدة عليّ." },
+{ f: "Ich vergesse dieses Wort immer wieder.", a: "أنسى هذه الكلمة دائمًا." },
+{ f: "Wie spricht man das aus?", a: "كيف تنطق هذا؟" },
+{ f: "Ich muss mehr üben.", a: "أحتاج إلى ممارسة أكثر." },
+{ f: "Mein Deutsch wird besser.", a: "ألمانيتي تتحسن." },
+{ f: "Ich kann mich jetzt besser ausdrücken.", a: "أستطيع التعبير عن نفسي أفضل الآن." },
+{ f: "Ich möchte flüssiger sprechen.", a: "أريد أن أتحدث بطلاقة أكثر." },
+{ f: "Hab keine Angst vor Fehlern.", a: "لا تخف من الأخطاء." },
+{ f: "Fehler helfen dir zu lernen.", a: "الأخطاء تساعدك على التعلم." },
+{ f: "Ich bin stolz auf meine Fortschritte.", a: "أنا فخور بتقدمي." },
+{ f: "Schritt für Schritt.", a: "خطوة بخطوة." },
+{ f: "Nach und nach.", a: "شيئًا فشيئًا." },
+{ f: "Ich habe mein Bestes gegeben.", a: "بذلت قصارى جهدي." },
+{ f: "Das braucht Zeit.", a: "الأمر يحتاج وقتًا." },
+{ f: "Sei geduldig mit dir selbst.", a: "كن صبورًا مع نفسك." },
+{ f: "Du machst Fortschritte.", a: "أنت تحرز تقدمًا." },
+{ f: "Hör nie auf zu lernen.", a: "لا تتوقف عن التعلم أبدًا." },
+{ f: "Wissen ist Macht.", a: "المعرفة قوة." },
+{ f: "Glaub an dich selbst.", a: "ثق بنفسك." },
           ]
         }
       };
@@ -3969,42 +4274,45 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       });
 
       /* ---------- Phrases ---------- */
-      function renderPhrases(elId, levels, lang){
-        var box = $(elId);
-        box.className = "";
-        ["A1", "A2"].forEach(function(lvl){
-          var list = levels[lvl] || [];
-          var h = document.createElement("h3");
-          h.className = "phrase-lvl";
-          h.textContent = lvl + " · " + list.length + " عبارة";
-          box.appendChild(h);
-          var grid = document.createElement("div");
-          grid.className = "phrase-list";
-          list.forEach(function(p){
-            var d = document.createElement("div");
-            d.className = "phrase";
-            var top = document.createElement("div");
-            top.className = "phrase-top";
-            var fs = document.createElement("span");
-            fs.className = "f"; fs.setAttribute("lang", lang); fs.textContent = p.f;
-            top.appendChild(fs);
-            var sp = document.createElement("button");
-            sp.type = "button"; sp.className = "bank-speak";
-            sp.setAttribute("aria-label", "استمع");
-            sp.textContent = "🔊";
-            sp.addEventListener("click", function(){ bankSpeak(p.f, lang); });
-            top.appendChild(sp);
-            d.appendChild(top);
-            var as = document.createElement("span");
-            as.className = "a"; as.textContent = p.a;
-            d.appendChild(as);
-            grid.appendChild(d);
-          });
-          box.appendChild(grid);
+      var phraseLang = "en", phraseLevel = "A1";
+      function renderPhrasesView(){
+        $("phraseLangEn").className = phraseLang === "en" ? "active-en" : "";
+        $("phraseLangDe").className = phraseLang === "de" ? "active-de" : "";
+        $("phraseLvlA1").className = phraseLevel === "A1" ? "active-lvl" : "";
+        $("phraseLvlA2").className = phraseLevel === "A2" ? "active-lvl" : "";
+        var list = (PHRASES[phraseLang] && PHRASES[phraseLang][phraseLevel]) || [];
+        $("phraseCount").textContent = (phraseLang === "en" ? "English" : "Deutsch") + " · " + phraseLevel + " · " + list.length + " عبارة";
+        var box = $("phrasesBox");
+        box.innerHTML = "";
+        var grid = document.createElement("div");
+        grid.className = "phrase-list";
+        list.forEach(function(p){
+          var d = document.createElement("div");
+          d.className = "phrase";
+          var top = document.createElement("div");
+          top.className = "phrase-top";
+          var fs = document.createElement("span");
+          fs.className = "f"; fs.setAttribute("lang", phraseLang); fs.textContent = p.f;
+          top.appendChild(fs);
+          var sp = document.createElement("button");
+          sp.type = "button"; sp.className = "bank-speak";
+          sp.setAttribute("aria-label", "استمع");
+          sp.textContent = "🔊";
+          sp.addEventListener("click", function(){ bankSpeak(p.f, phraseLang); });
+          top.appendChild(sp);
+          d.appendChild(top);
+          var as = document.createElement("span");
+          as.className = "a"; as.textContent = p.a;
+          d.appendChild(as);
+          grid.appendChild(d);
         });
+        box.appendChild(grid);
       }
-      renderPhrases("phrasesEn", PHRASES.en, "en");
-      renderPhrases("phrasesDe", PHRASES.de, "de");
+      $("phraseLangEn").addEventListener("click", function(){ phraseLang = "en"; renderPhrasesView(); });
+      $("phraseLangDe").addEventListener("click", function(){ phraseLang = "de"; renderPhrasesView(); });
+      $("phraseLvlA1").addEventListener("click", function(){ phraseLevel = "A1"; renderPhrasesView(); });
+      $("phraseLvlA2").addEventListener("click", function(){ phraseLevel = "A2"; renderPhrasesView(); });
+      renderPhrasesView();
 
       /* ---------- Phase 2: SRS engine ---------- */
       function masteryLabel(item){
