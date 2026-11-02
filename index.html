@@ -1070,6 +1070,7 @@
             <button class="more-link" type="button" data-goto="exercises">تمارين ✍️</button>
             <button class="more-link" type="button" data-goto="phrases">عبارات مفيدة 💬</button>
             <button class="more-link" type="button" data-goto="stats">إحصائياتي 📊</button>
+            <button class="more-link" type="button" data-goto="a1test" style="background:var(--accent);color:#fff;border-color:var(--accent)">اختبار المستوى A1 🎓</button>
           </div>
         </div>
 
@@ -1180,6 +1181,44 @@
           </div>
           <div class="ex-card" id="exArea"></div>
           <p class="ex-score-line" id="exScoreLine" role="status"></p>
+        </section>
+
+        <!-- ======== A1 Level Test ======== -->
+        <section id="view-a1test" hidden>
+          <h2 class="view-title">اختبار المستوى A1 🎓</h2>
+          <div id="a1StartScreen">
+            <p class="hint" style="margin-bottom:18px">اختبار رسمي المستوى A1 وفق معايير CEFR (كامبريدج / جوته). نسبة النجاح <b>60%</b>.</p>
+            <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
+              <button type="button" id="a1LangEn" class="active-en">English · الإنجليزية</button>
+              <button type="button" id="a1LangDe">Deutsch · الألمانية</button>
+            </div>
+            <div class="tool-box" style="margin-bottom:16px">
+              <h3 style="margin:0 0 8px">أجزاء الاختبار</h3>
+              <p class="tool-note" style="margin:0">1. الاستماع (25) · 2. القراءة (25) · 3. القواعد والمفردات (25) · 4. الكتابة (25)</p>
+              <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 60</p>
+            </div>
+            <button class="start-btn" type="button" id="a1BeginBtn" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الاختبار</button>
+          </div>
+
+          <div id="a1TestArea" hidden>
+            <div id="a1Progress" style="margin-bottom:14px;font-weight:700;color:var(--muted)"></div>
+            <div id="a1QuestionBox" class="ex-card"></div>
+            <div id="a1Nav" style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+              <button type="button" id="a1PrevBtn" class="end-btn" hidden>السابق</button>
+              <button type="button" id="a1NextBtn" class="start-btn">التالي</button>
+              <button type="button" id="a1FinishBtn" class="start-btn" hidden style="background:var(--ok)">إنهاء الاختبار</button>
+            </div>
+          </div>
+
+          <div id="a1ResultScreen" hidden>
+            <div class="tool-box" style="text-align:center">
+              <div id="a1ScoreBig" style="font-size:2.8rem;font-weight:800;margin:10px 0"></div>
+              <div id="a1PassFail" style="font-size:1.3rem;font-weight:800;margin-bottom:12px"></div>
+              <div id="a1Breakdown" style="text-align:right;margin:16px 0"></div>
+              <button type="button" id="a1RetryBtn" class="start-btn" style="margin-top:12px">إعادة الاختبار</button>
+              <button type="button" id="a1BackBtn" class="end-btn" style="margin-top:8px">العودة للمراجعة</button>
+            </div>
+          </div>
         </section>
 
         <!-- ======== Stats / mastery dashboard ======== -->
@@ -4016,7 +4055,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-      var ALL_VIEWS = ["home", "stories", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "grammar", "conversation"];
+        var ALL_VIEWS = ["home", "stories", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "grammar", "a1test", "conversation"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var curView = "home", curReviewSub = "review";
 
@@ -4028,7 +4067,8 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       var VIEW_TITLES = {
         home: "Tales & Words", stories: "القصص", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
-        reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", grammar: "قواعد"
+        reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", grammar: "قواعد",
+        a1test: "اختبار المستوى A1"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
       var startView = "home";
@@ -4069,7 +4109,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       });
       function mainOf(name){
         if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation") return name;
-        if (REVIEW_SUBS.indexOf(name) !== -1) return "review";
+        if (REVIEW_SUBS.indexOf(name) !== -1 || name === "a1test") return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
       }
       function showView(name, fromPop){
@@ -4101,6 +4141,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         if (name === "exercises") renderExScore();
         if (name === "stats") renderStats();
         if (name === "grammar") { gramLang = curLang; renderGrammarHome(); }
+        if (name === "a1test") { a1Reset(); }
         if (name === "conversation") renderConvHome();
         window.scrollTo(0, 0);
       }
@@ -4202,9 +4243,398 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
 
 
       /* examNorm kept: used by Review typing check, not by the removed exam view. */
+
       function examNorm(s){
         return (s || "").toLowerCase().replace(/\s+/g, " ").trim().replace(/[\.!؟\?،؛]+$/, "").trim();
       }
+
+      /* ========== A1 Level Test (EN + DE) — CEFR aligned, pass = 60% ========== */
+      var a1State = { lang: "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false };
+
+      var A1_DATA = {
+        en: {
+          listening: [
+            { type: "mc", audio: "Hello, my name is Anna. I am from London. I am twenty years old.", q: "Where is Anna from?", opts: ["Paris", "London", "Berlin", "Madrid"], ans: 1 },
+            { type: "mc", audio: "The supermarket is open from eight o'clock to six o'clock.", q: "What time does the supermarket close?", opts: ["8:00", "6:00", "9:00", "5:00"], ans: 1 },
+            { type: "mc", audio: "Tom: Where is the train station? Sarah: It is next to the bank.", q: "Where is the train station?", opts: ["Next to the bank", "Opposite the school", "Behind the park", "In the centre"], ans: 0 },
+            { type: "mc", audio: "I would like a coffee and a sandwich, please.", q: "What does the person want?", opts: ["Tea and cake", "Coffee and sandwich", "Water and bread", "Juice and pizza"], ans: 1 },
+            { type: "mc", audio: "My brother works in a hospital. He is a doctor.", q: "What is the speaker's brother?", opts: ["Teacher", "Doctor", "Engineer", "Student"], ans: 1 },
+            { type: "mc", audio: "The bus leaves at half past three.", q: "When does the bus leave?", opts: ["2:30", "3:00", "3:30", "4:00"], ans: 2 },
+            { type: "mc", audio: "Can I have the menu, please?", q: "Where is this conversation most likely?", opts: ["At school", "In a restaurant", "At the airport", "In a library"], ans: 1 },
+            { type: "mc", audio: "My phone number is zero seven nine, four five six, one two three.", q: "What is the last part of the number?", opts: ["456", "123", "079", "789"], ans: 1 }
+          ],
+          reading: [
+            { type: "tf", text: "Dear John, I am at home today. I am not at work. See you tomorrow. Love, Mary.", q: "Mary is at work today.", ans: false },
+            { type: "tf", text: "Library opening hours: Monday to Friday 9:00 – 18:00. Saturday 10:00 – 14:00. Closed on Sunday.", q: "The library is open on Sunday.", ans: false },
+            { type: "mc", text: "Lost: black bag. Please call 0789 123456 if you find it. Thank you.", q: "What is lost?", opts: ["A phone", "A black bag", "A key", "A book"], ans: 1 },
+            { type: "mc", text: "Café Roma – Open every day from 8 am to 10 pm. Free WiFi. Fresh coffee and sandwiches.", q: "What can you get at Café Roma?", opts: ["Only coffee", "Coffee and sandwiches", "Only WiFi", "Books"], ans: 1 },
+            { type: "tf", text: "Meeting: Friday 3 pm in Room 4. Please bring your notebook.", q: "The meeting is on Friday.", ans: true },
+            { type: "mc", text: "Bus 12 goes to the city centre. It stops at the hospital and the park.", q: "Where does Bus 12 go?", opts: ["To the airport", "To the city centre", "To the school", "To the station only"], ans: 1 },
+            { type: "tf", text: "Sorry, we are closed today. We open tomorrow at 9 o'clock.", q: "The shop is open today.", ans: false },
+            { type: "mc", text: "Hi Sara, Can you come to my party on Saturday? It starts at 7 pm. From Ali.", q: "When is the party?", opts: ["Friday", "Saturday", "Sunday", "Monday"], ans: 1 }
+          ],
+          grammar: [
+            { type: "mc", q: "My name ___ Anna.", opts: ["am", "is", "are", "be"], ans: 1 },
+            { type: "mc", q: "She ___ from Germany.", opts: ["am", "is", "are", "be"], ans: 1 },
+            { type: "mc", q: "I ___ a student.", opts: ["am", "is", "are", "be"], ans: 0 },
+            { type: "mc", q: "There ___ two books on the table.", opts: ["is", "are", "am", "be"], ans: 1 },
+            { type: "mc", q: "Where ___ you live?", opts: ["do", "does", "is", "are"], ans: 0 },
+            { type: "mc", q: "He ___ to school every day.", opts: ["go", "goes", "going", "gone"], ans: 1 },
+            { type: "mc", q: "This is ___ apple.", opts: ["a", "an", "the", "—"], ans: 1 },
+            { type: "mc", q: "I have ___ brothers.", opts: ["two", "too", "to", "tow"], ans: 0 },
+            { type: "mc", q: "The cat is ___ the chair.", opts: ["in", "on", "at", "to"], ans: 1 },
+            { type: "mc", q: "___ is your name?", opts: ["What", "Where", "Who", "How"], ans: 0 }
+          ],
+          writing: [
+            { type: "form", q: "Complete the form with your information (write in English):", fields: ["Full name", "Age", "City", "Nationality"] },
+            { type: "short", q: "Write 3–5 simple sentences about yourself (name, age, city, job/studies). Minimum 25 words.", minWords: 25 }
+          ]
+        },
+        de: {
+          listening: [
+            { type: "mc", audio: "Guten Tag, ich heiße Anna. Ich komme aus Berlin. Ich bin zwanzig Jahre alt.", q: "Woher kommt Anna?", opts: ["Aus München", "Aus Berlin", "Aus Hamburg", "Aus Köln"], ans: 1 },
+            { type: "mc", audio: "Der Supermarkt ist von acht Uhr bis sechs Uhr geöffnet.", q: "Wann schließt der Supermarkt?", opts: ["Um 8 Uhr", "Um 6 Uhr", "Um 9 Uhr", "Um 5 Uhr"], ans: 1 },
+            { type: "mc", audio: "Tom: Wo ist der Bahnhof? Sarah: Er ist neben der Bank.", q: "Wo ist der Bahnhof?", opts: ["Neben der Bank", "Gegenüber der Schule", "Hinter dem Park", "In der Mitte"], ans: 0 },
+            { type: "mc", audio: "Ich hätte gerne einen Kaffee und ein Sandwich, bitte.", q: "Was möchte die Person?", opts: ["Tee und Kuchen", "Kaffee und Sandwich", "Wasser und Brot", "Saft und Pizza"], ans: 1 },
+            { type: "mc", audio: "Mein Bruder arbeitet in einem Krankenhaus. Er ist Arzt.", q: "Was ist der Bruder?", opts: ["Lehrer", "Arzt", "Ingenieur", "Student"], ans: 1 },
+            { type: "mc", audio: "Der Bus fährt um halb vier ab.", q: "Wann fährt der Bus?", opts: ["Um 14:30", "Um 15:00", "Um 15:30", "Um 16:00"], ans: 2 },
+            { type: "mc", audio: "Kann ich bitte die Speisekarte haben?", q: "Wo ist dieses Gespräch wahrscheinlich?", opts: ["In der Schule", "Im Restaurant", "Am Flughafen", "In der Bibliothek"], ans: 1 },
+            { type: "mc", audio: "Meine Telefonnummer ist null eins fünf, zwei drei vier, fünf sechs sieben.", q: "Was ist der letzte Teil der Nummer?", opts: ["234", "567", "015", "789"], ans: 1 }
+          ],
+          reading: [
+            { type: "tf", text: "Lieber Hans, ich bin heute zu Hause. Ich bin nicht bei der Arbeit. Bis morgen. Liebe Grüße, Maria.", q: "Maria ist heute bei der Arbeit.", ans: false },
+            { type: "tf", text: "Öffnungszeiten der Bibliothek: Montag bis Freitag 9:00 – 18:00. Samstag 10:00 – 14:00. Sonntag geschlossen.", q: "Die Bibliothek ist am Sonntag geöffnet.", ans: false },
+            { type: "mc", text: "Verloren: schwarze Tasche. Bitte rufen Sie 0176 123456 an, wenn Sie sie finden. Danke.", q: "Was ist verloren?", opts: ["Ein Handy", "Eine schwarze Tasche", "Ein Schlüssel", "Ein Buch"], ans: 1 },
+            { type: "mc", text: "Café Roma – Täglich geöffnet von 8 bis 22 Uhr. Kostenloses WLAN. Frischer Kaffee und Sandwiches.", q: "Was gibt es im Café Roma?", opts: ["Nur Kaffee", "Kaffee und Sandwiches", "Nur WLAN", "Bücher"], ans: 1 },
+            { type: "tf", text: "Besprechung: Freitag 15 Uhr in Raum 4. Bitte bringen Sie Ihr Heft mit.", q: "Die Besprechung ist am Freitag.", ans: true },
+            { type: "mc", text: "Der Bus 12 fährt in die Innenstadt. Er hält am Krankenhaus und am Park.", q: "Wohin fährt der Bus 12?", opts: ["Zum Flughafen", "In die Innenstadt", "Zur Schule", "Nur zum Bahnhof"], ans: 1 },
+            { type: "tf", text: "Entschuldigung, wir haben heute geschlossen. Wir öffnen morgen um 9 Uhr.", q: "Das Geschäft ist heute geöffnet.", ans: false },
+            { type: "mc", text: "Hallo Sara, kannst du am Samstag zu meiner Party kommen? Sie beginnt um 19 Uhr. Von Ali.", q: "Wann ist die Party?", opts: ["Freitag", "Samstag", "Sonntag", "Montag"], ans: 1 }
+          ],
+          grammar: [
+            { type: "mc", q: "Ich ___ Anna.", opts: ["bin", "bist", "ist", "sind"], ans: 0 },
+            { type: "mc", q: "Sie ___ aus Deutschland.", opts: ["bin", "bist", "ist", "sind"], ans: 2 },
+            { type: "mc", q: "Wir ___ Studenten.", opts: ["bin", "bist", "ist", "sind"], ans: 3 },
+            { type: "mc", q: "Es ___ zwei Bücher auf dem Tisch.", opts: ["ist", "sind", "bin", "seid"], ans: 1 },
+            { type: "mc", q: "Wo ___ du?", opts: ["wohnst", "wohnt", "wohnen", "wohne"], ans: 0 },
+            { type: "mc", q: "Er ___ jeden Tag zur Schule.", opts: ["gehst", "geht", "gehen", "gehe"], ans: 1 },
+            { type: "mc", q: "Das ist ___ Apfel.", opts: ["ein", "eine", "einen", "der"], ans: 0 },
+            { type: "mc", q: "Ich habe ___ Brüder.", opts: ["zwei", "zwei", "zu", "zwei"], ans: 0 },
+            { type: "mc", q: "Die Katze ist ___ dem Stuhl.", opts: ["in", "auf", "an", "zu"], ans: 1 },
+            { type: "mc", q: "___ heißt du?", opts: ["Was", "Wo", "Wer", "Wie"], ans: 3 }
+          ],
+          writing: [
+            { type: "form", q: "Füllen Sie das Formular aus (auf Deutsch):", fields: ["Vollständiger Name", "Alter", "Stadt", "Nationalität"] },
+            { type: "short", q: "Schreiben Sie 3–5 einfache Sätze über sich selbst (Name, Alter, Stadt, Beruf/Studium). Mindestens 25 Wörter.", minWords: 25 }
+          ]
+        }
+      };
+
+      var A1_PARTS = ["listening", "reading", "grammar", "writing"];
+      var A1_PART_NAMES = { listening: "الاستماع", reading: "القراءة", grammar: "القواعد والمفردات", writing: "الكتابة" };
+
+      function a1Reset() {
+        a1State = { lang: a1State.lang || "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false };
+        $("a1StartScreen").hidden = false;
+        $("a1TestArea").hidden = true;
+        $("a1ResultScreen").hidden = true;
+      }
+
+      function a1Start() {
+        a1State.started = true;
+        a1State.part = 0;
+        a1State.q = 0;
+        a1State.answers = {};
+        a1State.scores = {listening:0, reading:0, grammar:0, writing:0};
+        $("a1StartScreen").hidden = true;
+        $("a1TestArea").hidden = false;
+        $("a1ResultScreen").hidden = true;
+        a1RenderQuestion();
+      }
+
+      function a1CurrentList() {
+        var lang = a1State.lang;
+        var part = A1_PARTS[a1State.part];
+        return A1_DATA[lang][part] || [];
+      }
+
+      function a1Speak(text) {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(text);
+        u.lang = a1State.lang === "de" ? "de-DE" : "en-GB";
+        u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+      }
+
+      function a1RenderQuestion() {
+        var list = a1CurrentList();
+        var partName = A1_PART_NAMES[A1_PARTS[a1State.part]];
+        var totalInPart = list.length;
+        $("a1Progress").textContent = partName + " — سؤال " + (a1State.q + 1) + " من " + totalInPart + "  |  الجزء " + (a1State.part + 1) + "/4";
+
+        var item = list[a1State.q];
+        var box = $("a1QuestionBox");
+        box.innerHTML = "";
+
+        if (!item) { a1Finish(); return; }
+
+        if (item.type === "mc") {
+          if (item.audio) {
+            var playBtn = document.createElement("button");
+            playBtn.type = "button";
+            playBtn.className = "start-btn";
+            playBtn.style.marginBottom = "12px";
+            playBtn.textContent = "🔊 استمع";
+            playBtn.onclick = function(){ a1Speak(item.audio); };
+            box.appendChild(playBtn);
+            var small = document.createElement("p");
+            small.style.fontSize = ".85rem";
+            small.style.color = "var(--muted)";
+            small.textContent = "(يمكنك الاستماع أكثر من مرة)";
+            box.appendChild(small);
+          }
+          if (item.text) {
+            var t = document.createElement("p");
+            t.style.direction = a1State.lang === "de" ? "ltr" : "ltr";
+            t.style.textAlign = "left";
+            t.style.fontFamily = "var(--font-serif)";
+            t.style.background = "var(--surface2)";
+            t.style.padding = "12px";
+            t.style.borderRadius = "10px";
+            t.textContent = item.text;
+            box.appendChild(t);
+          }
+          var qEl = document.createElement("p");
+          qEl.style.fontWeight = "800";
+          qEl.style.margin = "14px 0 10px";
+          qEl.textContent = item.q;
+          box.appendChild(qEl);
+
+          item.opts.forEach(function(opt, i) {
+            var lab = document.createElement("label");
+            lab.style.display = "block";
+            lab.style.padding = "10px 14px";
+            lab.style.margin = "6px 0";
+            lab.style.background = "var(--surface)";
+            lab.style.border = "1px solid var(--line)";
+            lab.style.borderRadius = "10px";
+            lab.style.cursor = "pointer";
+            var radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = "a1opt";
+            radio.value = i;
+            radio.style.marginLeft = "10px";
+            if (a1State.answers[a1State.part + "-" + a1State.q] === i) radio.checked = true;
+            lab.appendChild(radio);
+            lab.appendChild(document.createTextNode(opt));
+            lab.onclick = function(){ a1State.answers[a1State.part + "-" + a1State.q] = i; };
+            box.appendChild(lab);
+          });
+        } else if (item.type === "tf") {
+          var t = document.createElement("p");
+          t.style.direction = "ltr";
+          t.style.textAlign = "left";
+          t.style.fontFamily = "var(--font-serif)";
+          t.style.background = "var(--surface2)";
+          t.style.padding = "12px";
+          t.style.borderRadius = "10px";
+          t.textContent = item.text;
+          box.appendChild(t);
+          var qEl = document.createElement("p");
+          qEl.style.fontWeight = "800";
+          qEl.style.margin = "14px 0 10px";
+          qEl.textContent = item.q + " (صح / خطأ)";
+          box.appendChild(qEl);
+          [["صح", true], ["خطأ", false]].forEach(function(pair) {
+            var lab = document.createElement("label");
+            lab.style.display = "inline-block";
+            lab.style.padding = "10px 18px";
+            lab.style.margin = "6px 8px 6px 0";
+            lab.style.background = "var(--surface)";
+            lab.style.border = "1px solid var(--line)";
+            lab.style.borderRadius = "10px";
+            lab.style.cursor = "pointer";
+            var radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = "a1tf";
+            radio.value = pair[1];
+            radio.style.marginLeft = "8px";
+            if (a1State.answers[a1State.part + "-" + a1State.q] === pair[1]) radio.checked = true;
+            lab.appendChild(radio);
+            lab.appendChild(document.createTextNode(pair[0]));
+            lab.onclick = function(){ a1State.answers[a1State.part + "-" + a1State.q] = pair[1]; };
+            box.appendChild(lab);
+          });
+        } else if (item.type === "form") {
+          var qEl = document.createElement("p");
+          qEl.style.fontWeight = "800";
+          qEl.textContent = item.q;
+          box.appendChild(qEl);
+          item.fields.forEach(function(f, i) {
+            var row = document.createElement("div");
+            row.style.margin = "10px 0";
+            var lab = document.createElement("label");
+            lab.textContent = f + ": ";
+            lab.style.fontWeight = "700";
+            var inp = document.createElement("input");
+            inp.type = "text";
+            inp.style.width = "100%";
+            inp.style.padding = "10px";
+            inp.style.border = "1px solid var(--line)";
+            inp.style.borderRadius = "8px";
+            inp.style.marginTop = "4px";
+            inp.dataset.field = i;
+            var key = a1State.part + "-" + a1State.q + "-f" + i;
+            if (a1State.answers[key]) inp.value = a1State.answers[key];
+            inp.oninput = function(){ a1State.answers[key] = inp.value; };
+            row.appendChild(lab);
+            row.appendChild(inp);
+            box.appendChild(row);
+          });
+          var note = document.createElement("p");
+          note.style.fontSize = ".85rem";
+          note.style.color = "var(--muted)";
+          note.textContent = "اكتب إجاباتك. سيتم تقييمها تلقائيًا بشكل أساسي (وجود نص).";
+          box.appendChild(note);
+        } else if (item.type === "short") {
+          var qEl = document.createElement("p");
+          qEl.style.fontWeight = "800";
+          qEl.textContent = item.q;
+          box.appendChild(qEl);
+          var ta = document.createElement("textarea");
+          ta.rows = 6;
+          ta.style.width = "100%";
+          ta.style.padding = "12px";
+          ta.style.border = "1px solid var(--line)";
+          ta.style.borderRadius = "10px";
+          ta.style.fontFamily = "inherit";
+          ta.style.direction = "ltr";
+          ta.style.textAlign = "left";
+          var key = a1State.part + "-" + a1State.q;
+          if (a1State.answers[key]) ta.value = a1State.answers[key];
+          ta.oninput = function(){ a1State.answers[key] = ta.value; };
+          box.appendChild(ta);
+          var note = document.createElement("p");
+          note.style.fontSize = ".85rem";
+          note.style.color = "var(--muted)";
+          note.textContent = "الحد الأدنى 25 كلمة تقريبًا. سيتم احتساب النقاط حسب الطول والاكتمال.";
+          box.appendChild(note);
+        }
+
+        // nav buttons
+        $("a1PrevBtn").hidden = (a1State.part === 0 && a1State.q === 0);
+        var isLast = (a1State.part === A1_PARTS.length - 1) && (a1State.q === list.length - 1);
+        $("a1NextBtn").hidden = isLast;
+        $("a1FinishBtn").hidden = !isLast;
+      }
+
+      function a1Next() {
+        var list = a1CurrentList();
+        if (a1State.q < list.length - 1) {
+          a1State.q++;
+        } else if (a1State.part < A1_PARTS.length - 1) {
+          a1State.part++;
+          a1State.q = 0;
+        }
+        a1RenderQuestion();
+      }
+
+      function a1Prev() {
+        if (a1State.q > 0) {
+          a1State.q--;
+        } else if (a1State.part > 0) {
+          a1State.part--;
+          a1State.q = a1CurrentList().length - 1;
+        }
+        a1RenderQuestion();
+      }
+
+      function a1ScorePart(partIdx) {
+        var part = A1_PARTS[partIdx];
+        var list = A1_DATA[a1State.lang][part];
+        var score = 0;
+        var max = 25;
+        if (part === "writing") {
+          // Form: 10 points if most fields filled
+          var formFilled = 0;
+          for (var i = 0; i < 4; i++) {
+            var v = a1State.answers[partIdx + "-0-f" + i] || "";
+            if (v.trim().length > 1) formFilled++;
+          }
+          score += Math.round((formFilled / 4) * 10);
+          // Short text: 15 points based on word count
+          var text = (a1State.answers[partIdx + "-1"] || "").trim();
+          var words = text ? text.split(/\s+/).filter(Boolean).length : 0;
+          if (words >= 25) score += 15;
+          else if (words >= 15) score += 10;
+          else if (words >= 8) score += 6;
+          else if (words >= 3) score += 3;
+        } else {
+          var correct = 0;
+          list.forEach(function(item, qi) {
+            var ans = a1State.answers[partIdx + "-" + qi];
+            if (item.type === "mc" && ans === item.ans) correct++;
+            if (item.type === "tf" && ans === item.ans) correct++;
+          });
+          score = Math.round((correct / list.length) * 25);
+        }
+        return score;
+      }
+
+      function a1Finish() {
+        var total = 0;
+        A1_PARTS.forEach(function(p, i) {
+          var s = a1ScorePart(i);
+          a1State.scores[p] = s;
+          total += s;
+        });
+        $("a1TestArea").hidden = true;
+        $("a1ResultScreen").hidden = false;
+
+        var passed = total >= 60;
+        $("a1ScoreBig").textContent = total + " / 100";
+        $("a1ScoreBig").style.color = passed ? "var(--ok)" : "var(--bad)";
+        $("a1PassFail").textContent = passed ? "✅ ناجح — مبروك!" : "❌ لم تحقق نسبة النجاح (60%)";
+        $("a1PassFail").style.color = passed ? "var(--ok)" : "var(--bad)";
+
+        var html = "<table style='width:100%;border-collapse:collapse'>";
+        A1_PARTS.forEach(function(p) {
+          html += "<tr><td style='padding:8px;border-bottom:1px solid var(--line)'>" + A1_PART_NAMES[p] + "</td>";
+          html += "<td style='padding:8px;border-bottom:1px solid var(--line);text-align:left;font-weight:800'>" + a1State.scores[p] + " / 25</td></tr>";
+        });
+        html += "</table>";
+        $("a1Breakdown").innerHTML = html;
+
+        // Save last result
+        try {
+          localStorage.setItem("a1LastResult", JSON.stringify({
+            lang: a1State.lang, total: total, scores: a1State.scores, date: new Date().toISOString(), passed: passed
+          }));
+        } catch(e) {}
+      }
+
+      // Event listeners for A1 test
+      if ($("a1LangEn")) $("a1LangEn").addEventListener("click", function(){
+        a1State.lang = "en";
+        $("a1LangEn").classList.add("active-en"); $("a1LangDe").classList.remove("active-de");
+      });
+      if ($("a1LangDe")) $("a1LangDe").addEventListener("click", function(){
+        a1State.lang = "de";
+        $("a1LangDe").classList.add("active-de");
+        $("a1LangEn").classList.remove("active-en");
+      });
+      if ($("a1BeginBtn")) $("a1BeginBtn").addEventListener("click", a1Start);
+      if ($("a1NextBtn")) $("a1NextBtn").addEventListener("click", a1Next);
+      if ($("a1PrevBtn")) $("a1PrevBtn").addEventListener("click", a1Prev);
+      if ($("a1FinishBtn")) $("a1FinishBtn").addEventListener("click", a1Finish);
+      if ($("a1RetryBtn")) $("a1RetryBtn").addEventListener("click", function(){ a1Reset(); });
+      if ($("a1BackBtn")) $("a1BackBtn").addEventListener("click", function(){ showView("review"); });
+
+      // When entering a1test view
+      var _oldShowView = showView;
+      // We hook into the existing showView calls via the data-goto already working
+
       /* ---------- Home dashboard: per language × level, all from real data ---------- */
       function bankLevelTotal(lang, level){
         var data = level === "A2" ? BANK_DATA2 : BANK_DATA;
