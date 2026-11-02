@@ -113,26 +113,15 @@
       .mins{font-size:.85rem; color:var(--muted)}
       .done-tag{font-size:.85rem; font-weight:800; color:var(--ok)}
       .card h3{margin:2px 0 0; font-family:var(--font-serif); font-size:1.3rem; line-height:1.4}
-      .gram-card{width:100%; text-align:inherit; font:inherit; color:inherit; cursor:pointer; border-inline-start:4px solid var(--accent)}
+      .gram-card{width:100%; text-align:inherit; font:inherit; color:inherit; cursor:pointer}
       .gram-card .card-body{text-align:right}
-      .gram-foot{margin:0; font-size:.85rem; color:var(--muted)}
-      .gram-hint{color:var(--muted); margin:0 0 16px; max-width:65ch}
       .gram-nav{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0}
-      .gram-hero{background:var(--accent-tint); border:1px solid var(--line); border-radius:var(--r-card); padding:18px; margin:16px 0 6px}
-      .gram-hero-meta{font-size:.85rem; font-weight:800; color:var(--accent)}
-      .gram-hero-title{font-family:var(--font-serif); font-size:1.6rem; margin:6px 0 2px; line-height:1.4}
-      .gram-hero-foreign{font-family:var(--font-serif); direction:ltr; text-align:left; font-weight:700; color:var(--accent); margin:0 0 10px; font-size:1.15rem}
-      .gram-expl{line-height:1.9; margin:0}
-      .gram-sec{font-family:var(--font-serif); font-size:1.2rem; margin:24px 0 8px}
-      .gram-ex{display:flex; gap:10px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--line)}
-      .gram-ex-text{flex:1; min-width:0}
+      .gram-title{font-family:var(--font-serif); font-size:1.5rem; margin:22px 0 6px}
+      .gram-expl{line-height:1.9; margin:0 0 22px}
+      .gram-sec{font-family:var(--font-serif); font-size:1.2rem; margin:28px 0 4px}
+      .gram-ex{padding:14px 0; border-bottom:1px solid var(--line)}
       .gram-ex .gram-f{font-family:var(--font-serif); direction:ltr; text-align:left; font-weight:700; margin:0}
       .gram-ex .gram-a{margin:5px 0 0; opacity:.75}
-      .gram-stories{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 4px}
-      .gram-chip{border:1px solid var(--line); background:var(--surface); border-radius:99px; padding:8px 14px; font:inherit; font-weight:700; cursor:pointer}
-      .gram-more{font-size:.85rem; color:var(--muted); align-self:center}
-      .gram-quiz{border:1px solid var(--line); background:var(--surface); border-radius:var(--r-card); padding:14px 16px; margin:24px 0}
-      .gram-quiz summary{font-weight:800; cursor:pointer}
       .card h3 .foreign{font-family:var(--font-serif); direction:ltr; unicode-bidi:isolate}
       .card .about{margin:0; color:var(--muted); font-size:.95rem; flex:1}
       .read-btn{
@@ -896,24 +885,15 @@
       .tool-actions{display:flex; gap:10px; flex-wrap:wrap}
       .goal-switch button.active-lvl{background:var(--accent); color:#fff}
 
-      .fb-pop{
-        position:fixed; inset:0; z-index:150; display:flex; align-items:center; justify-content:center;
-        background:rgba(43,49,47,.55); padding:16px;
-      }
-      .fb-sheet{
-        background:var(--surface); color:var(--ink); width:100%; max-width:460px; max-height:calc(100vh - 32px); overflow:auto;
-        border:1px solid var(--line); border-radius:var(--r-card); box-shadow:var(--shadow); padding:22px
-      }
-      .fb-sheet h3{margin:0 0 4px; font-size:1.3rem}
-      .fb-label{display:block; font-weight:700; font-size:.92rem; margin:10px 0 4px}
-      .fb-sheet select,.fb-sheet textarea,.fb-sheet input[type=email]{
-        width:100%; font:inherit; color:var(--ink); background:var(--surface2);
-        border:1px solid var(--line); border-radius:10px; padding:10px 12px
-      }
-      .fb-sheet textarea{resize:vertical; min-height:110px}
-      .fb-sheet .exit-actions{margin-top:16px}
-      .fb-sheet .exit-yes{background:var(--accent)}
-      .fb-sheet .exit-yes:disabled{opacity:.6; cursor:default}
+      
+      
+      
+      
+      
+      
+      
+      
+      
 
           /* ---------- Batch 1: productive review cards + backup reminder ---------- */
       #revTypeBox{width:100%}
@@ -965,7 +945,7 @@
           </div>
           <div class="more-links">
             <button class="more-link" type="button" id="shareAppBtn">شارك التطبيق 📤</button>
-            <button class="more-link" type="button" data-feedback>اقترح أو بلّغ عن خطأ 💌</button>
+            
           </div>
         </section>
 
@@ -1388,34 +1368,6 @@
           <button class="exit-yes" id="exitYes" type="button">نعم</button>
           <button class="exit-no" id="exitNo" type="button">لا</button>
         </div>
-      </div>
-    </div>
-
-    <!-- ======== Feedback (Netlify Forms) ======== -->
-    <div class="fb-pop" id="fbPop" hidden>
-      <div class="fb-sheet" role="dialog" aria-modal="true" aria-labelledby="fbTitle">
-        <h3 id="fbTitle">اقتراح أو ملاحظة 💌</h3>
-        <p class="tool-note">اقترح قصة أو موضوعًا، أو بلّغ عن خطأ في ترجمة أو كلمة. كل رسالة تُقرأ.</p>
-        <form id='fbForm' method='POST' name='feedback'>
-          <input type="hidden" name="form-name" value="feedback" />
-          <p hidden><label>لا تملأ هذا الحقل: <input name="bot-field" /></label></p>
-          <input type="hidden" name="context" id="fbContext" value="" />
-          <label class="fb-label" for="fbType">نوع الرسالة</label>
-          <select id="fbType" name="type">
-            <option value="اقتراح قصة أو موضوع">اقتراح قصة أو موضوع</option>
-            <option value="خطأ في الترجمة أو الكلمات">خطأ في الترجمة أو الكلمات</option>
-            <option value="مشكلة تقنية">مشكلة تقنية</option>
-            <option value="أخرى">أخرى</option>
-          </select>
-          <label class="fb-label" for="fbMsg">رسالتك</label>
-          <textarea id="fbMsg" name="message" rows="5" required maxlength="2000" placeholder="اكتب هنا…"></textarea>
-          <label class="fb-label" for="fbContact">بريدك (اختياري — إذا تحب نرد عليك)</label>
-          <input id="fbContact" name="contact" type="email" dir="ltr" autocomplete="email" />
-          <div class="exit-actions">
-            <button class="exit-yes" type="submit" id="fbSend">إرسال</button>
-            <button class="exit-no" type="button" id="fbCancel">إلغاء</button>
-          </div>
-        </form>
       </div>
     </div>
 
@@ -4583,10 +4535,6 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
         $("gramLvlA2").className = gramLevel === "A2" ? "active-lvl" : "";
         var box = $("gramHome");
         box.innerHTML = "";
-        var hint = document.createElement("p");
-        hint.className = "gram-hint";
-        hint.textContent = gramLevel === "A1" ? "مختصرة عمداً: القاعدة + أمثلة + قصتها، والشرح الطويل تشوفه بالقصص نفسها." : "شرح أوسع وأمثلة أكثر من A1.";
-        box.appendChild(hint);
         var grid = document.createElement("div");
         grid.className = "grid";
         box.appendChild(grid);
@@ -4609,10 +4557,6 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
           f.setAttribute("dir", "ltr");
           f.textContent = rule.title;
           body.appendChild(f);
-          var foot = document.createElement("p");
-          foot.className = "gram-foot";
-          foot.textContent = "📖 " + (rule.stories || []).length + " قصص · 💬 " + (rule.examples || []).length + " أمثلة · ✏️ " + (rule.exercises || []).length + " أسئلة";
-          body.appendChild(foot);
           b.appendChild(body);
           b.addEventListener("click", function(){ renderGrammarRule(rule.id); });
           grid.appendChild(b);
@@ -4633,16 +4577,14 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
           if (ruleIdx > 0) {
             var pv = document.createElement("button");
             pv.className = "more-link"; pv.type = "button";
-            pv.textContent = "‹ السابقة";
-            pv.setAttribute("aria-label", "القاعدة السابقة: " + rules[ruleIdx - 1].titleAr);
+            pv.textContent = "القاعدة السابقة: " + rules[ruleIdx - 1].titleAr;
             pv.addEventListener("click", function(){ renderGrammarRule(rules[ruleIdx - 1].id); });
             nav.appendChild(pv);
           }
           if (ruleIdx < rules.length - 1) {
             var nx = document.createElement("button");
             nx.className = "more-link"; nx.type = "button";
-            nx.textContent = "التالية ›";
-            nx.setAttribute("aria-label", "القاعدة التالية: " + rules[ruleIdx + 1].titleAr);
+            nx.textContent = "القاعدة التالية: " + rules[ruleIdx + 1].titleAr;
             nx.addEventListener("click", function(){ renderGrammarRule(rules[ruleIdx + 1].id); });
             nav.appendChild(nx);
           }
@@ -4652,56 +4594,15 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
         back.className = "more-link"; back.type = "button"; back.textContent = "عودة";
         back.addEventListener("click", function(){ renderGrammarHome(); });
         area.appendChild(back);
-        var hero = document.createElement("div");
-        hero.className = "gram-hero";
-        var meta = document.createElement("p");
-        meta.className = "gram-hero-meta";
-        meta.textContent = gramLevel + " · " + (ruleIdx + 1) + " من " + rules.length + " · " + (gramLang === "en" ? "English" : "Deutsch");
-        hero.appendChild(meta);
         var title = document.createElement("h3");
-        title.className = "gram-hero-title";
-        title.textContent = rule.titleAr;
-        hero.appendChild(title);
-        var foreign = document.createElement("p");
-        foreign.className = "gram-hero-foreign";
-        foreign.setAttribute("dir", "ltr"); foreign.setAttribute("lang", gramLang);
-        foreign.textContent = rule.title;
-        hero.appendChild(foreign);
+        title.className = "gram-title";
+        title.textContent = (ruleIdx + 1) + ". " + rule.titleAr + " — " + rule.title;
+        area.appendChild(title);
+        area.appendChild(gramNav());
         var expl = document.createElement("p");
         expl.className = "gram-expl";
         expl.textContent = rule.explanationAr || "";
-        hero.appendChild(expl);
-        area.appendChild(hero);
-        area.appendChild(gramNav());
-        if (rule.stories && rule.stories.length) {
-          var stHead = document.createElement("h3");
-          stHead.className = "gram-sec";
-          stHead.textContent = "شوفها بالقصص 📖";
-          area.appendChild(stHead);
-          var chips = document.createElement("div");
-          chips.className = "gram-stories";
-          var shownIds = gramLevel === "A1" ? rule.stories : rule.stories.slice(0, 6);
-          shownIds.forEach(function(sid){
-            var st = null;
-            STORIES.forEach(function(x){ if (x.id === sid) st = x; });
-            if (!st) return;
-            var chip = document.createElement("button");
-            chip.className = "gram-chip"; chip.type = "button";
-            chip.textContent = st.titleAr;
-            chip.addEventListener("click", function(){
-              if (st.topic) openPrep(st.id); else openStory(st.id);
-              window.scrollTo(0, 0);
-            });
-            chips.appendChild(chip);
-          });
-          if (gramLevel !== "A1" && rule.stories.length > 6) {
-            var more = document.createElement("span");
-            more.className = "gram-more";
-            more.textContent = "و " + (rule.stories.length - 6) + " قصص أخرى بنفس القاعدة";
-            chips.appendChild(more);
-          }
-          area.appendChild(chips);
-        }
+        area.appendChild(expl);
         if (rule.examples && rule.examples.length) {
           var exHead = document.createElement("h3");
           exHead.className = "gram-sec";
@@ -4710,34 +4611,31 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
           rule.examples.forEach(function(ex, ei){
             var d = document.createElement("div");
             d.className = "gram-ex";
+            var fp = document.createElement("p");
+            fp.className = "gram-f";
+            fp.setAttribute("dir", "ltr"); fp.setAttribute("lang", gramLang);
+            fp.textContent = ex.f;
+            d.appendChild(fp);
             var sp = document.createElement("button");
             sp.type = "button"; sp.className = "bank-speak";
             sp.setAttribute("aria-label", "استمع");
             sp.textContent = "🔊";
             sp.addEventListener("click", function(){ if (gramLevel === "A1") { var seg = bundleSeg("grammar/" + gramLang + ".mp3", rule.id + ":ex" + ("0" + (ei + 1)).slice(-2)); if (seg) playBundle(seg, ex.f, gramLang); else bankSpeak(ex.f, gramLang); } else bankSpeak(ex.f, gramLang); });
             d.appendChild(sp);
-            var txt = document.createElement("div");
-            txt.className = "gram-ex-text";
-            var fp = document.createElement("p");
-            fp.className = "gram-f";
-            fp.setAttribute("dir", "ltr"); fp.setAttribute("lang", gramLang);
-            fp.textContent = ex.f;
-            txt.appendChild(fp);
             var ap = document.createElement("p");
             ap.className = "gram-a";
             ap.textContent = ex.a;
-            txt.appendChild(ap);
-            d.appendChild(txt);
+            d.appendChild(ap);
             area.appendChild(d);
           });
         }
+
         if (rule.exercises && rule.exercises.length) {
-          var quiz = document.createElement("details");
-          quiz.className = "gram-quiz";
-          var sum = document.createElement("summary");
-          sum.textContent = "✏️ اختبر نفسك · " + rule.exercises.length + " أسئلة";
-          quiz.appendChild(sum);
           var qBox = document.createElement("div");
+          var qHead = document.createElement("h3");
+          qHead.className = "gram-sec";
+          qHead.textContent = "تمارين";
+          qBox.appendChild(qHead);
           rule.exercises.forEach(function(item, qi){
             var q = document.createElement("div");
             q.className = "q";
@@ -4770,8 +4668,7 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
             q.appendChild(opts);
             qBox.appendChild(q);
           });
-          quiz.appendChild(qBox);
-          area.appendChild(quiz);
+          area.appendChild(qBox);
         }
         area.appendChild(gramNav());
       }
@@ -5728,41 +5625,6 @@ function bankSpeak(text, lang){
         } else {
           showToast(url);
         }
-      });
-
-      /* Feedback dialog — submitted to Netlify Forms */
-      var fbPop = $("fbPop"), fbForm = $("fbForm");
-      function openFeedback(){
-        $("fbContext").value = (typeof curView !== "undefined" ? curView : "") +
-          (!$("reader").hidden && $("readerTitle").textContent ? " · " + $("readerTitle").textContent : "");
-        fbPop.hidden = false;
-        setTimeout(function(){ $("fbMsg").focus(); }, 30);
-      }
-      function closeFeedback(){ fbPop.hidden = true; }
-      document.querySelectorAll("[data-feedback]").forEach(function(b){ b.addEventListener("click", openFeedback); });
-      $("fbCancel").addEventListener("click", closeFeedback);
-      fbPop.addEventListener("click", function(e){ if (e.target === fbPop) closeFeedback(); });
-      document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !fbPop.hidden) closeFeedback(); });
-      fbForm.addEventListener("submit", function(e){
-        e.preventDefault();
-        if (!$("fbMsg").value.trim()) { $("fbMsg").focus(); return; }
-        if (navigator.onLine === false) { showToast("لا يوجد اتصال بالإنترنت — حاول لاحقًا"); return; }
-        var btn = $("fbSend");
-        btn.disabled = true; btn.textContent = "جارٍ الإرسال…";
-        fetch("/", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams(new FormData(fbForm)).toString()
-        }).then(function(res){
-          if (!res.ok) throw new Error(res.status);
-          fbForm.reset();
-          closeFeedback();
-          showToast("وصلت رسالتك — شكرًا لك 💙");
-        }).catch(function(){
-          showToast("تعذّر الإرسال — حاول مرة ثانية");
-        }).then(function(){
-          btn.disabled = false; btn.textContent = "إرسال";
-        });
       });
 
       /* Backup / restore every readerApp.* key as one JSON file */
