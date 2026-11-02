@@ -113,15 +113,26 @@
       .mins{font-size:.85rem; color:var(--muted)}
       .done-tag{font-size:.85rem; font-weight:800; color:var(--ok)}
       .card h3{margin:2px 0 0; font-family:var(--font-serif); font-size:1.3rem; line-height:1.4}
-      .gram-card{width:100%; text-align:inherit; font:inherit; color:inherit; cursor:pointer}
+      .gram-card{width:100%; text-align:inherit; font:inherit; color:inherit; cursor:pointer; border-inline-start:4px solid var(--accent)}
       .gram-card .card-body{text-align:right}
+      .gram-foot{margin:0; font-size:.85rem; color:var(--muted)}
+      .gram-hint{color:var(--muted); margin:0 0 16px; max-width:65ch}
       .gram-nav{display:flex; flex-wrap:wrap; gap:10px; margin:14px 0}
-      .gram-title{font-family:var(--font-serif); font-size:1.5rem; margin:22px 0 6px}
-      .gram-expl{line-height:1.9; margin:0 0 22px}
-      .gram-sec{font-family:var(--font-serif); font-size:1.2rem; margin:28px 0 4px}
-      .gram-ex{padding:14px 0; border-bottom:1px solid var(--line)}
+      .gram-hero{background:var(--accent-tint); border:1px solid var(--line); border-radius:var(--r-card); padding:18px; margin:16px 0 6px}
+      .gram-hero-meta{font-size:.85rem; font-weight:800; color:var(--accent)}
+      .gram-hero-title{font-family:var(--font-serif); font-size:1.6rem; margin:6px 0 2px; line-height:1.4}
+      .gram-hero-foreign{font-family:var(--font-serif); direction:ltr; text-align:left; font-weight:700; color:var(--accent); margin:0 0 10px; font-size:1.15rem}
+      .gram-expl{line-height:1.9; margin:0}
+      .gram-sec{font-family:var(--font-serif); font-size:1.2rem; margin:24px 0 8px}
+      .gram-ex{display:flex; gap:10px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--line)}
+      .gram-ex-text{flex:1; min-width:0}
       .gram-ex .gram-f{font-family:var(--font-serif); direction:ltr; text-align:left; font-weight:700; margin:0}
       .gram-ex .gram-a{margin:5px 0 0; opacity:.75}
+      .gram-stories{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0 4px}
+      .gram-chip{border:1px solid var(--line); background:var(--surface); border-radius:99px; padding:8px 14px; font:inherit; font-weight:700; cursor:pointer}
+      .gram-more{font-size:.85rem; color:var(--muted); align-self:center}
+      .gram-quiz{border:1px solid var(--line); background:var(--surface); border-radius:var(--r-card); padding:14px 16px; margin:24px 0}
+      .gram-quiz summary{font-weight:800; cursor:pointer}
       .card h3 .foreign{font-family:var(--font-serif); direction:ltr; unicode-bidi:isolate}
       .card .about{margin:0; color:var(--muted); font-size:.95rem; flex:1}
       .read-btn{
@@ -164,6 +175,9 @@
       }
       .phrase .f{font-family:var(--font-serif); direction:ltr; text-align:left; font-size:1.15rem; font-weight:600}
       .phrase .a{color:var(--muted)}
+      .phrase-lvl{font-family:var(--font-serif); font-size:1.2rem; margin:20px 0 10px}
+      .phrase-top{display:flex; gap:8px; align-items:flex-start; justify-content:space-between}
+      .phrase-top .f{flex:1; min-width:0}
 
       footer{margin-top:44px; color:var(--muted); font-size:.9rem; border-top:1px solid var(--line); padding-top:16px}
 
@@ -885,15 +899,24 @@
       .tool-actions{display:flex; gap:10px; flex-wrap:wrap}
       .goal-switch button.active-lvl{background:var(--accent); color:#fff}
 
-      
-      
-      
-      
-      
-      
-      
-      
-      
+      .fb-pop{
+        position:fixed; inset:0; z-index:150; display:flex; align-items:center; justify-content:center;
+        background:rgba(43,49,47,.55); padding:16px;
+      }
+      .fb-sheet{
+        background:var(--surface); color:var(--ink); width:100%; max-width:460px; max-height:calc(100vh - 32px); overflow:auto;
+        border:1px solid var(--line); border-radius:var(--r-card); box-shadow:var(--shadow); padding:22px
+      }
+      .fb-sheet h3{margin:0 0 4px; font-size:1.3rem}
+      .fb-label{display:block; font-weight:700; font-size:.92rem; margin:10px 0 4px}
+      .fb-sheet select,.fb-sheet textarea,.fb-sheet input[type=email]{
+        width:100%; font:inherit; color:var(--ink); background:var(--surface2);
+        border:1px solid var(--line); border-radius:10px; padding:10px 12px
+      }
+      .fb-sheet textarea{resize:vertical; min-height:110px}
+      .fb-sheet .exit-actions{margin-top:16px}
+      .fb-sheet .exit-yes{background:var(--accent)}
+      .fb-sheet .exit-yes:disabled{opacity:.6; cursor:default}
 
           /* ---------- Batch 1: productive review cards + backup reminder ---------- */
       #revTypeBox{width:100%}
@@ -945,7 +968,7 @@
           </div>
           <div class="more-links">
             <button class="more-link" type="button" id="shareAppBtn">شارك التطبيق 📤</button>
-            
+            <button class="more-link" type="button" data-feedback>اقترح أو بلّغ عن خطأ 💌</button>
           </div>
         </section>
 
@@ -1371,6 +1394,34 @@
       </div>
     </div>
 
+    <!-- ======== Feedback (Netlify Forms) ======== -->
+    <div class="fb-pop" id="fbPop" hidden>
+      <div class="fb-sheet" role="dialog" aria-modal="true" aria-labelledby="fbTitle">
+        <h3 id="fbTitle">اقتراح أو ملاحظة 💌</h3>
+        <p class="tool-note">اقترح قصة أو موضوعًا، أو بلّغ عن خطأ في ترجمة أو كلمة. كل رسالة تُقرأ.</p>
+        <form id='fbForm' method='POST' name='feedback'>
+          <input type="hidden" name="form-name" value="feedback" />
+          <p hidden><label>لا تملأ هذا الحقل: <input name="bot-field" /></label></p>
+          <input type="hidden" name="context" id="fbContext" value="" />
+          <label class="fb-label" for="fbType">نوع الرسالة</label>
+          <select id="fbType" name="type">
+            <option value="اقتراح قصة أو موضوع">اقتراح قصة أو موضوع</option>
+            <option value="خطأ في الترجمة أو الكلمات">خطأ في الترجمة أو الكلمات</option>
+            <option value="مشكلة تقنية">مشكلة تقنية</option>
+            <option value="أخرى">أخرى</option>
+          </select>
+          <label class="fb-label" for="fbMsg">رسالتك</label>
+          <textarea id="fbMsg" name="message" rows="5" required maxlength="2000" placeholder="اكتب هنا…"></textarea>
+          <label class="fb-label" for="fbContact">بريدك (اختياري — إذا تحب نرد عليك)</label>
+          <input id="fbContact" name="contact" type="email" dir="ltr" autocomplete="email" />
+          <div class="exit-actions">
+            <button class="exit-yes" type="submit" id="fbSend">إرسال</button>
+            <button class="exit-no" type="button" id="fbCancel">إلغاء</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
     <script>
@@ -1394,22 +1445,318 @@ var NEW_STORIES_3 = [{"about":"سارة لا تستطيع الدخول إلى ح
       STORIES = STORIES.concat(NEW_STORIES_3);
 
       var PHRASES = {
-        en: [
-          { f: "Hello, how are you?", a: "مرحبًا، كيف حالك؟" },
-          { f: "Thank you very much.", a: "شكرًا جزيلًا." },
-          { f: "Where is the station?", a: "أين المحطة؟" },
-          { f: "I would like a coffee, please.", a: "أودّ قهوة، من فضلك." },
-          { f: "How much does it cost?", a: "كم ثمنه؟" },
-          { f: "See you tomorrow!", a: "أراك غدًا!" }
-        ],
-        de: [
-          { f: "Guten Morgen!", a: "صباح الخير!" },
-          { f: "Vielen Dank!", a: "شكرًا جزيلًا!" },
-          { f: "Wo ist der Bahnhof?", a: "أين محطة القطار؟" },
-          { f: "Ich hätte gern einen Kaffee.", a: "أودّ قهوة، من فضلك." },
-          { f: "Wie viel kostet das?", a: "كم ثمن هذا؟" },
-          { f: "Bis morgen!", a: "إلى الغد!" }
-        ]
+        en: {
+          A1: [
+{ f: "Good to see you!", a: "سعيد برؤيتك!" },
+{ f: "How's it going?", a: "كيف الأمور؟" },
+{ f: "How's your day going?", a: "كيف يسير يومك؟" },
+{ f: "Long time no see!", a: "لم أرك منذ زمن!" },
+{ f: "Take care!", a: "اعتنِ بنفسك!" },
+{ f: "Have a nice day!", a: "أتمنى لك يومًا سعيدًا!" },
+{ f: "See you soon!", a: "أراك قريبًا!" },
+{ f: "Welcome back!", a: "أهلًا بعودتك!" },
+{ f: "Thanks a lot!", a: "شكرًا جزيلًا!" },
+{ f: "No problem at all.", a: "لا مشكلة أبدًا." },
+{ f: "You're welcome!", a: "على الرحب والسعة!" },
+{ f: "Excuse me, please.", a: "عذرًا، من فضلك." },
+{ f: "Sorry about that.", a: "آسف على ذلك." },
+{ f: "Could you help me, please?", a: "هل يمكنك مساعدتي من فضلك؟" },
+{ f: "I don't understand.", a: "أنا لا أفهم." },
+{ f: "Could you repeat that, please?", a: "هل يمكنك تكرار ذلك من فضلك؟" },
+{ f: "Could you speak more slowly, please?", a: "هل يمكنك التحدث ببطء أكثر من فضلك؟" },
+{ f: "What does this mean?", a: "ماذا يعني هذا؟" },
+{ f: "How do you say this in English?", a: "كيف تقول هذا بالإنجليزية؟" },
+{ f: "Let me think...", a: "دعني أفكر..." },
+{ f: "I see.", a: "فهمت." },
+{ f: "That makes sense.", a: "هذا منطقي." },
+{ f: "I think so.", a: "أعتقد ذلك." },
+{ f: "I'm not sure.", a: "لست متأكدًا." },
+{ f: "I like it a lot.", a: "يعجبني كثيرًا." },
+{ f: "I don't like it much.", a: "لا يعجبني كثيرًا." },
+{ f: "In my opinion, it's great.", a: "في رأيي، إنه رائع." },
+{ f: "I agree with you.", a: "أتفق معك." },
+{ f: "I don't agree.", a: "لا أتفق." },
+{ f: "That's a good idea!", a: "هذه فكرة جيدة!" },
+{ f: "Let's go!", a: "هيا بنا!" },
+{ f: "I'm ready.", a: "أنا مستعد." },
+{ f: "I'm busy right now.", a: "أنا مشغول الآن." },
+{ f: "I'm free tomorrow.", a: "أنا متفرغ غدًا." },
+{ f: "See you at seven.", a: "أراك في السابعة." },
+{ f: "I'm running a bit late.", a: "سأتأخر قليلًا." },
+{ f: "I'm tired today.", a: "أنا متعب اليوم." },
+{ f: "I feel better now.", a: "أشعر بتحسن الآن." },
+{ f: "I'm happy about that.", a: "أنا سعيد بذلك." },
+{ f: "Don't worry.", a: "لا تقلق." },
+{ f: "It doesn't matter.", a: "لا يهم." },
+{ f: "That's fine with me.", a: "هذا يناسبني." },
+{ f: "Can I have this, please?", a: "هل يمكنني أخذ هذا من فضلك؟" },
+{ f: "How much is this?", a: "بكم هذا؟" },
+{ f: "I'll take it.", a: "سآخذه." },
+{ f: "I'm just looking, thanks.", a: "أنا أتفرج فقط، شكرًا." },
+{ f: "Where is the nearest bus stop?", a: "أين أقرب موقف حافلات؟" },
+{ f: "I need some help.", a: "أحتاج بعض المساعدة." },
+{ f: "Could you show me?", a: "هل يمكنك أن تريني؟" },
+{ f: "That's all, thanks.", a: "هذا كل شيء، شكرًا." },
+          ],
+          A2: [
+{ f: "By the way...", a: "بالمناسبة..." },
+{ f: "Actually, I meant...", a: "في الحقيقة، قصدت..." },
+{ f: "To be honest...", a: "بصراحة..." },
+{ f: "In other words...", a: "بعبارة أخرى..." },
+{ f: "On the other hand...", a: "من ناحية أخرى..." },
+{ f: "As far as I know...", a: "على حد علمي..." },
+{ f: "As far as I'm concerned...", a: "بالنسبة لي..." },
+{ f: "It depends.", a: "يعتمد على الأمر." },
+{ f: "It depends on the situation.", a: "يعتمد على الموقف." },
+{ f: "That reminds me...", a: "هذا يذكرني..." },
+{ f: "Speaking of which...", a: "بالحديث عن ذلك..." },
+{ f: "Anyway, let's move on.", a: "على أي حال، لننتقل." },
+{ f: "First of all...", a: "أولًا وقبل كل شيء..." },
+{ f: "At the end of the day...", a: "في نهاية المطاف..." },
+{ f: "Long story short...", a: "باختصار..." },
+{ f: "I suppose so.", a: "أفترض ذلك." },
+{ f: "I guess you're right.", a: "أظن أنك محق." },
+{ f: "I'm pretty sure.", a: "أنا متأكد تقريبًا." },
+{ f: "I'm not really sure about that.", a: "لست متأكدًا تمامًا من ذلك." },
+{ f: "It seems to me that...", a: "يبدو لي أن..." },
+{ f: "If you ask me...", a: "إذا سألتني..." },
+{ f: "In my experience...", a: "من تجربتي..." },
+{ f: "I have mixed feelings about it.", a: "مشاعري مختلطة تجاهه." },
+{ f: "I see what you mean.", a: "أفهم ما تقصده." },
+{ f: "You have a point.", a: "معك حق في هذه النقطة." },
+{ f: "I couldn't agree more.", a: "لا يمكن أن أتفق أكثر." },
+{ f: "I'm afraid I don't agree.", a: "أخشى أنني لا أتفق." },
+{ f: "Let's agree to disagree.", a: "لنتفق على الاختلاف." },
+{ f: "That's not quite what I meant.", a: "ليس هذا تمامًا ما قصدته." },
+{ f: "What I mean is...", a: "ما أعنيه هو..." },
+{ f: "That sounds great!", a: "هذا يبدو رائعًا!" },
+{ f: "That sounds interesting!", a: "هذا يبدو مثيرًا للاهتمام!" },
+{ f: "Really? Tell me more!", a: "حقًا؟ أخبرني المزيد!" },
+{ f: "No way!", a: "مستحيل!" },
+{ f: "That's amazing!", a: "هذا مذهل!" },
+{ f: "That's a shame.", a: "هذا مؤسف." },
+{ f: "What a surprise!", a: "يا لها من مفاجأة!" },
+{ f: "Good for you!", a: "أحسنت!" },
+{ f: "I'm so glad to hear that!", a: "أنا سعيد جدًا لسماع ذلك!" },
+{ f: "That made my day!", a: "هذا أسعد يومي!" },
+{ f: "I can't believe it!", a: "لا أصدق ذلك!" },
+{ f: "You must be joking!", a: "لا بد أنك تمزح!" },
+{ f: "It was worth it.", a: "كان يستحق العناء." },
+{ f: "It turned out well.", a: "انتهى الأمر على خير." },
+{ f: "It all started when...", a: "بدأ كل شيء عندما..." },
+{ f: "And then, all of a sudden...", a: "وفجأة..." },
+{ f: "To cut a long story short...", a: "لاختصار القصة الطويلة..." },
+{ f: "In the end, we decided to...", a: "في النهاية، قررنا أن..." },
+{ f: "That was the best part.", a: "كان ذلك أفضل جزء." },
+{ f: "I'll never forget that day.", a: "لن أنسى ذلك اليوم أبدًا." },
+{ f: "I'm working on it.", a: "أنا أعمل على ذلك." },
+{ f: "I'm in the middle of something.", a: "أنا في منتصف أمر ما." },
+{ f: "Let me check and get back to you.", a: "دعني أتحقق وأعود إليك." },
+{ f: "Could we meet sometime next week?", a: "هل يمكننا أن نلتقي في وقت ما الأسبوع المقبل؟" },
+{ f: "That works for me.", a: "هذا يناسبني." },
+{ f: "That doesn't work for me.", a: "هذا لا يناسبني." },
+{ f: "Let's keep in touch.", a: "لنبقَ على تواصل." },
+{ f: "I need more time.", a: "أحتاج وقتًا أكثر." },
+{ f: "I'm trying my best.", a: "أنا أبذل قصارى جهدي." },
+{ f: "It's not as easy as it looks.", a: "ليس سهلًا كما يبدو." },
+{ f: "Practice makes perfect.", a: "الممارسة تصنع الإتقان." },
+{ f: "I'm still learning.", a: "ما زلت أتعلم." },
+{ f: "I find it difficult to say no.", a: "أجد صعوبة في قول لا." },
+{ f: "Don't take it personally.", a: "لا تأخذ الأمر على محمل شخصي." },
+{ f: "I understand how you feel.", a: "أفهم شعورك." },
+{ f: "Take your time.", a: "خذ وقتك." },
+{ f: "It's okay, we all make mistakes.", a: "لا بأس، كلنا نخطئ." },
+{ f: "Cheer up!", a: "ابتهج!" },
+{ f: "I'm here for you.", a: "أنا هنا من أجلك." },
+{ f: "That means a lot to me.", a: "هذا يعني لي الكثير." },
+{ f: "I appreciate it.", a: "أنا ممتن لذلك." },
+{ f: "Thank you for your help.", a: "شكرًا على مساعدتك." },
+{ f: "I owe you one.", a: "أنا مدين لك بواحدة." },
+{ f: "No hard feelings.", a: "لا ضغينة." },
+{ f: "Let's not argue about it.", a: "دعنا لا نتجادل حوله." },
+{ f: "Could you do me a favour?", a: "هل يمكنك أن تسدي لي معروفًا؟" },
+{ f: "I'd like to make a suggestion.", a: "أود أن أقدم اقتراحًا." },
+{ f: "How about going for a walk?", a: "ما رأيك أن نذهب في نزهة؟" },
+{ f: "Why don't we try again?", a: "لماذا لا نحاول مجددًا؟" },
+{ f: "It's up to you.", a: "الأمر يعود إليك." },
+{ f: "It's your call.", a: "القرار قرارك." },
+{ f: "I'm counting on you.", a: "أنا أعتمد عليك." },
+{ f: "Don't give up!", a: "لا تستسلم!" },
+{ f: "You can do it!", a: "يمكنك فعلها!" },
+{ f: "Let's give it a try.", a: "لنجرب ذلك." },
+{ f: "What's the plan for today?", a: "ما خطة اليوم؟" },
+{ f: "What do you have in mind?", a: "ما الذي يدور في ذهنك؟" },
+{ f: "I'm looking forward to it!", a: "أنا متشوق لذلك!" },
+{ f: "I can't wait!", a: "لا أستطيع الانتظار!" },
+{ f: "That would be lovely.", a: "سيكون ذلك جميلًا." },
+{ f: "It's a deal!", a: "اتفقنا!" },
+{ f: "I changed my mind.", a: "غيرت رأيي." },
+{ f: "Let's think it over.", a: "لنفكر في الأمر." },
+{ f: "We need to decide soon.", a: "علينا أن نقرر قريبًا." },
+{ f: "I'll think about it.", a: "سأفكر في الأمر." },
+{ f: "Keep it up!", a: "استمر على هذا المنوال!" },
+{ f: "Well done!", a: "أحسنت عملًا!" },
+{ f: "That was close!", a: "كان ذلك وشيكًا!" },
+{ f: "It's getting late.", a: "الوقت يتأخر." },
+{ f: "Time flies!", a: "الوقت يمر بسرعة!" },
+          ]
+        },
+        de: {
+          A1: [
+{ f: "Schön, dich zu sehen!", a: "سعيد برؤيتك!" },
+{ f: "Wie geht's?", a: "كيف حالك؟" },
+{ f: "Wie läuft dein Tag?", a: "كيف يسير يومك؟" },
+{ f: "Lange nicht gesehen!", a: "لم أرك منذ زمن!" },
+{ f: "Pass auf dich auf!", a: "اعتنِ بنفسك!" },
+{ f: "Schönen Tag noch!", a: "أتمنى لك يومًا سعيدًا!" },
+{ f: "Bis bald!", a: "أراك قريبًا!" },
+{ f: "Willkommen zurück!", a: "أهلًا بعودتك!" },
+{ f: "Danke schön!", a: "شكرًا جزيلًا!" },
+{ f: "Kein Problem!", a: "لا مشكلة!" },
+{ f: "Gern geschehen!", a: "على الرحب والسعة!" },
+{ f: "Entschuldigung, bitte.", a: "عذرًا، من فضلك." },
+{ f: "Das tut mir leid.", a: "أنا آسف." },
+{ f: "Kannst du mir bitte helfen?", a: "هل يمكنك مساعدتي من فضلك؟" },
+{ f: "Ich verstehe nicht.", a: "أنا لا أفهم." },
+{ f: "Kannst du das bitte wiederholen?", a: "هل يمكنك تكرار ذلك من فضلك؟" },
+{ f: "Kannst du bitte langsamer sprechen?", a: "هل يمكنك التحدث ببطء أكثر من فضلك؟" },
+{ f: "Was bedeutet das?", a: "ماذا يعني هذا؟" },
+{ f: "Wie sagt man das auf Deutsch?", a: "كيف تقول هذا بالألمانية؟" },
+{ f: "Lass mich nachdenken...", a: "دعني أفكر..." },
+{ f: "Ich verstehe.", a: "فهمت." },
+{ f: "Das ergibt Sinn.", a: "هذا منطقي." },
+{ f: "Ich glaube schon.", a: "أعتقد ذلك." },
+{ f: "Ich bin mir nicht sicher.", a: "لست متأكدًا." },
+{ f: "Das gefällt mir sehr.", a: "يعجبني كثيرًا." },
+{ f: "Das gefällt mir nicht so.", a: "لا يعجبني كثيرًا." },
+{ f: "Meiner Meinung nach ist es toll.", a: "في رأيي، إنه رائع." },
+{ f: "Ich stimme dir zu.", a: "أتفق معك." },
+{ f: "Ich stimme nicht zu.", a: "لا أتفق." },
+{ f: "Das ist eine gute Idee!", a: "هذه فكرة جيدة!" },
+{ f: "Los geht's!", a: "هيا بنا!" },
+{ f: "Ich bin bereit.", a: "أنا مستعد." },
+{ f: "Ich bin gerade beschäftigt.", a: "أنا مشغول الآن." },
+{ f: "Morgen habe ich Zeit.", a: "أنا متفرغ غدًا." },
+{ f: "Bis um sieben.", a: "أراك في السابعة." },
+{ f: "Ich komme etwas später.", a: "سأتأخر قليلًا." },
+{ f: "Ich bin heute müde.", a: "أنا متعب اليوم." },
+{ f: "Mir geht es jetzt besser.", a: "أشعر بتحسن الآن." },
+{ f: "Darüber freue ich mich.", a: "أنا سعيد بذلك." },
+{ f: "Keine Sorge.", a: "لا تقلق." },
+{ f: "Das ist egal.", a: "لا يهم." },
+{ f: "Das passt mir.", a: "هذا يناسبني." },
+{ f: "Kann ich das bitte haben?", a: "هل يمكنني أخذ هذا من فضلك؟" },
+{ f: "Was kostet das?", a: "بكم هذا؟" },
+{ f: "Ich nehme es.", a: "سآخذه." },
+{ f: "Ich schaue mich nur um, danke.", a: "أنا أتفرج فقط، شكرًا." },
+{ f: "Wo ist die nächste Bushaltestelle?", a: "أين أقرب موقف حافلات؟" },
+{ f: "Ich brauche Hilfe.", a: "أحتاج مساعدة." },
+{ f: "Kannst du mir das zeigen?", a: "هل يمكنك أن تريني؟" },
+{ f: "Das ist alles, danke.", a: "هذا كل شيء، شكرًا." },
+          ],
+          A2: [
+{ f: "Übrigens...", a: "بالمناسبة..." },
+{ f: "Eigentlich meinte ich...", a: "في الحقيقة، قصدت..." },
+{ f: "Ehrlich gesagt...", a: "بصراحة..." },
+{ f: "Mit anderen Worten...", a: "بعبارة أخرى..." },
+{ f: "Andererseits...", a: "من ناحية أخرى..." },
+{ f: "Soweit ich weiß...", a: "على حد علمي..." },
+{ f: "Was mich betrifft...", a: "بالنسبة لي..." },
+{ f: "Das kommt darauf an.", a: "يعتمد على الأمر." },
+{ f: "Das hängt von der Situation ab.", a: "يعتمد على الموقف." },
+{ f: "Das erinnert mich an...", a: "هذا يذكرني بـ..." },
+{ f: "Apropos...", a: "بالحديث عن ذلك..." },
+{ f: "Na ja, machen wir weiter.", a: "على أي حال، لننتقل." },
+{ f: "Zuerst einmal...", a: "أولًا وقبل كل شيء..." },
+{ f: "Am Ende des Tages...", a: "في نهاية المطاف..." },
+{ f: "Kurz gesagt...", a: "باختصار..." },
+{ f: "Ich nehme an.", a: "أفترض ذلك." },
+{ f: "Ich glaube, du hast recht.", a: "أظن أنك محق." },
+{ f: "Ich bin mir ziemlich sicher.", a: "أنا متأكد تقريبًا." },
+{ f: "Da bin ich mir nicht so sicher.", a: "لست متأكدًا تمامًا من ذلك." },
+{ f: "Mir scheint, dass...", a: "يبدو لي أن..." },
+{ f: "Wenn du mich fragst...", a: "إذا سألتني..." },
+{ f: "Aus meiner Erfahrung...", a: "من تجربتي..." },
+{ f: "Ich habe gemischte Gefühle dabei.", a: "مشاعري مختلطة تجاهه." },
+{ f: "Ich verstehe, was du meinst.", a: "أفهم ما تقصده." },
+{ f: "Guter Punkt!", a: "نقطة جيدة!" },
+{ f: "Da stimme ich dir voll zu.", a: "أتفق معك تمامًا." },
+{ f: "Ich fürchte, ich stimme nicht zu.", a: "أخشى أنني لا أتفق." },
+{ f: "Einigen wir uns darauf, dass wir uns nicht einig sind.", a: "لنتفق على الاختلاف." },
+{ f: "Das habe ich nicht ganz gemeint.", a: "ليس هذا تمامًا ما قصدته." },
+{ f: "Ich meine damit...", a: "ما أعنيه هو..." },
+{ f: "Das klingt super!", a: "هذا يبدو رائعًا!" },
+{ f: "Das klingt interessant!", a: "هذا يبدو مثيرًا للاهتمام!" },
+{ f: "Wirklich? Erzähl mir mehr!", a: "حقًا؟ أخبرني المزيد!" },
+{ f: "Das gibt's doch nicht!", a: "مستحيل!" },
+{ f: "Das ist unglaublich!", a: "هذا مذهل!" },
+{ f: "Das ist schade.", a: "هذا مؤسف." },
+{ f: "Was für eine Überraschung!", a: "يا لها من مفاجأة!" },
+{ f: "Freut mich für dich!", a: "سعيد من أجلك!" },
+{ f: "Das freut mich sehr zu hören!", a: "أنا سعيد جدًا لسماع ذلك!" },
+{ f: "Das hat mir den Tag versüßt!", a: "هذا أسعد يومي!" },
+{ f: "Das kann ich nicht glauben!", a: "لا أصدق ذلك!" },
+{ f: "Das ist doch ein Witz!", a: "لا بد أنك تمزح!" },
+{ f: "Es hat sich gelohnt.", a: "كان يستحق العناء." },
+{ f: "Es ist gut ausgegangen.", a: "انتهى الأمر على خير." },
+{ f: "Alles begann, als...", a: "بدأ كل شيء عندما..." },
+{ f: "Und dann, ganz plötzlich...", a: "وفجأة..." },
+{ f: "Um es kurz zu machen...", a: "لاختصار القصة الطويلة..." },
+{ f: "Am Ende haben wir uns entschieden...", a: "في النهاية، قررنا أن..." },
+{ f: "Das war der beste Teil.", a: "كان ذلك أفضل جزء." },
+{ f: "Diesen Tag werde ich nie vergessen.", a: "لن أنسى ذلك اليوم أبدًا." },
+{ f: "Ich arbeite daran.", a: "أنا أعمل على ذلك." },
+{ f: "Ich bin gerade mittendrin.", a: "أنا في منتصف أمر ما." },
+{ f: "Ich prüfe das und melde mich.", a: "دعني أتحقق وأعود إليك." },
+{ f: "Könnten wir uns nächste Woche mal treffen?", a: "هل يمكننا أن نلتقي في وقت ما الأسبوع المقبل؟" },
+{ f: "Das klappt bei mir.", a: "هذا يناسبني." },
+{ f: "Das passt mir nicht.", a: "هذا لا يناسبني." },
+{ f: "Lass uns in Kontakt bleiben.", a: "لنبقَ على تواصل." },
+{ f: "Ich brauche mehr Zeit.", a: "أحتاج وقتًا أكثر." },
+{ f: "Ich gebe mein Bestes.", a: "أنا أبذل قصارى جهدي." },
+{ f: "Es ist nicht so einfach, wie es aussieht.", a: "ليس سهلًا كما يبدو." },
+{ f: "Übung macht den Meister.", a: "الممارسة تصنع الإتقان." },
+{ f: "Ich lerne noch.", a: "ما زلت أتعلم." },
+{ f: "Es fällt mir schwer, Nein zu sagen.", a: "أجد صعوبة في قول لا." },
+{ f: "Nimm es nicht persönlich.", a: "لا تأخذ الأمر على محمل شخصي." },
+{ f: "Ich verstehe, wie du dich fühlst.", a: "أفهم شعورك." },
+{ f: "Lass dir Zeit.", a: "خذ وقتك." },
+{ f: "Ist schon okay, Fehler passieren.", a: "لا بأس، كلنا نخطئ." },
+{ f: "Kopf hoch!", a: "ابتهج!" },
+{ f: "Ich bin für dich da.", a: "أنا هنا من أجلك." },
+{ f: "Das bedeutet mir viel.", a: "هذا يعني لي الكثير." },
+{ f: "Ich weiß das zu schätzen.", a: "أنا ممتن لذلك." },
+{ f: "Danke für deine Hilfe.", a: "شكرًا على مساعدتك." },
+{ f: "Ich schulde dir was.", a: "أنا مدين لك بواحدة." },
+{ f: "Nichts für ungut.", a: "لا ضغينة." },
+{ f: "Lass uns nicht darüber streiten.", a: "دعنا لا نتجادل حوله." },
+{ f: "Kannst du mir einen Gefallen tun?", a: "هل يمكنك أن تسدي لي معروفًا؟" },
+{ f: "Ich möchte einen Vorschlag machen.", a: "أود أن أقدم اقتراحًا." },
+{ f: "Wie wäre es mit einem Spaziergang?", a: "ما رأيك أن نذهب في نزهة؟" },
+{ f: "Warum versuchen wir es nicht noch einmal?", a: "لماذا لا نحاول مجددًا؟" },
+{ f: "Das ist deine Entscheidung.", a: "الأمر يعود إليك." },
+{ f: "Du entscheidest.", a: "القرار قرارك." },
+{ f: "Ich zähle auf dich.", a: "أنا أعتمد عليك." },
+{ f: "Gib nicht auf!", a: "لا تستسلم!" },
+{ f: "Du schaffst das!", a: "يمكنك فعلها!" },
+{ f: "Lass es uns versuchen.", a: "لنجرب ذلك." },
+{ f: "Was ist der Plan für heute?", a: "ما خطة اليوم؟" },
+{ f: "Was hast du vor?", a: "ما الذي يدور في ذهنك؟" },
+{ f: "Ich freue mich schon darauf!", a: "أنا متشوق لذلك!" },
+{ f: "Ich kann es kaum erwarten!", a: "لا أستطيع الانتظار!" },
+{ f: "Das wäre schön.", a: "سيكون ذلك جميلًا." },
+{ f: "Abgemacht!", a: "اتفقنا!" },
+{ f: "Ich habe meine Meinung geändert.", a: "غيرت رأيي." },
+{ f: "Lass uns darüber nachdenken.", a: "لنفكر في الأمر." },
+{ f: "Wir müssen uns bald entscheiden.", a: "علينا أن نقرر قريبًا." },
+{ f: "Ich denke darüber nach.", a: "سأفكر في الأمر." },
+{ f: "Weiter so!", a: "استمر على هذا المنوال!" },
+{ f: "Gut gemacht!", a: "أحسنت عملًا!" },
+{ f: "Das war knapp!", a: "كان ذلك وشيكًا!" },
+{ f: "Es wird spät.", a: "الوقت يتأخر." },
+{ f: "Die Zeit vergeht wie im Flug!", a: "الوقت يمر بسرعة!" },
+          ]
+        }
       };
 
       function arNum(n){ return String(n); }
@@ -3622,15 +3969,38 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       });
 
       /* ---------- Phrases ---------- */
-      function renderPhrases(elId, list, lang){
+      function renderPhrases(elId, levels, lang){
         var box = $(elId);
-        list.forEach(function(p){
-          var d = document.createElement("div");
-          d.className = "phrase";
-          d.innerHTML = '<span class="f" lang="' + lang + '"></span><span class="a"></span>';
-          d.querySelector(".f").textContent = p.f;
-          d.querySelector(".a").textContent = p.a;
-          box.appendChild(d);
+        box.className = "";
+        ["A1", "A2"].forEach(function(lvl){
+          var list = levels[lvl] || [];
+          var h = document.createElement("h3");
+          h.className = "phrase-lvl";
+          h.textContent = lvl + " · " + list.length + " عبارة";
+          box.appendChild(h);
+          var grid = document.createElement("div");
+          grid.className = "phrase-list";
+          list.forEach(function(p){
+            var d = document.createElement("div");
+            d.className = "phrase";
+            var top = document.createElement("div");
+            top.className = "phrase-top";
+            var fs = document.createElement("span");
+            fs.className = "f"; fs.setAttribute("lang", lang); fs.textContent = p.f;
+            top.appendChild(fs);
+            var sp = document.createElement("button");
+            sp.type = "button"; sp.className = "bank-speak";
+            sp.setAttribute("aria-label", "استمع");
+            sp.textContent = "🔊";
+            sp.addEventListener("click", function(){ bankSpeak(p.f, lang); });
+            top.appendChild(sp);
+            d.appendChild(top);
+            var as = document.createElement("span");
+            as.className = "a"; as.textContent = p.a;
+            d.appendChild(as);
+            grid.appendChild(d);
+          });
+          box.appendChild(grid);
         });
       }
       renderPhrases("phrasesEn", PHRASES.en, "en");
@@ -4535,6 +4905,10 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
         $("gramLvlA2").className = gramLevel === "A2" ? "active-lvl" : "";
         var box = $("gramHome");
         box.innerHTML = "";
+        var hint = document.createElement("p");
+        hint.className = "gram-hint";
+        hint.textContent = gramLevel === "A1" ? "مختصرة عمداً: القاعدة + أمثلة + قصتها، والشرح الطويل تشوفه بالقصص نفسها." : "شرح أوسع وأمثلة أكثر من A1.";
+        box.appendChild(hint);
         var grid = document.createElement("div");
         grid.className = "grid";
         box.appendChild(grid);
@@ -4557,6 +4931,10 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
           f.setAttribute("dir", "ltr");
           f.textContent = rule.title;
           body.appendChild(f);
+          var foot = document.createElement("p");
+          foot.className = "gram-foot";
+          foot.textContent = "📖 " + (rule.stories || []).length + " قصص · 💬 " + (rule.examples || []).length + " أمثلة · ✏️ " + (rule.exercises || []).length + " أسئلة";
+          body.appendChild(foot);
           b.appendChild(body);
           b.addEventListener("click", function(){ renderGrammarRule(rule.id); });
           grid.appendChild(b);
@@ -4577,14 +4955,16 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
           if (ruleIdx > 0) {
             var pv = document.createElement("button");
             pv.className = "more-link"; pv.type = "button";
-            pv.textContent = "القاعدة السابقة: " + rules[ruleIdx - 1].titleAr;
+            pv.textContent = "‹ السابقة";
+            pv.setAttribute("aria-label", "القاعدة السابقة: " + rules[ruleIdx - 1].titleAr);
             pv.addEventListener("click", function(){ renderGrammarRule(rules[ruleIdx - 1].id); });
             nav.appendChild(pv);
           }
           if (ruleIdx < rules.length - 1) {
             var nx = document.createElement("button");
             nx.className = "more-link"; nx.type = "button";
-            nx.textContent = "القاعدة التالية: " + rules[ruleIdx + 1].titleAr;
+            nx.textContent = "التالية ›";
+            nx.setAttribute("aria-label", "القاعدة التالية: " + rules[ruleIdx + 1].titleAr);
             nx.addEventListener("click", function(){ renderGrammarRule(rules[ruleIdx + 1].id); });
             nav.appendChild(nx);
           }
@@ -4594,15 +4974,56 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
         back.className = "more-link"; back.type = "button"; back.textContent = "عودة";
         back.addEventListener("click", function(){ renderGrammarHome(); });
         area.appendChild(back);
+        var hero = document.createElement("div");
+        hero.className = "gram-hero";
+        var meta = document.createElement("p");
+        meta.className = "gram-hero-meta";
+        meta.textContent = gramLevel + " · " + (ruleIdx + 1) + " من " + rules.length + " · " + (gramLang === "en" ? "English" : "Deutsch");
+        hero.appendChild(meta);
         var title = document.createElement("h3");
-        title.className = "gram-title";
-        title.textContent = (ruleIdx + 1) + ". " + rule.titleAr + " — " + rule.title;
-        area.appendChild(title);
-        area.appendChild(gramNav());
+        title.className = "gram-hero-title";
+        title.textContent = rule.titleAr;
+        hero.appendChild(title);
+        var foreign = document.createElement("p");
+        foreign.className = "gram-hero-foreign";
+        foreign.setAttribute("dir", "ltr"); foreign.setAttribute("lang", gramLang);
+        foreign.textContent = rule.title;
+        hero.appendChild(foreign);
         var expl = document.createElement("p");
         expl.className = "gram-expl";
         expl.textContent = rule.explanationAr || "";
-        area.appendChild(expl);
+        hero.appendChild(expl);
+        area.appendChild(hero);
+        area.appendChild(gramNav());
+        if (rule.stories && rule.stories.length) {
+          var stHead = document.createElement("h3");
+          stHead.className = "gram-sec";
+          stHead.textContent = "شوفها بالقصص 📖";
+          area.appendChild(stHead);
+          var chips = document.createElement("div");
+          chips.className = "gram-stories";
+          var shownIds = gramLevel === "A1" ? rule.stories : rule.stories.slice(0, 6);
+          shownIds.forEach(function(sid){
+            var st = null;
+            STORIES.forEach(function(x){ if (x.id === sid) st = x; });
+            if (!st) return;
+            var chip = document.createElement("button");
+            chip.className = "gram-chip"; chip.type = "button";
+            chip.textContent = st.titleAr;
+            chip.addEventListener("click", function(){
+              if (st.topic) openPrep(st.id); else openStory(st.id);
+              window.scrollTo(0, 0);
+            });
+            chips.appendChild(chip);
+          });
+          if (gramLevel !== "A1" && rule.stories.length > 6) {
+            var more = document.createElement("span");
+            more.className = "gram-more";
+            more.textContent = "و " + (rule.stories.length - 6) + " قصص أخرى بنفس القاعدة";
+            chips.appendChild(more);
+          }
+          area.appendChild(chips);
+        }
         if (rule.examples && rule.examples.length) {
           var exHead = document.createElement("h3");
           exHead.className = "gram-sec";
@@ -4611,31 +5032,34 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
           rule.examples.forEach(function(ex, ei){
             var d = document.createElement("div");
             d.className = "gram-ex";
-            var fp = document.createElement("p");
-            fp.className = "gram-f";
-            fp.setAttribute("dir", "ltr"); fp.setAttribute("lang", gramLang);
-            fp.textContent = ex.f;
-            d.appendChild(fp);
             var sp = document.createElement("button");
             sp.type = "button"; sp.className = "bank-speak";
             sp.setAttribute("aria-label", "استمع");
             sp.textContent = "🔊";
             sp.addEventListener("click", function(){ if (gramLevel === "A1") { var seg = bundleSeg("grammar/" + gramLang + ".mp3", rule.id + ":ex" + ("0" + (ei + 1)).slice(-2)); if (seg) playBundle(seg, ex.f, gramLang); else bankSpeak(ex.f, gramLang); } else bankSpeak(ex.f, gramLang); });
             d.appendChild(sp);
+            var txt = document.createElement("div");
+            txt.className = "gram-ex-text";
+            var fp = document.createElement("p");
+            fp.className = "gram-f";
+            fp.setAttribute("dir", "ltr"); fp.setAttribute("lang", gramLang);
+            fp.textContent = ex.f;
+            txt.appendChild(fp);
             var ap = document.createElement("p");
             ap.className = "gram-a";
             ap.textContent = ex.a;
-            d.appendChild(ap);
+            txt.appendChild(ap);
+            d.appendChild(txt);
             area.appendChild(d);
           });
         }
-
         if (rule.exercises && rule.exercises.length) {
+          var quiz = document.createElement("details");
+          quiz.className = "gram-quiz";
+          var sum = document.createElement("summary");
+          sum.textContent = "✏️ اختبر نفسك · " + rule.exercises.length + " أسئلة";
+          quiz.appendChild(sum);
           var qBox = document.createElement("div");
-          var qHead = document.createElement("h3");
-          qHead.className = "gram-sec";
-          qHead.textContent = "تمارين";
-          qBox.appendChild(qHead);
           rule.exercises.forEach(function(item, qi){
             var q = document.createElement("div");
             q.className = "q";
@@ -4668,7 +5092,8 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
             q.appendChild(opts);
             qBox.appendChild(q);
           });
-          area.appendChild(qBox);
+          quiz.appendChild(qBox);
+          area.appendChild(quiz);
         }
         area.appendChild(gramNav());
       }
@@ -5625,6 +6050,41 @@ function bankSpeak(text, lang){
         } else {
           showToast(url);
         }
+      });
+
+      /* Feedback dialog — submitted to Netlify Forms */
+      var fbPop = $("fbPop"), fbForm = $("fbForm");
+      function openFeedback(){
+        $("fbContext").value = (typeof curView !== "undefined" ? curView : "") +
+          (!$("reader").hidden && $("readerTitle").textContent ? " · " + $("readerTitle").textContent : "");
+        fbPop.hidden = false;
+        setTimeout(function(){ $("fbMsg").focus(); }, 30);
+      }
+      function closeFeedback(){ fbPop.hidden = true; }
+      document.querySelectorAll("[data-feedback]").forEach(function(b){ b.addEventListener("click", openFeedback); });
+      $("fbCancel").addEventListener("click", closeFeedback);
+      fbPop.addEventListener("click", function(e){ if (e.target === fbPop) closeFeedback(); });
+      document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !fbPop.hidden) closeFeedback(); });
+      fbForm.addEventListener("submit", function(e){
+        e.preventDefault();
+        if (!$("fbMsg").value.trim()) { $("fbMsg").focus(); return; }
+        if (navigator.onLine === false) { showToast("لا يوجد اتصال بالإنترنت — حاول لاحقًا"); return; }
+        var btn = $("fbSend");
+        btn.disabled = true; btn.textContent = "جارٍ الإرسال…";
+        fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams(new FormData(fbForm)).toString()
+        }).then(function(res){
+          if (!res.ok) throw new Error(res.status);
+          fbForm.reset();
+          closeFeedback();
+          showToast("وصلت رسالتك — شكرًا لك 💙");
+        }).catch(function(){
+          showToast("تعذّر الإرسال — حاول مرة ثانية");
+        }).then(function(){
+          btn.disabled = false; btn.textContent = "إرسال";
+        });
       });
 
       /* Backup / restore every readerApp.* key as one JSON file */
