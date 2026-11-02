@@ -4347,6 +4347,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       var A1_PART_NAMES = { listening: "الاستماع", reading: "القراءة", grammar: "القواعد والمفردات", writing: "الكتابة" };
 
       function a1Reset() {
+        a1StopAudio();
         a1State = { lang: a1State.lang || "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false };
         $("a1StartScreen").hidden = false;
         $("a1TestArea").hidden = true;
@@ -4371,6 +4372,24 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         return A1_DATA[lang][part] || [];
       }
 
+      var A1_AUDIO = { en: ["audio-exam/en-01.mp3", "audio-exam/en-02.mp3", "audio-exam/en-03.mp3", "audio-exam/en-04.mp3", "audio-exam/en-05.mp3", "audio-exam/en-06.mp3", "audio-exam/en-07.mp3", "audio-exam/en-08.mp3"], de: ["audio-exam/de-01.mp3", "audio-exam/de-02.mp3", "audio-exam/de-03.mp3", "audio-exam/de-04.mp3", "audio-exam/de-05.mp3", "audio-exam/de-06.mp3", "audio-exam/de-07.mp3", "audio-exam/de-08.mp3"] };
+      var a1AudioEl = null;
+      function a1StopAudio() {
+        if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+        if (a1AudioEl) { try { a1AudioEl.pause(); } catch (e) {} a1AudioEl = null; }
+      }
+      function a1PlayExam(text, qIdx) {
+        a1StopAudio();
+        var files = A1_AUDIO[a1State.lang] || [];
+        var src = files[qIdx];
+        if (!src) { a1Speak(text); return; }
+        var au = new Audio(src);
+        a1AudioEl = au;
+        au.onerror = function(){ a1AudioEl = null; a1Speak(text); };
+        au.onended = function(){ if (a1AudioEl === au) a1AudioEl = null; };
+        var played = au.play();
+        if (played && played.catch) played.catch(function(){ a1AudioEl = null; a1Speak(text); });
+      }
       function a1Speak(text) {
         if (!window.speechSynthesis) return;
         window.speechSynthesis.cancel();
@@ -4381,6 +4400,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       }
 
       function a1RenderQuestion() {
+        a1StopAudio();
         var list = a1CurrentList();
         var partName = A1_PART_NAMES[A1_PARTS[a1State.part]];
         var totalInPart = list.length;
@@ -4399,7 +4419,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
             playBtn.className = "start-btn";
             playBtn.style.marginBottom = "12px";
             playBtn.textContent = "🔊 استمع";
-            playBtn.onclick = function(){ a1Speak(item.audio); };
+            playBtn.onclick = function(){ a1PlayExam(item.audio, a1State.q); };
             box.appendChild(playBtn);
             var small = document.createElement("p");
             small.style.fontSize = ".85rem";
@@ -4596,6 +4616,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       }
 
       function a1Finish() {
+        a1StopAudio();
         var total = 0;
         A1_PARTS.forEach(function(p, i) {
           var s = a1ScorePart(i);

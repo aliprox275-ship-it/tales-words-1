@@ -13,7 +13,7 @@
      فيُمسح أي mp3 مخزّن قديمًا من أجهزة المستخدمين، وتُفعّل نفسها
      (skipWaiting + clients.claim) فيتحدث التطبيق المثبت تلقائيًا. */
 
-var VERSION = "v8";
+var VERSION = "v9";
 var SHELL_CACHE = "reading-shell-" + VERSION;
 
 var SHELL_FILES = [
@@ -97,8 +97,8 @@ self.addEventListener("fetch", function (event) {
 
   /* v7: audio bundles bypass the service worker entirely -- range
      requests go straight to the network, never cached, never rewritten.
-     Covers both A1 and A2 bundle roots. */
-  if (url.pathname.indexOf("/audio-a1-bundles/") === 0 || url.pathname.indexOf("/audio-a2-bundles/") === 0) {
+     Covers both A1 and A2 bundle roots, plus exam audio. */
+  if (url.pathname.indexOf("/audio-a1-bundles/") === 0 || url.pathname.indexOf("/audio-a2-bundles/") === 0 || url.pathname.indexOf("/audio-exam/") === 0) {
     event.respondWith(fetch(request));
     return;
   }
