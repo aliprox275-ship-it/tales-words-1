@@ -899,24 +899,15 @@
       .tool-actions{display:flex; gap:10px; flex-wrap:wrap}
       .goal-switch button.active-lvl{background:var(--accent); color:#fff}
 
-      .fb-pop{
-        position:fixed; inset:0; z-index:150; display:flex; align-items:center; justify-content:center;
-        background:rgba(43,49,47,.55); padding:16px;
-      }
-      .fb-sheet{
-        background:var(--surface); color:var(--ink); width:100%; max-width:460px; max-height:calc(100vh - 32px); overflow:auto;
-        border:1px solid var(--line); border-radius:var(--r-card); box-shadow:var(--shadow); padding:22px
-      }
-      .fb-sheet h3{margin:0 0 4px; font-size:1.3rem}
-      .fb-label{display:block; font-weight:700; font-size:.92rem; margin:10px 0 4px}
-      .fb-sheet select,.fb-sheet textarea,.fb-sheet input[type=email]{
-        width:100%; font:inherit; color:var(--ink); background:var(--surface2);
-        border:1px solid var(--line); border-radius:10px; padding:10px 12px
-      }
-      .fb-sheet textarea{resize:vertical; min-height:110px}
-      .fb-sheet .exit-actions{margin-top:16px}
-      .fb-sheet .exit-yes{background:var(--accent)}
-      .fb-sheet .exit-yes:disabled{opacity:.6; cursor:default}
+      
+      
+      
+      
+      
+      
+      
+      
+      
 
           /* ---------- Batch 1: productive review cards + backup reminder ---------- */
       #revTypeBox{width:100%}
@@ -968,7 +959,7 @@
           </div>
           <div class="more-links">
             <button class="more-link" type="button" id="shareAppBtn">شارك التطبيق 📤</button>
-            <button class="more-link" type="button" data-feedback>اقترح أو بلّغ عن خطأ 💌</button>
+            
           </div>
         </section>
 
@@ -1396,34 +1387,6 @@
           <button class="exit-yes" id="exitYes" type="button">نعم</button>
           <button class="exit-no" id="exitNo" type="button">لا</button>
         </div>
-      </div>
-    </div>
-
-    <!-- ======== Feedback (Netlify Forms) ======== -->
-    <div class="fb-pop" id="fbPop" hidden>
-      <div class="fb-sheet" role="dialog" aria-modal="true" aria-labelledby="fbTitle">
-        <h3 id="fbTitle">اقتراح أو ملاحظة 💌</h3>
-        <p class="tool-note">اقترح قصة أو موضوعًا، أو بلّغ عن خطأ في ترجمة أو كلمة. كل رسالة تُقرأ.</p>
-        <form id='fbForm' method='POST' name='feedback'>
-          <input type="hidden" name="form-name" value="feedback" />
-          <p hidden><label>لا تملأ هذا الحقل: <input name="bot-field" /></label></p>
-          <input type="hidden" name="context" id="fbContext" value="" />
-          <label class="fb-label" for="fbType">نوع الرسالة</label>
-          <select id="fbType" name="type">
-            <option value="اقتراح قصة أو موضوع">اقتراح قصة أو موضوع</option>
-            <option value="خطأ في الترجمة أو الكلمات">خطأ في الترجمة أو الكلمات</option>
-            <option value="مشكلة تقنية">مشكلة تقنية</option>
-            <option value="أخرى">أخرى</option>
-          </select>
-          <label class="fb-label" for="fbMsg">رسالتك</label>
-          <textarea id="fbMsg" name="message" rows="5" required maxlength="2000" placeholder="اكتب هنا…"></textarea>
-          <label class="fb-label" for="fbContact">بريدك (اختياري — إذا تحب نرد عليك)</label>
-          <input id="fbContact" name="contact" type="email" dir="ltr" autocomplete="email" />
-          <div class="exit-actions">
-            <button class="exit-yes" type="submit" id="fbSend">إرسال</button>
-            <button class="exit-no" type="button" id="fbCancel">إلغاء</button>
-          </div>
-        </form>
       </div>
     </div>
 
@@ -6358,41 +6321,6 @@ function bankSpeak(text, lang){
         } else {
           showToast(url);
         }
-      });
-
-      /* Feedback dialog — submitted to Netlify Forms */
-      var fbPop = $("fbPop"), fbForm = $("fbForm");
-      function openFeedback(){
-        $("fbContext").value = (typeof curView !== "undefined" ? curView : "") +
-          (!$("reader").hidden && $("readerTitle").textContent ? " · " + $("readerTitle").textContent : "");
-        fbPop.hidden = false;
-        setTimeout(function(){ $("fbMsg").focus(); }, 30);
-      }
-      function closeFeedback(){ fbPop.hidden = true; }
-      document.querySelectorAll("[data-feedback]").forEach(function(b){ b.addEventListener("click", openFeedback); });
-      $("fbCancel").addEventListener("click", closeFeedback);
-      fbPop.addEventListener("click", function(e){ if (e.target === fbPop) closeFeedback(); });
-      document.addEventListener("keydown", function(e){ if (e.key === "Escape" && !fbPop.hidden) closeFeedback(); });
-      fbForm.addEventListener("submit", function(e){
-        e.preventDefault();
-        if (!$("fbMsg").value.trim()) { $("fbMsg").focus(); return; }
-        if (navigator.onLine === false) { showToast("لا يوجد اتصال بالإنترنت — حاول لاحقًا"); return; }
-        var btn = $("fbSend");
-        btn.disabled = true; btn.textContent = "جارٍ الإرسال…";
-        fetch("/", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams(new FormData(fbForm)).toString()
-        }).then(function(res){
-          if (!res.ok) throw new Error(res.status);
-          fbForm.reset();
-          closeFeedback();
-          showToast("وصلت رسالتك — شكرًا لك 💙");
-        }).catch(function(){
-          showToast("تعذّر الإرسال — حاول مرة ثانية");
-        }).then(function(){
-          btn.disabled = false; btn.textContent = "إرسال";
-        });
       });
 
       /* Backup / restore every readerApp.* key as one JSON file */
