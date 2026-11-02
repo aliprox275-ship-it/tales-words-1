@@ -917,6 +917,22 @@
       .backup-remind span{flex:1; font-weight:700}
       .backup-remind button{border:1px solid var(--line); background:var(--surface); color:var(--ink); padding:8px 14px; border-radius:12px; font-weight:700; font-size:.95rem}
       #backupRemindExport{background:var(--accent); border-color:var(--accent); color:#fff}
+      /* ======== Conversation pilot (6th tab) ======== */
+      .conv-intro{color:var(--muted); margin:0 0 8px}
+      .conv-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:14px; margin:14px 0; box-shadow:var(--shadow-card)}
+      .conv-head{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+      .conv-title{font-weight:800; font-size:1.05rem}
+      .conv-badge{background:var(--accent-tint); color:var(--accent); border-radius:99px; padding:1px 10px; font-size:.8rem; font-weight:700}
+      .conv-turn{max-width:88%; margin:10px 0; padding:10px 12px; border-radius:12px; background:var(--surface2)}
+      .conv-turn.s1{margin-inline-start:auto; background:var(--accent-tint)}
+      .conv-spk{display:flex; justify-content:space-between; align-items:center; font-weight:800; color:var(--accent)}
+      .conv-f{direction:ltr; text-align:left; font-size:1.05rem; margin:4px 0 2px}
+      .conv-ar{text-align:right; color:var(--muted); margin:0}
+      .conv-mini{background:transparent; border:0; font-size:1.15rem; padding:2px 6px}
+      .conv-actions{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap}
+      .conv-play{background:var(--accent); color:#fff; border:0; border-radius:var(--r-btn); padding:8px 16px; font-weight:700}
+      .conv-stop{background:transparent; border:1px solid var(--line); color:var(--ink); border-radius:var(--r-btn); padding:8px 16px; font-weight:700}
+      @media (max-width:400px){.bnav-btn{font-size:.74rem; padding:8px 1px 9px}.bnav-btn .bnav-ico{font-size:1.2rem}}
     </style>
   </head>
   <body>
@@ -1246,6 +1262,17 @@
           <p class="empty-msg" id="bankEmpty" hidden>لا توجد كلمات مطابقة لبحثك.</p>
           <button class="bank-more" id="bankMore" type="button" hidden>عرض المزيد</button>
         </section>
+        <section id="view-conversation" hidden>
+          <h2 class="view-title">محادثة 💬</h2>
+          <p class="conv-intro">محادثات قصيرة بين شخصين، بدون سرد — اسمع كل دور بصوت مختلف.</p>
+          <div class="filters">
+            <div class="switch" role="group" aria-label="لغة المحادثة">
+              <button data-convlang="en" class="active-en" id="convLangEn">English · الإنجليزية</button>
+              <button data-convlang="de" id="convLangDe">Deutsch · الألمانية</button>
+            </div>
+          </div>
+          <div id="convList"></div>
+        </section>
       </main>
 
     </div>
@@ -1257,6 +1284,7 @@
       <button class="bnav-btn" type="button" data-main="review"><span class="bnav-ico" aria-hidden="true">🔁</span><span>المراجعة</span></button>
       <button class="bnav-btn" type="button" data-main="bank"><span class="bnav-ico" aria-hidden="true">📖</span><span>بنك الكلمات</span></button>
       <button class="bnav-btn" type="button" data-main="grammar"><span class="bnav-ico" aria-hidden="true">📘</span><span>قواعد</span></button>
+      <button class="bnav-btn" type="button" data-main="conversation"><span class="bnav-ico" aria-hidden="true">💬</span><span>محادثة</span></button>
     </nav>
 
     <!-- ======== Reader ======== -->
@@ -3988,7 +4016,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-      var ALL_VIEWS = ["home", "stories", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "grammar"];
+      var ALL_VIEWS = ["home", "stories", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "grammar", "conversation"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var curView = "home", curReviewSub = "review";
 
@@ -3999,7 +4027,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
          exit-confirmation dialog instead of leaving immediately. */
       var VIEW_TITLES = {
         home: "Tales & Words", stories: "القصص", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
-        mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع",
+        mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", grammar: "قواعد"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
@@ -4040,7 +4068,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         hPush({ app: 1, view: curView, guard: true }, "#" + curView);
       });
       function mainOf(name){
-        if (name === "home" || name === "stories" || name === "bank" || name === "grammar") return name;
+        if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation") return name;
         if (REVIEW_SUBS.indexOf(name) !== -1) return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
       }
@@ -4073,6 +4101,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         if (name === "exercises") renderExScore();
         if (name === "stats") renderStats();
         if (name === "grammar") { gramLang = curLang; renderGrammarHome(); }
+        if (name === "conversation") renderConvHome();
         window.scrollTo(0, 0);
       }
       document.querySelectorAll(".bnav-btn").forEach(function(b){
@@ -4087,6 +4116,90 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       document.querySelectorAll("[data-goto]").forEach(function(b){
         b.addEventListener("click", function(){ showView(b.getAttribute("data-goto")); });
       });
+      /* ======== Conversation pilot: A1 dialogues, device TTS, one voice per speaker ======== */
+      var CONV_DATA = {"en": [{"id": "en-cafe", "title": "في المقهى", "emoji": "☕", "speakers": ["Barista (عامل القهوة)", "Employee (الموظف)"], "turns": [{"s": 1, "t": "Good morning! A coffee, please.", "ar": "صباح الخير! قهوة، من فضلك."}, {"s": 0, "t": "Good morning! Small or large?", "ar": "صباح الخير! صغيرة أم كبيرة؟"}, {"s": 1, "t": "Large, please. With milk.", "ar": "كبيرة، من فضلك. مع حليب."}, {"s": 0, "t": "Hot or cold milk today?", "ar": "حليب ساخن أم بارد اليوم؟"}, {"s": 1, "t": "Hot, please. I am cold.", "ar": "ساخن، من فضلك. أنا بردان."}, {"s": 0, "t": "Anything to eat today?", "ar": "شيء للأكل اليوم؟"}, {"s": 1, "t": "Yes, one cake, please.", "ar": "نعم، قطعة كيك، من فضلك."}, {"s": 0, "t": "Chocolate or apple cake?", "ar": "كيك شوكولاتة أم تفاح؟"}, {"s": 1, "t": "Apple, please. I love apples.", "ar": "تفاح، من فضلك. أحب التفاح."}, {"s": 0, "t": "That is six euros, please.", "ar": "هذا ستة يورو، من فضلك."}, {"s": 1, "t": "Here is ten euros. Thank you!", "ar": "هذه عشرة يورو. شكرًا لك!"}, {"s": 0, "t": "Four euros back. Here you are.", "ar": "أربعة يورو باقي. تفضل."}, {"s": 1, "t": "Thank you! Is it busy today?", "ar": "شكرًا لك! هل هو مزدحم اليوم؟"}, {"s": 0, "t": "Yes, mornings are always busy.", "ar": "نعم، الصباح دائمًا مزدحم."}, {"s": 1, "t": "I come here every morning.", "ar": "آتي إلى هنا كل صباح."}, {"s": 0, "t": "Because the coffee is good?", "ar": "لأن القهوة جيدة؟"}, {"s": 1, "t": "Yes, and because you are friendly!", "ar": "نعم، ولأنك لطيف!"}, {"s": 0, "t": "Thank you! See you tomorrow!", "ar": "شكرًا لك! أراك غدًا!"}]}, {"id": "en-shop", "title": "في المتجر", "emoji": "🛍️", "speakers": ["Seller (البائع)", "Customer (الزبون)"], "turns": [{"s": 1, "t": "Hello! How much is this shirt?", "ar": "مرحبًا! كم سعر هذا القميص؟"}, {"s": 0, "t": "Hello! It is twenty euros.", "ar": "مرحبًا! سعره عشرون يورو."}, {"s": 1, "t": "That is expensive. Is it cotton?", "ar": "هذا غالٍ. هل هو قطن؟"}, {"s": 0, "t": "Yes, pure cotton. Very good quality.", "ar": "نعم، قطن خالص. جودة جيدة جدًا."}, {"s": 1, "t": "Do you have a bigger size?", "ar": "هل لديك مقاس أكبر؟"}, {"s": 0, "t": "Yes, here is the large size.", "ar": "نعم، هذا هو المقاس الكبير."}, {"s": 1, "t": "Can I try it on?", "ar": "هل أستطيع تجربته؟"}, {"s": 0, "t": "Yes, the room is there.", "ar": "نعم، غرفة القياس هناك."}, {"s": 1, "t": "It fits well, but it is long.", "ar": "يناسبني جيدًا، لكنه طويل."}, {"s": 0, "t": "We have a shorter model too.", "ar": "لدينا موديل أقصر أيضًا."}, {"s": 1, "t": "Can I see it, please?", "ar": "هل أستطيع رؤيته، من فضلك؟"}, {"s": 0, "t": "Of course! Here it is.", "ar": "بالتأكيد! ها هو."}, {"s": 1, "t": "This one is perfect. I take it.", "ar": "هذا مثالي. سآخذه."}, {"s": 0, "t": "Great! Cash or card?", "ar": "رائع! نقدًا أم بطاقة؟"}, {"s": 1, "t": "Card, please. Here you are.", "ar": "بطاقة، من فضلك. تفضل."}, {"s": 0, "t": "Thank you! Do you need a bag?", "ar": "شكرًا لك! هل تحتاج إلى كيس؟"}, {"s": 1, "t": "Yes, a small bag, please.", "ar": "نعم، كيس صغير، من فضلك."}, {"s": 0, "t": "Thank you! Have a nice day!", "ar": "شكرًا لك! يومًا سعيدًا!"}]}, {"id": "en-doctor", "title": "عند الطبيب", "emoji": "🩺", "speakers": ["Doctor (الطبيب)", "Patient (المريض)"], "turns": [{"s": 1, "t": "Hello! I need a doctor.", "ar": "مرحبًا! أحتاج إلى طبيب."}, {"s": 0, "t": "Hello! What is the problem?", "ar": "مرحبًا! ما المشكلة؟"}, {"s": 1, "t": "I have a bad headache.", "ar": "عندي صداع شديد."}, {"s": 0, "t": "Since when, please?", "ar": "منذ متى، من فضلك؟"}, {"s": 1, "t": "Since yesterday morning.", "ar": "منذ صباح أمس."}, {"s": 0, "t": "Do you sleep well at night?", "ar": "هل تنام جيدًا في الليل؟"}, {"s": 1, "t": "No, I sleep very badly.", "ar": "لا، أنام سيئًا جدًا."}, {"s": 0, "t": "Because you work too much?", "ar": "لأنك تعمل كثيرًا؟"}, {"s": 1, "t": "Yes, I work until midnight.", "ar": "نعم، أعمل حتى منتصف الليل."}, {"s": 0, "t": "You need rest and less stress.", "ar": "تحتاج إلى راحة وضغط أقل."}, {"s": 1, "t": "What medicine do I take?", "ar": "ما الدواء الذي آخذه؟"}, {"s": 0, "t": "Take this pill twice a day.", "ar": "خذ هذه الحبة مرتين في اليوم."}, {"s": 1, "t": "After food or before food?", "ar": "بعد الطعام أم قبله؟"}, {"s": 0, "t": "After food, with much water.", "ar": "بعد الطعام، مع كثير من الماء."}, {"s": 1, "t": "When do I come again?", "ar": "متى آتي مرة أخرى؟"}, {"s": 0, "t": "Come again next Monday morning.", "ar": "تعال مرة أخرى صباح الاثنين القادم."}, {"s": 1, "t": "Monday at nine is good.", "ar": "الاثنين في التاسعة يناسبني."}, {"s": 0, "t": "Good. Get well soon!", "ar": "جيد. شفاء عاجل!"}]}, {"id": "en-taxi", "title": "في التاكسي", "emoji": "🚕", "speakers": ["Driver (السائق)", "Passenger (الراكب)"], "turns": [{"s": 1, "t": "Hello! To the station, please.", "ar": "مرحبًا! إلى المحطة، من فضلك."}, {"s": 0, "t": "Hello! No problem. Please sit.", "ar": "مرحبًا! لا مشكلة. تفضل بالجلوس."}, {"s": 1, "t": "How long is the ride?", "ar": "كم تستغرق الرحلة؟"}, {"s": 0, "t": "About fifteen minutes.", "ar": "حوالي خمس عشرة دقيقة."}, {"s": 1, "t": "Good. I have a train.", "ar": "جيد. عندي قطار."}, {"s": 0, "t": "What time is your train?", "ar": "في أي وقت قطارك؟"}, {"s": 1, "t": "At eleven, I think.", "ar": "في الحادية عشرة، أعتقد."}, {"s": 0, "t": "No worry, we are fast.", "ar": "لا تقلق، نحن سريعون."}, {"s": 1, "t": "Can we go through the park?", "ar": "هل نستطيع الذهاب عبر الحديقة؟"}, {"s": 0, "t": "Yes, but it is slower today.", "ar": "نعم، لكنه أبطأ اليوم."}, {"s": 1, "t": "Why is it slower?", "ar": "لماذا هو أبطأ؟"}, {"s": 0, "t": "Because there is much traffic.", "ar": "لأن هناك ازدحامًا كثيرًا."}, {"s": 1, "t": "Then take the main street.", "ar": "إذن اسلك الشارع الرئيسي."}, {"s": 0, "t": "Good idea. We arrive soon.", "ar": "فكرة جيدة. سنصل قريبًا."}, {"s": 1, "t": "Thank you! How much, please?", "ar": "شكرًا لك! كم الحساب، من فضلك؟"}, {"s": 0, "t": "Twelve euros, please.", "ar": "اثنا عشر يورو، من فضلك."}, {"s": 1, "t": "Here is fifteen. Keep the change.", "ar": "هذه خمسة عشر. احتفظ بالباقي."}, {"s": 0, "t": "Thank you! Have a good trip!", "ar": "شكرًا لك! رحلة سعيدة!"}]}, {"id": "en-phone", "title": "دعوة بالهاتف", "emoji": "📞", "speakers": ["Caller (المتصل)", "Friend (الصديق)"], "turns": [{"s": 0, "t": "Hi! Are you free Saturday?", "ar": "مرحبًا! هل أنت متفرغ يوم السبت؟"}, {"s": 1, "t": "Hi! Yes, I am free.", "ar": "مرحبًا! نعم، أنا متفرغ."}, {"s": 0, "t": "Come to my party Saturday!", "ar": "تعال إلى حفلتي يوم السبت!"}, {"s": 1, "t": "A party? What time?", "ar": "حفلة؟ في أي وقت؟"}, {"s": 0, "t": "At seven in the evening.", "ar": "في السابعة مساءً."}, {"s": 1, "t": "Where is the party?", "ar": "أين الحفلة؟"}, {"s": 0, "t": "At my home, near the park.", "ar": "في بيتي، قرب الحديقة."}, {"s": 1, "t": "Great! Can I bring a friend?", "ar": "رائع! هل أستطيع إحضار صديق؟"}, {"s": 0, "t": "Yes, of course! Bring him.", "ar": "نعم، بالتأكيد! أحضره."}, {"s": 1, "t": "What food will you make?", "ar": "ما الطعام الذي ستعده؟"}, {"s": 0, "t": "Pizza and cake, because everyone loves them.", "ar": "بيتزا وكيك، لأن الجميع يحبهما."}, {"s": 1, "t": "Perfect! I love pizza too.", "ar": "مثالي! أحب البيتزا أيضًا."}, {"s": 0, "t": "Can you bring drinks, please?", "ar": "هل تستطيع إحضار مشروبات، من فضلك؟"}, {"s": 1, "t": "Yes, juice and water.", "ar": "نعم، عصير وماء."}, {"s": 0, "t": "Thank you! Do not be late!", "ar": "شكرًا لك! لا تتأخر!"}, {"s": 1, "t": "I come at seven, I promise.", "ar": "سآتي في السابعة، أعدك."}, {"s": 0, "t": "Wonderful! I wait for you.", "ar": "رائع! سأنتظرك."}, {"s": 1, "t": "See you Saturday! Goodbye!", "ar": "أراك السبت! إلى اللقاء!"}]}], "de": [{"id": "de-cafe", "title": "في المقهى", "emoji": "☕", "speakers": ["Barista (عامل القهوة)", "Angestellter (الموظف)"], "turns": [{"s": 1, "t": "Guten Morgen! Einen Kaffee, bitte.", "ar": "صباح الخير! قهوة، من فضلك."}, {"s": 0, "t": "Guten Morgen! Klein oder groß?", "ar": "صباح الخير! صغيرة أم كبيرة؟"}, {"s": 1, "t": "Groß, bitte. Mit Milch.", "ar": "كبيرة، من فضلك. مع حليب."}, {"s": 0, "t": "Heiße oder kalte Milch heute?", "ar": "حليب ساخن أم بارد اليوم؟"}, {"s": 1, "t": "Heiß, bitte. Mir ist kalt.", "ar": "ساخن، من فضلك. أنا بردان."}, {"s": 0, "t": "Etwas zu essen heute?", "ar": "شيء للأكل اليوم؟"}, {"s": 1, "t": "Ja, einen Kuchen, bitte.", "ar": "نعم، قطعة كيك، من فضلك."}, {"s": 0, "t": "Schokolade oder Apfelkuchen?", "ar": "كيك شوكولاتة أم تفاح؟"}, {"s": 1, "t": "Apfel, bitte. Ich liebe Äpfel.", "ar": "تفاح، من فضلك. أحب التفاح."}, {"s": 0, "t": "Das sind sechs Euro, bitte.", "ar": "هذا ستة يورو، من فضلك."}, {"s": 1, "t": "Hier sind zehn Euro. Danke!", "ar": "هذه عشرة يورو. شكرًا!"}, {"s": 0, "t": "Vier Euro zurück. Bitte sehr.", "ar": "أربعة يورو باقي. تفضل."}, {"s": 1, "t": "Danke! Ist heute viel los?", "ar": "شكرًا! هل هو مزدحم اليوم؟"}, {"s": 0, "t": "Ja, morgens ist immer viel los.", "ar": "نعم، الصباح دائمًا مزدحم."}, {"s": 1, "t": "Ich komme jeden Morgen hierher.", "ar": "آتي إلى هنا كل صباح."}, {"s": 0, "t": "Weil der Kaffee gut ist?", "ar": "لأن القهوة جيدة؟"}, {"s": 1, "t": "Ja, und weil Sie freundlich sind!", "ar": "نعم، ولأنك لطيف!"}, {"s": 0, "t": "Danke! Bis morgen!", "ar": "شكرًا! إلى الغد!"}]}, {"id": "de-shop", "title": "في المتجر", "emoji": "🛍️", "speakers": ["Verkäufer (البائع)", "Kunde (الزبون)"], "turns": [{"s": 1, "t": "Hallo! Was kostet dieses Hemd?", "ar": "مرحبًا! كم سعر هذا القميص؟"}, {"s": 0, "t": "Hallo! Es kostet zwanzig Euro.", "ar": "مرحبًا! سعره عشرون يورو."}, {"s": 1, "t": "Das ist teuer. Ist es Baumwolle?", "ar": "هذا غالٍ. هل هو قطن؟"}, {"s": 0, "t": "Ja, reine Baumwolle. Sehr gute Qualität.", "ar": "نعم، قطن خالص. جودة جيدة جدًا."}, {"s": 1, "t": "Haben Sie eine größere Größe?", "ar": "هل لديك مقاس أكبر؟"}, {"s": 0, "t": "Ja, hier ist die große Größe.", "ar": "نعم، هذا هو المقاس الكبير."}, {"s": 1, "t": "Kann ich es anprobieren?", "ar": "هل أستطيع تجربته؟"}, {"s": 0, "t": "Ja, die Kabine ist dort.", "ar": "نعم، غرفة القياس هناك."}, {"s": 1, "t": "Es passt gut, aber es ist lang.", "ar": "يناسبني جيدًا، لكنه طويل."}, {"s": 0, "t": "Wir haben auch ein kürzeres Modell.", "ar": "لدينا موديل أقصر أيضًا."}, {"s": 1, "t": "Kann ich es sehen, bitte?", "ar": "هل أستطيع رؤيته، من فضلك؟"}, {"s": 0, "t": "Natürlich! Hier ist es.", "ar": "بالتأكيد! ها هو."}, {"s": 1, "t": "Dieses ist perfekt. Ich nehme es.", "ar": "هذا مثالي. سآخذه."}, {"s": 0, "t": "Super! Bar oder Karte?", "ar": "رائع! نقدًا أم بطاقة؟"}, {"s": 1, "t": "Karte, bitte. Hier ist sie.", "ar": "بطاقة، من فضلك. تفضل."}, {"s": 0, "t": "Danke! Brauchen Sie eine Tüte?", "ar": "شكرًا! هل تحتاج إلى كيس؟"}, {"s": 1, "t": "Ja, eine kleine Tüte, bitte.", "ar": "نعم، كيس صغير، من فضلك."}, {"s": 0, "t": "Danke! Einen schönen Tag!", "ar": "شكرًا! يومًا سعيدًا!"}]}, {"id": "de-doctor", "title": "عند الطبيب", "emoji": "🩺", "speakers": ["Arzt (الطبيب)", "Patient (المريض)"], "turns": [{"s": 1, "t": "Hallo! Ich brauche einen Arzt.", "ar": "مرحبًا! أحتاج إلى طبيب."}, {"s": 0, "t": "Hallo! Was ist das Problem?", "ar": "مرحبًا! ما المشكلة؟"}, {"s": 1, "t": "Ich habe starke Kopfschmerzen.", "ar": "عندي صداع شديد."}, {"s": 0, "t": "Seit wann, bitte?", "ar": "منذ متى، من فضلك؟"}, {"s": 1, "t": "Seit gestern Morgen.", "ar": "منذ صباح أمس."}, {"s": 0, "t": "Schlafen Sie gut in der Nacht?", "ar": "هل تنام جيدًا في الليل؟"}, {"s": 1, "t": "Nein, ich schlafe sehr schlecht.", "ar": "لا، أنام سيئًا جدًا."}, {"s": 0, "t": "Weil Sie zu viel arbeiten?", "ar": "لأنك تعمل كثيرًا؟"}, {"s": 1, "t": "Ja, ich arbeite bis Mitternacht.", "ar": "نعم، أعمل حتى منتصف الليل."}, {"s": 0, "t": "Sie brauchen Ruhe und weniger Stress.", "ar": "تحتاج إلى راحة وضغط أقل."}, {"s": 1, "t": "Welche Medizin nehme ich?", "ar": "ما الدواء الذي آخذه؟"}, {"s": 0, "t": "Nehmen Sie diese Tablette zweimal täglich.", "ar": "خذ هذه الحبة مرتين في اليوم."}, {"s": 1, "t": "Nach dem Essen oder vorher?", "ar": "بعد الطعام أم قبله؟"}, {"s": 0, "t": "Nach dem Essen, mit viel Wasser.", "ar": "بعد الطعام، مع كثير من الماء."}, {"s": 1, "t": "Wann komme ich wieder?", "ar": "متى آتي مرة أخرى؟"}, {"s": 0, "t": "Kommen Sie nächsten Montagmorgen wieder.", "ar": "تعال مرة أخرى صباح الاثنين القادم."}, {"s": 1, "t": "Montag um neun Uhr passt gut.", "ar": "الاثنين في التاسعة يناسبني."}, {"s": 0, "t": "Gut. Gute Besserung!", "ar": "جيد. شفاء عاجل!"}]}, {"id": "de-taxi", "title": "في التاكسي", "emoji": "🚕", "speakers": ["Fahrer (السائق)", "Fahrgast (الراكب)"], "turns": [{"s": 1, "t": "Hallo! Zum Bahnhof, bitte.", "ar": "مرحبًا! إلى المحطة، من فضلك."}, {"s": 0, "t": "Hallo! Kein Problem. Bitte einsteigen.", "ar": "مرحبًا! لا مشكلة. تفضل بالركوب."}, {"s": 1, "t": "Wie lange dauert die Fahrt?", "ar": "كم تستغرق الرحلة؟"}, {"s": 0, "t": "Etwa fünfzehn Minuten.", "ar": "حوالي خمس عشرة دقيقة."}, {"s": 1, "t": "Gut. Ich habe einen Zug.", "ar": "جيد. عندي قطار."}, {"s": 0, "t": "Um wie viel Uhr fährt Ihr Zug?", "ar": "في أي وقت يغادر قطارك؟"}, {"s": 1, "t": "Um elf, glaube ich.", "ar": "في الحادية عشرة، أعتقد."}, {"s": 0, "t": "Keine Sorge, wir sind schnell.", "ar": "لا تقلق، نحن سريعون."}, {"s": 1, "t": "Können wir durch den Park fahren?", "ar": "هل نستطيع الذهاب عبر الحديقة؟"}, {"s": 0, "t": "Ja, aber heute ist es langsamer.", "ar": "نعم، لكنه أبطأ اليوم."}, {"s": 1, "t": "Warum ist es langsamer?", "ar": "لماذا هو أبطأ؟"}, {"s": 0, "t": "Weil es viel Verkehr gibt.", "ar": "لأن هناك ازدحامًا كثيرًا."}, {"s": 1, "t": "Dann nehmen Sie die Hauptstraße.", "ar": "إذن اسلك الشارع الرئيسي."}, {"s": 0, "t": "Gute Idee. Wir kommen bald an.", "ar": "فكرة جيدة. سنصل قريبًا."}, {"s": 1, "t": "Danke! Wie viel, bitte?", "ar": "شكرًا! كم الحساب، من فضلك؟"}, {"s": 0, "t": "Zwölf Euro, bitte.", "ar": "اثنا عشر يورو، من فضلك."}, {"s": 1, "t": "Hier sind fünfzehn. Behalten Sie den Rest.", "ar": "هذه خمسة عشر. احتفظ بالباقي."}, {"s": 0, "t": "Danke! Gute Reise!", "ar": "شكرًا! رحلة سعيدة!"}]}, {"id": "de-phone", "title": "دعوة بالهاتف", "emoji": "📞", "speakers": ["Anrufer (المتصل)", "Freund (الصديق)"], "turns": [{"s": 0, "t": "Hi! Bist du am Samstag frei?", "ar": "مرحبًا! هل أنت متفرغ يوم السبت؟"}, {"s": 1, "t": "Hi! Ja, ich bin frei.", "ar": "مرحبًا! نعم، أنا متفرغ."}, {"s": 0, "t": "Komm zu meiner Party am Samstag!", "ar": "تعال إلى حفلتي يوم السبت!"}, {"s": 1, "t": "Eine Party? Um wie viel Uhr?", "ar": "حفلة؟ في أي وقت؟"}, {"s": 0, "t": "Um sieben Uhr abends.", "ar": "في السابعة مساءً."}, {"s": 1, "t": "Wo ist die Party?", "ar": "أين الحفلة؟"}, {"s": 0, "t": "Zu Hause, in der Nähe des Parks.", "ar": "في بيتي، قرب الحديقة."}, {"s": 1, "t": "Super! Kann ich einen Freund mitbringen?", "ar": "رائع! هل أستطيع إحضار صديق؟"}, {"s": 0, "t": "Ja, natürlich! Bring ihn mit.", "ar": "نعم، بالتأكيد! أحضره."}, {"s": 1, "t": "Welches Essen machst du?", "ar": "ما الطعام الذي ستعده؟"}, {"s": 0, "t": "Pizza und Kuchen, weil alle sie lieben.", "ar": "بيتزا وكيك، لأن الجميع يحبهما."}, {"s": 1, "t": "Perfekt! Ich liebe Pizza auch.", "ar": "مثالي! أحب البيتزا أيضًا."}, {"s": 0, "t": "Kannst du Getränke mitbringen, bitte?", "ar": "هل تستطيع إحضار مشروبات، من فضلك؟"}, {"s": 1, "t": "Ja, Saft und Wasser.", "ar": "نعم، عصير وماء."}, {"s": 0, "t": "Danke! Komm nicht zu spät!", "ar": "شكرًا! لا تتأخر!"}, {"s": 1, "t": "Ich komme um sieben, versprochen.", "ar": "سآتي في السابعة، أعدك."}, {"s": 0, "t": "Wunderbar! Ich warte auf dich.", "ar": "رائع! سأنتظرك."}, {"s": 1, "t": "Bis Samstag! Tschüss!", "ar": "أراك السبت! إلى اللقاء!"}]}]};
+      var convLang = (typeof curLang !== "undefined" && curLang) ? curLang : "en";
+      var convPlay = { on: false, di: -1, ti: 0 };
+      function convEsc(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+      function convVoice(lang, idx){
+        try {
+          var vs = window.speechSynthesis.getVoices(), found = [];
+          for (var i = 0; i < vs.length; i++) {
+            if (vs[i].lang && vs[i].lang.toLowerCase().indexOf(lang) === 0) found.push(vs[i]);
+          }
+          if (!found.length) return null;
+          return found[Math.min(idx, found.length - 1)];
+        } catch (e) { return null; }
+      }
+      function convSpeakOne(text, lang, spk, onend){
+        try {
+          if (!("speechSynthesis" in window)) { if (typeof showToast === "function") showToast("النطق الصوتي غير متاح في هذا المتصفح"); if (onend) onend(); return; }
+          var synth = window.speechSynthesis;
+          synth.cancel();
+          var u = new SpeechSynthesisUtterance(text);
+          u.lang = lang === "de" ? "de-DE" : "en-US";
+          try { if (typeof audioSpeed !== "undefined") u.rate = audioSpeed; } catch (e) {}
+          var v = convVoice(lang, spk);
+          if (v) u.voice = v;
+          if (onend) u.onend = onend;
+          synth.speak(u);
+        } catch (e) { if (onend) onend(); }
+      }
+      function convStopAll(){
+        convPlay.on = false;
+        try { window.speechSynthesis.cancel(); } catch (e) {}
+      }
+      function convPlayNext(){
+        if (!convPlay.on) return;
+        var d = CONV_DATA[convLang][convPlay.di];
+        if (!d || convPlay.ti >= d.turns.length) { convPlay.on = false; return; }
+        var t = d.turns[convPlay.ti];
+        convPlay.ti++;
+        convSpeakOne(t.t, convLang, t.s, function(){ setTimeout(convPlayNext, 250); });
+      }
+      function renderConvHome(){
+        var box = $("convList");
+        if (!box) return;
+        var html = "";
+        CONV_DATA[convLang].forEach(function(d, di){
+          html += '<article class="conv-card"><div class="conv-head"><span>' + convEsc(d.emoji) + '</span><span class="conv-title">' + convEsc(d.title) + '</span><span class="conv-badge">A1</span><span class="conv-badge">' + convEsc(d.speakers.join(" · ")) + '</span></div>';
+          d.turns.forEach(function(t, ti){
+            html += '<div class="conv-turn s' + t.s + '"><div class="conv-spk"><span>' + convEsc(d.speakers[t.s]) + '</span><button class="conv-mini" type="button" data-convplay="' + di + ':' + ti + '" aria-label="استمع">🔊</button></div><p class="conv-f">' + convEsc(t.t) + '</p><p class="conv-ar">' + convEsc(t.ar) + '</p></div>';
+          });
+          html += '<div class="conv-actions"><button class="conv-play" type="button" data-convall="' + di + '">▶ تشغيل المحادثة</button><button class="conv-stop" type="button" data-convstop="1">⏹ إيقاف</button></div></article>';
+        });
+        box.innerHTML = html;
+        $("convLangEn").className = convLang === "en" ? "active-en" : "";
+        $("convLangDe").className = convLang === "de" ? "active-de" : "";
+      }
+      (function convBind(){
+        var box = $("convList");
+        if (box && !box.dataset.convBound) {
+          box.dataset.convBound = "1";
+          box.addEventListener("click", function(e){
+            var t = e.target;
+            var one = t.getAttribute ? t.getAttribute("data-convplay") : null;
+            var all = t.getAttribute ? t.getAttribute("data-convall") : null;
+            var stp = t.getAttribute ? t.getAttribute("data-convstop") : null;
+            if (one) {
+              var p = one.split(":");
+              var d = CONV_DATA[convLang][parseInt(p[0], 10)];
+              convStopAll();
+              convSpeakOne(d.turns[parseInt(p[1], 10)].t, convLang, d.turns[parseInt(p[1], 10)].s, null);
+            } else if (all) {
+              convStopAll();
+              convPlay = { on: true, di: parseInt(all, 10), ti: 0 };
+              convPlayNext();
+            } else if (stp) {
+              convStopAll();
+            }
+          });
+        }
+        var en = $("convLangEn"), de = $("convLangDe");
+        if (en && !en.dataset.convBound) { en.dataset.convBound = "1"; en.addEventListener("click", function(){ convStopAll(); convLang = "en"; renderConvHome(); }); }
+        if (de && !de.dataset.convBound) { de.dataset.convBound = "1"; de.addEventListener("click", function(){ convStopAll(); convLang = "de"; renderConvHome(); }); }
+      })();
+
 
       /* examNorm kept: used by Review typing check, not by the removed exam view. */
       function examNorm(s){
