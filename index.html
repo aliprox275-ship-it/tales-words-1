@@ -920,6 +920,13 @@
       /* ======== Conversation pilot (6th tab) ======== */
       .conv-intro{color:var(--muted); margin:0 0 8px}
       .conv-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:14px; margin:14px 0; box-shadow:var(--shadow-card)}
+      .conv-stage-btn{display:flex;align-items:center;gap:10px;width:100%;text-align:right;padding:10px 14px;margin:8px 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-card);color:var(--ink);font:inherit;font-size:15px;cursor:pointer}
+      .conv-stage-ico{font-size:18px}
+      .conv-stage-txt{flex:1}
+      .conv-stage-badge{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 8px}
+      .conv-stage-go{font-size:20px;color:var(--accent)}
+      #convReaderBody{padding:0 16px 32px}
+
       .conv-head{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
       .conv-title{font-weight:800; font-size:1.05rem}
       .conv-badge{background:var(--accent-tint); color:var(--accent); border-radius:99px; padding:1px 10px; font-size:.8rem; font-weight:700}
@@ -1321,7 +1328,7 @@
     <nav class="bottomnav" aria-label="التنقل الرئيسي">
       <button class="bnav-btn active" type="button" data-main="home" aria-current="page"><span class="bnav-ico" aria-hidden="true">🏠</span><span>الرئيسية</span></button>
       <button class="bnav-btn" type="button" data-main="stories"><span class="bnav-ico" aria-hidden="true">📚</span><span>القصص</span></button>
-      <button class="bnav-btn" type="button" data-main="review"><span class="bnav-ico" aria-hidden="true">🔁</span><span>المراجعة</span></button>
+      
       <button class="bnav-btn" type="button" data-main="bank"><span class="bnav-ico" aria-hidden="true">📖</span><span>بنك الكلمات</span></button>
       <button class="bnav-btn" type="button" data-main="grammar"><span class="bnav-ico" aria-hidden="true">📘</span><span>قواعد</span></button>
       <button class="bnav-btn" type="button" data-main="conversation"><span class="bnav-ico" aria-hidden="true">💬</span><span>محادثة</span></button>
@@ -1406,6 +1413,15 @@
         <button class="play-btn" id="storyPlayBtn">▶ تشغيل</button>
         <button class="kara-btn" id="repeatSentBtn" type="button">↻ أعد الجملة</button>
       </div>
+    </div>
+
+    <!-- ======== Conversation reader: one stage at a time, mirrors the story reader ======== -->
+    <div class="reader" id="convReader" hidden role="dialog" aria-modal="true" aria-labelledby="convReaderTitle">
+      <div class="reader-top">
+        <button class="rtool" id="convReaderBack">→ رجوع للمحادثة</button>
+        <span class="rtitle" id="convReaderTitle"></span>
+      </div>
+      <div id="convReaderBody"></div>
     </div>
 
     <!-- ======== Prep screen: target vocabulary before reading (Batch 1 stories) ======== -->
@@ -4104,6 +4120,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         var closedOverlay = false;
         if (!$("reader").hidden) { readerHist = false; closeReaderNow(); closedOverlay = true; }
         else if (!$("prep").hidden) { prepHist = false; closePrepNow(); showView("stories", true); closedOverlay = true; }
+        else if (!$("convReader").hidden) { convStopAll(); $("convReader").hidden = true; document.body.style.overflow = ""; closedOverlay = true; }
         if (closedOverlay) return;
         showExitDialog();
         hPush({ app: 1, view: curView, guard: true }, "#" + curView);
@@ -4114,9 +4131,12 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
       }
       function showView(name, fromPop){
+        var origName = name;
+        if (REVIEW_SUBS.indexOf(name) !== -1) { curReviewSub = name; name = "home"; }
         var prevView = curView;
+        if ($("convReader") && !$("convReader").hidden) { try { convStopAll(); } catch (e) {} $("convReader").hidden = true; document.body.style.overflow = ""; }
         curView = name;
-        if (VIEW_TITLES[name]) $("appTitle").textContent = VIEW_TITLES[name];
+        if (VIEW_TITLES[origName]) $("appTitle").textContent = VIEW_TITLES[origName];
         try { localStorage.setItem(LAST_VIEW_KEY, name); } catch (e) { /* ignore */ }
         if (!fromPop && prevView !== name) hReplace({ app: 1, view: name }, "#" + name);
         if (REVIEW_SUBS.indexOf(name) !== -1) curReviewSub = name;
@@ -4128,12 +4148,19 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
           if (on) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
         });
         $("reviewChrome").hidden = main !== "review";
+        if (name === "home") { $("reviewChrome").hidden = false; var rp = $("view-" + curReviewSub); if (rp) rp.hidden = false; }
         document.querySelectorAll(".subnav-btn").forEach(function(b){
-          var on = b.getAttribute("data-sub") === name;
+          var on = b.getAttribute("data-sub") === (name === "home" ? curReviewSub : name);
           b.classList.toggle("active", on);
           b.setAttribute("aria-selected", on ? "true" : "false");
         });
         if (name === "home") renderHome();
+        if (name === "home") {
+          if (curReviewSub === "review") { renderTodayWords(); startReview(); }
+          else if (curReviewSub === "reviewweek") renderWeekReview();
+          else if (curReviewSub === "reviewmonth") renderMonthReview();
+          else if (curReviewSub === "mywords") renderMyWords();
+        }
         if (name === "bank") { bankCollapseBoxes(); renderBankBoxes(); renderBank(); }
         if (name === "review") { renderTodayWords(); startReview(); }
         if (name === "reviewweek") renderWeekReview();
@@ -4204,15 +4231,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         if (!box) return;
         var html = "";
         CONV_DATA[convLang].forEach(function(d, di){
-          var c = d.conv;
-          html += '<article class="conv-card"><div class="conv-head"><span>' + convEsc(d.emoji) + '</span><span class="conv-title">المرحلة ' + d.stage + ' · ' + convEsc(d.topicAr) + '</span><span class="conv-badge">A1</span><span class="conv-badge">' + convEsc(d.topicEn) + ' · ' + convEsc(d.topicDe) + '</span></div>';
-          html += '<div class="conv-head"><span class="conv-title">' + convEsc(d.title) + '</span><span class="conv-badge">' + convEsc(c.speakers.join(" · ")) + '</span>';
-          if (d.grammar) html += '<button class="conv-gram" type="button" data-convgram="' + convEsc(d.grammar.id) + '">📘 قواعد: ' + convEsc(d.grammar.titleAr) + ' (' + convEsc(d.grammar.title) + ')</button>';
-          html += '</div>';
-          c.turns.forEach(function(t, ti){
-            html += '<div class="conv-turn s' + t.s + '"><div class="conv-spk"><span>' + convEsc(c.speakers[t.s]) + '</span><button class="conv-mini" type="button" data-convplay="' + di + ':' + ti + '" aria-label="استمع">🔊</button></div><p class="conv-f">' + convEsc(t.t) + '</p><p class="conv-ar">' + convEsc(t.ar) + '</p></div>';
-          });
-          html += '<div class="conv-actions"><button class="conv-play" type="button" data-convall="' + di + '">▶ تشغيل المحادثة</button><button class="conv-stop" type="button" data-convstop="1">⏹ إيقاف</button></div></article>';
+          html += '<button class="conv-stage-btn" type="button" data-convopen="' + di + '"><span class="conv-stage-ico">' + convEsc(d.emoji) + '</span><span class="conv-stage-txt">المرحلة ' + d.stage + ' · ' + convEsc(d.topicAr) + '</span><span class="conv-stage-badge">A1</span><span class="conv-stage-go">›</span></button>';
         });
         box.innerHTML = html;
         $("convLangEn").className = convLang === "en" ? "active-en" : "";
@@ -4255,6 +4274,79 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       })();
 
 
+      /* ---------- Conversation reader: stage buttons open one dialogue, mirroring the story reader ---------- */
+      var convReaderDi = -1;
+      function convReaderHTML(d, di){
+        var c = d.conv;
+        var html = '<article class="conv-card"><div class="conv-head"><span>' + convEsc(d.emoji) + '</span><span class="conv-title">المرحلة ' + d.stage + ' · ' + convEsc(d.topicAr) + '</span><span class="conv-badge">A1</span><span class="conv-badge">' + convEsc(d.topicEn) + ' · ' + convEsc(d.topicDe) + '</span></div>';
+        html += '<div class="conv-head"><span class="conv-title">' + convEsc(d.title) + '</span><span class="conv-badge">' + convEsc(c.speakers.join(" · ")) + '</span>';
+        if (d.grammar) html += '<button class="conv-gram" type="button" data-convgram="' + convEsc(d.grammar.id) + '">📘 قواعد: ' + convEsc(d.grammar.titleAr) + ' (' + convEsc(d.grammar.title) + ')</button>';
+        html += '</div>';
+        c.turns.forEach(function(t, ti){
+          html += '<div class="conv-turn s' + t.s + '"><div class="conv-spk"><span>' + convEsc(c.speakers[t.s]) + '</span><button class="conv-mini" type="button" data-convplay="' + di + ':' + ti + '" aria-label="استمع">🔊</button></div><p class="conv-f">' + convEsc(t.t) + '</p><p class="conv-ar">' + convEsc(t.ar) + '</p></div>';
+        });
+        html += '<div class="conv-actions"><button class="conv-play" type="button" data-convall="' + di + '">▶ تشغيل المحادثة</button><button class="conv-stop" type="button" data-convstop="1">⏹ إيقاف</button></div></article>';
+        return html;
+      }
+      function openConvReader(di){
+        var d = CONV_DATA[convLang][di];
+        if (!d) return;
+        convReaderDi = di;
+        convStopAll();
+        $("convReaderTitle").textContent = "المرحلة " + d.stage + " · " + d.topicAr;
+        $("convReaderBody").innerHTML = convReaderHTML(d, di);
+        $("convReader").hidden = false;
+        $("convReader").scrollTop = 0;
+        document.body.style.overflow = "hidden";
+      }
+      function closeConvReader(){
+        convStopAll();
+        $("convReader").hidden = true;
+        document.body.style.overflow = "";
+      }
+      (function convReaderBind(){
+        var box = $("convList");
+        if (box && !box.dataset.convOpenBound) {
+          box.dataset.convOpenBound = "1";
+          box.addEventListener("click", function(e){
+            var t = e.target;
+            while (t && !(t.getAttribute && t.getAttribute("data-convopen") !== null)) t = t.parentNode;
+            if (t) openConvReader(parseInt(t.getAttribute("data-convopen"), 10));
+          });
+        }
+        var rb = $("convReaderBody");
+        if (rb && !rb.dataset.convBound) {
+          rb.dataset.convBound = "1";
+          rb.addEventListener("click", function(e){
+            var t = e.target;
+            var gram = t.getAttribute ? t.getAttribute("data-convgram") : null;
+            if (gram) {
+              convStopAll();
+              showView("grammar");
+              gramLang = convLang; gramLevel = "A1";
+              renderGrammarHome(); renderGrammarRule(gram);
+              return;
+            }
+            var one = t.getAttribute ? t.getAttribute("data-convplay") : null;
+            var all = t.getAttribute ? t.getAttribute("data-convall") : null;
+            var stp = t.getAttribute ? t.getAttribute("data-convstop") : null;
+            if (one) {
+              var p = one.split(":");
+              var d = CONV_DATA[convLang][parseInt(p[0], 10)].conv;
+              convStopAll();
+              convSpeakOne(d.turns[parseInt(p[1], 10)].t, convLang, d.turns[parseInt(p[1], 10)].s, null);
+            } else if (all) {
+              convStopAll();
+              convPlay = { on: true, di: parseInt(all, 10), ti: 0 };
+              convPlayNext();
+            } else if (stp) {
+              convStopAll();
+            }
+          });
+        }
+        var back = $("convReaderBack");
+        if (back && !back.dataset.convBound) { back.dataset.convBound = "1"; back.addEventListener("click", closeConvReader); }
+      })();
       /* examNorm kept: used by Review typing check, not by the removed exam view. */
 
       function examNorm(s){
