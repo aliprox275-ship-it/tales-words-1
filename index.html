@@ -1075,7 +1075,7 @@
             <button class="more-link" type="button" data-goto="exercises">تمارين ✍️</button>
             <button class="more-link" type="button" data-goto="phrases">عبارات مفيدة 💬</button>
             <button class="more-link" type="button" data-goto="stats">إحصائياتي 📊</button>
-            <button class="more-link" type="button" data-goto="a1test" style="background:var(--accent);color:#fff;border-color:var(--accent)">اختبار المستوى A1 🎓</button>
+            <button class="more-link" type="button" data-goto="a1test" style="background:var(--accent);color:#fff;border-color:var(--accent)">اختبار المستوى A1 🎓</button> <button class="more-link" type="button" data-goto="writing" style="background:var(--accent-dark);color:#fff;border-color:var(--accent-dark)">الكتابة A1 ✍️</button>
           </div>
         </div>
 
@@ -1227,7 +1227,34 @@
         </section>
 
         <!-- ======== Stats / mastery dashboard ======== -->
-        <section id="view-stats" hidden>
+        <section id="view-writing" hidden>
+          <h2 class="view-title">الكتابة A1 ✍️</h2>
+          <div id="wrHome">
+            <p class="hint">تمارين كتابة للمستوى A1 فقط (CEFR): استمارة، وصف نفسك، رسالة قصيرة، أسئلة وإجابات. إذا استخدمت «أظهر الكلمة» لا يُحسب التمرين مكتملًا — لازم تعيده بدون تلميح.</p>
+            <div class="switch" role="group" aria-label="اللغة" style="margin:14px 0">
+              <button type="button" id="wrLangEn" class="active-en">English</button>
+              <button type="button" id="wrLangDe">Deutsch</button>
+            </div>
+            <h3 class="sub-title">اختر الموضوع</h3>
+            <div id="wrTopicGrid" class="home-grid" style="margin-bottom:18px"></div>
+            <div id="wrProgressBox" class="tool-box" hidden>
+              <h3 style="margin:0 0 8px">تقدّمك في الكتابة</h3>
+              <div id="wrProgressText"></div>
+            </div>
+          </div>
+          <div id="wrTask" hidden>
+            <div id="wrTaskMeta" style="margin-bottom:12px;font-weight:700;color:var(--muted)"></div>
+            <div id="wrTaskBox" class="ex-card"></div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px">
+              <button type="button" id="wrHintBtn" class="end-btn">أظهر كلمة مساعدة</button>
+              <button type="button" id="wrCheckBtn" class="start-btn">تحقق من إجابتي</button>
+              <button type="button" id="wrNextBtn" class="start-btn" hidden>التمرين التالي</button>
+              <button type="button" id="wrBackTopics" class="end-btn">← المواضيع</button>
+            </div>
+            <div id="wrFeedback" class="tool-box" hidden style="margin-top:14px"></div>
+          </div>
+        </section>
+      <section id="view-stats" hidden>
           <h2 class="view-title">إحصائياتي 📊</h2>
           <div id="statsSkills"></div>
           <div class="ltm-box">
@@ -4362,6 +4389,426 @@ function convVoice(lang, idx){
         return (s || "").toLowerCase().replace(/\s+/g, " ").trim().replace(/[\.!؟\?،؛]+$/, "").trim();
       }
 
+      /* ========== A1 Writing Practice (EN + DE) — topic-based, strict completion ========== */
+      var wrState = {
+        lang: "en",
+        topic: null,
+        taskIdx: 0,
+        usedHint: false,
+        answers: {},
+        completedClean: {} // key: lang-topic-taskIdx
+      };
+
+      var WR_TOPICS = [
+        { id: "intro", ar: "التعارف والبيانات الشخصية", emoji: "👋" },
+        { id: "food", ar: "الطعام والشراب", emoji: "🍽️" },
+        { id: "home", ar: "المنزل والسكن", emoji: "🏠" },
+        { id: "clothes", ar: "الملابس والتسوق", emoji: "👕" },
+        { id: "routine", ar: "الروتين اليومي", emoji: "⏰" },
+        { id: "weather", ar: "الوقت والطقس", emoji: "🌤️" },
+        { id: "social", ar: "المواقف الاجتماعية", emoji: "🤝" }
+      ];
+
+      /* Each topic: array of tasks. Types: form | answer | ask | message | describe
+         required: list of concepts that must appear (checked loosely)
+         hints: words user can reveal one by one
+         model: model answer shown after check
+      */
+      var WR_TASKS = {
+        en: {
+          intro: [
+            { type: "form", title: "Fill in the form", prompt: "Complete with your information.", fields: ["Full name", "Age", "City", "Nationality / Country"], minFilled: 4, hints: ["name", "years old", "city", "from"], model: "Full name: Ali Hassan\nAge: 22\nCity: Baghdad\nNationality: Iraqi" },
+            { type: "answer", title: "Answer the questions", prompt: "Write a short answer for each question (full sentence).", items: ["What is your name?", "Where are you from?", "How old are you?", "Are you a student?"], minWords: 12, hints: ["My name is", "I am from", "I am ... years old", "Yes, I am a student"], model: "My name is Sara.\nI am from Berlin.\nI am 20 years old.\nYes, I am a student." },
+            { type: "ask", title: "You ask the questions", prompt: "Write 4 questions to a new classmate about name, city, age, and job/studies.", minQuestions: 4, hints: ["What is your name?", "Where are you from?", "How old are you?", "What do you do?"], model: "What is your name?\nWhere are you from?\nHow old are you?\nAre you a student / What do you do?", reply: "My name is Omar.\nI am from Cairo.\nI am 19 years old.\nI am a student." },
+            { type: "describe", title: "Write about yourself", prompt: "Write 5–7 simple sentences about you: name, age, city, studies/work, one hobby. Minimum 40 words.", minWords: 40, must: ["name", "age or years", "city or from", "student or work or job"], hints: ["My name is", "I live in", "I am a student", "I like"], model: "My name is Layla. I am 21 years old. I am from Basra. I live in Baghdad now. I am a student. I study English. I like reading and coffee." },
+            { type: "message", title: "Short message", prompt: "Write a short message (4–6 sentences) to a new friend. Introduce yourself and ask one question.", minWords: 30, hints: ["Hello", "My name is", "I am from", "And you?"], model: "Hello!\nMy name is Ali. I am from Mosul. I am 23 years old and I am a student.\nNice to meet you. Where are you from?" }
+          ],
+          food: [
+            { type: "answer", title: "Food questions", prompt: "Answer in full sentences.", items: ["What do you eat for breakfast?", "Do you like coffee or tea?", "What is your favourite food?"], minWords: 15, hints: ["I eat", "I like", "My favourite food is"], model: "I eat bread and eggs for breakfast.\nI like tea.\nMy favourite food is rice and chicken." },
+            { type: "ask", title: "Ask about food", prompt: "Write 3 questions about food and drinks to a friend.", minQuestions: 3, hints: ["What do you eat", "Do you like", "What is your favourite"], model: "What do you eat for breakfast?\nDo you like coffee?\nWhat is your favourite food?", reply: "I eat yoghurt and fruit.\nYes, I like coffee.\nMy favourite food is pizza." },
+            { type: "message", title: "Restaurant message", prompt: "Write a short note to a friend: invite them to a restaurant, say the day and the food.", minWords: 25, hints: ["Let's go", "restaurant", "tomorrow", "pizza"], model: "Hi! Let's go to a restaurant tomorrow.\nI want pizza and juice.\nAre you free at 7 o'clock?" },
+            { type: "describe", title: "My meals", prompt: "Write about what you eat in a normal day (breakfast, lunch, dinner). Minimum 35 words.", minWords: 35, must: ["breakfast", "eat"], hints: ["In the morning", "For lunch", "In the evening"], model: "In the morning I eat bread and cheese. I drink tea. For lunch I eat rice and chicken. In the evening I eat a small sandwich. I like water with my meals." }
+          ],
+          home: [
+            { type: "answer", title: "About your home", prompt: "Answer in sentences.", items: ["Where do you live?", "Is your home big or small?", "How many rooms are there?"], minWords: 12, hints: ["I live in", "My home is", "There are"], model: "I live in an apartment in the city.\nMy home is small.\nThere are three rooms." },
+            { type: "describe", title: "Describe your room", prompt: "Write 5 sentences about your room (bed, table, window, colours...). Minimum 35 words.", minWords: 35, must: ["room", "bed"], hints: ["In my room", "there is", "window", "desk"], model: "In my room there is a bed and a desk. The window is big. The walls are white. I have a chair and a lamp. I like my room because it is quiet." },
+            { type: "message", title: "Invite a friend home", prompt: "Write a short invitation to your home (day + time + address idea).", minWords: 25, hints: ["Come to my home", "on Friday", "at 6"], model: "Hi! Come to my home on Friday at 6 o'clock.\nI live near the park.\nWe can drink tea and talk." },
+            { type: "ask", title: "Ask about their home", prompt: "Write 3 questions about a friend's home.", minQuestions: 3, hints: ["Where do you live?", "How many rooms", "Do you have"], model: "Where do you live?\nHow many rooms are there?\nDo you have a garden?", reply: "I live in a small house.\nThere are four rooms.\nYes, we have a small garden." }
+          ],
+          clothes: [
+            { type: "answer", title: "Clothes today", prompt: "Answer in sentences.", items: ["What are you wearing today?", "What colour is your jacket/shirt?", "Do you like shopping for clothes?"], minWords: 12, hints: ["I am wearing", "It is", "Yes/No I like"], model: "I am wearing jeans and a blue T-shirt.\nMy jacket is black.\nYes, I like shopping for clothes." },
+            { type: "describe", title: "My favourite clothes", prompt: "Write about your favourite clothes and colours. Minimum 30 words.", minWords: 30, must: ["wear", "colour or color or blue or red or black or white"], hints: ["I like to wear", "My favourite colour", "In winter"], model: "I like to wear jeans and a simple T-shirt. My favourite colour is blue. In winter I wear a warm coat and boots. I do not like very formal clothes." },
+            { type: "message", title: "Shopping plan", prompt: "Write a message: you want to buy clothes, say what and when.", minWords: 20, hints: ["I want to buy", "shoes", "this weekend"], model: "Hi! I want to buy new shoes this weekend.\nDo you want to come with me to the shop?" },
+            { type: "ask", title: "Ask about clothes", prompt: "Write 3 questions about clothes or shopping.", minQuestions: 3, hints: ["What are you wearing?", "What colour", "Where do you buy"], model: "What are you wearing today?\nWhat is your favourite colour?\nWhere do you buy clothes?", reply: "I am wearing a red dress.\nMy favourite colour is green.\nI buy clothes in the city centre." }
+          ],
+          routine: [
+            { type: "answer", title: "Daily routine", prompt: "Answer in full sentences.", items: ["What time do you get up?", "How do you go to school/work?", "What do you do in the evening?"], minWords: 15, hints: ["I get up at", "I go by", "In the evening I"], model: "I get up at seven o'clock.\nI go to school by bus.\nIn the evening I study and watch TV." },
+            { type: "describe", title: "My day", prompt: "Write your typical day from morning to night. Minimum 45 words.", minWords: 45, must: ["get up or wake", "morning or evening"], hints: ["I get up", "I have breakfast", "I go to", "At night"], model: "I get up at 6:30. I have breakfast at home. Then I go to university by bus. I study in the afternoon. In the evening I cook dinner. At night I read a book and sleep at 11." },
+            { type: "ask", title: "Ask about their day", prompt: "Write 4 questions about someone's daily routine.", minQuestions: 4, hints: ["What time do you", "Do you", "How do you go"], model: "What time do you get up?\nHow do you go to work?\nWhat do you do after lunch?\nWhat time do you sleep?", reply: "I get up at 7.\nI go by metro.\nI rest a little.\nI sleep at 11." },
+            { type: "message", title: "Change of plans", prompt: "Write a short message: you are late / busy and suggest a new time.", minWords: 20, hints: ["Sorry", "I am late", "Can we meet at"], model: "Sorry! I am late today.\nCan we meet at 5 o'clock instead of 4?\nThank you!" }
+          ],
+          weather: [
+            { type: "answer", title: "Weather & time", prompt: "Answer in sentences.", items: ["What is the weather like today?", "What is the time now (write any logical time)?", "Do you like hot weather?"], minWords: 12, hints: ["It is", "It is ... o'clock", "Yes/No I like"], model: "It is sunny and warm today.\nIt is three o'clock.\nYes, I like hot weather." },
+            { type: "describe", title: "Weather in my city", prompt: "Write about the weather in your city in summer and winter. Minimum 35 words.", minWords: 35, must: ["summer or winter or hot or cold"], hints: ["In summer", "In winter", "It rains"], model: "In summer it is very hot in my city. In winter it is cold and sometimes rainy. I like spring because it is warm. I do not like strong wind." },
+            { type: "message", title: "Cancel because of weather", prompt: "Write a message: cancel a meeting because of bad weather and suggest another day.", minWords: 20, hints: ["Sorry", "rain", "another day"], model: "Sorry, it is raining a lot today.\nCan we meet another day?\nIs tomorrow OK?" },
+            { type: "ask", title: "Ask about weather", prompt: "Write 3 questions about weather or time.", minQuestions: 3, hints: ["What is the weather", "What time", "Is it"], model: "What is the weather like today?\nIs it cold?\nWhat time is it?", reply: "It is cloudy.\nYes, it is a bit cold.\nIt is half past two." }
+          ],
+          social: [
+            { type: "answer", title: "Social situations", prompt: "Answer politely in sentences.", items: ["How do you say thank you to a friend?", "What do you say when you meet someone?", "How do you ask for help?"], minWords: 10, hints: ["Thank you", "Nice to meet you", "Can you help me"], model: "I say: Thank you very much.\nI say: Hello, nice to meet you.\nI say: Excuse me, can you help me, please?" },
+            { type: "ask", title: "Polite questions", prompt: "Write 3 polite questions (help, time, direction style).", minQuestions: 3, hints: ["Can you help me?", "What time is it?", "Where is"], model: "Can you help me, please?\nWhat time is it?\nWhere is the bus station?", reply: "Yes, of course.\nIt is 4 o'clock.\nIt is next to the bank." },
+            { type: "message", title: "Thank-you message", prompt: "Write a short thank-you message to a friend who helped you.", minWords: 20, hints: ["Thank you", "for your help", "See you"], model: "Hi Sara, thank you for your help yesterday.\nYou are a good friend.\nSee you soon!" },
+            { type: "describe", title: "A good friend", prompt: "Write about a good friend (name, where from, why you like them). Minimum 35 words.", minWords: 35, must: ["friend"], hints: ["My friend", "He/She is", "We"], model: "My friend's name is Noor. She is from Erbil. She is kind and funny. We study together. I like her because she always helps me." }
+          ]
+        },
+        de: {
+          intro: [
+            { type: "form", title: "Formular ausfüllen", prompt: "Füllen Sie das Formular aus.", fields: ["Vollständiger Name", "Alter", "Stadt", "Nationalität / Land"], minFilled: 4, hints: ["Name", "Jahre alt", "Stadt", "aus"], model: "Name: Ali Hassan\nAlter: 22\nStadt: Bagdad\nNationalität: irakisch" },
+            { type: "answer", title: "Fragen beantworten", prompt: "Antworten Sie mit ganzen Sätzen.", items: ["Wie heißt du?", "Woher kommst du?", "Wie alt bist du?", "Bist du Student/Studentin?"], minWords: 12, hints: ["Ich heiße", "Ich komme aus", "Ich bin ... Jahre alt", "Ja, ich bin Student"], model: "Ich heiße Sara.\nIch komme aus Berlin.\nIch bin 20 Jahre alt.\nJa, ich bin Studentin." },
+            { type: "ask", title: "Du stellst die Fragen", prompt: "Schreibe 4 Fragen an einen neuen Mitschüler (Name, Stadt, Alter, Beruf/Studium).", minQuestions: 4, hints: ["Wie heißt du?", "Woher kommst du?", "Wie alt bist du?", "Was machst du?"], model: "Wie heißt du?\nWoher kommst du?\nWie alt bist du?\nBist du Student?", reply: "Ich heiße Omar.\nIch komme aus Kairo.\nIch bin 19 Jahre alt.\nJa, ich bin Student." },
+            { type: "describe", title: "Schreibe über dich", prompt: "Schreibe 5–7 einfache Sätze über dich. Mindestens 40 Wörter.", minWords: 40, must: ["heiße or name", "Jahre or alt", "aus or wohne", "Student or arbeite"], hints: ["Ich heiße", "Ich wohne in", "Ich bin Student", "Ich mag"], model: "Ich heiße Layla. Ich bin 21 Jahre alt. Ich komme aus Basra. Jetzt wohne ich in Bagdad. Ich bin Studentin. Ich lerne Deutsch. Ich mag lesen und Kaffee." },
+            { type: "message", title: "Kurze Nachricht", prompt: "Schreibe eine kurze Nachricht an einen neuen Freund. Stelle dich vor und stelle eine Frage.", minWords: 30, hints: ["Hallo", "Ich heiße", "Ich komme aus", "Und du?"], model: "Hallo!\nIch heiße Ali. Ich komme aus Mosul. Ich bin 23 Jahre alt und Student.\nFreut mich. Woher kommst du?" }
+          ],
+          food: [
+            { type: "answer", title: "Essen und Trinken", prompt: "Antworte mit ganzen Sätzen.", items: ["Was isst du zum Frühstück?", "Magst du Kaffee oder Tee?", "Was ist dein Lieblingsessen?"], minWords: 15, hints: ["Ich esse", "Ich mag", "Mein Lieblingsessen ist"], model: "Ich esse Brot und Eier zum Frühstück.\nIch mag Tee.\nMein Lieblingsessen ist Reis mit Hähnchen." },
+            { type: "ask", title: "Fragen zum Essen", prompt: "Schreibe 3 Fragen zu Essen und Trinken.", minQuestions: 3, hints: ["Was isst du", "Magst du", "Was ist dein Lieblingsessen"], model: "Was isst du zum Frühstück?\nMagst du Kaffee?\nWas ist dein Lieblingsessen?", reply: "Ich esse Joghurt und Obst.\nJa, ich mag Kaffee.\nMein Lieblingsessen ist Pizza." },
+            { type: "message", title: "Einladung zum Essen", prompt: "Lade einen Freund ins Restaurant ein (Tag + Essen).", minWords: 25, hints: ["Gehen wir", "Restaurant", "morgen", "Pizza"], model: "Hallo! Gehen wir morgen ins Restaurant?\nIch möchte Pizza und Saft.\nHast du um 19 Uhr Zeit?" },
+            { type: "describe", title: "Meine Mahlzeiten", prompt: "Schreibe über dein Essen am Tag. Mindestens 35 Wörter.", minWords: 35, must: ["Frühstück", "esse"], hints: ["Am Morgen", "Zu Mittag", "Am Abend"], model: "Am Morgen esse ich Brot und Käse. Ich trinke Tee. Zu Mittag esse ich Reis und Hähnchen. Am Abend esse ich ein kleines Sandwich. Ich trinke gern Wasser." }
+          ],
+          home: [
+            { type: "answer", title: "Wohnen", prompt: "Antworte mit Sätzen.", items: ["Wo wohnst du?", "Ist deine Wohnung groß oder klein?", "Wie viele Zimmer gibt es?"], minWords: 12, hints: ["Ich wohne", "Meine Wohnung ist", "Es gibt"], model: "Ich wohne in einer Wohnung in der Stadt.\nMeine Wohnung ist klein.\nEs gibt drei Zimmer." },
+            { type: "describe", title: "Mein Zimmer", prompt: "Beschreibe dein Zimmer in 5 Sätzen. Mindestens 35 Wörter.", minWords: 35, must: ["Zimmer", "Bett"], hints: ["In meinem Zimmer", "es gibt", "Fenster", "Schreibtisch"], model: "In meinem Zimmer gibt es ein Bett und einen Schreibtisch. Das Fenster ist groß. Die Wände sind weiß. Ich habe einen Stuhl und eine Lampe. Ich mag mein Zimmer, weil es ruhig ist." },
+            { type: "message", title: "Einladung nach Hause", prompt: "Lade einen Freund zu dir nach Hause ein.", minWords: 25, hints: ["Komm zu mir", "am Freitag", "um 18 Uhr"], model: "Hallo! Komm am Freitag um 18 Uhr zu mir.\nIch wohne in der Nähe vom Park.\nWir können Tee trinken und reden." },
+            { type: "ask", title: "Fragen zur Wohnung", prompt: "Schreibe 3 Fragen zur Wohnung eines Freundes.", minQuestions: 3, hints: ["Wo wohnst du?", "Wie viele Zimmer", "Hast du"], model: "Wo wohnst du?\nWie viele Zimmer gibt es?\nHast du einen Garten?", reply: "Ich wohne in einem kleinen Haus.\nEs gibt vier Zimmer.\nJa, wir haben einen kleinen Garten." }
+          ],
+          clothes: [
+            { type: "answer", title: "Kleidung", prompt: "Antworte mit Sätzen.", items: ["Was trägst du heute?", "Welche Farbe hat deine Jacke/dein Shirt?", "Kaufst du gern Kleidung?"], minWords: 12, hints: ["Ich trage", "Sie ist", "Ja/Nein ich"], model: "Ich trage Jeans und ein blaues T-Shirt.\nMeine Jacke ist schwarz.\nJa, ich kaufe gern Kleidung." },
+            { type: "describe", title: "Meine Lieblingskleidung", prompt: "Schreibe über deine Lieblingskleidung. Mindestens 30 Wörter.", minWords: 30, must: ["trage", "Farbe or blau or rot or schwarz or weiß"], hints: ["Ich trage gern", "Meine Lieblingsfarbe", "Im Winter"], model: "Ich trage gern Jeans und ein einfaches T-Shirt. Meine Lieblingsfarbe ist blau. Im Winter trage ich einen warmen Mantel und Stiefel. Formelle Kleidung mag ich nicht so gern." },
+            { type: "message", title: "Einkaufen", prompt: "Schreibe eine Nachricht: du willst Kleidung kaufen.", minWords: 20, hints: ["Ich möchte", "Schuhe kaufen", "am Wochenende"], model: "Hallo! Ich möchte am Wochenende neue Schuhe kaufen.\nKommst du mit in den Laden?" },
+            { type: "ask", title: "Fragen zur Kleidung", prompt: "Schreibe 3 Fragen zu Kleidung.", minQuestions: 3, hints: ["Was trägst du?", "Welche Farbe", "Wo kaufst du"], model: "Was trägst du heute?\nWas ist deine Lieblingsfarbe?\nWo kaufst du Kleidung?", reply: "Ich trage ein rotes Kleid.\nMeine Lieblingsfarbe ist grün.\nIch kaufe in der Innenstadt." }
+          ],
+          routine: [
+            { type: "answer", title: "Tagesablauf", prompt: "Antworte mit ganzen Sätzen.", items: ["Um wie viel Uhr stehst du auf?", "Wie gehst du zur Schule/Arbeit?", "Was machst du am Abend?"], minWords: 15, hints: ["Ich stehe um", "Ich fahre mit", "Am Abend"], model: "Ich stehe um sieben Uhr auf.\nIch fahre mit dem Bus zur Schule.\nAm Abend lerne ich und sehe fern." },
+            { type: "describe", title: "Mein Tag", prompt: "Beschreibe deinen typischen Tag. Mindestens 45 Wörter.", minWords: 45, must: ["aufstehen or stehe", "Morgen or Abend"], hints: ["Ich stehe auf", "Ich frühstücke", "Ich gehe", "In der Nacht"], model: "Ich stehe um 6:30 auf. Ich frühstücke zu Hause. Dann fahre ich mit dem Bus zur Uni. Am Nachmittag lerne ich. Am Abend koche ich. In der Nacht lese ich und schlafe um 23 Uhr." },
+            { type: "ask", title: "Fragen zum Tag", prompt: "Schreibe 4 Fragen zum Tagesablauf.", minQuestions: 4, hints: ["Um wie viel Uhr", "Wie gehst du", "Was machst du"], model: "Um wie viel Uhr stehst du auf?\nWie gehst du zur Arbeit?\nWas machst du nach dem Mittagessen?\nUm wie viel Uhr schläfst du?", reply: "Um 7 Uhr.\nMit der U-Bahn.\nIch ruhe mich aus.\nUm 23 Uhr." },
+            { type: "message", title: "Verspätung", prompt: "Schreibe: du kommst zu spät und schlägst eine neue Uhrzeit vor.", minWords: 20, hints: ["Sorry", "Ich komme zu spät", "Können wir um"], model: "Sorry! Ich komme heute zu spät.\nKönnen wir um 17 Uhr statt um 16 Uhr treffen?\nDanke!" }
+          ],
+          weather: [
+            { type: "answer", title: "Wetter und Zeit", prompt: "Antworte mit Sätzen.", items: ["Wie ist das Wetter heute?", "Wie spät ist es? (schreibe eine Uhrzeit)", "Magst du heißes Wetter?"], minWords: 12, hints: ["Es ist", "Es ist ... Uhr", "Ja/Nein ich mag"], model: "Es ist sonnig und warm.\nEs ist 15 Uhr.\nJa, ich mag heißes Wetter." },
+            { type: "describe", title: "Wetter in meiner Stadt", prompt: "Schreibe über Sommer und Winter in deiner Stadt. Mindestens 35 Wörter.", minWords: 35, must: ["Sommer or Winter or heiß or kalt"], hints: ["Im Sommer", "Im Winter", "Es regnet"], model: "Im Sommer ist es in meiner Stadt sehr heiß. Im Winter ist es kalt und manchmal regnerisch. Ich mag den Frühling, weil es warm ist. Starken Wind mag ich nicht." },
+            { type: "message", title: "Wegen Wetter absagen", prompt: "Sage ein Treffen wegen schlechten Wetters ab.", minWords: 20, hints: ["Sorry", "Regen", "einen anderen Tag"], model: "Sorry, es regnet heute sehr stark.\nKönnen wir uns an einem anderen Tag treffen?\nIst morgen okay?" },
+            { type: "ask", title: "Fragen zum Wetter", prompt: "Schreibe 3 Fragen zu Wetter oder Uhrzeit.", minQuestions: 3, hints: ["Wie ist das Wetter", "Wie spät", "Ist es"], model: "Wie ist das Wetter heute?\nIst es kalt?\nWie spät ist es?", reply: "Es ist bewölkt.\nJa, ein bisschen kalt.\nEs ist halb drei." }
+          ],
+          social: [
+            { type: "answer", title: "Höflichkeit", prompt: "Antworte höflich.", items: ["Wie danke ich einem Freund?", "Was sage ich beim Kennenlernen?", "Wie bitte ich um Hilfe?"], minWords: 10, hints: ["Danke", "Freut mich", "Kannst du mir helfen"], model: "Ich sage: Vielen Dank.\nIch sage: Hallo, freut mich.\nIch sage: Entschuldigung, kannst du mir bitte helfen?" },
+            { type: "ask", title: "Höfliche Fragen", prompt: "Schreibe 3 höfliche Fragen (Hilfe, Zeit, Weg).", minQuestions: 3, hints: ["Kannst du mir helfen?", "Wie spät ist es?", "Wo ist"], model: "Kannst du mir bitte helfen?\nWie spät ist es?\nWo ist die Bushaltestelle?", reply: "Ja, natürlich.\nEs ist 16 Uhr.\nSie ist neben der Bank." },
+            { type: "message", title: "Danke-Nachricht", prompt: "Schreibe eine kurze Danke-Nachricht.", minWords: 20, hints: ["Danke", "für deine Hilfe", "Bis bald"], model: "Hallo Sara, danke für deine Hilfe gestern.\nDu bist eine gute Freundin.\nBis bald!" },
+            { type: "describe", title: "Ein guter Freund", prompt: "Schreibe über einen guten Freund. Mindestens 35 Wörter.", minWords: 35, must: ["Freund"], hints: ["Mein Freund", "Er/Sie ist", "Wir"], model: "Meine Freundin heißt Noor. Sie kommt aus Erbil. Sie ist nett und lustig. Wir lernen zusammen. Ich mag sie, weil sie mir immer hilft." }
+          ]
+        }
+      };
+
+      function wrKey(taskIdx) {
+        return wrState.lang + "-" + wrState.topic + "-" + taskIdx;
+      }
+
+      function wrReset() {
+        wrState.topic = null;
+        wrState.taskIdx = 0;
+        wrState.usedHint = false;
+        $("wrHome").hidden = false;
+        $("wrTask").hidden = true;
+        wrRenderTopics();
+        wrRenderProgress();
+      }
+
+      function wrRenderTopics() {
+        var grid = $("wrTopicGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+        WR_TOPICS.forEach(function(tp) {
+          var tasks = (WR_TASKS[wrState.lang] || {})[tp.id] || [];
+          var clean = 0;
+          for (var i = 0; i < tasks.length; i++) {
+            if (wrState.completedClean[wrKey(i).replace(/-\d+$/, "-" + i) ] || wrState.completedClean[wrState.lang + "-" + tp.id + "-" + i]) clean++;
+          }
+          // fix key usage
+          clean = 0;
+          for (var j = 0; j < tasks.length; j++) {
+            if (wrState.completedClean[wrState.lang + "-" + tp.id + "-" + j]) clean++;
+          }
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "more-link";
+          btn.style.textAlign = "right";
+          btn.style.width = "100%";
+          btn.innerHTML = "<b>" + tp.emoji + " " + tp.ar + "</b><br><span style='font-size:.85rem;color:var(--muted)'>" + clean + "/" + tasks.length + " بدون تلميح</span>";
+          btn.onclick = (function(id){ return function(){ wrOpenTopic(id); }; })(tp.id);
+          grid.appendChild(btn);
+        });
+      }
+
+      function wrRenderProgress() {
+        var box = $("wrProgressBox");
+        var text = $("wrProgressText");
+        if (!box || !text) return;
+        var total = 0, done = 0;
+        WR_TOPICS.forEach(function(tp) {
+          var tasks = (WR_TASKS[wrState.lang] || {})[tp.id] || [];
+          total += tasks.length;
+          for (var i = 0; i < tasks.length; i++) {
+            if (wrState.completedClean[wrState.lang + "-" + tp.id + "-" + i]) done++;
+          }
+        });
+        box.hidden = false;
+        text.textContent = "إنجاز نظيف (بدون تلميح): " + done + " / " + total + " تمرين · اللغة: " + (wrState.lang === "en" ? "English" : "Deutsch");
+      }
+
+      function wrOpenTopic(topicId) {
+        wrState.topic = topicId;
+        wrState.taskIdx = 0;
+        wrState.usedHint = false;
+        $("wrHome").hidden = true;
+        $("wrTask").hidden = false;
+        wrRenderTask();
+      }
+
+      function wrCurrentTasks() {
+        return ((WR_TASKS[wrState.lang] || {})[wrState.topic] || []);
+      }
+
+      function wrRenderTask() {
+        var tasks = wrCurrentTasks();
+        var task = tasks[wrState.taskIdx];
+        var topic = WR_TOPICS.filter(function(t){ return t.id === wrState.topic; })[0];
+        $("wrFeedback").hidden = true;
+        $("wrNextBtn").hidden = true;
+        $("wrCheckBtn").hidden = false;
+        wrState.usedHint = false;
+        if (!task) {
+          $("wrTaskBox").innerHTML = "<p>خلصت تمارين هذا الموضوع. أحسنت.</p>";
+          $("wrCheckBtn").hidden = true;
+          return;
+        }
+        $("wrTaskMeta").textContent = (topic ? topic.emoji + " " + topic.ar : "") + " · تمرين " + (wrState.taskIdx + 1) + " / " + tasks.length + " · " + task.title;
+
+        var box = $("wrTaskBox");
+        box.innerHTML = "";
+        var p = document.createElement("p");
+        p.style.fontWeight = "700";
+        p.textContent = task.prompt;
+        box.appendChild(p);
+
+        if (task.type === "form") {
+          task.fields.forEach(function(f, i) {
+            var row = document.createElement("div");
+            row.style.margin = "10px 0";
+            row.innerHTML = "<label style='font-weight:700'>" + f + "</label>";
+            var inp = document.createElement("input");
+            inp.type = "text";
+            inp.id = "wrField" + i;
+            inp.style.cssText = "width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;margin-top:4px;direction:ltr;text-align:left";
+            row.appendChild(inp);
+            box.appendChild(row);
+          });
+        } else if (task.type === "answer") {
+          task.items.forEach(function(q, i) {
+            var qel = document.createElement("p");
+            qel.style.margin = "12px 0 4px";
+            qel.style.fontWeight = "700";
+            qel.textContent = (i + 1) + ") " + q;
+            box.appendChild(qel);
+            var ta = document.createElement("textarea");
+            ta.id = "wrAns" + i;
+            ta.rows = 2;
+            ta.style.cssText = "width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;direction:ltr;text-align:left;font-family:inherit";
+            box.appendChild(ta);
+          });
+        } else if (task.type === "ask") {
+          var note = document.createElement("p");
+          note.style.color = "var(--muted)";
+          note.textContent = "اكتب الأسئلة هنا. بعد التحقق ستظهر إجابات الشخص الذي تسأله.";
+          box.appendChild(note);
+          var ta = document.createElement("textarea");
+          ta.id = "wrMain";
+          ta.rows = 6;
+          ta.style.cssText = "width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;direction:ltr;text-align:left;font-family:inherit";
+          box.appendChild(ta);
+        } else {
+          var ta = document.createElement("textarea");
+          ta.id = "wrMain";
+          ta.rows = 8;
+          ta.placeholder = wrState.lang === "de" ? "Hier schreiben..." : "Write here...";
+          ta.style.cssText = "width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;direction:ltr;text-align:left;font-family:inherit";
+          box.appendChild(ta);
+          if (task.minWords) {
+            var mw = document.createElement("p");
+            mw.style.fontSize = ".85rem";
+            mw.style.color = "var(--muted)";
+            mw.textContent = "الحد الأدنى للكلمات: " + task.minWords;
+            box.appendChild(mw);
+          }
+        }
+
+        // hint area
+        var hintArea = document.createElement("div");
+        hintArea.id = "wrHintArea";
+        hintArea.style.marginTop = "10px";
+        box.appendChild(hintArea);
+      }
+
+      function wrCollectText() {
+        var task = wrCurrentTasks()[wrState.taskIdx];
+        if (!task) return "";
+        if (task.type === "form") {
+          var parts = [];
+          for (var i = 0; i < task.fields.length; i++) {
+            var el = $("wrField" + i);
+            parts.push(el ? el.value.trim() : "");
+          }
+          return parts.join("\n");
+        }
+        if (task.type === "answer") {
+          var parts2 = [];
+          for (var j = 0; j < task.items.length; j++) {
+            var a = $("wrAns" + j);
+            parts2.push(a ? a.value.trim() : "");
+          }
+          return parts2.join("\n");
+        }
+        var main = $("wrMain");
+        return main ? main.value.trim() : "";
+      }
+
+      function wrWordCount(s) {
+        return (s || "").split(/\s+/).filter(Boolean).length;
+      }
+
+      function wrCheck() {
+        var task = wrCurrentTasks()[wrState.taskIdx];
+        if (!task) return;
+        var text = wrCollectText();
+        var fb = $("wrFeedback");
+        fb.hidden = false;
+        var issues = [];
+        var ok = true;
+
+        if (task.type === "form") {
+          var filled = text.split("\n").filter(function(x){ return x.length > 1; }).length;
+          if (filled < (task.minFilled || task.fields.length)) {
+            ok = false;
+            issues.push("املأ كل الحقول (" + filled + "/" + task.fields.length + ").");
+          }
+        } else if (task.type === "answer") {
+          var lines = text.split("\n").filter(Boolean);
+          if (lines.length < task.items.length) {
+            ok = false;
+            issues.push("أجب على كل الأسئلة.");
+          }
+          if (wrWordCount(text) < (task.minWords || 8)) {
+            ok = false;
+            issues.push("الإجابة قصيرة جدًا.");
+          }
+        } else if (task.type === "ask") {
+          var qCount = (text.match(/\?/g) || []).length;
+          if (qCount < (task.minQuestions || 3)) {
+            ok = false;
+            issues.push("اكتب على الأقل " + (task.minQuestions || 3) + " أسئلة (استخدم ؟). موجود: " + qCount);
+          }
+        } else {
+          if (wrWordCount(text) < (task.minWords || 20)) {
+            ok = false;
+            issues.push("عدد الكلمات " + wrWordCount(text) + " — المطلوب على الأقل " + task.minWords);
+          }
+          if (task.must) {
+            var low = text.toLowerCase();
+            task.must.forEach(function(req) {
+              var alts = req.split(/\s+or\s+/);
+              var hit = alts.some(function(a){ return low.indexOf(a.toLowerCase()) !== -1; });
+              if (!hit) {
+                ok = false;
+                issues.push("يجب أن يظهر في النص شيء عن: " + req);
+              }
+            });
+          }
+        }
+
+        if (!text || text.length < 3) {
+          ok = false;
+          issues = ["اكتب إجابة أولًا."];
+        }
+
+        var html = "";
+        if (ok) {
+          html += "<p style='color:var(--ok);font-weight:800'>✔ النص مقبول من حيث الطول والنقاط المطلوبة.</p>";
+          if (wrState.usedHint) {
+            html += "<p style='color:var(--bad);font-weight:700'>⚠ استخدمت تلميحًا — هذا التمرين <b>لا يُحسب مكتملًا</b>. أعده لاحقًا بدون زر «أظهر الكلمة».</p>";
+          } else {
+            wrState.completedClean[wrState.lang + "-" + wrState.topic + "-" + wrState.taskIdx] = true;
+            try { localStorage.setItem("wrClean.v1", JSON.stringify(wrState.completedClean)); } catch(e) {}
+            html += "<p style='color:var(--ok);font-weight:700'>تم الحفظ كإنجاز نظيف (بدون تلميح).</p>";
+          }
+        } else {
+          html += "<p style='color:var(--bad);font-weight:800'>✖ بعد غير مكتمل:</p><ul>";
+          issues.forEach(function(x){ html += "<li>" + x + "</li>"; });
+          html += "</ul>";
+        }
+
+        html += "<h4 style='margin:12px 0 6px'>نموذج إجابة</h4>";
+        html += "<pre style='white-space:pre-wrap;direction:ltr;text-align:left;background:var(--surface2);padding:12px;border-radius:10px;font-family:var(--font-serif)'>" + (task.model || "") + "</pre>";
+        if (task.type === "ask" && task.reply) {
+          html += "<h4 style='margin:12px 0 6px'>إجابة الشخص الذي سألته</h4>";
+          html += "<pre style='white-space:pre-wrap;direction:ltr;text-align:left;background:var(--accent-tint);padding:12px;border-radius:10px;font-family:var(--font-serif)'>" + task.reply + "</pre>";
+        }
+        fb.innerHTML = html;
+        $("wrNextBtn").hidden = false;
+      }
+
+      function wrHint() {
+        var task = wrCurrentTasks()[wrState.taskIdx];
+        if (!task || !task.hints || !task.hints.length) return;
+        wrState.usedHint = true;
+        var area = $("wrHintArea");
+        if (!area) return;
+        var idx = area.querySelectorAll(".wr-hint-item").length;
+        if (idx >= task.hints.length) {
+          area.innerHTML += "<p style='color:var(--muted);font-size:.9rem'>لا مزيد من التلميحات.</p>";
+          return;
+        }
+        var d = document.createElement("div");
+        d.className = "wr-hint-item";
+        d.style.cssText = "padding:8px 12px;margin:6px 0;background:var(--surface2);border-radius:8px;direction:ltr;text-align:left;font-weight:700";
+        d.textContent = "💡 " + task.hints[idx];
+        area.appendChild(d);
+      }
+
+      // load saved clean completions
+      try {
+        var saved = localStorage.getItem("wrClean.v1");
+        if (saved) wrState.completedClean = JSON.parse(saved) || {};
+      } catch(e) {}
+
+      if ($("wrLangEn")) $("wrLangEn").addEventListener("click", function(){
+        wrState.lang = "en";
+        $("wrLangEn").classList.add("active-en");
+        $("wrLangDe").classList.remove("active-de");
+        wrRenderTopics(); wrRenderProgress();
+      });
+      if ($("wrLangDe")) $("wrLangDe").addEventListener("click", function(){
+        wrState.lang = "de";
+        $("wrLangDe").classList.add("active-de");
+        $("wrLangEn").classList.remove("active-en");
+        wrRenderTopics(); wrRenderProgress();
+      });
+      if ($("wrHintBtn")) $("wrHintBtn").addEventListener("click", wrHint);
+      if ($("wrCheckBtn")) $("wrCheckBtn").addEventListener("click", wrCheck);
+      if ($("wrNextBtn")) $("wrNextBtn").addEventListener("click", function(){
+        wrState.taskIdx++;
+        wrRenderTask();
+      });
+      if ($("wrBackTopics")) $("wrBackTopics").addEventListener("click", wrReset);
+
+
+      
       /* ========== A1 Level Test (EN + DE) — CEFR aligned, pass = 60% ========== */
       var a1State = { lang: "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false };
 
