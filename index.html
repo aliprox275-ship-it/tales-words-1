@@ -4851,8 +4851,10 @@ function convVoice(lang, idx){
         if (!task) {
           $("wrTaskBox").innerHTML = "<p>خلصت تمارين هذا الموضوع. أحسنت.</p>";
           $("wrCheckBtn").hidden = true;
+          if ($("wrHintBtn")) $("wrHintBtn").hidden = true;
           return;
         }
+        if ($("wrHintBtn")) $("wrHintBtn").hidden = !(task.hints && task.hints.length);
         $("wrTaskMeta").textContent = (topic ? topic.emoji + " " + topic.ar : "") + " · تمرين " + (wrState.taskIdx + 1) + " / " + tasks.length + " · " + task.title;
 
         var box = $("wrTaskBox");
@@ -5035,7 +5037,7 @@ function convVoice(lang, idx){
         if (!area) return;
         var idx = area.querySelectorAll(".wr-hint-item").length;
         if (idx >= task.hints.length) {
-          area.innerHTML += "<p style='color:var(--muted);font-size:.9rem'>لا مزيد من التلميحات.</p>";
+          if ($("wrHintBtn")) $("wrHintBtn").hidden = true;
           return;
         }
         var d = document.createElement("div");
@@ -5043,6 +5045,7 @@ function convVoice(lang, idx){
         d.style.cssText = "padding:8px 12px;margin:6px 0;background:var(--surface2);border-radius:8px;direction:ltr;text-align:left;font-weight:700";
         d.textContent = "💡 " + task.hints[idx];
         area.appendChild(d);
+        if (idx + 1 >= task.hints.length && $("wrHintBtn")) $("wrHintBtn").hidden = true;
       }
 
       // load saved clean completions
