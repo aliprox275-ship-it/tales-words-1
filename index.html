@@ -4097,7 +4097,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "grammar", "a1test", "conversation"];
+        var ALL_VIEWS = ["home", "stories", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "grammar", "a1test", "conversation", "writing"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var curView = "home", curReviewSub = "review";
 
@@ -4110,7 +4110,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         home: "Tales & Words", stories: "القصص", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", grammar: "قواعد",
-        a1test: "اختبار المستوى A1"
+        a1test: "اختبار المستوى A1", writing: "الكتابة A1"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
       var startView = "home";
@@ -4152,7 +4152,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       });
       function mainOf(name){
         if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation") return name;
-        if (REVIEW_SUBS.indexOf(name) !== -1 || name === "a1test") return "review";
+        if (REVIEW_SUBS.indexOf(name) !== -1 || name === "a1test" || name === "writing") return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
       }
       function showView(name, fromPop){
@@ -4194,7 +4194,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         if (name === "exercises") renderExScore();
         if (name === "stats") renderStats();
         if (name === "grammar") { gramLang = curLang; renderGrammarHome(); }
-        if (name === "a1test") { a1Reset(); }
+        if (name === "a1test") { a1Reset(); } if (name === "writing") { wrReset(); }
         if (name === "conversation") renderConvHome();
         window.scrollTo(0, 0);
       }
