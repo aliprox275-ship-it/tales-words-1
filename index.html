@@ -962,6 +962,9 @@
       .theme-toggle{flex:0 0 auto; width:36px; height:36px; padding:0; border:1px solid var(--line); border-radius:99px; background:var(--surface); color:var(--ink); font-size:1.05rem; line-height:1}
       [data-theme="dark"] .read-btn,[data-theme="dark"] .play-btn,[data-theme="dark"] .check-btn,[data-theme="dark"] .done-btn,[data-theme="dark"] .start-btn,[data-theme="dark"] .restart-btn,[data-theme="dark"] .prep-start,[data-theme="dark"] .bank-save,[data-theme="dark"] .wp-speak,[data-theme="dark"] .conv-play,[data-theme="dark"] .ex-btn.gold,[data-theme="dark"] .tab.active,[data-theme="dark"] .subnav-btn.active,[data-theme="dark"] .switch button.active-en,[data-theme="dark"] .switch button.active-de,[data-theme="dark"] .speed-group button.active,[data-theme="dark"] .goal-switch button.active-lvl,[data-theme="dark"] .rtool[aria-pressed="true"],[data-theme="dark"] .kara-btn[aria-pressed="true"],[data-theme="dark"] .path-chip.cur,[data-theme="dark"] #backupRemindExport,[data-theme="dark"] #convReaderAutoplay,[data-theme="dark"] .bank-level-chip.a1,[data-theme="dark"] .badge.en,[data-theme="dark"] .badge.de,[data-theme="dark"] .settings-btn[aria-expanded="true"],[data-theme="dark"] .rsettings .rs-pill[aria-pressed="true"],[data-theme="dark"] .week-dots i.on,[data-theme="dark"] [class*="rate-"]{color:#0e1f1b}
       [data-theme="dark"] .rate-hard{background:var(--warn)}
+    
+      .topic-back{border:2px solid var(--line); background:var(--surface); color:var(--ink); padding:10px 16px; border-radius:12px; font-weight:700; font-size:.95rem; box-shadow:var(--shadow-card); margin-bottom:10px}
+      .topic-count{color:var(--muted); margin:0 0 12px}
     </style>
   </head>
   <body>
@@ -1039,6 +1042,15 @@
           <div class="topic-filters" id="topicFilters" role="group" aria-label="تصفية حسب الموضوع"></div>
           <div class="grid" id="storyGrid"></div>
           <p class="empty-msg" id="emptyMsg" hidden>لا توجد قصص مطابقة لهذا الاختيار.</p>
+        </section>
+
+        <!-- ======== Topic page ======== -->
+        <section id="view-topic" hidden>
+          <button class="topic-back" id="topicBack" type="button">→ رجوع للقصص</button>
+          <h2 class="view-title" id="topicTitle">الموضوع</h2>
+          <p class="topic-count" id="topicCount"></p>
+          <div class="grid" id="topicGrid"></div>
+          <p class="empty-msg" id="topicEmpty" hidden>لا توجد قصص في هذا الموضوع.</p>
         </section>
 
         <!-- ======== Flashcards ======== -->
@@ -3476,16 +3488,8 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       }
 
       /* ---------- Story grid ---------- */
-      function renderGrid(){
-        var grid = $("storyGrid");
-        grid.innerHTML = "";
-        var shown = 0;
-        STORIES.forEach(function(s){
-          if (s.lang !== curLang) return;
-          if (curLevel !== "all" && s.level !== curLevel) return;
-          if (curTopic !== "all" && s.topic !== curTopic) return;
-          shown++;
-          var card = document.createElement("article");
+      function buildStoryCard(s){
+        var card = document.createElement("article");
           card.className = "card";
           var langName = s.lang === "en" ? "English" : "Deutsch";
           card.innerHTML =
@@ -3505,12 +3509,49 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
           card.querySelector(".read-btn").addEventListener("click", function(){
             if (s.topic) openPrep(s.id); else openStory(s.id);
           });
-          grid.appendChild(card);
+          return card;
+      }
+      function renderGrid(){
+        var grid = $("storyGrid");
+        grid.innerHTML = "";
+        var shown = 0;
+        STORIES.forEach(function(s){
+          if (s.lang !== curLang) return;
+          if (curLevel !== "all" && s.level !== curLevel) return;
+          if (curTopic !== "all" && s.topic !== curTopic) return;
+          shown++;
+          grid.appendChild(buildStoryCard(s));
         });
         $("emptyMsg").hidden = shown > 0;
         $("emptyMsg").textContent = "لا توجد قصص مطابقة لهذا الاختيار.";
       }
 
+      function renderTopicPage(){
+        var grid = $("topicGrid"); if (!grid) return;
+        grid.innerHTML = "";
+        var shown = 0;
+        STORIES.forEach(function(s){
+          if (s.lang !== curLang) return;
+          if (curLevel !== "all" && s.level !== curLevel) return;
+          if (curTopic !== "all" && s.topic !== curTopic) return;
+          shown++;
+          grid.appendChild(buildStoryCard(s));
+        });
+        $("topicCount").textContent = shown ? "عرض " + arNum(shown) + " قصة" : "";
+        $("topicEmpty").hidden = shown > 0;
+      }
+      function openTopic(slug){
+        var t = null; TOPICS.forEach(function(x){ if (x.slug === slug) t = x; }); if (!t) return;
+        curTopic = slug;
+        var lvls = []; STORIES.forEach(function(s){ if (s.lang === curLang && s.topic === slug && lvls.indexOf(s.level) === -1) lvls.push(s.level); });
+        if (lvls.length === 1) setLevelUI(lvls[0]);
+        var nm = (t.emoji ? t.emoji + " " : "") + t.ar;
+        VIEW_TITLES.topic = nm;
+        $("topicTitle").textContent = nm;
+        renderTopicPage();
+        showView("topic");
+      }
+      if ($("topicBack")) $("topicBack").addEventListener("click", function(){ try { history.back(); } catch (e) {} });
       /* ---------- Batch 1: topic filter (language -> level -> topic) ---------- */
       function topicEmoji(slug){
         for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].slug === slug) return TOPICS[i].emoji;
@@ -3561,10 +3602,8 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
           c.textContent = arNum(n);
           b.appendChild(c);
           b.addEventListener("click", function(){
-            if (curTopic === t.slug) { curTopic = "all"; }
-            else { curTopic = t.slug; if (lvls.length === 1) setLevelUI(lvls[0]); }
-            renderTopicFilters();
-            renderGrid();
+            if (curTopic === t.slug) { curTopic = "all"; renderTopicFilters(); renderGrid(); }
+            else { openTopic(t.slug); }
           });
           box.appendChild(b);
         });
@@ -4123,7 +4162,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "grammar", "a1test", "conversation", "writing"];
+        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "grammar", "a1test", "conversation", "writing"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var curView = "home", curReviewSub = "review";
 
@@ -4133,7 +4172,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
          the app first. At the root a guard entry turns a Back press into the
          exit-confirmation dialog instead of leaving immediately. */
       var VIEW_TITLES = {
-        home: "Tales & Words", stories: "القصص", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
+        home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", grammar: "قواعد",
         a1test: "اختبار المستوى A1", writing: "الكتابة A1"
@@ -4177,7 +4216,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         showExitDialog();
         hPush({ app: 1, view: curView, guard: true }, "#" + curView);
       });
-      function mainOf(name){
+      function mainOf(name){ if (name === "topic") return "stories";
         if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation") return name;
         if (REVIEW_SUBS.indexOf(name) !== -1 || name === "a1test" || name === "writing") return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
