@@ -941,6 +941,11 @@
       .conv-stop{background:transparent; border:1px solid var(--line); color:var(--ink); border-radius:var(--r-btn); padding:8px 16px; font-weight:700}
       .conv-gram{background:transparent; border:1px solid var(--line); color:var(--accent); border-radius:var(--r-btn); padding:8px 16px; font-weight:700}
       @media (max-width:400px){.bnav-btn{font-size:.74rem; padding:8px 1px 9px}.bnav-btn .bnav-ico{font-size:1.2rem}}
+    
+      /* ---------- Chunky buttons (رزن) ---------- */
+      .lvl button,.flash-controls button,.backup-remind button{border-width:2px; box-shadow:var(--shadow-card)}
+      .read-btn,.play-btn,.check-btn,.done-btn,.start-btn,.restart-btn,.prep-start,.bank-save,.wp-speak,.conv-play,.ex-btn.gold{box-shadow:0 4px 0 var(--accent-dark)}
+      .read-btn:active,.play-btn:active,.check-btn:active,.done-btn:active,.start-btn:active,.restart-btn:active,.prep-start:active,.bank-save:active,.wp-speak:active,.conv-play:active,.ex-btn.gold:active{transform:translateY(2px); box-shadow:0 2px 0 var(--accent-dark)}
     </style>
   </head>
   <body>
@@ -4152,6 +4157,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         else if (!$("prep").hidden) { prepHist = false; closePrepNow(); showView("stories", true); closedOverlay = true; }
         else if (!$("convReader").hidden) { convStopAll(); $("convReader").hidden = true; document.body.style.overflow = ""; closedOverlay = true; }
         if (closedOverlay) return;
+        if (st.view && st.view !== fullViewName()) { showView(st.view, true); return; }
         showExitDialog();
         hPush({ app: 1, view: curView, guard: true }, "#" + curView);
       });
@@ -4160,15 +4166,16 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         if (REVIEW_SUBS.indexOf(name) !== -1 || name === "a1test" || name === "writing") return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
       }
+      function fullViewName(){ return (curView === "home" && REVIEW_SUBS.indexOf(curReviewSub) !== -1) ? curReviewSub : curView; }
       function showView(name, fromPop){
-        var origName = name;
+        var origName = name; var prevFull = fullViewName();
         if (REVIEW_SUBS.indexOf(name) !== -1) { curReviewSub = name; name = "home"; }
         var prevView = curView;
         if ($("convReader") && !$("convReader").hidden) { try { convStopAll(); } catch (e) {} $("convReader").hidden = true; document.body.style.overflow = ""; }
         curView = name;
         if (VIEW_TITLES[origName]) $("appTitle").textContent = VIEW_TITLES[origName];
         try { localStorage.setItem(LAST_VIEW_KEY, name); } catch (e) { /* ignore */ }
-        if (!fromPop && prevView !== name) hReplace({ app: 1, view: name }, "#" + name);
+        if (!fromPop && prevFull !== origName) hPush({ app: 1, view: origName }, "#" + origName);
         if (REVIEW_SUBS.indexOf(name) !== -1) curReviewSub = name;
         ALL_VIEWS.forEach(function(v){ $("view-" + v).hidden = v !== name; });
         var main = mainOf(name);
