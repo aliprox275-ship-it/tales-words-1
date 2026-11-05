@@ -47,6 +47,17 @@
         --font-sans:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif;
         --font-serif:Georgia,"Times New Roman","Noto Naskh Arabic",serif;
       }
+      [data-theme="dark"]{
+        color-scheme: dark;
+        --bg:#12122b; --surface:#1e1e3f; --surface2:#26264d; --ink:#f2f2f7; --muted:#a9a9c4;
+        --line:#2e2e52; --accent:#2ec4a5; --accent-dark:#178a72; --accent-tint:rgba(46,196,165,.14);
+        --teal:#2ec4a5; --teal-dark:#178a72; --rust:#e8705f; --rust-dark:#c25a4c; --gold:#d9a62e;
+        --ok:#5fd68a; --bad:#f08070; --warn:#e8b93e;
+        --grad:none;
+        --shadow:0 10px 30px rgba(0,0,0,.45);
+        --shadow-card:0 2px 10px rgba(0,0,0,.40);
+      }
+
       *{box-sizing:border-box}
       [hidden]{display:none !important}
       html{scrollbar-gutter:stable}
@@ -946,6 +957,11 @@
       .lvl button,.flash-controls button,.backup-remind button{border-width:2px; box-shadow:var(--shadow-card)}
       .read-btn,.play-btn,.check-btn,.done-btn,.start-btn,.restart-btn,.prep-start,.bank-save,.wp-speak,.conv-play,.ex-btn.gold{box-shadow:0 4px 0 var(--accent-dark)}
       .read-btn:active,.play-btn:active,.check-btn:active,.done-btn:active,.start-btn:active,.restart-btn:active,.prep-start:active,.bank-save:active,.wp-speak:active,.conv-play:active,.ex-btn.gold:active{transform:translateY(2px); box-shadow:0 2px 0 var(--accent-dark)}
+    
+      /* ---------- Dark theme overrides ---------- */
+      .theme-toggle{flex:0 0 auto; width:36px; height:36px; padding:0; border:1px solid var(--line); border-radius:99px; background:var(--surface); color:var(--ink); font-size:1.05rem; line-height:1}
+      [data-theme="dark"] .read-btn,[data-theme="dark"] .play-btn,[data-theme="dark"] .check-btn,[data-theme="dark"] .done-btn,[data-theme="dark"] .start-btn,[data-theme="dark"] .restart-btn,[data-theme="dark"] .prep-start,[data-theme="dark"] .bank-save,[data-theme="dark"] .wp-speak,[data-theme="dark"] .conv-play,[data-theme="dark"] .ex-btn.gold,[data-theme="dark"] .tab.active,[data-theme="dark"] .subnav-btn.active,[data-theme="dark"] .switch button.active-en,[data-theme="dark"] .switch button.active-de,[data-theme="dark"] .speed-group button.active,[data-theme="dark"] .goal-switch button.active-lvl,[data-theme="dark"] .rtool[aria-pressed="true"],[data-theme="dark"] .kara-btn[aria-pressed="true"],[data-theme="dark"] .path-chip.cur,[data-theme="dark"] #backupRemindExport,[data-theme="dark"] #convReaderAutoplay,[data-theme="dark"] .bank-level-chip.a1,[data-theme="dark"] .badge.en,[data-theme="dark"] .badge.de,[data-theme="dark"] .settings-btn[aria-expanded="true"],[data-theme="dark"] .rsettings .rs-pill[aria-pressed="true"],[data-theme="dark"] .week-dots i.on,[data-theme="dark"] [class*="rate-"]{color:#0e1f1b}
+      [data-theme="dark"] .rate-hard{background:var(--warn)}
     </style>
   </head>
   <body>
@@ -958,7 +974,7 @@
     <header class="appbar">
       <div class="appbar-in">
         <span class="appbar-title" id="appTitle">Tales &amp; Words</span>
-        <span class="appbar-stat"><b id="statDone">0</b>/<b id="statTotal">176</b> قصة · <b id="statWords">0</b> كلمة جديدة</span>
+        <span class="appbar-stat"><b id="statDone">0</b>/<b id="statTotal">176</b> قصة · <b id="statWords">0</b> كلمة جديدة</span> <button class="theme-toggle" id="themeToggle" type="button" aria-label="تبديل المظهر">🌙</button>
       </div>
       <div class="progress-track appbar-prog" role="progressbar" aria-label="تقدّم القراءة" aria-valuemin="0" aria-valuemax="176" aria-valuenow="0" id="progressBar">
         <div class="progress-fill" id="progressFill"></div>
@@ -4166,6 +4182,9 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         if (REVIEW_SUBS.indexOf(name) !== -1 || name === "a1test" || name === "writing") return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
       }
+      var THEME_KEY = "readerApp.theme.v1";
+      function applyTheme(){ var t = "dark"; try { var s = localStorage.getItem(THEME_KEY); if (s === "light" || s === "dark") t = s; } catch (e) {} document.documentElement.setAttribute("data-theme", t); var b = $("themeToggle"); if (b) b.textContent = (t === "dark" ? "☀️" : "🌙"); }
+      function toggleTheme(){ var cur = document.documentElement.getAttribute("data-theme") || "dark"; var next = (cur === "dark" ? "light" : "dark"); try { localStorage.setItem(THEME_KEY, next); } catch (e) {} applyTheme(); }
       function fullViewName(){ return (curView === "home" && REVIEW_SUBS.indexOf(curReviewSub) !== -1) ? curReviewSub : curView; }
       function showView(name, fromPop){
         var origName = name; var prevFull = fullViewName();
@@ -8014,7 +8033,7 @@ function bankSpeak(text, lang){
       /* ---------- Init ---------- */
       applySpeed();
       saveMyWords();   // persist SRS fields added by migration to older saved words
-      renderMyWords();
+      applyTheme(); if ($("themeToggle")) $("themeToggle").addEventListener("click", toggleTheme); renderMyWords();
       if ($("flashTotal")) $("flashTotal").textContent = arNum(ALL_WORDS.length);
       renderTopicFilters();
       renderGrid();
