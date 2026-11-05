@@ -1367,6 +1367,15 @@
           <p class="empty-msg" id="bankEmpty" hidden>لا توجد كلمات مطابقة لبحثك.</p>
           <button class="bank-more" id="bankMore" type="button" hidden>عرض المزيد</button>
         </section>
+        <!-- ======== Bank topic page ======== -->
+        <section id="view-banktopic" hidden>
+          <button class="topic-back" id="bankTopicBack" type="button">→ رجوع للبنك</button>
+          <h2 class="view-title" id="bankTopicTitle">البنك</h2>
+          <p class="topic-count" id="bankTopicCount"></p>
+          <div class="grid" id="bankTopicGrid"></div>
+          <p class="empty-msg" id="bankTopicEmpty" hidden>لا توجد كلمات في هذا الموضوع.</p>
+          <button class="bank-more" id="bankTopicMore" type="button" hidden>عرض المزيد</button>
+        </section>
         <section id="view-conversation" hidden>
           <h2 class="view-title">محادثة 💬</h2>
           <p class="conv-intro">محادثات قصيرة بين شخصين، بدون سرد — اسمع كل دور بصوت مختلف.</p>
@@ -4162,7 +4171,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "grammar", "a1test", "conversation", "writing"];
+        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "a1test", "conversation", "writing"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var curView = "home", curReviewSub = "review";
 
@@ -4174,7 +4183,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       var VIEW_TITLES = {
         home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
-        reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", grammar: "قواعد",
+        reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "قواعد",
         a1test: "اختبار المستوى A1", writing: "الكتابة A1"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
@@ -4216,7 +4225,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         showExitDialog();
         hPush({ app: 1, view: curView, guard: true }, "#" + curView);
       });
-      function mainOf(name){ if (name === "topic") return "stories";
+      function mainOf(name){ if (name === "topic") return "stories"; if (name === "banktopic") return "bank";
         if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation") return name;
         if (REVIEW_SUBS.indexOf(name) !== -1 || name === "a1test" || name === "writing") return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
@@ -7188,6 +7197,38 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
         bankCollapseBoxes(); $("bankLevelRow").hidden = true;
         renderBankBoxes(); renderBank();
       }
+      function bankTopicTitle(slug, mode){
+        if (mode === "fam") { var g = null; WORD_FAMILIES.groups.forEach(function(x){ if (x.id === slug) g = x; }); return g ? (g.emoji ? g.emoji + " " : "") + g.titleAr : "عائلة"; }
+        if (mode === "idiom") return "💬 كل المصطلحات";
+        if (mode === "phrasal") return bankLang === "en" ? "🔗 أفعال مركّبة" : "🔗 تعابير فعلية";
+        if (mode === "colloc") return "🧩 تراكيب متلازمة";
+        var m = bankTopicMeta(slug); return (m.emoji ? m.emoji + " " : "") + m.ar;
+      }
+      function renderBankTopicPage(){
+        renderBankProgress();
+        var list = bankEntries();
+        var grid = $("bankTopicGrid"); if (!grid) return;
+        grid.innerHTML = "";
+        var n = Math.min(bankShown, list.length);
+        for (var i = 0; i < n; i++) grid.appendChild(bankCard(list[i]));
+        $("bankTopicEmpty").hidden = list.length > 0;
+        $("bankTopicCount").textContent = list.length ? "عرض " + arNum(n) + " من " + arNum(list.length) + " كلمة" : "";
+        $("bankTopicMore").hidden = !(list.length > n);
+      }
+      function openBankTopic(slug, mode){
+        bankShown = 150;
+        if (mode === "fam") { bankMode = "fam"; bankTopic = slug; bankLevel = "all"; $("bankLevelAll").className = "active-lvl"; $("bankLevelA1").className = ""; $("bankLevelA2").className = ""; $("bankLevelRow").hidden = true; }
+        else if (mode === "idiom" || mode === "phrasal" || mode === "colloc") { bankMode = mode; bankTopic = "all"; }
+        else { bankMode = "words"; bankTopic = slug; $("bankLevelRow").hidden = false; }
+        bankCollapseBoxes();
+        var nm = bankTopicTitle(slug, mode);
+        VIEW_TITLES.banktopic = nm;
+        $("bankTopicTitle").textContent = nm;
+        renderBankBoxes(); renderBank(); renderBankTopicPage();
+        showView("banktopic");
+      }
+      if ($("bankTopicBack")) $("bankTopicBack").addEventListener("click", function(){ try { history.back(); } catch (e) {} });
+      if ($("bankTopicMore")) $("bankTopicMore").addEventListener("click", function(){ bankShown += 150; renderBankTopicPage(); });
       function renderBankBoxes(){
         var topicsBox = $("bankTopics"), famBox = $("bankFamTopics");
         if (!topicsBox || !famBox) return;
@@ -7220,7 +7261,7 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
         bankSets().forEach(function(set){
           set.order.forEach(function(tp){
             var m = bankTopicMeta(tp);
-            chipInto(topicsBox, tp, (m.emoji ? m.emoji + " " : "") + m.ar + " · " + set.level, set.data[bankLang][tp].length, bankMode === "words" && bankTopic === tp, (function(slug){ return function(){ selectBankTopic(slug); }; })(tp));
+            chipInto(topicsBox, tp, (m.emoji ? m.emoji + " " : "") + m.ar + " · " + set.level, set.data[bankLang][tp].length, bankMode === "words" && bankTopic === tp, (function(slug){ return function(){ openBankTopic(slug, "words"); }; })(tp));
           });
         });
         famBox.innerHTML = "";
@@ -7232,14 +7273,14 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
         WORD_FAMILIES.groups.forEach(function(g){
           var cnt = 0;
           g.words.forEach(function(w){ if (w.lang === bankLang) cnt++; });
-          chipInto(famBox, g.id, (g.emoji ? g.emoji + " " : "") + g.titleAr + " · " + (bankLang === "en" ? g.labelEn : g.labelDe), cnt, bankMode === "fam" && bankTopic === g.id, (function(slug){ return function(){ selectBankFam(slug); }; })(g.id));
+          chipInto(famBox, g.id, (g.emoji ? g.emoji + " " : "") + g.titleAr + " · " + (bankLang === "en" ? g.labelEn : g.labelDe), cnt, bankMode === "fam" && bankTopic === g.id, (function(slug){ return function(){ openBankTopic(slug, "fam"); }; })(g.id));
         });
         var idiomBox = $("bankIdiomTopics");
         idiomBox.innerHTML = "";
         var phrCount = bankLang === "en" ? PHRASALS.length : IDIOMS.de.filter(function(x){ return x.v; }).length;
         chipInto(idiomBox, "all", "💬 كل المصطلحات", IDIOMS[bankLang].length, bankMode === "idiom", function(){ selectBankIdiom("idiom"); });
-        chipInto(idiomBox, "phr", bankLang === "en" ? "🔗 أفعال مركّبة" : "🔗 تعابير فعلية", phrCount, bankMode === "phrasal", function(){ selectBankIdiom("phrasal"); });
-        chipInto(idiomBox, "col", "🧩 تراكيب متلازمة (من بنك A2 نفسه)", collocCount(bankLang), bankMode === "colloc", function(){ selectBankIdiom("colloc"); });
+        chipInto(idiomBox, "phr", bankLang === "en" ? "🔗 أفعال مركّبة" : "🔗 تعابير فعلية", phrCount, bankMode === "phrasal", function(){ openBankTopic("phrasal", "phrasal"); });
+        chipInto(idiomBox, "col", "🧩 تراكيب متلازمة (من بنك A2 نفسه)", collocCount(bankLang), bankMode === "colloc", function(){ openBankTopic("colloc", "colloc"); });
       }
       function renderBankTopics(){ renderBankBoxes(); }
       /* ----- A1 recorded audio (Blustery Gong bundles under audio-a1-bundles/) -----
