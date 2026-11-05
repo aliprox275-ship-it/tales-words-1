@@ -49,10 +49,10 @@
       }
       [data-theme="dark"]{
         color-scheme: dark;
-        --bg:#12122b; --surface:#1e1e3f; --surface2:#26264d; --ink:#f2f2f7; --muted:#a9a9c4;
-        --line:#2e2e52; --accent:#2ec4a5; --accent-dark:#178a72; --accent-tint:rgba(46,196,165,.14);
-        --teal:#2ec4a5; --teal-dark:#178a72; --rust:#e8705f; --rust-dark:#c25a4c; --gold:#d9a62e;
-        --ok:#5fd68a; --bad:#f08070; --warn:#e8b93e;
+        --bg:#000000; --surface:#1c1c1e; --surface2:#2c2c2e; --ink:#ffffff; --muted:#9a9aa5;
+        --line:#2c2c31; --accent:#2196f3; --accent-dark:#1976d2; --accent-tint:rgba(33,150,243,.14);
+        --teal:#2196f3; --teal-dark:#1976d2; --rust:#e8705f; --rust-dark:#c25a4c; --gold:#d9a62e;
+        --ok:#4ade80; --bad:#f87171; --warn:#facc15;
         --grad:none;
         --shadow:0 10px 30px rgba(0,0,0,.45);
         --shadow-card:0 2px 10px rgba(0,0,0,.40);
@@ -249,7 +249,7 @@
         scroll-padding-bottom:150px;
       }
       .reader[data-rtheme="sepia"]{background:#f1e6cc; color:#4a3b28}
-      .reader[data-rtheme="night"]{background:#1e2b29; color:#e9ede6}
+      .reader[data-rtheme="night"]{background:#000; color:#f5f5f7}
       .reader-top{
         position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:8px; flex-wrap:nowrap;
         min-height:var(--bar-h); padding:10px 16px; background:inherit;
@@ -679,7 +679,7 @@
       }
       .reader[data-rtheme="sepia"] .audio-dock{background:rgba(241,230,204,.94)}
       .reader[data-rtheme="night"] .audio-dock{
-        background:rgba(30,43,41,.94); border-color:rgba(255,255,255,.16);
+        background:rgba(0,0,0,.94); border-color:rgba(255,255,255,.16);
         box-shadow:0 18px 44px rgba(0,0,0,.45);
       }
       .audio-dock .play-btn{padding:12px 32px; font-size:1rem; border-radius:99px}
@@ -707,7 +707,7 @@
         padding:8px 2px 9px; font-size:.82rem; font-weight:700; line-height:1.25;
       }
       .bnav-btn .bnav-ico{font-size:1.35rem; line-height:1.2}
-      .bnav-btn.active{color:var(--accent); box-shadow:inset 0 3px 0 var(--gold)}
+      .bnav-btn.active{color:var(--accent)}
       .bnav-btn.active .bnav-ico{
         background:var(--accent-tint); border:1px solid rgba(47,93,88,.4);
         border-radius:99px; padding:1px 14px;
@@ -960,11 +960,26 @@
     
       /* ---------- Dark theme overrides ---------- */
       .theme-toggle{flex:0 0 auto; width:36px; height:36px; padding:0; border:1px solid var(--line); border-radius:99px; background:var(--surface); color:var(--ink); font-size:1.05rem; line-height:1}
-      [data-theme="dark"] .read-btn,[data-theme="dark"] .play-btn,[data-theme="dark"] .check-btn,[data-theme="dark"] .done-btn,[data-theme="dark"] .start-btn,[data-theme="dark"] .restart-btn,[data-theme="dark"] .prep-start,[data-theme="dark"] .bank-save,[data-theme="dark"] .wp-speak,[data-theme="dark"] .conv-play,[data-theme="dark"] .ex-btn.gold,[data-theme="dark"] .tab.active,[data-theme="dark"] .subnav-btn.active,[data-theme="dark"] .switch button.active-en,[data-theme="dark"] .switch button.active-de,[data-theme="dark"] .speed-group button.active,[data-theme="dark"] .goal-switch button.active-lvl,[data-theme="dark"] .rtool[aria-pressed="true"],[data-theme="dark"] .kara-btn[aria-pressed="true"],[data-theme="dark"] .path-chip.cur,[data-theme="dark"] #backupRemindExport,[data-theme="dark"] #convReaderAutoplay,[data-theme="dark"] .bank-level-chip.a1,[data-theme="dark"] .badge.en,[data-theme="dark"] .badge.de,[data-theme="dark"] .settings-btn[aria-expanded="true"],[data-theme="dark"] .rsettings .rs-pill[aria-pressed="true"],[data-theme="dark"] .week-dots i.on,[data-theme="dark"] [class*="rate-"]{color:#0e1f1b}
+      [data-theme="dark"] .read-btn,[data-theme="dark"] .play-btn,[data-theme="dark"] .check-btn,[data-theme="dark"] .done-btn,[data-theme="dark"] .start-btn,[data-theme="dark"] .restart-btn,[data-theme="dark"] .prep-start,[data-theme="dark"] .bank-save,[data-theme="dark"] .wp-speak,[data-theme="dark"] .conv-play,[data-theme="dark"] .ex-btn.gold,[data-theme="dark"] .tab.active,[data-theme="dark"] .subnav-btn.active,[data-theme="dark"] .switch button.active-en,[data-theme="dark"] .switch button.active-de,[data-theme="dark"] .speed-group button.active,[data-theme="dark"] .goal-switch button.active-lvl,[data-theme="dark"] .rtool[aria-pressed="true"],[data-theme="dark"] .kara-btn[aria-pressed="true"],[data-theme="dark"] .path-chip.cur,[data-theme="dark"] #backupRemindExport,[data-theme="dark"] #convReaderAutoplay,[data-theme="dark"] .bank-level-chip.a1,[data-theme="dark"] .badge.en,[data-theme="dark"] .badge.de,[data-theme="dark"] .settings-btn[aria-expanded="true"],[data-theme="dark"] .rsettings .rs-pill[aria-pressed="true"],[data-theme="dark"] .week-dots i.on,[data-theme="dark"] [class*="rate-"],[data-theme="dark"] .appbar-wordmark{color:#0e1f1b}
       [data-theme="dark"] .rate-hard{background:var(--warn)}
     
       .topic-back{border:2px solid var(--line); background:var(--surface); color:var(--ink); padding:10px 16px; border-radius:12px; font-weight:700; font-size:.95rem; box-shadow:var(--shadow-card); margin-bottom:10px}
       .topic-count{color:var(--muted); margin:0 0 12px}
+    
+      /* word marks: known = green chip, mistake = yellow chip */
+      .w-tap.w-known:not(.active){background:rgba(74,222,128,.18); color:var(--ok); border-radius:6px; padding:0 4px; text-decoration:none}
+      .w-tap.w-mistake:not(.active){background:rgba(250,204,21,.20); color:var(--warn); border-radius:6px; padding:0 4px; text-decoration:none}
+      .bank-word.w-known,.flash-word.w-known,#revWord.w-known,.vocab-item .w.w-known{color:var(--ok)}
+      .bank-word.w-mistake,.flash-word.w-mistake,#revWord.w-mistake,.vocab-item .w.w-mistake{color:var(--warn)}
+      .wp-mark{border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:12px; padding:11px 16px; font-weight:700; font-size:1rem}
+      .wp-known-btn.on{background:rgba(74,222,128,.22); border-color:var(--ok); color:var(--ok)}
+      .wp-mistake-btn.on{background:rgba(250,204,21,.22); border-color:var(--warn); color:var(--warn)}
+      /* dark reader: black, blue accent */
+      [data-theme="dark"] .appbar-title{color:var(--accent)}
+      [data-theme="dark"] .reader{background:#000; color:#f5f5f7}
+      [data-theme="dark"] .reader-top{background:#000}
+      [data-theme="dark"] .audio-dock{background:rgba(28,28,30,.94); border-color:rgba(255,255,255,.16)}
+      [data-theme="dark"] .sent.kara-sent{background:rgba(33,150,243,.16); box-shadow:0 0 0 1px rgba(33,150,243,.40)}
     </style>
   </head>
   <body>
@@ -1482,7 +1497,7 @@
       </div>
       <div class="audio-dock" id="audioDock">
         <button class="play-btn" id="storyPlayBtn">▶ تشغيل</button>
-        <button class="kara-btn" id="repeatSentBtn" type="button">↻ أعد الجملة</button>
+        <button class="kara-btn" id="repeatSentBtn" type="button">↻ أعد السطر</button>
       </div>
     </div>
 
@@ -1529,6 +1544,8 @@
         <div class="wp-ex" id="wpEx" hidden></div>
         <div class="wp-actions">
           <button class="wp-save" id="wpSave">احفظ في كلماتي</button>
+          <button class="wp-mark wp-known-btn" id="wpKnown" type="button">أعرفها ✓</button>
+          <button class="wp-mark wp-mistake-btn" id="wpMistake" type="button">أخطأت فيها</button>
           <button class="wp-close" id="wpClose">إغلاق</button>
         </div>
       </div>
@@ -2453,6 +2470,13 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
          Words saved before Phase 2 have no SRS fields: they are migrated in
          place (due today, never deleted), so nothing is ever lost. */
       var WORDS_KEY = "readerApp.myWords.v1";
+      var WORD_MARKS_KEY = "readerApp.wordMarks.v1";
+      var wordMarks = (function(){ try { var q = JSON.parse(localStorage.getItem(WORD_MARKS_KEY) || "null"); return (q && typeof q === "object") ? q : {}; } catch (e) { return {}; } })();
+      function wordMarkKey(lang, word){ return (lang || "") + ":" + String(word || "").toLowerCase().replace(/^\s+|\s+$/g, ""); }
+      function wordMark(lang, word){ return wordMarks[wordMarkKey(lang, word)] || ""; }
+      function wordMarkClass(lang, word){ var mm = wordMark(lang, word); return mm === "known" ? "w-known" : mm === "mistake" ? "w-mistake" : ""; }
+      function setWordMark(lang, word, mark){ var k = wordMarkKey(lang, word); if (mark) wordMarks[k] = mark; else delete wordMarks[k]; try { localStorage.setItem(WORD_MARKS_KEY, JSON.stringify(wordMarks)); } catch (e) {} }
+      function refreshWordMarkSpans(lang, word){ var mc = wordMarkClass(lang, word); var key = String(word || "").toLowerCase(); document.querySelectorAll(".w-tap").forEach(function(sp){ if (String(sp.textContent || "").toLowerCase() !== key) return; var pf = sp.closest ? sp.closest(".para-f") : null; if (pf && pf.getAttribute("lang") !== lang) return; sp.classList.remove("w-known", "w-mistake"); if (mc) sp.classList.add(mc); }); }
       function srsDefaults(){
         return { reps: 0, interval: 0, due: todayStr(), ease: 2.5 };
       }
@@ -2567,6 +2591,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
             var art = articleFor(m[0]);
             if (art) sp.classList.add("art-" + art);
           }
+          var mc0 = wordMarkClass(story.lang, m[0]); if (mc0) sp.classList.add(mc0);
           sp.textContent = m[0];
           sp.setAttribute("tabindex", "0");
           sp.setAttribute("role", "button");
@@ -2657,7 +2682,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         $("wpMean").textContent = res.found ? res.t : "هذه الكلمة مو موجودة بالقاموس المصغّر بعد";
         renderCompoundBox(word, story);
         fillPopExample(res, story);
-        updateSaveBtn();
+        updateSaveBtn(); updateMarkBtns();
         $("wordPop").hidden = false;
         $("wpClose").focus();
       }
@@ -2681,7 +2706,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         $("wpMean").textContent = entry.t;
         $("wpCompound").hidden = true;
         fillPopExample({ ef: entry.ef, ea: entry.ea }, currentStory);
-        updateSaveBtn();
+        updateSaveBtn(); updateMarkBtns();
         $("wordPop").hidden = false;
         $("wpClose").focus();
       }
@@ -2693,6 +2718,15 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
           b.textContent = "احفظ في كلماتي"; b.classList.remove("saved"); b.disabled = false;
         }
       }
+      function updateMarkBtns(){
+        var k = $("wpKnown"), mm2 = $("wpMistake");
+        if (!k || !mm2) return;
+        var cur0 = popCtx ? wordMark(popCtx.lang, popCtx.w) : "";
+        k.classList.toggle("on", cur0 === "known");
+        mm2.classList.toggle("on", cur0 === "mistake");
+      }
+      if ($("wpKnown")) $("wpKnown").addEventListener("click", function(){ if (!popCtx) return; var c0 = wordMark(popCtx.lang, popCtx.w); setWordMark(popCtx.lang, popCtx.w, c0 === "known" ? "" : "known"); updateMarkBtns(); refreshWordMarkSpans(popCtx.lang, popCtx.w); });
+      if ($("wpMistake")) $("wpMistake").addEventListener("click", function(){ if (!popCtx) return; var c0 = wordMark(popCtx.lang, popCtx.w); setWordMark(popCtx.lang, popCtx.w, c0 === "mistake" ? "" : "mistake"); updateMarkBtns(); refreshWordMarkSpans(popCtx.lang, popCtx.w); });
       function closeWordPop(){
         $("wordPop").hidden = true;
         if ("speechSynthesis" in window) { try { window.speechSynthesis.cancel(); } catch (e) {} }
@@ -3340,21 +3374,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       var karaRepeatToken = 0;
       function karaRepeatSentence(){
         var cur = (kara.idx >= 0 && kara.queue[kara.idx]) ? kara.queue[kara.idx] : null;
-        if (kara.playing && cur && currentStory && (currentStory.level === "A1" || currentStory.level === "A2") && !currentStory.branching && typeof cur.key === "number" && kara.lastWasRecorded) {
-          var rseg = null;
-          try { rseg = storyParaSeg(currentStory, "p" + ("0" + (cur.key + 1)).slice(-2)); } catch (e) { rseg = null; }
-          if (rseg) {
-            var tokR = ++karaRepeatToken;
-            try { stopRecorded(); } catch (e) {}
-            try { window.speechSynthesis.cancel(); } catch (e) {}
-            karaTimerStop();
-            kara.playing = true; kara.paused = false;
-            cur.box.classList.add("playing"); followBox(cur.box); karaSyncUI();
-            playBundle(rseg, cur.text, cur.lang, function(){ if (!kara.playing) return; kara.ttsForced = true; karaSpeakCurrent(); }, function(){ if (!kara.playing || tokR !== karaRepeatToken) return; cur.box.classList.remove("playing"); kara.idx++; if (kara.idx < kara.queue.length) karaSpeakCurrent(); else karaFinish(true); }, true);
-            return;
-          }
-        }
-        if (!karaSupported()) { showToast("النطق الصوتي غير متاح في هذا المتصفح"); return; }
+        /* --- the current LINE (one .sent sentence) --- */
         var sent = null, lang = null, sentIdx = -1;
         if (cur) {
           var sents = cur.box ? cur.box.querySelectorAll(".sent") : [];
@@ -3369,6 +3389,47 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
           if (sent === null) { sent = cur.text; lang = cur.lang; sentIdx = -1; }
         } else if (kara.lastSent) { sent = kara.lastSent.text; lang = kara.lastSent.lang; }
         if (!sent) { showToast("شغّل القراءة أولًا"); return; }
+        /* --- a line shorter than 3 words repeats the PREVIOUS line instead --- */
+        var shifted = false, resumeIdx = (sentIdx >= 0 ? sentIdx + 1 : -1);
+        if (sentIdx >= 0) {
+          var wc = sent.replace(/\s+/g, " ").replace(/^\s+|\s+$/g, "").split(" ").filter(function(x){ return x; }).length;
+          if (wc < 3) {
+            var prev = null;
+            if (sentIdx > 0) {
+              var ps = cur.box.querySelectorAll(".sent");
+              prev = { text: karaSentText(ps[sentIdx - 1]), lang: lang };
+              resumeIdx = sentIdx;
+            } else if (kara.idx > 0 && kara.queue[kara.idx - 1]) {
+              var pb = kara.queue[kara.idx - 1].box;
+              var pls = pb ? pb.querySelectorAll(".sent") : [];
+              if (pls.length) { prev = { text: karaSentText(pls[pls.length - 1]), lang: kara.queue[kara.idx - 1].lang }; resumeIdx = 0; }
+            }
+            if (prev && prev.text) { sent = prev.text; lang = prev.lang; shifted = true; }
+          }
+        }
+        /* --- recorded replay only when the line IS the whole paragraph (single-sentence paragraph or no sentence tracked); a shifted repeat falls back to it only when device TTS is unavailable --- */
+        var canTTS = karaSupported();
+        var useRecorded = false;
+        if (kara.playing && cur && currentStory && (currentStory.level === "A1" || currentStory.level === "A2") && !currentStory.branching && typeof cur.key === "number" && kara.lastWasRecorded) {
+          var total = cur.box ? cur.box.querySelectorAll(".sent").length : 0;
+          if (!shifted && (sentIdx === -1 || total === 1)) useRecorded = true;
+          else if (shifted && !canTTS) useRecorded = true;
+        }
+        if (useRecorded) {
+          var rseg = null;
+          try { rseg = storyParaSeg(currentStory, "p" + ("0" + (cur.key + 1)).slice(-2)); } catch (e) { rseg = null; }
+          if (rseg) {
+            var tokR = ++karaRepeatToken;
+            try { stopRecorded(); } catch (e) {}
+            try { window.speechSynthesis.cancel(); } catch (e) {}
+            karaTimerStop();
+            kara.playing = true; kara.paused = false;
+            cur.box.classList.add("playing"); followBox(cur.box); karaSyncUI();
+            playBundle(rseg, cur.text, cur.lang, function(){ if (!kara.playing) return; kara.ttsForced = true; karaSpeakCurrent(); }, function(){ if (!kara.playing || tokR !== karaRepeatToken) return; cur.box.classList.remove("playing"); kara.idx++; if (kara.idx < kara.queue.length) karaSpeakCurrent(); else karaFinish(true); }, true);
+            return;
+          }
+        }
+        if (!canTTS) { showToast("النطق الصوتي غير متاح في هذا المتصفح"); return; }
         var resumePara = kara.playing && !!cur;
         var tok = ++karaRepeatToken;
         if (kara.playing) kara.suppressGen = (kara.suppressGen || 0) + 1;
@@ -3384,9 +3445,9 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
           u.onend = function(){
             if (tok !== karaRepeatToken) return;
             if (!resumePara || !kara.queue.length || kara.idx < 0 || !kara.everStarted) return;
-            if (sentIdx >= 0 && cur) {
-              var total = cur.box ? cur.box.querySelectorAll(".sent").length : 0;
-              if (sentIdx + 1 < total) { kara.queue[kara.idx] = karaBuildItem(cur.box, cur.lang, cur.key, sentIdx + 1); karaSpeakCurrent(); return; }
+            if (resumeIdx >= 0 && cur) {
+              var total2 = cur.box ? cur.box.querySelectorAll(".sent").length : 0;
+              if (resumeIdx < total2) { kara.queue[kara.idx] = karaBuildItem(cur.box, cur.lang, cur.key, resumeIdx); karaSpeakCurrent(); return; }
             }
             kara.idx++;
             if (kara.idx < kara.queue.length) karaSpeakCurrent(); else karaFinish(true);
@@ -3649,6 +3710,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
           item.innerHTML = '<span class="w" lang="' + s.lang + '"></span><span class="t"></span>' +
             '<span class="e"><span class="ef" lang="' + s.lang + '"></span> — <span class="ea"></span></span>';
           item.querySelector(".w").textContent = v.w;
+          var vmc = wordMarkClass(s.lang, v.w); if (vmc) item.querySelector(".w").classList.add(vmc);
           var tEl = item.querySelector(".t");
           if (v.emoji) {
             var em = document.createElement("span");
@@ -3975,6 +4037,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
           item.innerHTML = '<span class="w" lang="' + s.lang + '"></span><span class="t"></span>' +
             '<span class="e"><span class="ef" lang="' + s.lang + '"></span> — <span class="ea"></span></span>';
           item.querySelector(".w").textContent = v.w;
+          var vmc = wordMarkClass(s.lang, v.w); if (vmc) item.querySelector(".w").classList.add(vmc);
           var tEl = item.querySelector(".t");
           if (v.emoji) {
             var em = document.createElement("span");
@@ -5868,7 +5931,7 @@ function wrCheck() {
         var langEl = $("flashLang");
         langEl.textContent = (item.lang === "en" ? "English" : "Deutsch") + " · من قصة «" + item.story + "»";
         langEl.className = "flash-lang " + item.lang;
-        var wEl = $("flashWord");
+        var wEl = $("flashWord"); wEl.classList.remove("w-known", "w-mistake"); var fmc = wordMarkClass(item.lang, item.w); if (fmc) wEl.classList.add(fmc);
         wEl.textContent = item.w;
         wEl.setAttribute("lang", item.lang);
         $("flashAr").textContent = flashShown ? ((item.emoji ? item.emoji + " " : "") + item.t) : "؟";
@@ -6153,7 +6216,7 @@ function wrCheck() {
         var langEl = $("revLang");
         langEl.textContent = (item.lang === "en" ? "English" : "Deutsch") + " · من «" + item.src + "»";
         langEl.className = "flash-lang " + item.lang;
-        var wEl = $("revWord");
+        var wEl = $("revWord"); wEl.classList.remove("w-known", "w-mistake"); var rmc = wordMarkClass(item.lang, item.w); if (rmc) wEl.classList.add(rmc);
         wEl.textContent = item.w;
         wEl.setAttribute("lang", item.lang);
         $("revMeta").textContent = "مستوى الإتقان: " + masteryLabel(item) +
@@ -7794,6 +7857,7 @@ function bankSpeak(text, lang){
         em.className = "bank-emoji"; em.textContent = item.emoji || "🔤";
         var wEl = document.createElement("span");
         wEl.className = "bank-word " + bankLang;
+        var bmc = wordMarkClass(bankLang, item.w); if (bmc) wEl.classList.add(bmc);
         wEl.setAttribute("lang", bankLang);
         wEl.textContent = item.w;
         var sp = document.createElement("button");
