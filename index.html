@@ -6009,20 +6009,22 @@ function wrCheck() {
       }
       var flashLang = "all", flashLevel = "all", flashTopic = "all";
       var WORD_LOOKUP = {};
-      (function buildWordLookup(){
+      function buildWordLookup(){
         ALL_WORDS.forEach(function(x){
           var k = x.lang + ":" + (x.w || "").toLowerCase();
           if (!WORD_LOOKUP[k]) WORD_LOOKUP[k] = x;
         });
+        if (typeof BANK_DATA2 === "undefined") return;
         ["en", "de"].forEach(function(lg){
-          Object.keys(BANK_DATA2[lg] || {}).forEach(function(tp){
+          if (!BANK_DATA2[lg]) return;
+          Object.keys(BANK_DATA2[lg]).forEach(function(tp){
             (BANK_DATA2[lg][tp] || []).forEach(function(row){
               var k = lg + ":" + (row[0] || "").toLowerCase();
               if (!WORD_LOOKUP[k]) WORD_LOOKUP[k] = { w: row[0], t: row[1], ef: row[2], ea: row[3], lang: lg };
             });
           });
         });
-      })();
+      }
       function convWords(lang, level, topic){
         var out = [], seen = {};
         var data = level === "A2" ? CONV_DATA_A2 : CONV_DATA;
@@ -8322,6 +8324,7 @@ function bankSpeak(text, lang){
       renderTopicFilters();
       renderGrid();
       applyZen();
+      buildWordLookup();
       renderFlash();
       updateProgress();
       renderExScore();
