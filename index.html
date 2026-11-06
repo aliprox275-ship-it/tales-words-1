@@ -37,7 +37,7 @@
       :root{
         color-scheme: light;
         --bg:#f5eedd; --surface:#fcf8ee; --surface2:#efe6d0; --ink:#26312f; --muted:#5f6d69;
-        --line:#d8cfc0; --accent:#2f5d58; --accent-dark:#1f3d38; --accent-tint:rgba(47,93,88,.10);
+        --line:#d8cfc0; --accent:#2f5d58; --accent-dark:#1f3d38; --accent-tint:rgba(47,93,88,.10); --on-accent:#ffffff;
         --teal:#2f5d58; --teal-dark:#1f3d38; --rust:#2f5d58; --rust-dark:#1f3d38; --gold:#9c7c22;
         --ok:#437052; --bad:#a34e41; --warn:#7d621c;
         --grad:none;
@@ -49,9 +49,9 @@
       }
       [data-theme="dark"]{
         color-scheme: dark;
-        --bg:#000000; --surface:#1c1c1e; --surface2:#2c2c2e; --ink:#ffffff; --muted:#9a9aa5;
-        --line:#2c2c31; --accent:#2196f3; --accent-dark:#1976d2; --accent-tint:rgba(33,150,243,.14);
-        --teal:#2196f3; --teal-dark:#1976d2; --rust:#e8705f; --rust-dark:#c25a4c; --gold:#d9a62e;
+        --bg:#0f1428; --surface:#1a2040; --surface2:#272e5c; --ink:#f2f3ff; --muted:#9aa0c3;
+        --line:#2a3059; --accent:#9ea8ff; --accent-dark:#818cf8; --accent-tint:rgba(158,168,255,.14); --on-accent:#0f1428;
+        --teal:#9ea8ff; --teal-dark:#818cf8; --rust:#e8705f; --rust-dark:#c25a4c; --gold:#d9a62e;
         --ok:#4ade80; --bad:#f87171; --warn:#facc15;
         --grad:none;
         --shadow:0 10px 30px rgba(0,0,0,.45);
@@ -249,7 +249,7 @@
         scroll-padding-bottom:150px;
       }
       .reader[data-rtheme="sepia"]{background:#f1e6cc; color:#4a3b28}
-      .reader[data-rtheme="night"]{background:#000; color:#f5f5f7}
+      .reader[data-rtheme="night"]{background:#0f1428; color:#f2f3ff}
       .reader-top{
         position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:8px; flex-wrap:nowrap;
         min-height:var(--bar-h); padding:10px 16px; background:inherit;
@@ -679,7 +679,7 @@
       }
       .reader[data-rtheme="sepia"] .audio-dock{background:rgba(241,230,204,.94)}
       .reader[data-rtheme="night"] .audio-dock{
-        background:rgba(0,0,0,.94); border-color:rgba(255,255,255,.16);
+        background:rgba(15,20,40,.94); border-color:rgba(255,255,255,.16);
         box-shadow:0 18px 44px rgba(0,0,0,.45);
       }
       .audio-dock .play-btn{padding:12px 32px; font-size:1rem; border-radius:99px}
@@ -729,7 +729,7 @@
 
       /* ---------- Home: action buttons (exam first, then pairs) ---------- */
       .home-actions{display:flex; flex-direction:column; gap:12px; margin:6px 0 22px}
-      .home-hero{display:flex; align-items:center; gap:14px; width:100%; background:var(--accent); color:#fff; border:1px solid var(--accent); border-radius:18px; padding:18px 20px; font-family:inherit; font-size:1.15rem; font-weight:800; text-align:start; cursor:pointer}
+      .home-hero{display:flex; align-items:center; gap:14px; width:100%; background:var(--accent); color:var(--on-accent); border:1px solid var(--accent); border-radius:18px; padding:18px 20px; font-family:inherit; font-size:1.15rem; font-weight:800; text-align:start; cursor:pointer}
       .home-hero-ic{flex:0 0 auto; width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center}
       .home-hero-ic svg{width:28px; height:28px}
       .home-hero-tx{flex:1; display:flex; flex-direction:column; gap:2px}
@@ -743,6 +743,7 @@
       .home-wide svg{width:24px; height:24px}
       .home-wide b{flex:1}
       .home-wide .home-hero-ar{color:var(--accent)}
+      [data-theme="dark"] .home-hero-ic{background:rgba(15,20,40,.16)}
 
       /* ---------- Home: level stats dashboard ---------- */
       .home-summary{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px}
@@ -993,10 +994,10 @@
       .wp-mistake-btn.on{background:rgba(250,204,21,.22); border-color:var(--warn); color:var(--warn)}
       /* dark reader: black, blue accent */
       [data-theme="dark"] .appbar-title{color:var(--accent)}
-      [data-theme="dark"] .reader{background:#000; color:#f5f5f7}
-      [data-theme="dark"] .reader-top{background:#000}
-      [data-theme="dark"] .audio-dock{background:rgba(28,28,30,.94); border-color:rgba(255,255,255,.16)}
-      [data-theme="dark"] .sent.kara-sent{background:rgba(33,150,243,.16); box-shadow:0 0 0 1px rgba(33,150,243,.40)}
+      [data-theme="dark"] .reader{background:#0f1428; color:#f2f3ff}
+      [data-theme="dark"] .reader-top{background:#0f1428}
+      [data-theme="dark"] .audio-dock{background:rgba(15,20,40,.94); border-color:rgba(255,255,255,.16)}
+      [data-theme="dark"] .sent.kara-sent{background:rgba(158,168,255,.16); box-shadow:0 0 0 1px rgba(158,168,255,.40)}
     
       .topic-done{color:var(--ok); font-weight:800}
       .topic-done-label{color:var(--ok); font-weight:700; font-size:.85em; margin-inline-start:4px}
@@ -1012,7 +1013,33 @@
       .bnav-ico svg{width:22px; height:22px; display:block; margin:0 auto}
       svg.spk{width:1.15em; height:1.15em; vertical-align:-0.2em}
           svg.topic-svg{width:28px; height:28px}
-          #flashTopicSel{width:100%; margin-top:10px; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:var(--surface); color:var(--ink); font:inherit; font-weight:700}
+          #flashTopicSel{display:none}
+      .topic-pick-btn{width:100%; margin-top:10px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:var(--surface); color:var(--ink); font:inherit; font-weight:700; display:flex; align-items:center; gap:10px; cursor:pointer; text-align:start}
+      .topic-pick-btn svg{width:20px; height:20px; color:var(--accent); flex:none}
+      .topic-pick-btn .tp-label{flex:1}
+      .topic-pick-btn .tp-chev{color:var(--muted); font-size:1.1rem}
+      .tsheet-backdrop{position:fixed; inset:0; z-index:120; background:rgba(0,0,0,.55); display:flex; align-items:flex-end; justify-content:center}
+      .tsheet{width:100%; max-width:560px; max-height:82vh; overflow-y:auto; background:var(--surface); border:1px solid var(--line); border-bottom:0; border-radius:22px 22px 0 0; padding:10px 16px 26px; box-shadow:0 -12px 40px rgba(0,0,0,.45)}
+      .tsheet-grip{width:44px; height:5px; border-radius:99px; background:var(--line); margin:4px auto 12px}
+      .tsheet-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px}
+      .tsheet-title{margin:0; font-size:1.25rem; font-weight:800}
+      .tsheet-x{width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--surface2); color:var(--ink); font:inherit; font-size:1rem; cursor:pointer; flex:none}
+      .tsheet-search{display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:14px}
+      .tsheet-search svg{width:20px; height:20px; color:var(--muted); flex:none}
+      .tsheet-search input{flex:1; min-width:0; border:0; outline:0; background:transparent; color:var(--ink); font:inherit}
+      .tsheet-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+      .tsheet-hero{grid-column:1 / -1; display:flex; align-items:center; gap:12px; background:var(--accent); color:var(--on-accent); border:1px solid var(--accent); border-radius:16px; padding:16px; font:inherit; font-weight:800; cursor:pointer; text-align:start}
+      .tsheet-hero svg{width:28px; height:28px; flex:none}
+      .tsheet-hero .th-tx{flex:1; display:flex; flex-direction:column; gap:2px}
+      .tsheet-hero small{font-weight:600; opacity:.85}
+      .tsheet-card{display:flex; align-items:center; gap:10px; background:var(--surface2); border:1px solid var(--line); border-radius:14px; padding:14px 12px; color:var(--ink); font:inherit; font-weight:700; cursor:pointer; text-align:start}
+      .tsheet-card svg{width:26px; height:26px; color:var(--accent); flex:none}
+      .tsheet-card b{flex:1; font-weight:700}
+      .tsheet-card.sel{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
+      .tsheet-card.sel svg{color:var(--on-accent)}
+      .tsheet-hero .th-check,.tsheet-card .th-check{display:none; flex:none; width:24px; height:24px; border-radius:50%; border:1.5px solid currentColor; align-items:center; justify-content:center; font-size:.85rem; line-height:1}
+      .tsheet-hero.sel .th-check,.tsheet-card.sel .th-check{display:flex}
+      .tsheet-empty{text-align:center; color:var(--muted); margin:18px 0 6px}
           .conv-write{margin-top:16px; border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:12px 14px}
       .conv-write summary{font-weight:800; cursor:pointer; list-style:none; color:var(--ink)}
       .conv-write summary::-webkit-details-marker{display:none}
@@ -1125,7 +1152,7 @@
               <button data-flevel="A1" id="fLvlA1">A1</button>
               <button data-flevel="A2" id="fLvlA2">A2</button>
             </div>
-            <select id="flashTopicSel" aria-label="موضوع البطاقات"></select>
+            <button id="flashTopicBtn" class="topic-pick-btn" type="button" aria-label="اختر الموضوع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="tp-label" id="flashTopicLabel">كل المواضيع</span><span class="tp-chev">⌄</span></button>
           </div>
           <div class="flash" id="flashCard">
             <div class="flash-lang" id="flashLang"></div>
@@ -1173,7 +1200,7 @@
             <button class="more-link" type="button" data-goto="exercises">تمارين</button>
             <button class="more-link" type="button" data-goto="phrases">عبارات مفيدة</button>
             <button class="more-link" type="button" data-goto="stats">إحصائياتي</button>
-            <button class="more-link" type="button" data-goto="a1test" style="background:var(--accent);color:#fff;border-color:var(--accent)">اختبار المستوى A1</button> <button class="more-link" type="button" data-goto="writing" style="background:var(--accent-dark);color:#fff;border-color:var(--accent-dark)">الكتابة A1</button>
+            <button class="more-link" type="button" data-goto="a1test" style="background:var(--accent);color:var(--on-accent);border-color:var(--accent)">اختبار المستوى A1</button> <button class="more-link" type="button" data-goto="writing" style="background:var(--accent-dark);color:var(--on-accent);border-color:var(--accent-dark)">الكتابة A1</button>
           </div>
         </div>
 
@@ -1597,7 +1624,16 @@
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <script>
+    <div class="tsheet-backdrop" id="topicSheetBackdrop" hidden>
+        <div class="tsheet" role="dialog" aria-label="اختر الموضوع">
+          <div class="tsheet-grip"></div>
+          <div class="tsheet-head"><h3 class="tsheet-title">اختر الموضوع</h3><button class="tsheet-x" id="topicSheetX" type="button" aria-label="إغلاق">✕</button></div>
+          <label class="tsheet-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input id="topicSheetSearch" type="search" placeholder="ابحث عن موضوع" aria-label="ابحث عن موضوع"></label>
+          <div class="tsheet-grid" id="topicSheetGrid"></div>
+          <p class="tsheet-empty" id="topicSheetEmpty" hidden>لا يوجد موضوع بهذا الاسم</p>
+        </div>
+      </div>
+      <script>
       "use strict";
       var STORIES = [
   
@@ -6094,17 +6130,81 @@ function wrCheck() {
       $("fLvlA1").addEventListener("click", function(){ setFlashLevel("A1"); });
       $("fLvlA2").addEventListener("click", function(){ setFlashLevel("A2"); });
       (function initFlashTopics(){
-        var sel = $("flashTopicSel");
-        if (!sel) return;
-        var opt = document.createElement("option");
-        opt.value = "all"; opt.textContent = "كل المواضيع";
-        sel.appendChild(opt);
-        TOPICS.forEach(function(t){
-          var o = document.createElement("option");
-          o.value = t.slug; o.textContent = t.ar + " · " + t.level;
-          sel.appendChild(o);
+        var grid = $("topicSheetGrid");
+        var backdrop = $("topicSheetBackdrop");
+        var btn = $("flashTopicBtn");
+        var label = $("flashTopicLabel");
+        var search = $("topicSheetSearch");
+        var emptyMsg = $("topicSheetEmpty");
+        if (!grid || !backdrop || !btn) return;
+        var GRID_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>';
+        function topicIcon(slug){
+          var p = TOPIC_ICONS[slug] || TOPIC_ICONS.intro || "";
+          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
+        }
+        function topicName(slug){
+          if (slug === "all") return "كل المواضيع";
+          var found = null;
+          TOPICS.forEach(function(x){ if (x.slug === slug) found = x; });
+          return found ? found.ar : "كل المواضيع";
+        }
+        function markSelected(){
+          var items = grid.querySelectorAll("[data-tslug]");
+          for (var i = 0; i < items.length; i++){
+            if (items[i].getAttribute("data-tslug") === flashTopic) items[i].classList.add("sel");
+            else items[i].classList.remove("sel");
+          }
+          if (label) label.textContent = topicName(flashTopic);
+        }
+        function buildGrid(){
+          var html = '<button class="tsheet-hero" type="button" data-tslug="all">' + GRID_ICON + '<span class="th-tx"><b>كل المواضيع</b><small>' + arNum(TOPICS.length) + ' موضوع · A1 و A2</small></span><span class="th-check">✓</span></button>';
+          TOPICS.forEach(function(t){
+            html += '<button class="tsheet-card" type="button" data-tslug="' + t.slug + '" data-tname="' + t.ar + '">' + topicIcon(t.slug) + '<b>' + t.ar + '</b><span class="th-check">✓</span></button>';
+          });
+          grid.innerHTML = html;
+          markSelected();
+        }
+        function openSheet(){
+          buildGrid();
+          if (search) search.value = "";
+          filterGrid("");
+          backdrop.hidden = false;
+          document.body.style.overflow = "hidden";
+        }
+        function closeSheet(){
+          backdrop.hidden = true;
+          document.body.style.overflow = "";
+        }
+        function filterGrid(q){
+          q = (q || "").trim();
+          var cards = grid.querySelectorAll(".tsheet-card");
+          var visible = 0;
+          for (var i = 0; i < cards.length; i++){
+            var name = cards[i].getAttribute("data-tname") || "";
+            var show = !q || name.indexOf(q) !== -1;
+            cards[i].style.display = show ? "" : "none";
+            if (show) visible++;
+          }
+          var hero = grid.querySelector(".tsheet-hero");
+          var heroShow = !q || "كل المواضيع".indexOf(q) !== -1;
+          if (hero) hero.style.display = heroShow ? "" : "none";
+          if (emptyMsg) emptyMsg.hidden = visible > 0 || heroShow;
+        }
+        function setTopic(slug){
+          flashTopic = slug;
+          markSelected();
+          buildFlashDeck();
+          closeSheet();
+        }
+        grid.addEventListener("click", function(e){
+          var b = e.target.closest ? e.target.closest("[data-tslug]") : null;
+          if (b) setTopic(b.getAttribute("data-tslug"));
         });
-        sel.addEventListener("change", function(){ flashTopic = sel.value; buildFlashDeck(); });
+        btn.addEventListener("click", openSheet);
+        $("topicSheetX").addEventListener("click", closeSheet);
+        backdrop.addEventListener("click", function(e){ if (e.target === backdrop) closeSheet(); });
+        if (search) search.addEventListener("input", function(){ filterGrid(search.value); });
+        buildGrid();
       })();
       buildFlashDeck();
       $("flashNext").addEventListener("click", function(){
