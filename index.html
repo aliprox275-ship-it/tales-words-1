@@ -996,6 +996,11 @@
       svg.spk{width:1.15em; height:1.15em; vertical-align:-0.2em}
           svg.topic-svg{width:28px; height:28px}
           #flashTopicSel{width:100%; margin-top:10px; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:var(--surface); color:var(--ink); font:inherit; font-weight:700}
+          .conv-write{margin-top:16px; border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:12px 14px}
+      .conv-write summary{font-weight:800; cursor:pointer; list-style:none; color:var(--ink)}
+      .conv-write summary::-webkit-details-marker{display:none}
+      .conv-write summary::before{content:"› "; color:var(--accent); font-weight:800}
+      .conv-write[open ] summary::before{content:"⌄ "}
     </style>
   </head>
   <body>
@@ -1409,6 +1414,10 @@
             </div>
           </div>
           <div id="convList"></div>
+            <details class="conv-write" id="convWriteBox">
+              <summary>الكتابة — اكتب عن مواضيع هذه المحادثات</summary>
+              <div id="convWriteList"></div>
+            </details>
         </section>
       </main>
 
@@ -4384,7 +4393,46 @@ function convVoice(lang, idx){
         $("convLangDe").className = convLang === "de" ? "active-de" : "";
         $("convLvlA1").className = convLevel === "A1" ? "active-lvl" : "";
         $("convLvlA2").className = convLevel === "A2" ? "active-lvl" : "";
+        renderConvWrite();
       }
+      /* ---------- Writing inside Conversation (collapsed) ----------
+         The stage topics of the current level, each opening that topic's
+         Writing tasks in the conversation's language. */
+      function renderConvWrite(){
+        var box = $("convWriteList");
+        if (!box) return;
+        var seen = {}, out = "";
+        convData()[convLang].forEach(function(d){
+          if (seen[d.topic]) return;
+          seen[d.topic] = true;
+          var tp = null;
+          WR_TOPICS.forEach(function(t){ if (t.id === d.topic) tp = t; });
+          if (!tp) return;
+          out += '<button class="conv-stage-btn" type="button" data-wrtopic="' + d.topic + '"><span class="conv-stage-ico">' + topicIconSVG(d.topic) + '</span><span class="conv-stage-txt">' + convEsc(tp.ar) + '</span><span class="conv-stage-go">›</span></button>';
+        });
+        box.innerHTML = out;
+      }
+      function wrOpenFromConv(topicId){
+        wrState.lang = convLang;
+        if ($("wrLangEn")) $("wrLangEn").classList.toggle("active-en", convLang === "en");
+        if ($("wrLangDe")) $("wrLangDe").classList.toggle("active-de", convLang === "de");
+        showView("writing");
+        wrOpenTopic(topicId);
+      }
+      (function convWriteBind(){
+        var box = $("convWriteList");
+        if (box && !box.dataset.convWriteBound) {
+          box.dataset.convWriteBound = "1";
+          box.addEventListener("click", function(e){
+            var t = e.target;
+            while (t && t !== box && !(t.getAttribute && t.getAttribute("data-wrtopic"))) t = t.parentNode;
+            if (t && t.getAttribute) {
+              var tp = t.getAttribute("data-wrtopic");
+              if (tp) { convStopAll(); wrOpenFromConv(tp); }
+            }
+          });
+        }
+      })();
       (function convBind(){
         var box = $("convList");
         if (box && !box.dataset.convBound) {
@@ -5242,6 +5290,44 @@ function wrGrammar(text, lang) {
   return { errors: errors, hints: hints };
 }
 
+  /* ---------- Yellow auto-link: the word behind a wrGrammar error ----------
+     The wrong fragment is the first «...», the correction the second;
+     the word that differs is the mistake. Function words (a/the/is/der/...)
+     are skipped — yellow is for real vocabulary the user got wrong. */
+  var WR_FUNC_WORDS = ["a","an","the","i","you","he","she","it","we","they","is","am","are","was","were","have","has","had","do","does","did","don't","doesn't","there","to","of","in","on","at","for","with","and","or","but","my","your","his","her","our","their","this","that","these","those","not","no","der","die","das","den","dem","ein","eine","einen","ich","du","er","sie","es","wir","ihr","ist","bin","bist","sind","seid","habe","hast","hat","haben","und","mit","von","zu","auf","nicht","kein","keine"];
+  function wrCleanWord(w){
+    return (w || "").replace(/^[^A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\u00DF]+|[^A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\u00DF]+$/g, "");
+  }
+  function wrErrWord(msg){
+    if (!msg) return null;
+    var m = msg.match(/«([^»]+)»/);
+    if (!m) return null;
+    var x = m[1].trim();
+    var rest = msg.slice(msg.indexOf("»") + 1);
+    var m2 = rest.match(/«([^»]+)»/);
+    var pick = null;
+    if (m2) {
+      var y = m2[1].trim();
+      var xw = x.split(/\s+/), yw = y.split(/\s+/);
+      for (var i = 0; i < Math.min(xw.length, yw.length); i++) {
+        if (xw[i].toLowerCase() !== yw[i].toLowerCase()) { pick = xw[i]; break; }
+      }
+      if (!pick) pick = xw.length !== yw.length ? xw[xw.length - 1] : xw[0];
+    } else {
+      var words = x.split(/\s+/);
+      var seen = {};
+      for (var j = 0; j < words.length; j++) {
+        var lw = words[j].toLowerCase();
+        if (seen[lw]) { pick = words[j]; break; }
+        seen[lw] = true;
+      }
+      if (!pick) pick = words[0];
+    }
+    var w = wrCleanWord(pick);
+    if (!w || w.length < 2) return null;
+    if (WR_FUNC_WORDS.indexOf(w.toLowerCase()) !== -1) return null;
+    return w;
+  }
 function wrCheck() {
         var task = wrCurrentTasks()[wrState.taskIdx];
         if (!task) return;
@@ -5297,9 +5383,14 @@ function wrCheck() {
         }
 
         var grHints = [];
+        var markedMistakes = [];
         if (task.type !== "form") {
           var gr = wrGrammar(text, wrState.lang);
-          gr.errors.forEach(function(e){ ok = false; issues.push(e.msg); });
+          gr.errors.forEach(function(e){
+            ok = false; issues.push(e.msg);
+            var w = wrErrWord(e.msg);
+            if (w && markedMistakes.indexOf(w) === -1) { markedMistakes.push(w); setWordMark(wrState.lang, w, "mistake"); }
+          });
           grHints = gr.hints;
         }
 
@@ -5317,6 +5408,7 @@ function wrCheck() {
           html += "<p style='color:var(--bad);font-weight:800'>✖ بعد غير مكتمل:</p><ul>";
           issues.forEach(function(x){ html += "<li>" + x + "</li>"; });
           html += "</ul>";
+          if (markedMistakes.length) html += "<p style='color:var(--warn);font-weight:700'>تم وضع علامة صفراء «أخطأت فيها» على: " + markedMistakes.join("، ") + " — راجعها في بطاقات الكلمات.</p>";
         }
 
         if (grHints.length) {
