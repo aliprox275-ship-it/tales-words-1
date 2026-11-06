@@ -995,6 +995,7 @@
       .bnav-ico svg{width:22px; height:22px; display:block; margin:0 auto}
       svg.spk{width:1.15em; height:1.15em; vertical-align:-0.2em}
           svg.topic-svg{width:28px; height:28px}
+          #flashTopicSel{width:100%; margin-top:10px; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:var(--surface); color:var(--ink); font:inherit; font-weight:700}
     </style>
   </head>
   <body>
@@ -1087,6 +1088,12 @@
               <button data-flang="en" id="fEn">English</button>
               <button data-flang="de" id="fDe">Deutsch</button>
             </div>
+            <div class="switch" role="group" aria-label="مستوى البطاقات">
+              <button data-flevel="all" class="active-all" id="fLvlAll">كل المستويات</button>
+              <button data-flevel="A1" id="fLvlA1">A1</button>
+              <button data-flevel="A2" id="fLvlA2">A2</button>
+            </div>
+            <select id="flashTopicSel" aria-label="موضوع البطاقات"></select>
           </div>
           <div class="flash" id="flashCard">
             <div class="flash-lang" id="flashLang"></div>
@@ -5854,16 +5861,16 @@ function wrCheck() {
       var ALL_WORDS = [];
       STORIES.forEach(function(s){
         s.vocab.forEach(function(v){
-          ALL_WORDS.push({ w: v.w, t: v.t, ef: v.ef, ea: v.ea, lang: s.lang, story: s.titleAr });
+          ALL_WORDS.push({ w: v.w, t: v.t, ef: v.ef, ea: v.ea, lang: s.lang, level: s.level, topic: s.topic, story: s.titleAr, src: "story" });
         });
       });
-      var flashList = ALL_WORDS.slice(), flashIdx = 0, flashShown = false;
+      var flashList = [], flashIdx = 0, flashShown = false;
 
       function renderFlash(){
         var item = flashList[flashIdx];
         if (!item) return;
         var langEl = $("flashLang");
-        langEl.textContent = (item.lang === "en" ? "English" : "Deutsch") + " · من قصة «" + item.story + "»";
+        langEl.textContent = (item.lang === "en" ? "English" : "Deutsch") + " · " + (item.src === "conv" ? "من محادثة «" + item.story + "»" : "من قصة «" + item.story + "»");
         langEl.className = "flash-lang " + item.lang;
         var wEl = $("flashWord"); wEl.classList.remove("w-known", "w-mistake"); var fmc = wordMarkClass(item.lang, item.w); if (fmc) wEl.classList.add(fmc);
         wEl.textContent = item.w;
@@ -5881,17 +5888,104 @@ function wrCheck() {
         $("flashFlip").textContent = flashShown ? "إخفاء المعنى" : "إظهار المعنى";
         $("flashCount").textContent = arNum(flashIdx + 1) + " / " + arNum(flashList.length);
       }
+      var flashLang = "all", flashLevel = "all", flashTopic = "all";
+      var WORD_LOOKUP = {};
+      (function buildWordLookup(){
+        ALL_WORDS.forEach(function(x){
+          var k = x.lang + ":" + (x.w || "").toLowerCase();
+          if (!WORD_LOOKUP[k]) WORD_LOOKUP[k] = x;
+        });
+        ["en", "de"].forEach(function(lg){
+          Object.keys(BANK_DATA2[lg] || {}).forEach(function(tp){
+            (BANK_DATA2[lg][tp] || []).forEach(function(row){
+              var k = lg + ":" + (row[0] || "").toLowerCase();
+              if (!WORD_LOOKUP[k]) WORD_LOOKUP[k] = { w: row[0], t: row[1], ef: row[2], ea: row[3], lang: lg };
+            });
+          });
+        });
+      })();
+      function convWords(lang, level, topic){
+        var out = [], seen = {};
+        var data = level === "A2" ? CONV_DATA_A2 : CONV_DATA;
+        (data[lang] || []).forEach(function(d){
+          if (d.topic !== topic) return;
+          (d.conv.turns || []).forEach(function(tn){
+            var words = (tn.t || "").match(/[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\u00DF]+/g) || [];
+            words.forEach(function(raw){
+              var w = raw.toLowerCase();
+              if (w.length < 3 || seen[w]) return;
+              var entry = WORD_LOOKUP[lang + ":" + w];
+              if (!entry) return;
+              seen[w] = true;
+              out.push({ w: entry.w, t: entry.t, ef: entry.ef, ea: entry.ea, lang: lang, level: level, topic: topic, story: d.title, src: "conv" });
+            });
+          });
+        });
+        return out;
+      }
+      function buildFlashDeck(){
+        var list = [], seen = {};
+        ALL_WORDS.forEach(function(x){
+          if (flashLang !== "all" && x.lang !== flashLang) return;
+          if (flashLevel !== "all" && x.level !== flashLevel) return;
+          if (flashTopic !== "all" && x.topic !== flashTopic) return;
+          var k = x.lang + ":" + (x.w || "").toLowerCase();
+          if (seen[k]) return;
+          seen[k] = true;
+          list.push(x);
+        });
+        if (flashTopic !== "all") {
+          var langs = flashLang === "all" ? ["en", "de"] : [flashLang];
+          var levels = flashLevel === "all" ? ["A1", "A2"] : [flashLevel];
+          langs.forEach(function(lg){
+            levels.forEach(function(lv){
+              convWords(lg, lv, flashTopic).forEach(function(x){
+                var k = x.lang + ":" + (x.w || "").toLowerCase();
+                if (seen[k]) return;
+                seen[k] = true;
+                list.push(x);
+              });
+            });
+          });
+        }
+        flashList = list;
+        flashIdx = 0; flashShown = false;
+        renderFlash();
+      }
       function setFlashLang(f){
+        flashLang = f;
         $("fAll").className = f === "all" ? "active-all" : "";
         $("fEn").className = f === "en" ? "active-en" : "";
         $("fDe").className = f === "de" ? "active-de" : "";
-        flashList = f === "all" ? ALL_WORDS.slice() : ALL_WORDS.filter(function(x){ return x.lang === f; });
-        flashIdx = 0; flashShown = false;
-        renderFlash();
+        buildFlashDeck();
+      }
+      function setFlashLevel(lv){
+        flashLevel = lv;
+        $("fLvlAll").className = lv === "all" ? "active-all" : "";
+        $("fLvlA1").className = lv === "A1" ? "active-lvl" : "";
+        $("fLvlA2").className = lv === "A2" ? "active-lvl" : "";
+        buildFlashDeck();
       }
       $("fAll").addEventListener("click", function(){ setFlashLang("all"); });
       $("fEn").addEventListener("click", function(){ setFlashLang("en"); });
       $("fDe").addEventListener("click", function(){ setFlashLang("de"); });
+      $("fLvlAll").addEventListener("click", function(){ setFlashLevel("all"); });
+      $("fLvlA1").addEventListener("click", function(){ setFlashLevel("A1"); });
+      $("fLvlA2").addEventListener("click", function(){ setFlashLevel("A2"); });
+      (function initFlashTopics(){
+        var sel = $("flashTopicSel");
+        if (!sel) return;
+        var opt = document.createElement("option");
+        opt.value = "all"; opt.textContent = "كل المواضيع";
+        sel.appendChild(opt);
+        TOPICS.forEach(function(t){
+          var o = document.createElement("option");
+          o.value = t.slug; o.textContent = t.ar + " · " + t.level;
+          sel.appendChild(o);
+        });
+        sel.addEventListener("change", function(){ flashTopic = sel.value; buildFlashDeck(); });
+      })();
+      buildFlashDeck();
       $("flashNext").addEventListener("click", function(){
         flashIdx = (flashIdx + 1) % flashList.length; flashShown = false; renderFlash();
       });
@@ -6446,12 +6540,93 @@ function wrCheck() {
         });
         return _sentPool;
       }
-      var _fillCands = null;
-      function fillCandidates(){
-        if (_fillCands) return _fillCands;
-        _fillCands = [];
-        var pool = sentencePool();
+
+      /* ---------- Week pool: exercises draw on the last 7 days ----------
+         Stories finished in the last 7 days (doneSet stores Date.now();
+         legacy `true` entries count as recent). Fallback: the 5 most
+         recently finished stories; if none ever finished, the first 5
+         stories of the current level. Sentences come from those stories,
+         plus the conversation turns and grammar examples tied to them. */
+      var WEEK_MS = 7 * 24 * 3600 * 1000;
+      function weekStoryIds(){
+        var now = Date.now(), ids = [], recent = [];
         STORIES.forEach(function(s){
+          var v = doneSet[s.id];
+          if (v === undefined) return;
+          if (v === true) { ids.push(s.id); return; }
+          if (typeof v === "number") {
+            if (now - v <= WEEK_MS) ids.push(s.id);
+            recent.push({ id: s.id, t: v });
+          }
+        });
+        if (ids.length) return ids;
+        recent.sort(function(a, b){ return b.t - a.t; });
+        var fb = recent.slice(0, 5).map(function(x){ return x.id; });
+        if (fb.length) return fb;
+        var out = [];
+        STORIES.forEach(function(s){
+          if (out.length >= 5) return;
+          if (s.lang === curLang && s.level === (curLevel === "all" ? "A1" : curLevel)) out.push(s.id);
+        });
+        return out;
+      }
+      function weekSentences(){
+        var ids = weekStoryIds(), idSet = {};
+        ids.forEach(function(id){ idSet[id] = true; });
+        var out = [];
+        sentencePool().forEach(function(x){
+          if (idSet[x.story.id]) out.push({ text: x.text, lang: x.story.lang, level: x.story.level, src: "story", story: x.story, paraIdx: x.paraIdx });
+        });
+        var topics = {};
+        STORIES.forEach(function(s){ if (idSet[s.id]) topics[s.topic + "|" + s.lang + "|" + s.level] = true; });
+        ["A1", "A2"].forEach(function(lv){
+          var data = lv === "A2" ? CONV_DATA_A2 : CONV_DATA;
+          ["en", "de"].forEach(function(lg){
+            (data[lg] || []).forEach(function(d){
+              if (!topics[d.topic + "|" + lg + "|" + lv]) return;
+              (d.conv.turns || []).forEach(function(tn){
+                var txt = (tn.t || "").trim();
+                if (!txt) return;
+                out.push({ text: txt, lang: lg, level: lv, src: "conv", story: { id: "conv-" + d.topic + "-" + lg + "-" + lv, titleAr: d.title, lang: lg, level: lv, topic: d.topic }, paraIdx: 0, stageTitle: d.title });
+              });
+            });
+          });
+        });
+        ["A1", "A2"].forEach(function(lv){
+          var g = lv === "A2" ? GRAMMAR_A2 : GRAMMAR_A1;
+          ["en", "de"].forEach(function(lg){
+            (g[lg] || []).forEach(function(rule){
+              (rule.examples || []).forEach(function(ex){
+                if (!idSet[ex.story] || !ex.f) return;
+                out.push({ text: ex.f, lang: lg, level: lv, src: "gram", story: { id: "gram-" + rule.id, titleAr: rule.titleAr, lang: lg, level: lv }, paraIdx: 0, ruleTitle: rule.titleAr });
+              });
+            });
+          });
+        });
+        return out;
+      }
+      function exSrcLabel(c){
+        if (c.src === "conv") return "من محادثة «" + (c.stageTitle || c.story.titleAr) + "»";
+        if (c.src === "gram") return "من قاعدة «" + (c.ruleTitle || c.story.titleAr) + "»";
+        return "من قصة «" + c.story.titleAr + "»";
+      }
+      var _fillCands = null, _fillCandsKey = "";
+      function fillCandidates(){
+        var ids = weekStoryIds();
+        var key = ids.join(",");
+        if (_fillCands && _fillCandsKey === key) return _fillCands;
+        _fillCands = buildFillCands(ids);
+        if (_fillCands.length < 5) _fillCands = buildFillCands(null);
+        _fillCandsKey = key;
+        return _fillCands;
+      }
+      function buildFillCands(ids){
+        var out = [];
+        var pool = sentencePool();
+        var idSet = null;
+        if (ids) { idSet = {}; ids.forEach(function(id){ idSet[id] = true; }); }
+        STORIES.forEach(function(s){
+          if (idSet && !idSet[s.id]) return;
           s.vocab.forEach(function(v){
             var base = v.w.split(" ").pop();
             var nb = normWord(base);
@@ -6468,14 +6643,14 @@ function wrCheck() {
                 if (ok) { found = { start: m.index, end: m.index + m[0].length, token: m[0] }; break; }
               }
               if (found) {
-                _fillCands.push({ story: s, vocab: v, base: base, paraIdx: pool[k].paraIdx,
+                out.push({ story: s, vocab: v, base: base, paraIdx: pool[k].paraIdx,
                   text: text, start: found.start, end: found.end, token: found.token });
                 break;
               }
             }
           });
         });
-        return _fillCands;
+        return out;
       }
       var exState = { type: null, cur: null, answered: false, sel: [] };
       function renderExScore(){
@@ -6540,18 +6715,24 @@ function wrCheck() {
       }
 
       function renderDict(){
-        var cands = [];
-        STORIES.forEach(function(s){
-          if (!s.paras) return;
-          s.paras.forEach(function(p, pi){
-            var n = p.f.split(/\s+/).length;
-            if (n >= 6 && n <= 16) cands.push({ story: s, paraIdx: pi, text: p.f });
-          });
+        var cands = weekSentences().filter(function(x){
+          var n = x.text.split(/\s+/).length;
+          return n >= 6 && n <= 16;
         });
+        if (cands.length < 3) {
+          cands = [];
+          STORIES.forEach(function(s){
+            if (!s.paras) return;
+            s.paras.forEach(function(p, pi){
+              var n = p.f.split(/\s+/).length;
+              if (n >= 6 && n <= 16) cands.push({ story: s, paraIdx: pi, text: p.f, src: "story" });
+            });
+          });
+        }
         var c = pickRandom(cands);
         exState.cur = c;
         $("exArea").innerHTML =
-          exHead("الإملاء غيبًا · من قصة «" + c.story.titleAr + "» — استمع للنص ثم اكتبه كاملًا") +
+          exHead("الإملاء غيبًا · " + exSrcLabel(c) + " — استمع للنص ثم اكتبه كاملًا") +
           '<div class="ex-actions" style="margin:0 0 14px">' +
             '<button class="ex-btn gold" id="exPlay" type="button">' + SPK + ' استمع للنص</button>' +
           '</div>' +
@@ -6596,7 +6777,11 @@ function wrCheck() {
       }
 
       function renderOrder(){
-        var cands = sentencePool().filter(function(x){
+        var cands = weekSentences().filter(function(x){
+          var n = x.text.split(/\s+/).length;
+          return n >= 5 && n <= 9 && !/[“”„«»":]/.test(x.text);
+        });
+        if (cands.length < 3) cands = sentencePool().filter(function(x){
           var n = x.text.split(/\s+/).length;
           return n >= 5 && n <= 9 && !/[“”„«»":]/.test(x.text);
         });
@@ -6607,7 +6792,7 @@ function wrCheck() {
         exState.cur = { story: c.story, tokens: tokens, shuffled: shuffled };
         exState.sel = [];
         $("exArea").innerHTML =
-          exHead("ترتيب الكلمات · من قصة «" + c.story.titleAr + "» — اضغط الكلمات بالترتيب الصحيح لتكوين الجملة") +
+          exHead("ترتيب الكلمات · " + exSrcLabel(c) + " — اضغط الكلمات بالترتيب الصحيح لتكوين الجملة") +
           '<div class="chip-answer" id="exAnswer"></div>' +
           '<div class="chip-pool" id="exPool"></div>' +
           '<div class="ex-actions">' +
@@ -6673,7 +6858,13 @@ function wrCheck() {
         var c = pickRandom(fillCandidates());
         exState.cur = c;
         var others = [];
+        var weekIds = weekStoryIds(), weekSet = {};
+        weekIds.forEach(function(id){ weekSet[id] = true; });
         STORIES.forEach(function(s){
+          if (s.lang !== c.story.lang || !weekSet[s.id]) return;
+          s.vocab.forEach(function(v){ if (v.t !== c.vocab.t && others.indexOf(v.t) === -1) others.push(v.t); });
+        });
+        if (others.length < 2) STORIES.forEach(function(s){
           if (s.lang !== c.story.lang) return;
           s.vocab.forEach(function(v){ if (v.t !== c.vocab.t && others.indexOf(v.t) === -1) others.push(v.t); });
         });
