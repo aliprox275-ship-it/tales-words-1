@@ -727,6 +727,23 @@
         color:var(--ink); padding:13px 10px; font-size:1rem; font-weight:700;
       }
 
+      /* ---------- Home: action buttons (exam first, then pairs) ---------- */
+      .home-actions{display:flex; flex-direction:column; gap:12px; margin:6px 0 22px}
+      .home-hero{display:flex; align-items:center; gap:14px; width:100%; background:var(--accent); color:#fff; border:1px solid var(--accent); border-radius:18px; padding:18px 20px; font-family:inherit; font-size:1.15rem; font-weight:800; text-align:start; cursor:pointer}
+      .home-hero-ic{flex:0 0 auto; width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center}
+      .home-hero-ic svg{width:28px; height:28px}
+      .home-hero-tx{flex:1; display:flex; flex-direction:column; gap:2px}
+      .home-hero-tx small{font-size:.95rem; font-weight:600; opacity:.85}
+      .home-hero-ar{font-size:1.6rem; font-weight:400; opacity:.9}
+      .home-pair{display:flex; gap:12px}
+      .home-card{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); color:var(--ink); padding:20px 10px 16px; font-family:inherit; font-size:1.05rem; font-weight:800; cursor:pointer}
+      .home-card svg{width:30px; height:30px; color:var(--accent)}
+      .home-card small{font-size:.9rem; font-weight:600; color:var(--muted)}
+      .home-wide{display:flex; align-items:center; gap:12px; width:100%; background:transparent; border:1.5px solid var(--accent); border-radius:var(--r-card); color:var(--accent); padding:15px 18px; font-family:inherit; font-size:1.1rem; font-weight:800; text-align:start; cursor:pointer}
+      .home-wide svg{width:24px; height:24px}
+      .home-wide b{flex:1}
+      .home-wide .home-hero-ar{color:var(--accent)}
+
       /* ---------- Home: level stats dashboard ---------- */
       .home-summary{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px}
       .hsum{
@@ -1029,8 +1046,18 @@
           <div class="streak-box" id="streakBox"></div>
           <div class="home-summary" id="homeSummary"></div>
           <div class="home-grid" id="homeLevels"></div>
-          <h3 class="sub-title">أقسام أخرى</h3>
-          <div class="more-links">
+          <div class="home-actions">
+            <button class="home-hero" type="button" data-goto="a1test"><span class="home-hero-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></span><span class="home-hero-tx"><b>اختبار المستوى A1</b><small>اعرف مستواك</small></span><span class="home-hero-ar">‹</span></button>
+            <div class="home-pair">
+              <button class="home-card" type="button" data-goto="words"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><b>بطاقات الكلمات</b><small>راجع بسرعة</small></button>
+              <button class="home-card" type="button" data-goto="exercises"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><b>تمارين</b><small>اختبر نفسك</small></button>
+            </div>
+            <button class="home-wide" type="button" data-goto="writing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg><b>الكتابة A1</b><span class="home-hero-ar">‹</span></button>
+            <h3 class="sub-title">تابع تقدمك</h3>
+            <div class="home-pair">
+              <button class="home-card" type="button" data-goto="mywords"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><b>كلماتي</b><small>كلمات حفظتها</small></button>
+              <button class="home-card" type="button" data-goto="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg><b>إحصائياتي</b><small>تقدمك اليومي</small></button>
+            </div>
           </div>
           <div class="more-links">
             <button class="more-link" type="button" id="shareAppBtn">شارك التطبيق</button>

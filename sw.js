@@ -13,7 +13,7 @@
      فيُمسح أي mp3 مخزّن قديمًا من أجهزة المستخدمين، وتُفعّل نفسها
      (skipWaiting + clients.claim) فيتحدث التطبيق المثبت تلقائيًا. */
 
-var VERSION = "v11";
+var VERSION = "v12";
 var SHELL_CACHE = "reading-shell-" + VERSION;
 
 var SHELL_FILES = [
