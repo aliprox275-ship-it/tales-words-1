@@ -1013,7 +1013,7 @@
     <header class="appbar">
       <div class="appbar-in">
         <span class="appbar-title" id="appTitle">Tales &amp; Words</span>
-        <span class="appbar-stat"><b id="statDone">0</b>/<b id="statTotal">176</b> قصة · <b id="statWords">0</b> كلمة جديدة</span> <button class="theme-toggle" id="themeToggle" type="button" aria-label="تبديل المظهر"><svg class="spk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
+        <span class="appbar-stat"><b id="statDone">0</b>/<b id="statTotal">302</b> قصة · <b id="statWords">0</b> كلمة جديدة</span> <button class="theme-toggle" id="themeToggle" type="button" aria-label="تبديل المظهر"><svg class="spk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
       </div>
       <div class="progress-track appbar-prog" role="progressbar" aria-label="تقدّم القراءة" aria-valuemin="0" aria-valuemax="176" aria-valuenow="0" id="progressBar">
         <div class="progress-fill" id="progressFill"></div>
@@ -3574,9 +3574,9 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       }
       /* ---------- Progress header ---------- */
       function updateProgress(){
-        var doneCount = 0, words = 0;
+        var doneCount = 0, words = 0, seenW = {};
         STORIES.forEach(function(s){
-          if (doneSet[s.id]) { doneCount++; words += s.vocab.length; }
+          if (doneSet[s.id]) { doneCount++; s.vocab.forEach(function(v){ var k = s.lang + ":" + (v.w || "").toLowerCase(); if (!seenW[k]) { seenW[k] = true; words++; } }); }
         });
         $("statDone").textContent = arNum(doneCount);
         $("statWords").textContent = arNum(words);
@@ -8291,7 +8291,7 @@ function bankSpeak(text, lang){
       applySpeed();
       saveMyWords();   // persist SRS fields added by migration to older saved words
       applyTheme(); if ($("themeToggle")) $("themeToggle").addEventListener("click", toggleTheme); renderMyWords();
-      if ($("flashTotal")) $("flashTotal").textContent = arNum(ALL_WORDS.length);
+      if ($("flashTotal")) $("flashTotal").textContent = arNum(flashList.length);
       renderTopicFilters();
       renderGrid();
       applyZen();
