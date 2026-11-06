@@ -1021,8 +1021,8 @@
       .topic-pick-btn svg{width:20px; height:20px; color:var(--accent); flex:none}
       .topic-pick-btn .tp-label{flex:1}
       .topic-pick-btn .tp-chev{color:var(--muted); font-size:1.1rem}
-      .tsheet-backdrop{position:fixed; inset:0; z-index:120; background:rgba(0,0,0,.55); display:flex; align-items:flex-end; justify-content:center}
-      .tsheet{width:100%; max-width:560px; max-height:82vh; overflow-y:auto; background:var(--surface); border:1px solid var(--line); border-bottom:0; border-radius:22px 22px 0 0; padding:10px 16px 26px; box-shadow:0 -12px 40px rgba(0,0,0,.45)}
+      .tsheet-backdrop{position:fixed; inset:0; z-index:120; background:rgba(0,0,0,.55); display:flex; align-items:flex-end; justify-content:center; animation:tsheetFade .18s ease}
+      .tsheet{width:100%; max-width:560px; height:94vh; max-height:94vh; overflow:hidden; display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--line); border-bottom:0; border-radius:22px 22px 0 0; padding:10px 16px 16px; box-shadow:0 -12px 40px rgba(0,0,0,.45); animation:tsheetIn .22s ease}
       .tsheet-grip{width:44px; height:5px; border-radius:99px; background:var(--line); margin:4px auto 12px}
       .tsheet-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px}
       .tsheet-title{margin:0; font-size:1.25rem; font-weight:800}
@@ -1030,12 +1030,12 @@
       .tsheet-search{display:flex; align-items:center; gap:8px; background:var(--surface2); border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:14px}
       .tsheet-search svg{width:20px; height:20px; color:var(--muted); flex:none}
       .tsheet-search input{flex:1; min-width:0; border:0; outline:0; background:transparent; color:var(--ink); font:inherit}
-      .tsheet-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
-      .tsheet-hero{grid-column:1 / -1; display:flex; align-items:center; gap:12px; background:var(--accent); color:var(--on-accent); border:1px solid var(--accent); border-radius:16px; padding:16px; font:inherit; font-weight:800; cursor:pointer; text-align:start}
+      .tsheet-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px; overflow-y:auto; flex:1; min-height:0; padding-bottom:6px}
+      .tsheet-hero{grid-column:1 / -1; display:flex; align-items:center; gap:12px; background:var(--accent); color:var(--on-accent); border:1px solid var(--accent); border-radius:16px; padding:18px 16px; font:inherit; font-weight:800; cursor:pointer; text-align:start}
       .tsheet-hero svg{width:28px; height:28px; flex:none}
       .tsheet-hero .th-tx{flex:1; display:flex; flex-direction:column; gap:2px}
       .tsheet-hero small{font-weight:600; opacity:.85}
-      .tsheet-card{display:flex; align-items:center; gap:10px; background:var(--surface2); border:1px solid var(--line); border-radius:14px; padding:14px 12px; color:var(--ink); font:inherit; font-weight:700; cursor:pointer; text-align:start}
+      .tsheet-card{display:flex; align-items:center; gap:10px; background:var(--surface2); border:1px solid var(--line); border-radius:14px; padding:16px 14px; color:var(--ink); font:inherit; font-weight:700; cursor:pointer; text-align:start}
       .tsheet-card svg{width:26px; height:26px; color:var(--accent); flex:none}
       .tsheet-card b{flex:1; font-weight:700}
       .tsheet-card.sel{background:var(--accent); border-color:var(--accent); color:var(--on-accent)}
@@ -1043,6 +1043,8 @@
       .tsheet-hero .th-check,.tsheet-card .th-check{display:none; flex:none; width:24px; height:24px; border-radius:50%; border:1.5px solid currentColor; align-items:center; justify-content:center; font-size:.85rem; line-height:1}
       .tsheet-hero.sel .th-check,.tsheet-card.sel .th-check{display:flex}
       .tsheet-empty{text-align:center; color:var(--muted); margin:18px 0 6px}
+      @keyframes tsheetIn{from{transform:translateY(28px); opacity:.4} to{transform:none; opacity:1}}
+      @keyframes tsheetFade{from{opacity:0}}
           .conv-write{margin-top:16px; border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:12px 14px}
       .conv-write summary{font-weight:800; cursor:pointer; list-style:none; color:var(--ink)}
       .conv-write summary::-webkit-details-marker{display:none}
@@ -2852,7 +2854,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
           synth.cancel();
           var u = new SpeechSynthesisUtterance(popCtx.w);
           u.lang = popCtx.lang === "de" ? "de-DE" : "en-US";
-          u.rate = 0.85;
+          u.rate = audioSpeed;
           var voices = synth.getVoices();
           for (var i = 0; i < voices.length; i++) {
             if (voices[i].lang && voices[i].lang.toLowerCase().indexOf(popCtx.lang) === 0) { u.voice = voices[i]; break; }
@@ -4314,6 +4316,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       });
       document.addEventListener("keydown", function(e){
         if (e.key === "Escape" && exitPopEl && !exitPopEl.hidden) hideExitDialog();
+        else if (e.key === "Escape" && $("topicSheetBackdrop") && !$("topicSheetBackdrop").hidden) { if (window.closeTopicSheet) window.closeTopicSheet(); }
       });
 
       window.addEventListener("popstate", function(e){
@@ -4323,6 +4326,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         if (!$("reader").hidden) { readerHist = false; closeReaderNow(); closedOverlay = true; }
         else if (!$("prep").hidden) { prepHist = false; closePrepNow(); showView("stories", true); closedOverlay = true; }
         else if (!$("convReader").hidden) { convStopAll(); $("convReader").hidden = true; document.body.style.overflow = ""; closedOverlay = true; }
+        else if ($("topicSheetBackdrop") && !$("topicSheetBackdrop").hidden) { if (window.closeTopicSheetNow) window.closeTopicSheetNow(); closedOverlay = true; }
         if (closedOverlay) return;
         if (st.view && st.view !== fullViewName()) { showView(st.view, true); return; }
         showExitDialog();
@@ -4337,7 +4341,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       function applyTheme(){ var t = "dark"; try { var s = localStorage.getItem(THEME_KEY); if (s === "light" || s === "dark") t = s; } catch (e) {} document.documentElement.setAttribute("data-theme", t); var b = $("themeToggle"); if (b) b.innerHTML = (t === "dark" ? SUN_SVG : MOON_SVG); }
       function toggleTheme(){ var cur = document.documentElement.getAttribute("data-theme") || "dark"; var next = (cur === "dark" ? "light" : "dark"); try { localStorage.setItem(THEME_KEY, next); } catch (e) {} applyTheme(); }
       function fullViewName(){ return (curView === "home" && REVIEW_SUBS.indexOf(curReviewSub) !== -1) ? curReviewSub : curView; }
-      function showView(name, fromPop){
+      function showView(name, fromPop){         try { if (window.closeTopicSheetNow) window.closeTopicSheetNow(); } catch (e) {}
         var origName = name; var prevFull = fullViewName();
         if (REVIEW_SUBS.indexOf(name) !== -1) { curReviewSub = name; name = "home"; }
         var prevView = curView;
@@ -6142,6 +6146,7 @@ function wrCheck() {
         var label = $("flashTopicLabel");
         var search = $("topicSheetSearch");
         var emptyMsg = $("topicSheetEmpty");
+        var topicSheetHist = false;
         if (!grid || !backdrop || !btn) return;
         var GRID_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>';
         function topicIcon(slug){
@@ -6170,16 +6175,23 @@ function wrCheck() {
           grid.innerHTML = html;
           markSelected();
         }
+        function closeSheetNow(){
+          topicSheetHist = false;
+          backdrop.hidden = true;
+          document.body.style.overflow = "";
+        }
         function openSheet(){
           buildGrid();
           if (search) search.value = "";
           filterGrid("");
           backdrop.hidden = false;
           document.body.style.overflow = "hidden";
+          topicSheetHist = true;
+          hPush({ app: 1, view: "words", sheet: 1 }, "#words");
         }
         function closeSheet(){
-          backdrop.hidden = true;
-          document.body.style.overflow = "";
+          if (topicSheetHist) { try { history.back(); return; } catch (e) { /* fall through */ } }
+          closeSheetNow();
         }
         function filterGrid(q){
           q = (q || "").trim();
@@ -6210,6 +6222,8 @@ function wrCheck() {
         $("topicSheetX").addEventListener("click", closeSheet);
         backdrop.addEventListener("click", function(e){ if (e.target === backdrop) closeSheet(); });
         if (search) search.addEventListener("input", function(){ filterGrid(search.value); });
+        window.closeTopicSheetNow = closeSheetNow;
+        window.closeTopicSheet = closeSheet;
         buildGrid();
       })();
       buildFlashDeck();
@@ -7795,6 +7809,17 @@ var BANK_CHUNK_MAP_A2 = {"en":{"travel":{"journey":"en-travel-chunk01.mp3","jour
             }
           }
         }
+        var lw = (w || "").toLowerCase();
+        for (var t2 in topics) {
+          var rows2 = topics[t2];
+          for (var j = 0; j < rows2.length; j++) {
+            if ((rows2[j][0] || "").toLowerCase() === lw && rows2[j][2] === ef) {
+              var chunk2 = BANK_CHUNK_MAP[lang][t2] && BANK_CHUNK_MAP[lang][t2][rows2[j][0]];
+              if (!chunk2) return null;
+              return bundleSeg("bank/" + chunk2, rows2[j][0] + ":ex");
+            }
+          }
+        }
         return null;
       }
 
@@ -7813,6 +7838,17 @@ var BANK_CHUNK_MAP_A2 = {"en":{"travel":{"journey":"en-travel-chunk01.mp3","jour
               var chunk = BANK_CHUNK_MAP[lang][t] && BANK_CHUNK_MAP[lang][t][w];
               if (!chunk) return null;
               return bundleSeg("bank/" + chunk, w);
+            }
+          }
+        }
+        var lw = (w || "").toLowerCase();
+        for (var t2 in topics) {
+          var rows2 = topics[t2];
+          for (var j = 0; j < rows2.length; j++) {
+            if ((rows2[j][0] || "").toLowerCase() === lw) {
+              var chunk2 = BANK_CHUNK_MAP[lang][t2] && BANK_CHUNK_MAP[lang][t2][rows2[j][0]];
+              if (!chunk2) return null;
+              return bundleSeg("bank/" + chunk2, rows2[j][0]);
             }
           }
         }
@@ -7837,6 +7873,17 @@ var BANK_CHUNK_MAP_A2 = {"en":{"travel":{"journey":"en-travel-chunk01.mp3","jour
               var chunk = BANK_CHUNK_MAP_A2[lang][t] && BANK_CHUNK_MAP_A2[lang][t][w];
               if (!chunk) return null;
               return bundleSegA2("bank/" + chunk, w);
+            }
+          }
+        }
+        var lw = (w || "").toLowerCase();
+        for (var t2 in topics) {
+          var rows2 = topics[t2];
+          for (var j = 0; j < rows2.length; j++) {
+            if ((rows2[j][0] || "").toLowerCase() === lw) {
+              var chunk2 = BANK_CHUNK_MAP_A2[lang][t2] && BANK_CHUNK_MAP_A2[lang][t2][rows2[j][0]];
+              if (!chunk2) return null;
+              return bundleSegA2("bank/" + chunk2, rows2[j][0]);
             }
           }
         }
@@ -8149,7 +8196,7 @@ function bankSpeak(text, lang){
           synth.cancel();
           var u = new SpeechSynthesisUtterance(text);
           u.lang = lang === "de" ? "de-DE" : "en-US";
-          u.rate = 0.85;
+          u.rate = audioSpeed;
           var voices = synth.getVoices();
           for (var i = 0; i < voices.length; i++) {
             if (voices[i].lang && voices[i].lang.toLowerCase().indexOf(lang) === 0) { u.voice = voices[i]; break; }
