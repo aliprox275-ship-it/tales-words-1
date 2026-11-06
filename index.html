@@ -165,6 +165,9 @@
       .flash-word{font-family:var(--font-serif); direction:ltr; font-size:clamp(2rem,7vw,3rem); font-weight:700; line-height:1.2}
       .flash-ar{font-size:1.5rem; font-weight:700}
       .flash-ex{color:var(--muted); max-width:52ch}
+      .flash-speak{display:flex; gap:10px; margin-top:16px; justify-content:center; flex-wrap:wrap}
+      .flash-spk{border:1px solid var(--line); border-radius:99px; padding:10px 18px; font:inherit; font-weight:800; background:var(--surface2); color:var(--ink); cursor:pointer}
+      .flash-spk:active{transform:scale(.96)}
       .flash-ex .ex-f{display:block; font-family:var(--font-serif); direction:ltr; unicode-bidi:isolate; font-size:1.05rem}
       .flash-controls{display:flex; gap:10px; justify-content:center; align-items:center; margin-top:18px; flex-wrap:wrap}
       .flash-controls button{
@@ -1159,6 +1162,7 @@
             <div class="flash-word" id="flashWord" lang="en"></div>
             <div class="flash-ar" id="flashAr"></div>
             <div class="flash-ex" id="flashEx"></div>
+            <div class="flash-speak"><button id="flashSpeakWord" class="flash-spk" type="button">🔊 نطق الكلمة</button><button id="flashSpeakEx" class="flash-spk" type="button">🔊 نطق المثال</button></div>
           </div>
           <div class="flash-controls">
             <button id="flashPrev">→ السابق</button>
@@ -6040,6 +6044,8 @@ function wrCheck() {
           ea.textContent = item.ea;
           ex.appendChild(ef); ex.appendChild(ea);
         }
+        var fsEx = $("flashSpeakEx");
+        if (fsEx) fsEx.style.display = flashShown ? "" : "none";
         $("flashFlip").textContent = flashShown ? "إخفاء المعنى" : "إظهار المعنى";
         $("flashCount").textContent = arNum(flashIdx + 1) + " / " + arNum(flashList.length);
       }
@@ -6215,6 +6221,18 @@ function wrCheck() {
       });
       $("flashFlip").addEventListener("click", function(){
         flashShown = !flashShown; renderFlash();
+      });
+      $("flashSpeakWord").addEventListener("click", function(){
+        var item = flashList[flashIdx]; if (!item) return;
+        stopVocab();
+        var seg = null; try { seg = vocabWordSeg(item.w, item.lang); } catch (e) { seg = null; }
+        if (seg) playBundle(seg, item.w, item.lang); else bankSpeak(item.w, item.lang);
+      });
+      $("flashSpeakEx").addEventListener("click", function(){
+        var item = flashList[flashIdx]; if (!item) return;
+        stopVocab();
+        var seg = null; try { seg = vocabExampleSeg(item.w, item.ef, item.lang); } catch (e) { seg = null; }
+        if (seg) playBundle(seg, item.ef, item.lang); else bankSpeak(item.ef, item.lang);
       });
 
       /* ---------- Phrases ---------- */
