@@ -1,8 +1,14 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "app.vercel.aliprox75.twa",
-    "sha256_cert_fingerprints": ["7B:4E:FF:8B:D0:C0:78:9A:9B:7A:77:5E:1B:58:7E:17:33:5B:17:85:79:8C:7D:19:96:A3:37:D2:64:4A:FC:25"]
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.vercel.aliprox75.twa",
+      "sha256_cert_fingerprints": [
+        "90:F6:28:81:19:3A:F4:78:10:CF:71:38:B2:04:9A:02:77:42:0D:CC:B8:64:C0:7A:09:46:42:34:87:5E:A4:B8"
+      ]
+    }
   }
-}]
+]
