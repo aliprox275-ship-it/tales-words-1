@@ -1361,7 +1361,7 @@
         <!-- ======== Word logic (Bank) ======== -->
         <section id="view-wordlogic" hidden>
           <h2 class="view-title">منطق الكلمات</h2>
-          <p class="hint" style="margin-bottom:14px">الفهم أفضل من الحفظ: الأفعال الشاذة مجموعات لها نمط، وكل لاحقة لها وظيفة، وكل جملة لها هيكل ثابت. افهم المنطق وستعرف الكلمات والجمل الجديدة وحدك.</p>
+          <p class="hint" style="margin-bottom:14px">الفهم أفضل من الحفظ: الأفعال الشاذة مجموعات لها نمط، وكل لاحقة لها وظيفة، وكل جملة لها هيكل ثابت، والكلام الطبيعي له اختصاراته. افهم المنطق وستعرف الكلمات والجمل الجديدة وحدك.</p>
           <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
             <button type="button" id="wlLangEn" class="active-en">English · الإنجليزية</button>
             <button type="button" id="wlLangDe">Deutsch · الألمانية</button>
@@ -6336,6 +6336,19 @@ function wrCheck() {
         ]
       };
 
+      var SPEECH_LOGIC = {
+        en: [
+          { t: "الاختصارات — Contractions", rule: "في الكلام الطبيعي نختصر كلمتين في كلمة واحدة: نحذف حرفًا ونضع فاصلة (') مكان الحرف المحذوف. الفاصلة علامة الحرف الغائب. هذه ليست عامية — بل هي الكلام الطبيعي.", ex: ["I am → I'm: I'm tired. — أنا متعب.", "you are → you're: You're right. — أنت محق.", "do not → don't: Don't worry. — لا تقلق.", "can not → can't: I can't go. — لا أستطيع الذهاب.", "I will → I'll: I'll call you. — سأتصل بك.", "let us → let's: Let's go. — لنذهب.", "that is → that's: That's good. — هذا جيد."], firm: ["will + not → won't (وليس willn't) — شاذة، احفظها.", "«ain't» عامية — تجنبها في الكلام الرسمي.", "الاختصار لا يغيّر المعنى — فقط يجعل الكلام أسرع وأطبيع."] },
+          { t: "الكلام السريع — Reductions", rule: "عندما نتكلم بسرعة، الأصوات تندمج وبعض الحروف تختفي. هذا ليس خطأ — هذه هي الطريقة التي يتكلم بها الناطقون الأصليون فعلًا. يجب أن تفهمها لتتابع الكلام الحقيقي، وتستطيع استخدامها لتبدو طبيعيًا.", ex: ["want to → wanna: I wanna go home. — أريد أن أذهب إلى البيت.", "going to → gonna: I'm gonna eat now. — سآكل الآن.", "got to → gotta: I gotta go. — يجب أن أذهب.", "let me → lemme: Lemme see. — دعني أرى.", "give me → gimme: Gimme the book. — أعطني الكتاب.", "don't know → dunno: I dunno. — لا أعرف.", "kind of → kinda: I'm kinda tired. — متعب نوعًا ما.", "a lot of → lotta: I have lotta work. — عندي عمل كثير."], firm: ["لا تكتبها في الامتحان أو الرسائل الرسمية — هذه للكلام فقط.", "افهمها أولًا (للاستماع)، ثم استخدمها (للكلام)."] },
+          { t: "الربط — t+y و d+y و flap", rule: "عندما تلتقي الكلمات، الأصوات تتغير. ثلاثة أنماط رئيسية تحكم معظم الكلام السريع.", ex: ["t + y ← ch: don't you → doncha — ألا تفعل؟ / got you → gotcha — أمسكت بك! / what are you → whatcha doing? — ماذا تفعل؟", "d + y ← j: did you → didja — هل فعلت؟ / could you → couldja — هل تستطيع؟", "t بين حرفي علة ← flap (أمريكي): water → wader (ماء) / better → bedder (أفضل) / city → cidy (مدينة) — الـ t تصبح مثل d خفيفة.", "حذف الأصوات: and ← 'n (fish 'n chips) / of ← a (kind of ← kinda) / you ← ya (see ya — أراك لاحقًا)"], firm: ["«I caught you» في الكلام السريع تصبح «I caughtcha» — الـ t + y تصبح ch.", "«I got you» تصبح «I gotcha» — وهي تعني أيضًا «فهمتك!».", "الـ flap أمريكي — البريطاني ينطق الـ t حادة."] }
+        ],
+        de: [
+          { t: "الاختصارات — Kurzformen", rule: "في الكلام الألماني الطبيعي، حرف الـ e في آخر الكلمة يُحذف غالبًا، والكلمات تندمج. هذه ليست عامية — بل هي الكلام اليومي.", ex: ["ich habe → ich hab': Ich hab' ein Buch. — لدي كتاب.", "ich sage → ich sag': Ich sag' dir. — أقول لك.", "ich mache → ich mach': Ich mach' das. — سأفعل ذلك.", "es ist → es is': Es is' kalt. — الجو بارد.", "nicht → nich': Ich weiß nich'. — لا أعرف.", "eine → ne: Ich hab' ne Frage. — لدي سؤال."], firm: ["لا تكتبها في الامتحان أو الرسائل الرسمية — هذه للكلام فقط."] },
+          { t: "الكلام السريع — Reductions", rule: "عندما نتكلم بسرعة، الضمير du يندمج مع الفعل الذي قبله. هذا هو الكلام الألماني اليومي الحقيقي.", ex: ["hast du → haste: Haste Zeit? — هل لديك وقت؟", "bist du → biste: Biste da? — هل أنت هنا؟", "kannst du → kannste: Kannste mir helfen? — هل تستطيع مساعدتي؟", "willst du → willste: Willste Kaffee? — هل تريد قهوة؟", "geht es → geht's: Wie geht's? — كيف حالك؟", "gibt es → gibt's: Gibt's das? — هل يوجد هذا؟", "haben wir → hamwer: Hamwer Zeit? — هل لدينا وقت؟"], firm: ["«Wie geht's?» هي أشهر جملة ألمانية — احفظها كما هي.", "افهمها أولًا (للاستماع)، ثم استخدمها (للكلام)."] },
+          { t: "الربط وحذف الأصوات", rule: "حذف حرف الـ e هو القاعدة الأساسية في الكلام الألماني السريع، وبعض الكلمات تختصر أكثر.", ex: ["ich habe → ich hab' / ich gehe → ich geh' / ich sage → ich sag'", "einen → nen (غير رسمي): Ich hab' nen Hund. — لدي كلب.", "etwas → was: Ich hab' was. — لدي شيء.", "was ist los → was is' los? — ماذا يحدث؟"], firm: ["الحذف لا يغيّر المعنى — فقط يجعل الكلام أسرع.", "في الكتابة الرسمية اكتب الشكل الكامل: ich habe (وليس ich hab')."] }
+        ]
+      };
+
       /* ---------- Word logic view (Bank) ---------- */
       var wlLang = "en";
       function renderWordLogic() {
@@ -6382,12 +6395,27 @@ function wrCheck() {
           pat.firm.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
           html += "</ul></div>";
         });
+        // Natural speech: contractions, reductions, linking
+        html += "<h3 class='sub-title' style='margin-top:22px'>الكلام الطبيعي — الاختصارات والنطق السريع</h3>";
+        html += "<p class='hint'>الناطقون الأصليون لا يتكلمون كما يكتبون. هذه هي الطريقة التي يبدو بها الكلام الحقيقي — افهمها لتتابع الأفلام والمحادثات، واستخدمها لتبدو طبيعيًا.</p>";
+        (SPEECH_LOGIC[lang] || []).forEach(function(pat) {
+          html += "<div class='tool-box' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
+          html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
+          html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة من يومك:</p><ul style='margin:0 0 8px;padding-right:18px'>";
+          pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+          html += "</ul>";
+          html += "<p style='margin:0 0 4px;font-weight:700'>انتبه:</p><ul style='margin:0;padding-right:18px'>";
+          pat.firm.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+          html += "</ul></div>";
+        });
         box.innerHTML = html;
       }
       if ($("wlLangEn")) $("wlLangEn").addEventListener("click", function(){ wlLang = "en"; $("wlLangEn").classList.add("active-en"); $("wlLangDe").classList.remove("active-de"); renderWordLogic(); });
       if ($("wlLangDe")) $("wlLangDe").addEventListener("click", function(){ wlLang = "de"; $("wlLangDe").classList.add("active-de"); $("wlLangEn").classList.remove("active-en"); renderWordLogic(); });
       if ($("wlBackBtn")) $("wlBackBtn").addEventListener("click", function(){ showView("bank"); });
       renderWordLogic();
+
+
 
 
 
