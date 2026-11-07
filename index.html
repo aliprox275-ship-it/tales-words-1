@@ -1080,6 +1080,7 @@
           <div class="home-grid" id="homeLevels"></div>
           <div class="home-actions">
             <button class="home-hero" type="button" data-goto="a1test"><span class="home-hero-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></span><span class="home-hero-tx"><b>اختبار المستوى A1</b><small>اعرف مستواك</small></span><span class="home-hero-ar">‹</span></button>
+            <button class="home-hero" type="button" data-goto="finalexam"><span class="home-hero-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></span><span class="home-hero-tx"><b>الامتحان النهائي</b><small>أنهيت A2؟ اثبت أنك جاهز لـ B1</small></span><span class="home-hero-ar">‹</span></button>
             <div class="home-pair">
               <button class="home-card" type="button" data-goto="words"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><b>بطاقات الكلمات</b><small>راجع بسرعة</small></button>
               <button class="home-card" type="button" data-goto="exercises"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><b>تمارين</b><small>اختبر نفسك</small></button>
@@ -1208,7 +1209,7 @@
             <button class="more-link" type="button" data-goto="exercises">تمارين</button>
             <button class="more-link" type="button" data-goto="phrases">عبارات مفيدة</button>
             <button class="more-link" type="button" data-goto="stats">إحصائياتي</button>
-            <button class="more-link" type="button" data-goto="a1test" style="background:var(--accent);color:var(--on-accent);border-color:var(--accent)">اختبار المستوى A1</button> <button class="more-link" type="button" data-goto="writing" style="background:var(--accent-dark);color:var(--on-accent);border-color:var(--accent-dark)">الكتابة A1</button>
+            <button class="more-link" type="button" data-goto="a1test" style="background:var(--accent);color:var(--on-accent);border-color:var(--accent)">اختبار المستوى A1</button> <button class="more-link" type="button" data-goto="finalexam" style="background:var(--accent);color:var(--on-accent);border-color:var(--accent)">الامتحان النهائي (A1+A2)</button> <button class="more-link" type="button" data-goto="writing" style="background:var(--accent-dark);color:var(--on-accent);border-color:var(--accent-dark)">الكتابة A1</button>
           </div>
         </div>
 
@@ -1351,6 +1352,46 @@
               <div id="a1Breakdown" style="text-align:right;margin:16px 0"></div>
               <button type="button" id="a1RetryBtn" class="start-btn" style="margin-top:12px">إعادة الاختبار</button>
               <button type="button" id="a1BackBtn" class="end-btn" style="margin-top:8px">العودة للمراجعة</button>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ======== Final Exam (A1+A2) ======== -->
+        <section id="view-finalexam" hidden>
+          <h2 class="view-title">الامتحان النهائي</h2>
+          <div id="finStartScreen">
+            <p class="hint" style="margin-bottom:18px">الامتحان النهائي الشامل (A1 + A2) — يغطي كل ما درسته في التطبيق: القصص، بنك الكلمات، القواعد، المحادثة، والكتابة. النجاح من <b>70%</b> يعني أنك أنهيت A2 وأصبحت <b>جاهزًا لـ B1</b> (لكن B1 نفسه لم يبدأ بعد).</p>
+            <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
+              <button type="button" id="finLangEn" class="active-en">English · الإنجليزية</button>
+              <button type="button" id="finLangDe">Deutsch · الألمانية</button>
+            </div>
+            <div class="tool-box" style="margin-bottom:16px">
+              <h3 style="margin:0 0 8px">أجزاء الامتحان</h3>
+              <p class="tool-note" style="margin:0">1. الاستماع (25) · 2. القراءة (25) · 3. القواعد والمفردات (25) · 4. الكتابة (25)</p>
+              <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 70 · 70–84 جاهز لـ B1 · 85+ جاهز بقوة لـ B1</p>
+              <p class="tool-note" style="margin:8px 0 0">الاستماع بصوت الجهاز (لا توجد تسجيلات جديدة لهذا الامتحان).</p>
+            </div>
+            <button class="start-btn" type="button" id="finBeginBtn" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الامتحان النهائي</button>
+          </div>
+
+          <div id="finTestArea" hidden>
+            <div id="finProgress" style="margin-bottom:14px;font-weight:700;color:var(--muted)"></div>
+            <div id="finQuestionBox" class="ex-card"></div>
+            <div id="finNav" style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+              <button type="button" id="finPrevBtn" class="end-btn" hidden>السابق</button>
+              <button type="button" id="finNextBtn" class="start-btn">التالي</button>
+              <button type="button" id="finFinishBtn" class="start-btn" hidden style="background:var(--ok)">إنهاء الامتحان</button>
+            </div>
+          </div>
+
+          <div id="finResultScreen" hidden>
+            <div class="tool-box" style="text-align:center">
+              <div id="finScoreBig" style="font-size:2.8rem;font-weight:800;margin:10px 0"></div>
+              <div id="finPassFail" style="font-size:1.3rem;font-weight:800;margin-bottom:12px"></div>
+              <div id="finBreakdown" style="text-align:right;margin:16px 0"></div>
+              <button type="button" id="finRetryBtn" class="start-btn" style="margin-top:12px">إعادة الامتحان</button>
+              <button type="button" id="finBackBtn" class="end-btn" style="margin-top:8px">العودة للمراجعة</button>
             </div>
           </div>
         </section>
@@ -4278,7 +4319,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "a1test", "conversation", "writing"];
+        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "a1test", "finalexam", "conversation", "writing"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var curView = "home", curReviewSub = "review";
 
@@ -4291,7 +4332,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "قواعد",
-        a1test: "اختبار المستوى A1", writing: "الكتابة A1"
+        a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", writing: "الكتابة A1"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
       var startView = "home";
@@ -4336,7 +4377,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
       });
       function mainOf(name){ if (name === "topic") return "stories"; if (name === "banktopic") return "bank";
         if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation") return name;
-        if (REVIEW_SUBS.indexOf(name) !== -1 || name === "a1test" || name === "writing") return "review";
+        if (REVIEW_SUBS.indexOf(name) !== -1 || name === "a1test" || name === "finalexam" || name === "writing") return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
       }
       var THEME_KEY = "readerApp.theme.v1";
@@ -5581,7 +5622,17 @@ function wrCheck() {
             { type: "mc", q: "This is ___ apple.", opts: ["a", "an", "the", "—"], ans: 1 },
             { type: "mc", q: "I have ___ brothers.", opts: ["two", "too", "to", "tow"], ans: 0 },
             { type: "mc", q: "The cat is ___ the chair.", opts: ["in", "on", "at", "to"], ans: 1 },
-            { type: "mc", q: "___ is your name?", opts: ["What", "Where", "Who", "How"], ans: 0 }
+            { type: "mc", q: "___ is your name?", opts: ["What", "Where", "Who", "How"], ans: 0 },
+            { type: "mc", q: "She ___ yesterday.", opts: ["is", "was", "are", "were"], ans: 1 },
+            { type: "mc", q: "This is ___ book.", opts: ["my", "me", "I", "mine"], ans: 0 },
+            { type: "mc", q: "I have two ___.", opts: ["child", "childs", "children", "childes"], ans: 2 },
+            { type: "mc", q: "He ___ swim very well.", opts: ["can", "cans", "can to", "is can"], ans: 0 },
+            { type: "mc", q: "I am ___ a book now.", opts: ["read", "reading", "reads", "to read"], ans: 1 },
+            { type: "mc", q: "___ is my pen.", opts: ["This", "These", "Those", "They"], ans: 0 },
+            { type: "mc", q: "I have ___ money.", opts: ["some", "any", "a", "an"], ans: 0 },
+            { type: "mc", q: "How ___ apples do you want?", opts: ["much", "many", "more", "most"], ans: 1 },
+            { type: "mc", q: "Ali is ___ than Omar.", opts: ["tall", "taller", "tallest", "more tall"], ans: 1 },
+            { type: "mc", q: "They ___ to school yesterday.", opts: ["go", "goes", "went", "going"], ans: 2 }
           ],
           writing: [
             { type: "form", q: "Complete the form with your information (write in English):", fields: ["Full name", "Age", "City", "Nationality"] },
@@ -5619,11 +5670,131 @@ function wrCheck() {
             { type: "mc", q: "Das ist ___ Apfel.", opts: ["ein", "eine", "einen", "der"], ans: 0 },
             { type: "mc", q: "Ich habe ___ Brüder.", opts: ["zwei", "zwei", "zu", "zwei"], ans: 0 },
             { type: "mc", q: "Die Katze ist ___ dem Stuhl.", opts: ["in", "auf", "an", "zu"], ans: 1 },
-            { type: "mc", q: "___ heißt du?", opts: ["Was", "Wo", "Wer", "Wie"], ans: 3 }
+            { type: "mc", q: "___ heißt du?", opts: ["Was", "Wo", "Wer", "Wie"], ans: 3 },
+            { type: "mc", q: "Sie ___ gestern hier.", opts: ["ist", "war", "sind", "waren"], ans: 1 },
+            { type: "mc", q: "Das ist ___ Buch.", opts: ["mein", "mich", "ich", "meiner"], ans: 0 },
+            { type: "mc", q: "Ich habe zwei ___.", opts: ["Kind", "Kinder", "Kinds", "Kinden"], ans: 1 },
+            { type: "mc", q: "Er ___ sehr gut schwimmen.", opts: ["kann", "können", "kannst", "könnt"], ans: 0 },
+            { type: "mc", q: "Ich ___ gerade ein Buch.", opts: ["lesen", "lest", "lese", "liest"], ans: 2 },
+            { type: "mc", q: "___ ist mein Stift.", opts: ["Das", "Die", "Der", "Den"], ans: 0 },
+            { type: "mc", q: "Ich habe ___ Geld.", opts: ["etwas", "kein", "nicht", "nie"], ans: 0 },
+            { type: "mc", q: "Wie ___ Äpfel möchtest du?", opts: ["viel", "viele", "mehr", "meisten"], ans: 1 },
+            { type: "mc", q: "Ali ist ___ als Omar.", opts: ["groß", "größer", "am größten", "mehr groß"], ans: 1 },
+            { type: "mc", q: "Sie ___ gestern zur Schule.", opts: ["gehen", "geht", "gingen", "gegangen"], ans: 2 }
           ],
           writing: [
             { type: "form", q: "Füllen Sie das Formular aus (auf Deutsch):", fields: ["Vollständiger Name", "Alter", "Stadt", "Nationalität"] },
             { type: "short", q: "Schreiben Sie 3–5 einfache Sätze über sich selbst (Name, Alter, Stadt, Beruf/Studium). Mindestens 25 Wörter.", minWords: 25 }
+          ]
+        }
+      };
+
+
+      var FINAL_DATA = {
+        en: {
+          listening: [
+            { type: "mc", audio: "Hello, I am Omar. I live in Baghdad. I am a teacher.", q: "What is Omar's job?", opts: ["Teacher", "Doctor", "Student", "Driver"], ans: 0 },
+            { type: "mc", audio: "The shop opens at nine o'clock and closes at five o'clock.", q: "When does the shop close?", opts: ["9:00", "5:00", "10:00", "6:00"], ans: 1 },
+            { type: "mc", audio: "Sara: I would like a tea, please. Waiter: With milk or lemon? Sara: With milk, please.", q: "What does Sara want?", opts: ["Tea with milk", "Tea with lemon", "Coffee", "Water"], ans: 0 },
+            { type: "mc", audio: "My sister has two children. They are five and seven years old.", q: "How many children does she have?", opts: ["One", "Two", "Three", "Five"], ans: 1 },
+            { type: "mc", audio: "The train to London leaves at ten thirty from platform two.", q: "When does the train leave?", opts: ["10:00", "10:30", "11:30", "9:30"], ans: 1 },
+            { type: "mc", audio: "Last year I travelled to Germany. I stayed there for two weeks and I visited Berlin and Munich.", q: "How long did he stay in Germany?", opts: ["One week", "Two weeks", "Three weeks", "One month"], ans: 1 },
+            { type: "mc", audio: "If it rains tomorrow, we will stay at home and watch a film.", q: "What will they do if it rains?", opts: ["Go out", "Stay at home and watch a film", "Go shopping", "Visit friends"], ans: 1 },
+            { type: "mc", audio: "I worked in this hospital for three years. Then I moved to a bigger hospital in the city centre.", q: "Where does he work now?", opts: ["In a small clinic", "In a bigger hospital in the city centre", "In a school", "In an office"], ans: 1 },
+            { type: "mc", audio: "Excuse me, could you tell me where the nearest pharmacy is? I need some medicine for my headache.", q: "What does the person need?", opts: ["Medicine for a headache", "A doctor", "A hospital", "A taxi"], ans: 0 },
+            { type: "mc", audio: "We are going to visit my grandmother next weekend. She lives in a small village near the mountains.", q: "Where does the grandmother live?", opts: ["In a city", "In a small village near the mountains", "In London", "In a hotel"], ans: 1 }
+          ],
+          reading: [
+            { type: "tf", text: "Notice: The swimming pool is closed on Mondays. It opens on Tuesday at 8 am.", q: "The swimming pool is open on Monday.", ans: false },
+            { type: "mc", text: "Email: Hi Tom, I am sorry, I cannot come to your party on Friday. I have to work. See you next week. Anna.", q: "Why can't Anna come?", opts: ["She is ill", "She has to work", "She is travelling", "She forgot"], ans: 1 },
+            { type: "tf", text: "Menu: Breakfast: bread, cheese, eggs, tea or coffee. Lunch: soup, chicken, rice, salad.", q: "You can have soup for breakfast.", ans: false },
+            { type: "mc", text: "Sign: No parking here. Cars will be removed.", q: "What happens to cars parked here?", opts: ["They are removed", "They are free", "They are washed", "Nothing"], ans: 0 },
+            { type: "mc", text: "Advert: English course for beginners. Every Monday and Wednesday, 6-8 pm. Price: 50 dollars a month. Call 0770 123456.", q: "When is the course?", opts: ["Monday and Wednesday", "Tuesday and Thursday", "Every day", "Weekends"], ans: 0 },
+            { type: "mc", text: "Last summer, my family and I went to Turkey for our holiday. We stayed in a hotel near the sea. Every morning we swam in the sea, and in the afternoon we visited old places in the city. The food was very good, but the weather was very hot. We will go back next year.", q: "What did they do every morning?", opts: ["Visited old places", "Swam in the sea", "Ate in restaurants", "Slept late"], ans: 1 },
+            { type: "tf", text: "To stay healthy, you should eat vegetables and fruit every day, drink enough water, and walk for thirty minutes. You should not eat a lot of fast food or drink a lot of soft drinks.", q: "You should drink a lot of soft drinks to stay healthy.", ans: false },
+            { type: "mc", text: "I started my new job last month. I work in an office in the city centre. My job is to answer emails and help customers. My colleagues are friendly, and my boss is kind. I like my job, but I have to get up very early every day.", q: "What is his job?", opts: ["Answer emails and help customers", "Drive a bus", "Teach children", "Cook food"], ans: 0 },
+            { type: "mc", text: "If you want to learn a language, you must practise every day. Read short texts, listen to the language, and speak with other people. Do not be afraid of mistakes — they help you learn.", q: "What should you NOT be afraid of?", opts: ["Reading", "Mistakes", "Listening", "Speaking"], ans: 1 },
+            { type: "tf", text: "The museum is open from Tuesday to Sunday, 10 am to 6 pm. It is closed on Mondays. Tickets cost 10 dollars for adults and 5 dollars for children under 12.", q: "The museum is open on Mondays.", ans: false }
+          ],
+          grammar: [
+            { type: "mc", q: "I ___ from Iraq.", opts: ["am", "is", "are", "be"], ans: 0 },
+            { type: "mc", q: "___ you like coffee?", opts: ["Do", "Does", "Is", "Are"], ans: 0 },
+            { type: "mc", q: "She ___ TV every evening.", opts: ["watch", "watches", "watching", "watched"], ans: 1 },
+            { type: "mc", q: "There ___ a book on the table.", opts: ["is", "are", "am", "be"], ans: 0 },
+            { type: "mc", q: "I have ___ sister.", opts: ["a", "an", "the", "—"], ans: 0 },
+            { type: "mc", q: "They ___ yesterday.", opts: ["was", "were", "are", "is"], ans: 1 },
+            { type: "mc", q: "This is ___ car.", opts: ["he", "his", "him", "he's"], ans: 1 },
+            { type: "mc", q: "I am ___ a book now.", opts: ["read", "reading", "reads", "readed"], ans: 1 },
+            { type: "mc", q: "How ___ brothers do you have?", opts: ["much", "many", "more", "most"], ans: 1 },
+            { type: "mc", q: "My house is ___ than yours.", opts: ["big", "bigger", "biggest", "more big"], ans: 1 },
+            { type: "mc", q: "I am going to ___ my friend tomorrow.", opts: ["visit", "visiting", "visited", "visits"], ans: 0 },
+            { type: "mc", q: "It will ___ tomorrow.", opts: ["rain", "rains", "raining", "rained"], ans: 0 },
+            { type: "mc", q: "She ___ to school yesterday.", opts: ["walk", "walked", "walking", "walks"], ans: 1 },
+            { type: "mc", q: "You ___ stop when the light is red.", opts: ["must", "must to", "should to", "can to"], ans: 0 },
+            { type: "mc", q: "This is the ___ film I have ever seen.", opts: ["good", "better", "best", "more good"], ans: 2 },
+            { type: "mc", q: "I need a ___ to travel to another country.", opts: ["passport", "ticket", "bag", "key"], ans: 0 },
+            { type: "mc", q: "The opposite of 'hot' is ___.", opts: ["cold", "warm", "big", "small"], ans: 0 },
+            { type: "mc", q: "She gave the book to ___.", opts: ["I", "me", "my", "mine"], ans: 1 },
+            { type: "mc", q: "He speaks English ___.", opts: ["good", "well", "better", "best"], ans: 1 },
+            { type: "mc", q: "I lived in London ___ two years.", opts: ["since", "for", "at", "in"], ans: 1 }
+          ],
+          writing: [
+            { type: "form", q: "Complete the form with your information (write in English):", fields: ["Full name", "Age", "City", "Nationality"] },
+            { type: "short", q: "Write 3–5 simple sentences about your daily routine. Minimum 25 words.", minWords: 25 },
+            { type: "long", q: "Write a short text (40–60 words) about your last holiday or a trip you want to take. Use the past tense.", minWords: 40 }
+          ]
+        },
+        de: {
+          listening: [
+            { type: "mc", audio: "Hallo, ich heiße Omar. Ich wohne in Bagdad. Ich bin Lehrer.", q: "Was ist Omar von Beruf?", opts: ["Lehrer", "Arzt", "Student", "Fahrer"], ans: 0 },
+            { type: "mc", audio: "Das Geschäft öffnet um neun Uhr und schließt um fünf Uhr.", q: "Wann schließt das Geschäft?", opts: ["Um 9 Uhr", "Um 17 Uhr", "Um 10 Uhr", "Um 18 Uhr"], ans: 1 },
+            { type: "mc", audio: "Sara: Ich hätte gerne einen Tee, bitte. Kellner: Mit Milch oder Zitrone? Sara: Mit Milch, bitte.", q: "Was möchte Sara?", opts: ["Tee mit Milch", "Tee mit Zitrone", "Kaffee", "Wasser"], ans: 0 },
+            { type: "mc", audio: "Meine Schwester hat zwei Kinder. Sie sind fünf und sieben Jahre alt.", q: "Wie viele Kinder hat sie?", opts: ["Eins", "Zwei", "Drei", "Fünf"], ans: 1 },
+            { type: "mc", audio: "Der Zug nach London fährt um halb elf von Gleis zwei ab.", q: "Wann fährt der Zug ab?", opts: ["Um 10 Uhr", "Um 10:30 Uhr", "Um 11:30 Uhr", "Um 9:30 Uhr"], ans: 1 },
+            { type: "mc", audio: "Letztes Jahr bin ich nach Deutschland gereist. Ich bin zwei Wochen dort geblieben und habe Berlin und München besucht.", q: "Wie lange ist er in Deutschland geblieben?", opts: ["Eine Woche", "Zwei Wochen", "Drei Wochen", "Einen Monat"], ans: 1 },
+            { type: "mc", audio: "Wenn es morgen regnet, bleiben wir zu Hause und sehen einen Film.", q: "Was machen sie, wenn es regnet?", opts: ["Sie gehen aus", "Sie bleiben zu Hause und sehen einen Film", "Sie gehen einkaufen", "Sie besuchen Freunde"], ans: 1 },
+            { type: "mc", audio: "Ich habe drei Jahre in diesem Krankenhaus gearbeitet. Dann bin ich in ein größeres Krankenhaus im Stadtzentrum gezogen.", q: "Wo arbeitet er jetzt?", opts: ["In einer kleinen Klinik", "In einem größeren Krankenhaus im Stadtzentrum", "In einer Schule", "In einem Büro"], ans: 1 },
+            { type: "mc", audio: "Entschuldigung, können Sie mir sagen, wo die nächste Apotheke ist? Ich brauche ein Medikament gegen meine Kopfschmerzen.", q: "Was braucht die Person?", opts: ["Ein Medikament gegen Kopfschmerzen", "Einen Arzt", "Ein Krankenhaus", "Ein Taxi"], ans: 0 },
+            { type: "mc", audio: "Wir werden meine Großmutter nächstes Wochenende besuchen. Sie wohnt in einem kleinen Dorf in der Nähe der Berge.", q: "Wo wohnt die Großmutter?", opts: ["In einer Stadt", "In einem kleinen Dorf in der Nähe der Berge", "In London", "In einem Hotel"], ans: 1 }
+          ],
+          reading: [
+            { type: "tf", text: "Hinweis: Das Schwimmbad ist montags geschlossen. Es öffnet dienstags um 8 Uhr.", q: "Das Schwimmbad ist montags geöffnet.", ans: false },
+            { type: "mc", text: "E-Mail: Hallo Tom, es tut mir leid, ich kann am Freitag nicht zu deiner Party kommen. Ich muss arbeiten. Bis nächste Woche. Anna.", q: "Warum kann Anna nicht kommen?", opts: ["Sie ist krank", "Sie muss arbeiten", "Sie reist", "Sie hat es vergessen"], ans: 1 },
+            { type: "tf", text: "Speisekarte: Frühstück: Brot, Käse, Eier, Tee oder Kaffee. Mittagessen: Suppe, Hähnchen, Reis, Salat.", q: "Man kann Suppe zum Frühstück essen.", ans: false },
+            { type: "mc", text: "Schild: Hier ist Parken verboten. Autos werden entfernt.", q: "Was passiert mit Autos, die hier parken?", opts: ["Sie werden entfernt", "Sie sind kostenlos", "Sie werden gewaschen", "Nichts"], ans: 0 },
+            { type: "mc", text: "Anzeige: Englischkurs für Anfänger. Jeden Montag und Mittwoch, 18-20 Uhr. Preis: 50 Dollar im Monat. Rufen Sie 0770 123456 an.", q: "Wann ist der Kurs?", opts: ["Montag und Mittwoch", "Dienstag und Donnerstag", "Jeden Tag", "Wochenende"], ans: 0 },
+            { type: "mc", text: "Letzten Sommer sind meine Familie und ich in die Türkei in den Urlaub gefahren. Wir haben in einem Hotel in der Nähe des Meeres gewohnt. Jeden Morgen sind wir im Meer geschwommen, und am Nachmittag haben wir alte Orte in der Stadt besucht. Das Essen war sehr gut, aber das Wetter war sehr heiß. Nächstes Jahr fahren wir wieder.", q: "Was haben sie jeden Morgen gemacht?", opts: ["Alte Orte besucht", "Im Meer geschwommen", "In Restaurants gegessen", "Lange geschlafen"], ans: 1 },
+            { type: "tf", text: "Um gesund zu bleiben, sollte man jeden Tag Gemüse und Obst essen, genug Wasser trinken und dreißig Minuten spazieren gehen. Man sollte nicht viel Fast Food essen oder viele Softdrinks trinken.", q: "Man sollte viele Softdrinks trinken, um gesund zu bleiben.", ans: false },
+            { type: "mc", text: "Ich habe letzten Monat meinen neuen Job angefangen. Ich arbeite in einem Büro im Stadtzentrum. Meine Aufgabe ist es, E-Mails zu beantworten und Kunden zu helfen. Meine Kollegen sind freundlich, und mein Chef ist nett. Ich mag meinen Job, aber ich muss jeden Tag sehr früh aufstehen.", q: "Was ist seine Aufgabe?", opts: ["E-Mails beantworten und Kunden helfen", "Einen Bus fahren", "Kinder unterrichten", "Essen kochen"], ans: 0 },
+            { type: "mc", text: "Wenn du eine Sprache lernen willst, musst du jeden Tag üben. Lies kurze Texte, höre die Sprache und sprich mit anderen Menschen. Habe keine Angst vor Fehlern — sie helfen dir beim Lernen.", q: "Wovor sollte man keine Angst haben?", opts: ["Lesen", "Fehler", "Hören", "Sprechen"], ans: 1 },
+            { type: "tf", text: "Das Museum ist von Dienstag bis Sonntag, 10 bis 18 Uhr, geöffnet. Montags ist es geschlossen. Tickets kosten 10 Dollar für Erwachsene und 5 Dollar für Kinder unter 12 Jahren.", q: "Das Museum ist montags geöffnet.", ans: false }
+          ],
+          grammar: [
+            { type: "mc", q: "Ich ___ aus dem Irak.", opts: ["bin", "bist", "ist", "sind"], ans: 0 },
+            { type: "mc", q: "___ du gern Kaffee?", opts: ["Magst", "Mag", "Mögen", "Mögt"], ans: 0 },
+            { type: "mc", q: "Sie ___ jeden Abend fern.", opts: ["sehe", "siehst", "sieht", "sehen"], ans: 2 },
+            { type: "mc", q: "Es ___ ein Buch auf dem Tisch.", opts: ["ist", "sind", "bin", "seid"], ans: 0 },
+            { type: "mc", q: "Ich habe ___ Schwester.", opts: ["ein", "eine", "einen", "einem"], ans: 1 },
+            { type: "mc", q: "Sie ___ gestern hier.", opts: ["war", "waren", "ist", "sind"], ans: 0 },
+            { type: "mc", q: "Das ist ___ Auto.", opts: ["er", "sein", "seine", "ihn"], ans: 1 },
+            { type: "mc", q: "Ich ___ gerade ein Buch.", opts: ["lese", "liest", "lesen", "lest"], ans: 0 },
+            { type: "mc", q: "Wie ___ Brüder hast du?", opts: ["viel", "viele", "mehr", "meisten"], ans: 1 },
+            { type: "mc", q: "Mein Haus ist ___ als deins.", opts: ["groß", "größer", "am größten", "mehr groß"], ans: 1 },
+            { type: "mc", q: "Ich werde morgen meinen Freund ___.", opts: ["besuchen", "besucht", "besuchte", "besuchst"], ans: 0 },
+            { type: "mc", q: "Es wird morgen ___.", opts: ["regnen", "regnet", "regnete", "geregnet"], ans: 0 },
+            { type: "mc", q: "Sie ___ gestern zur Schule.", opts: ["geht", "ging", "gegangen", "gehen"], ans: 1 },
+            { type: "mc", q: "Du ___ anhalten, wenn die Ampel rot ist.", opts: ["musst", "müssen", "musstest", "müsst"], ans: 0 },
+            { type: "mc", q: "Das ist der ___ Film, den ich je gesehen habe.", opts: ["gut", "besser", "beste", "am besten"], ans: 2 },
+            { type: "mc", q: "Ich brauche einen ___, um in ein anderes Land zu reisen.", opts: ["Reisepass", "Fahrkarte", "Tasche", "Schlüssel"], ans: 0 },
+            { type: "mc", q: "Das Gegenteil von 'heiß' ist ___.", opts: ["kalt", "warm", "groß", "klein"], ans: 0 },
+            { type: "mc", q: "Sie hat das Buch ___ gegeben.", opts: ["ich", "mir", "mich", "mein"], ans: 1 },
+            { type: "mc", q: "Er spricht Englisch ___.", opts: ["gut", "gute", "guter", "gutes"], ans: 0 },
+            { type: "mc", q: "Ich habe zwei Jahre in London ___.", opts: ["gelebt", "lebe", "leben", "lebte"], ans: 0 }
+          ],
+          writing: [
+            { type: "form", q: "Füllen Sie das Formular aus (auf Deutsch):", fields: ["Vollständiger Name", "Alter", "Stadt", "Nationalität"] },
+            { type: "short", q: "Schreiben Sie 3–5 Sätze über Ihren Tagesablauf. Mindestens 25 Wörter.", minWords: 25 },
+            { type: "long", q: "Schreiben Sie einen kurzen Text (40–60 Wörter) über Ihren letzten Urlaub oder eine Reise, die Sie machen möchten. Verwenden Sie die Vergangenheit.", minWords: 40 }
           ]
         }
       };
@@ -5868,26 +6039,48 @@ function wrCheck() {
         a1RenderQuestion();
       }
 
+      // Writing structure cap: random word lists (no sentence punctuation AND no common verb)
+      // are gibberish, not sentences — cap their word-count base to 2 points.
+      function wrCapBase(base, text, lang) {
+        if (!text || base <= 0) return base;
+        var hasPunct = /[.!?]/.test(text);
+        var VERBS = lang === "de"
+          ? /\b(bin|bist|ist|sind|seid|war|waren|habe|hast|hat|haben|gehe|gehst|geht|gehen|wohne|wohnst|wohnt|wohnen|lebe|lebst|lebt|leben|arbeite|arbeitest|arbeitet|arbeiten|mag|magst|möchte|möchtest|kann|kannst|können|will|willst|wollen|lese|liest|lesen|mache|machst|macht|machen|spiele|spielt|spielen)\b/i
+          : /\b(am|is|are|was|were|have|has|had|do|does|did|go|goes|went|like|likes|live|lives|lived|work|works|worked|read|reads|love|loves|want|wants|need|needs|can|could|will|would|should|must|get|gets|got|make|makes|made|take|takes|took|come|comes|came|see|sees|saw|play|plays|played|study|studies|studied)\b/i;
+        var hasVerb = VERBS.test(text);
+        if (!hasPunct && !hasVerb) return Math.min(base, 2);
+        if (!hasPunct || !hasVerb) return Math.max(0, base - 2);
+        return base;
+      }
+
       function a1ScorePart(partIdx) {
         var part = A1_PARTS[partIdx];
         var list = A1_DATA[a1State.lang][part];
         var score = 0;
         var max = 25;
         if (part === "writing") {
-          // Form: 10 points if most fields filled
+          // Form: 10 points, content-validated (age must be a number; no gibberish repeats)
           var formFilled = 0;
           for (var i = 0; i < 4; i++) {
-            var v = a1State.answers[partIdx + "-0-f" + i] || "";
-            if (v.trim().length > 1) formFilled++;
+            var v = (a1State.answers[partIdx + "-0-f" + i] || "").trim();
+            if (v.length < 2) continue;
+            if (/^(.)\1+$/.test(v)) continue;
+            if (i === 1 && !/^\d{1,3}$/.test(v)) continue;
+            formFilled++;
           }
           score += Math.round((formFilled / 4) * 10);
-          // Short text: 15 points based on word count
+          // Short text: 15 points = word count MINUS grammar errors (wrGrammar)
           var text = (a1State.answers[partIdx + "-1"] || "").trim();
           var words = text ? text.split(/\s+/).filter(Boolean).length : 0;
-          if (words >= 25) score += 15;
-          else if (words >= 15) score += 10;
-          else if (words >= 8) score += 6;
-          else if (words >= 3) score += 3;
+          var base = 0;
+          if (words >= 25) base = 15;
+          else if (words >= 15) base = 10;
+          else if (words >= 8) base = 6;
+          else if (words >= 3) base = 3;
+          base = wrCapBase(base, text, a1State.lang);
+          var errs = 0;
+          try { if (typeof wrGrammar === "function" && text) errs = (wrGrammar(text, a1State.lang).errors || []).length; } catch(e) {}
+          score += Math.max(0, base - errs * 2);
         } else {
           var correct = 0;
           list.forEach(function(item, qi) {
@@ -5912,9 +6105,10 @@ function wrCheck() {
         $("a1ResultScreen").hidden = false;
 
         var passed = total >= 60;
+        var band = !passed ? "" : total >= 90 ? " — A1 قوي، جاهز لـ A2" : total >= 80 ? " — A1 جيد" : " — A1";
         $("a1ScoreBig").textContent = total + " / 100";
         $("a1ScoreBig").style.color = passed ? "var(--ok)" : "var(--bad)";
-        $("a1PassFail").textContent = passed ? "✓ ناجح — مبروك!" : "✗ لم تحقق نسبة النجاح (60%)";
+        $("a1PassFail").textContent = passed ? "✓ ناجح — مبروك!" + band : "✗ لم تحقق نسبة النجاح (60%)";
         $("a1PassFail").style.color = passed ? "var(--ok)" : "var(--bad)";
 
         var html = "<table style='width:100%;border-collapse:collapse'>";
@@ -5953,6 +6147,309 @@ function wrCheck() {
       // When entering a1test view
       var _oldShowView = showView;
       // We hook into the existing showView calls via the data-goto already working
+
+
+      /* ---------- Final exam (A1+A2 comprehensive; pass = B1-ready) ---------- */
+      var FINAL_PARTS = ["listening", "reading", "grammar", "writing"];
+      var FINAL_PART_NAMES = { listening: "الاستماع", reading: "القراءة", grammar: "القواعد والمفردات", writing: "الكتابة" };
+      var finState = { lang: "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false };
+      function finReset() {
+        if (typeof a1StopAudio === "function") a1StopAudio();
+        finState = { lang: finState.lang || "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false };
+        $("finStartScreen").hidden = false;
+        $("finTestArea").hidden = true;
+        $("finResultScreen").hidden = true;
+      }
+      function finStart() {
+        finState.started = true;
+        finState.part = 0;
+        finState.q = 0;
+        finState.answers = {};
+        finState.scores = {listening:0, reading:0, grammar:0, writing:0};
+        $("finStartScreen").hidden = true;
+        $("finTestArea").hidden = false;
+        $("finResultScreen").hidden = true;
+        finRenderQuestion();
+      }
+      function finCurrentList() {
+        var lang = finState.lang;
+        var part = FINAL_PARTS[finState.part];
+        return FINAL_DATA[lang][part] || [];
+      }
+      function finPlayExam(text) {
+        if (typeof a1Speak === "function") { a1Speak(text); return; }
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(text);
+        u.lang = finState.lang === "de" ? "de-DE" : "en-US";
+        window.speechSynthesis.speak(u);
+      }
+      function finRenderQuestion() {
+        if (typeof a1StopAudio === "function") a1StopAudio();
+        var list = finCurrentList();
+        var partName = FINAL_PART_NAMES[FINAL_PARTS[finState.part]];
+        var totalInPart = list.length;
+        $("finProgress").textContent = partName + " — سؤال " + (finState.q + 1) + " من " + totalInPart + "  |  الجزء " + (finState.part + 1) + "/4";
+        var item = list[finState.q];
+        var box = $("finQuestionBox");
+        box.innerHTML = "";
+        if (!item) { finFinish(); return; }
+        if (item.type === "mc") {
+          if (item.audio) {
+            var playBtn = document.createElement("button");
+            playBtn.type = "button";
+            playBtn.className = "start-btn";
+            playBtn.style.marginBottom = "12px";
+            playBtn.innerHTML = SPK + " استمع";
+            playBtn.onclick = function(){ finPlayExam(item.audio); };
+            box.appendChild(playBtn);
+            var small = document.createElement("p");
+            small.style.fontSize = ".85rem";
+            small.style.color = "var(--muted)";
+            small.textContent = "(يمكنك الاستماع أكثر من مرة — صوت الجهاز)";
+            box.appendChild(small);
+          }
+          if (item.text) {
+            var t = document.createElement("p");
+            t.style.direction = "ltr";
+            t.style.textAlign = "left";
+            t.style.fontFamily = "var(--font-serif)";
+            t.style.background = "var(--surface2)";
+            t.style.padding = "12px";
+            t.style.borderRadius = "10px";
+            t.textContent = item.text;
+            box.appendChild(t);
+          }
+          var qEl = document.createElement("p");
+          qEl.style.fontWeight = "800";
+          qEl.style.margin = "14px 0 10px";
+          qEl.textContent = item.q;
+          box.appendChild(qEl);
+          item.opts.forEach(function(opt, i) {
+            var lab = document.createElement("label");
+            lab.style.display = "block";
+            lab.style.padding = "10px 14px";
+            lab.style.margin = "6px 0";
+            lab.style.background = "var(--surface)";
+            lab.style.border = "1px solid var(--line)";
+            lab.style.borderRadius = "10px";
+            lab.style.cursor = "pointer";
+            var radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = "finopt";
+            radio.value = i;
+            radio.style.marginLeft = "10px";
+            if (finState.answers[finState.part + "-" + finState.q] === i) radio.checked = true;
+            lab.appendChild(radio);
+            lab.appendChild(document.createTextNode(opt));
+            lab.onclick = function(){ finState.answers[finState.part + "-" + finState.q] = i; };
+            box.appendChild(lab);
+          });
+        } else if (item.type === "tf") {
+          var t = document.createElement("p");
+          t.style.direction = "ltr";
+          t.style.textAlign = "left";
+          t.style.fontFamily = "var(--font-serif)";
+          t.style.background = "var(--surface2)";
+          t.style.padding = "12px";
+          t.style.borderRadius = "10px";
+          t.textContent = item.text;
+          box.appendChild(t);
+          var qEl = document.createElement("p");
+          qEl.style.fontWeight = "800";
+          qEl.style.margin = "14px 0 10px";
+          qEl.textContent = item.q + " (صح / خطأ)";
+          box.appendChild(qEl);
+          [["صح", true], ["خطأ", false]].forEach(function(pair) {
+            var lab = document.createElement("label");
+            lab.style.display = "inline-block";
+            lab.style.padding = "10px 18px";
+            lab.style.margin = "6px 8px 6px 0";
+            lab.style.background = "var(--surface)";
+            lab.style.border = "1px solid var(--line)";
+            lab.style.borderRadius = "10px";
+            lab.style.cursor = "pointer";
+            var radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = "fintf";
+            radio.value = pair[1];
+            radio.style.marginLeft = "8px";
+            if (finState.answers[finState.part + "-" + finState.q] === pair[1]) radio.checked = true;
+            lab.appendChild(radio);
+            lab.appendChild(document.createTextNode(pair[0]));
+            lab.onclick = function(){ finState.answers[finState.part + "-" + finState.q] = pair[1]; };
+            box.appendChild(lab);
+          });
+        } else if (item.type === "form") {
+          var qEl = document.createElement("p");
+          qEl.style.fontWeight = "800";
+          qEl.textContent = item.q;
+          box.appendChild(qEl);
+          item.fields.forEach(function(f, i) {
+            var row = document.createElement("div");
+            row.style.margin = "10px 0";
+            var lab = document.createElement("label");
+            lab.textContent = f + ": ";
+            lab.style.fontWeight = "700";
+            var inp = document.createElement("input");
+            inp.type = "text";
+            inp.style.width = "100%";
+            inp.style.padding = "10px";
+            inp.style.border = "1px solid var(--line)";
+            inp.style.borderRadius = "8px";
+            inp.style.marginTop = "4px";
+            inp.dataset.field = i;
+            var key = finState.part + "-" + finState.q + "-f" + i;
+            if (finState.answers[key]) inp.value = finState.answers[key];
+            inp.oninput = function(){ finState.answers[key] = inp.value; };
+            row.appendChild(lab);
+            row.appendChild(inp);
+            box.appendChild(row);
+          });
+          var note = document.createElement("p");
+          note.style.fontSize = ".85rem";
+          note.style.color = "var(--muted)";
+          note.textContent = "اكتب إجاباتك. سيتم التحقق من المحتوى (العمر يجب أن يكون رقمًا).";
+          box.appendChild(note);
+        } else if (item.type === "short" || item.type === "long") {
+          var qEl = document.createElement("p");
+          qEl.style.fontWeight = "800";
+          qEl.textContent = item.q;
+          box.appendChild(qEl);
+          var ta = document.createElement("textarea");
+          ta.rows = 6;
+          ta.style.width = "100%";
+          ta.style.padding = "12px";
+          ta.style.border = "1px solid var(--line)";
+          ta.style.borderRadius = "10px";
+          ta.style.fontFamily = "inherit";
+          ta.style.direction = "ltr";
+          ta.style.textAlign = "left";
+          var key = finState.part + "-" + finState.q;
+          if (finState.answers[key]) ta.value = finState.answers[key];
+          ta.oninput = function(){ finState.answers[key] = ta.value; };
+          box.appendChild(ta);
+          var note = document.createElement("p");
+          note.style.fontSize = ".85rem";
+          note.style.color = "var(--muted)";
+          note.textContent = "الحد الأدنى " + (item.minWords || 25) + " كلمة. النقاط حسب الطول وصحة القواعد.";
+          box.appendChild(note);
+        }
+        $("finPrevBtn").hidden = (finState.part === 0 && finState.q === 0);
+        var isLast = (finState.part === FINAL_PARTS.length - 1) && (finState.q === list.length - 1);
+        $("finNextBtn").hidden = isLast;
+        $("finFinishBtn").hidden = !isLast;
+      }
+      function finNext() {
+        var list = finCurrentList();
+        if (finState.q < list.length - 1) {
+          finState.q++;
+        } else if (finState.part < FINAL_PARTS.length - 1) {
+          finState.part++;
+          finState.q = 0;
+        }
+        finRenderQuestion();
+      }
+      function finPrev() {
+        if (finState.q > 0) {
+          finState.q--;
+        } else if (finState.part > 0) {
+          finState.part--;
+          finState.q = finCurrentList().length - 1;
+        }
+        finRenderQuestion();
+      }
+      function finScorePart(partIdx) {
+        var part = FINAL_PARTS[partIdx];
+        var list = FINAL_DATA[finState.lang][part];
+        var score = 0;
+        if (part === "writing") {
+          var formFilled = 0;
+          for (var i = 0; i < 4; i++) {
+            var v = (finState.answers[partIdx + "-0-f" + i] || "").trim();
+            if (v.length < 2) continue;
+            if (/^(.)\1+$/.test(v)) continue;
+            if (i === 1 && !/^\d{1,3}$/.test(v)) continue;
+            formFilled++;
+          }
+          score += Math.round((formFilled / 4) * 8);
+          var shortText = (finState.answers[partIdx + "-1"] || "").trim();
+          var w1 = shortText ? shortText.split(/\s+/).filter(Boolean).length : 0;
+          var b1 = 0;
+          if (w1 >= 25) b1 = 7;
+          else if (w1 >= 15) b1 = 5;
+          else if (w1 >= 8) b1 = 3;
+          else if (w1 >= 3) b1 = 1;
+          b1 = wrCapBase(b1, shortText, finState.lang);
+          var e1 = 0;
+          try { if (typeof wrGrammar === "function" && shortText) e1 = (wrGrammar(shortText, finState.lang).errors || []).length; } catch(e) {}
+          score += Math.max(0, b1 - e1);
+          var longText = (finState.answers[partIdx + "-2"] || "").trim();
+          var w2 = longText ? longText.split(/\s+/).filter(Boolean).length : 0;
+          var b2 = 0;
+          if (w2 >= 40) b2 = 10;
+          else if (w2 >= 25) b2 = 7;
+          else if (w2 >= 15) b2 = 4;
+          else if (w2 >= 3) b2 = 2;
+          b2 = wrCapBase(b2, longText, finState.lang);
+          var e2 = 0;
+          try { if (typeof wrGrammar === "function" && longText) e2 = (wrGrammar(longText, finState.lang).errors || []).length; } catch(e) {}
+          score += Math.max(0, b2 - e2);
+        } else {
+          var correct = 0;
+          list.forEach(function(item, qi) {
+            var ans = finState.answers[partIdx + "-" + qi];
+            if (item.type === "mc" && ans === item.ans) correct++;
+            if (item.type === "tf" && ans === item.ans) correct++;
+          });
+          score = Math.round((correct / list.length) * 25);
+        }
+        return score;
+      }
+      function finFinish() {
+        if (typeof a1StopAudio === "function") a1StopAudio();
+        var total = 0;
+        FINAL_PARTS.forEach(function(p, i) {
+          var sc = finScorePart(i);
+          finState.scores[p] = sc;
+          total += sc;
+        });
+        $("finTestArea").hidden = true;
+        $("finResultScreen").hidden = false;
+        var passed = total >= 70;
+        var band = !passed ? "" : total >= 85 ? " — جاهز بقوة لـ B1" : " — جاهز لـ B1";
+        $("finScoreBig").textContent = total + " / 100";
+        $("finScoreBig").style.color = passed ? "var(--ok)" : "var(--bad)";
+        $("finPassFail").textContent = passed ? "✓ ناجح — مبروك!" + band : "✗ لم تحقق نسبة النجاح (70%) — أكملت A2 لكنك لست جاهزًا لـ B1 بعد";
+        $("finPassFail").style.color = passed ? "var(--ok)" : "var(--bad)";
+        var html = "<table style='width:100%;border-collapse:collapse'>";
+        FINAL_PARTS.forEach(function(p) {
+          html += "<tr><td style='padding:8px;border-bottom:1px solid var(--line)'>" + FINAL_PART_NAMES[p] + "</td>";
+          html += "<td style='padding:8px;border-bottom:1px solid var(--line);text-align:left;font-weight:800'>" + finState.scores[p] + " / 25</td></tr>";
+        });
+        html += "</table>";
+        $("finBreakdown").innerHTML = html;
+        try {
+          localStorage.setItem("finalLastResult", JSON.stringify({
+            lang: finState.lang, total: total, scores: finState.scores, date: new Date().toISOString(), passed: passed
+          }));
+        } catch(e) {}
+      }
+      if ($("finLangEn")) $("finLangEn").addEventListener("click", function(){
+        finState.lang = "en";
+        $("finLangEn").classList.add("active-en"); $("finLangDe").classList.remove("active-de");
+      });
+      if ($("finLangDe")) $("finLangDe").addEventListener("click", function(){
+        finState.lang = "de";
+        $("finLangDe").classList.add("active-de");
+        $("finLangEn").classList.remove("active-en");
+      });
+      if ($("finBeginBtn")) $("finBeginBtn").addEventListener("click", finStart);
+      if ($("finNextBtn")) $("finNextBtn").addEventListener("click", finNext);
+      if ($("finPrevBtn")) $("finPrevBtn").addEventListener("click", finPrev);
+      if ($("finFinishBtn")) $("finFinishBtn").addEventListener("click", finFinish);
+      if ($("finRetryBtn")) $("finRetryBtn").addEventListener("click", function(){ finReset(); });
+      if ($("finBackBtn")) $("finBackBtn").addEventListener("click", function(){ showView("review"); });
 
       /* ---------- Home dashboard: per language × level, all from real data ---------- */
       function bankLevelTotal(lang, level){
