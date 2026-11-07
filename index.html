@@ -1357,6 +1357,19 @@
         </section>
 
 
+
+        <!-- ======== Word logic (Bank) ======== -->
+        <section id="view-wordlogic" hidden>
+          <h2 class="view-title">منطق الكلمات</h2>
+          <p class="hint" style="margin-bottom:14px">الفهم أفضل من الحفظ: الأفعال الشاذة مجموعات لها نمط، وكل لاحقة لها وظيفة. افهم المنطق وستعرف الكلمات الجديدة وحدك.</p>
+          <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
+            <button type="button" id="wlLangEn" class="active-en">English · الإنجليزية</button>
+            <button type="button" id="wlLangDe">Deutsch · الألمانية</button>
+          </div>
+          <div id="wlBody"></div>
+          <button type="button" id="wlBackBtn" class="end-btn" style="margin-top:12px">العودة إلى بنك الكلمات</button>
+        </section>
+
         <!-- ======== Final Exam (A1+A2) ======== -->
         <section id="view-finalexam" hidden>
           <h2 class="view-title">الامتحان النهائي</h2>
@@ -1449,6 +1462,7 @@
         <!-- ======== Vocabulary bank A1 ======== -->
         <section id="view-bank" hidden>
           <h2 class="view-title">بنك الكلمات</h2>
+          <button class="home-hero" type="button" data-goto="wordlogic" style="margin-bottom:16px"><span class="home-hero-ic">🧠</span><span class="home-hero-tx"><b>منطق الكلمات</b><small>الأفعال الشاذة وقواعد تكوين الكلمات — افهم، لا تحفظ</small></span><span class="home-hero-ar">‹</span></button>
           <div class="bank-progress">
             <div class="bank-prog-card">
               <div class="bp-head"><span class="bp-lang">English · الإنجليزية</span><span class="bp-num en" id="bankProgEn">0 / 2044</span></div>
@@ -4319,7 +4333,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "a1test", "finalexam", "conversation", "writing"];
+        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "a1test", "finalexam", "wordlogic", "conversation", "writing"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var curView = "home", curReviewSub = "review";
 
@@ -4332,7 +4346,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "قواعد",
-        a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", writing: "الكتابة A1"
+        a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", wordlogic: "منطق الكلمات", writing: "الكتابة A1"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
       var startView = "home";
@@ -4376,7 +4390,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         hPush({ app: 1, view: curView, guard: true }, "#" + curView);
       });
       function mainOf(name){ if (name === "topic") return "stories"; if (name === "banktopic") return "bank";
-        if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation") return name;
+        if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation" || name === "wordlogic") return name;
         if (REVIEW_SUBS.indexOf(name) !== -1 || name === "a1test" || name === "finalexam" || name === "writing") return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
       }
@@ -6148,6 +6162,198 @@ function wrCheck() {
       var _oldShowView = showView;
       // We hook into the existing showView calls via the data-goto already working
 
+
+
+      /* ---------- Word logic: irregular verbs + word formation (Bank) ---------- */
+      var IRREG_VERBS = {
+        en: [
+          { g: "نفس الشكل — لا يتغير أبدًا", en: "Same form: base = past = participle", note: "المنطق: هذه الأفعال قصيرة وتنتهي بصوت قوي (t / d)، فاللغة لم تغيّرها لأنها واضحة كما هي.", verbs: [
+            ["cut", "cut", "cut", "يقطع", "I cut the bread every morning.", "أقطع الخبز كل صباح."],
+            ["put", "put", "put", "يضع", "Please put the book on the table.", "من فضلك ضع الكتاب على الطاولة."],
+            ["read", "read", "read", "يقرأ", "I read a story yesterday. (تُنطق: رِد)", "قرأت قصة أمس."],
+            ["hit", "hit", "hit", "يضرب", "He hit the ball very hard.", "ضرب الكرة بقوة."],
+            ["cost", "cost", "cost", "يكلّف / ثمنه", "This book cost ten dollars.", "هذا الكتاب ثمنه عشرة دولارات."],
+            ["shut", "shut", "shut", "يغلق", "Please shut the door.", "من فضلك أغلق الباب."],
+            ["set", "set", "set", "يضع / يحدد", "I set the table for dinner.", "أعددت الطاولة للعشاء."],
+            ["let", "let", "let", "يسمح / يدع", "Let me help you.", "دعني أساعدك."],
+            ["hurt", "hurt", "hurt", "يؤلم / يجرح", "My leg hurt yesterday.", "ساقي آلمني أمس."]
+          ]},
+          { g: "الماضي = التصريف الثالث", en: "Past = participle (different from base)", note: "المنطق: هذه الأفعال تغيّر حرف العلة مرة واحدة ثم تثبت على نفس الشكل — احفظ التغيير الواحد فقط.", verbs: [
+            ["build", "built", "built", "يبني", "They built a new house.", "بنوا بيتًا جديدًا."],
+            ["buy", "bought", "bought", "يشتري", "I bought a car last year.", "اشتريت سيارة العام الماضي."],
+            ["catch", "caught", "caught", "يمسك / يلحق", "I caught the bus at 8 o'clock.", "لحقت بالحافلة في الثامنة."],
+            ["teach", "taught", "taught", "يعلّم", "She taught me English.", "علّمتني الإنجليزية."],
+            ["think", "thought", "thought", "يفكر / يظن", "I thought about it.", "فكرت في الأمر."],
+            ["bring", "brought", "brought", "يجلب", "He brought his friend.", "جلب صديقه معه."],
+            ["sell", "sold", "sold", "يبيع", "They sold their house.", "باعوا بيتهم."],
+            ["tell", "told", "told", "يخبر", "She told me the truth.", "أخبرتني الحقيقة."],
+            ["find", "found", "found", "يجد", "I found my keys.", "وجدت مفاتيحي."],
+            ["have", "had", "had", "لديه / يملك", "I had a car.", "كان لدي سيارة."],
+            ["make", "made", "made", "يصنع / يعمل", "She made a cake.", "صنعت كعكة."],
+            ["say", "said", "said", "يقول", "He said hello.", "قال مرحبًا."],
+            ["hear", "heard", "heard", "يسمع", "I heard a noise.", "سمعت صوتًا."],
+            ["keep", "kept", "kept", "يحتفظ / يبقي", "Keep your ticket.", "احتفظ بتذكرتك."],
+            ["sleep", "slept", "slept", "ينام", "I slept well.", "نمت جيدًا."],
+            ["feel", "felt", "felt", "يشعر", "I felt happy.", "شعرت بالسعادة."],
+            ["leave", "left", "left", "يغادر / يترك", "He left at 9 o'clock.", "غادر في التاسعة."],
+            ["meet", "met", "met", "يقابل", "I met Ali yesterday.", "قابلت عليًا أمس."],
+            ["sit", "sat", "sat", "يجلس", "She sat on the chair.", "جلست على الكرسي."],
+            ["win", "won", "won", "يفوز", "Our team won the game.", "فاز فريقنا بالمباراة."],
+            ["get", "got", "got", "يحصل / يصبح", "I got a new job.", "حصلت على وظيفة جديدة."],
+            ["lose", "lost", "lost", "يفقد / يخسر", "I lost my phone.", "فقدت هاتفي."]
+          ]},
+          { g: "تغيير حرف العلة: i → a → u", en: "Vowel change i → a → u", note: "المنطق: نمط صوتي قديم — الحرف يتحرك من الأمام (i) إلى الوسط (a) إلى الخلف (u). إذا حفظت النمط، عرفت كل المجموعة.", verbs: [
+            ["sing", "sang", "sung", "يغني", "She sang a beautiful song.", "غنّت أغنية جميلة."],
+            ["begin", "began", "begun", "يبدأ", "The lesson began at 9.", "بدأ الدرس في التاسعة."],
+            ["drink", "drank", "drunk", "يشرب", "He drank water.", "شرب ماءً."],
+            ["swim", "swam", "swum", "يسبح", "They swam in the sea.", "سبحوا في البحر."],
+            ["ring", "rang", "rung", "يرنّ / يتصل", "The phone rang twice.", "رنّ الهاتف مرتين."]
+          ]},
+          { g: "مختلفة تمامًا — احفظها كما هي", en: "Completely different — learn as a set", note: "المنطق: هذه أكثر الأفعال استعمالًا في اللغة، فهي الأقدم — ولهذا تغيّرت أكثر من غيرها. احفظها لأنك تستعملها كل يوم.", verbs: [
+            ["go", "went", "gone", "يذهب", "I went to school yesterday.", "ذهبت إلى المدرسة أمس."],
+            ["be", "was/were", "been", "يكون", "I was at home.", "كنت في البيت."],
+            ["do", "did", "done", "يفعل", "I did my homework.", "أنجزت واجبي."],
+            ["see", "saw", "seen", "يرى", "I saw a film.", "شاهدت فيلمًا."],
+            ["eat", "ate", "eaten", "يأكل", "We ate pizza.", "أكلنا بيتزا."],
+            ["give", "gave", "given", "يعطي", "She gave me a gift.", "أعطتني هدية."],
+            ["take", "took", "taken", "يأخذ", "He took the train.", "أخذ القطار."],
+            ["write", "wrote", "written", "يكتب", "I wrote a letter.", "كتبت رسالة."],
+            ["speak", "spoke", "spoken", "يتكلم", "She spoke English.", "تكلمت الإنجليزية."],
+            ["break", "broke", "broken", "يكسر", "He broke the glass.", "كسر الكأس."],
+            ["choose", "chose", "chosen", "يختار", "I chose the red one.", "اخترت الأحمر."],
+            ["drive", "drove", "driven", "يقود", "He drove to work.", "قاد إلى العمل."],
+            ["fly", "flew", "flown", "يطير", "They flew to London.", "طاروا إلى لندن."],
+            ["forget", "forgot", "forgotten", "ينسى", "I forgot your name.", "نسيت اسمك."],
+            ["grow", "grew", "grown", "ينمو / يزرع", "The tree grew fast.", "نمت الشجرة بسرعة."],
+            ["know", "knew", "known", "يعرف", "I knew the answer.", "عرفت الجواب."],
+            ["wear", "wore", "worn", "يرتدي", "She wore a red dress.", "ارتدت فستانًا أحمر."],
+            ["fall", "fell", "fallen", "يسقط / يقع", "He fell down.", "سقط أرضًا."],
+            ["run", "ran", "run", "يركض", "I ran to school.", "ركضت إلى المدرسة."]
+          ]}
+        ],
+        de: [
+          { g: "e → a → o", en: "Vowel change e → a → o", note: "المنطق: نفس النمط الصوتي — حرف العلة يتحرك إلى الخلف. احفظ النمط مرة واحدة.", verbs: [
+            ["helfen", "half", "geholfen", "يساعد", "Er half mir gestern.", "ساعدني أمس."],
+            ["sprechen", "sprach", "gesprochen", "يتكلم", "Sie sprach Deutsch.", "تكلمت الألمانية."],
+            ["nehmen", "nahm", "genommen", "يأخذ", "Er nahm das Buch.", "أخذ الكتاب."],
+            ["geben", "gab", "gegeben", "يعطي", "Sie gab mir ein Geschenk.", "أعطتني هدية."],
+            ["essen", "aß", "gegessen", "يأكل", "Wir aßen Pizza.", "أكلنا بيتزا."],
+            ["lesen", "las", "gelesen", "يقرأ", "Ich las ein Buch.", "قرأت كتابًا."],
+            ["sehen", "sah", "gesehen", "يرى", "Ich sah einen Film.", "شاهدت فيلمًا."],
+            ["stehlen", "stahl", "gestohlen", "يسرق", "Er stahl das Geld.", "سرق المال."],
+            ["werfen", "warf", "geworfen", "يرمي", "Er warf den Ball.", "رمى الكرة."],
+            ["geschehen", "geschah", "geschehen", "يحدث", "Es geschah gestern.", "حدث ذلك أمس."]
+          ]},
+          { g: "a يتغير ثم يرجع إلى a", en: "a changes in past, returns in participle", note: "المنطق: حرف العلة يتغير في الماضي فقط، ثم يرجع إلى أصله في التصريف الثالث.", verbs: [
+            ["fahren", "fuhr", "gefahren", "يسافر / يقود", "Er fuhr nach Berlin.", "سافر إلى برلين."],
+            ["tragen", "trug", "getragen", "يحمل / يرتدي", "Sie trug ein Kleid.", "ارتدت فستانًا."],
+            ["fallen", "fiel", "gefallen", "يسقط", "Er fiel hin.", "سقط أرضًا."],
+            ["fangen", "fing", "gefangen", "يمسك", "Er fing den Ball.", "أمسك الكرة."],
+            ["graben", "grub", "gegraben", "يحفر", "Sie gruben ein Loch.", "حفروا حفرة."],
+            ["laden", "lud", "geladen", "يُحمّل / يدعو", "Er lud mich ein.", "دعاني."],
+            ["waschen", "wusch", "gewaschen", "يغسل", "Sie wusch die Kleider.", "غسلت الملابس."],
+            ["schlafen", "schlief", "geschlafen", "ينام", "Ich schlief gut.", "نمت جيدًا."],
+            ["laufen", "lief", "gelaufen", "يركض / يمشي", "Er lief zur Schule.", "ركض إلى المدرسة."]
+          ]},
+          { g: "i → a → u", en: "Vowel change i → a → u", note: "المنطق: نفس نمط الإنجليزية (sing-sang-sung) — اللغتان من عائلة واحدة.", verbs: [
+            ["singen", "sang", "gesungen", "يغني", "Sie sang ein Lied.", "غنّت أغنية."],
+            ["trinken", "trank", "getrunken", "يشرب", "Er trank Wasser.", "شرب ماءً."],
+            ["beginnen", "begann", "begonnen", "يبدأ", "Der Unterricht begann um 9 Uhr.", "بدأ الدرس في التاسعة."],
+            ["schwimmen", "schwamm", "geschwommen", "يسبح", "Sie schwammen im Meer.", "سبحوا في البحر."],
+            ["gewinnen", "gewann", "gewonnen", "يفوز", "Unser Team gewann.", "فاز فريقنا."],
+            ["springen", "sprang", "gesprungen", "يقفز", "Er sprang hoch.", "قفز عاليًا."]
+          ]},
+          { g: "e → a → e", en: "Vowel change e → a → e", note: "المنطق: حرف العلة يتغير في الماضي فقط، والتصريف الثالث يرجع إلى e.", verbs: [
+            ["finden", "fand", "gefunden", "يجد", "Ich fand meine Schlüssel.", "وجدت مفاتيحي."],
+            ["sitzen", "saß", "gesessen", "يجلس", "Sie saß auf dem Stuhl.", "جلست على الكرسي."],
+            ["stehen", "stand", "gestanden", "يقف", "Er stand vor der Tür.", "وقف أمام الباب."],
+            ["verstehen", "verstand", "verstanden", "يفهم", "Ich verstand alles.", "فهمت كل شيء."],
+            ["bitten", "bat", "gebeten", "يطلب / يرجو", "Er bat um Hilfe.", "طلب المساعدة."],
+            ["liegen", "lag", "gelegen", "يستلقي / يقع", "Das Buch lag auf dem Tisch.", "كان الكتاب على الطاولة."]
+          ]},
+          { g: "خاصة — الأكثر استعمالًا", en: "Special — the most used verbs", note: "المنطق: هذه الأفعال هي عظام اللغة — تستعملها في كل جملة، فاحفظها أولًا.", verbs: [
+            ["sein", "war", "gewesen", "يكون", "Ich war zu Hause.", "كنت في البيت."],
+            ["haben", "hatte", "gehabt", "لديه", "Ich hatte ein Auto.", "كان لدي سيارة."],
+            ["werden", "wurde", "geworden", "يصبح", "Es wurde kalt.", "أصبح الجو باردًا."],
+            ["gehen", "ging", "gegangen", "يذهب", "Ich ging zur Schule.", "ذهبت إلى المدرسة."],
+            ["kommen", "kam", "gekommen", "يأتي", "Er kam spät.", "جاء متأخرًا."],
+            ["tun", "tat", "getan", "يفعل", "Was hast du getan?", "ماذا فعلت؟"],
+            ["wissen", "wusste", "gewusst", "يعرف", "Ich wusste die Antwort.", "عرفت الجواب."],
+            ["bringen", "brachte", "gebracht", "يجلب", "Er brachte seinen Freund.", "جلب صديقه."],
+            ["denken", "dachte", "gedacht", "يفكر", "Ich dachte an dich.", "فكرت فيك."],
+            ["kennen", "kannte", "gekannt", "يعرف (شخص/مكان)", "Ich kannte ihn nicht.", "لم أكن أعرفه."],
+            ["mögen", "mochte", "gemocht", "يحب / يريد", "Ich mochte den Film.", "أحببت الفيلم."],
+            ["dürfen", "durfte", "gedurft", "يُسمح له", "Er durfte gehen.", "سُمح له بالذهاب."],
+            ["können", "konnte", "gekonnt", "يستطيع", "Ich konnte schwimmen.", "استطعت السباحة."],
+            ["müssen", "musste", "gemusst", "يجب", "Ich musste arbeiten.", "اضطررت للعمل."],
+            ["wollen", "wollte", "gewollt", "يريد", "Sie wollte Tee.", "أرادت شايًا."],
+            ["sollen", "sollte", "gesollt", "ينبغي", "Du solltest lernen.", "ينبغي أن تدرس."]
+          ]}
+        ]
+      };
+      var WORD_LOGIC = {
+        en: [
+          { t: "-ly — من صفة إلى حال", rule: "أضف ‎-ly‎ إلى الصفة فتحصل على حال يصف الفعل (كيف؟). الصفة تصف الاسم، والحال يصف الفعل.", ex: ["quick (سريع) → quickly (بسرعة): He runs quickly. — يركض بسرعة.", "slow (بطيء) → slowly (ببطء): She speaks slowly. — تتكلم ببطء.", "careful (حذر) → carefully (بحذر): Drive carefully. — قُد بحذر."], exc: ["good → well (وليس goodly): He speaks English well.", "fast, hard, late لا تتغير: He runs fast. / He works hard.", "hardly تعني «بالكاد» وليس «بصعوبة»: I hardly know him. — بالكاد أعرفه.", "friendly, lovely, lonely صفات (تنتهي بـ -ly لكنها تصف الاسم): a friendly man — رجل ودود.", "صفة تنتهي بـ -y: y ← i: happy → happily, easy → easily. / تنتهي بـ -le: احذف e: simple → simply."] },
+          { t: "-er / -est — المقارنة", rule: "للصفات القصيرة: أضف ‎-er‎ للمقارنة و‎-est‎ للأفضل. المنطق: كلما زاد الشيء أضفنا مقطعًا.", ex: ["tall → taller → tallest (طويل → أطول → الأطول)", "big → bigger → biggest (ضاعف الحرف الأخير لأن الصفة قصيرة وتنتهي بحرف ساكن بعد حرف علة)", "happy → happier → happiest (y ← i)"], exc: ["good → better → best / bad → worse → worst / far → farther, further", "الصفات الطويلة (3 مقاطع فأكثر) استخدم more/most: beautiful → more beautiful → the most beautiful"] },
+          { t: "-ed — الماضي المنتظم", rule: "أضف ‎-ed‎ إلى الفعل فتحصل على الماضي. هذه هي القاعدة — وما لا يتبعها فهو فعل شاذ (انظر قسم الأفعال الشاذة).", ex: ["work → worked / play → played / visit → visited"], exc: ["stop → stopped (ضاعف الحرف الأخير)", "live → lived (احذف e ثم أضف d)", "study → studied (y ← i بعد حرف ساكن)", "الفعل الشاذ لا يأخذ -ed: go → went (وليس goed)"] },
+          { t: "-ing — الاستمرار", rule: "أضف ‎-ing‎ إلى الفعل فتحصل على المضارع المستمر (يحدث الآن) أو اسم الفعل.", ex: ["I am reading now. — أقرأ الآن.", "Swimming is good for you. — السباحة مفيدة لك."], exc: ["make → making (احذف e)", "run → running (ضاعف الحرف الأخير)", "die → dying (ie ← y)"] },
+          { t: "-er — الشخص الذي يفعل", rule: "أضف ‎-er‎ إلى الفعل فتحصل على اسم الشخص الذي يقوم بالفعل.", ex: ["teach → teacher (معلم) / work → worker (عامل) / drive → driver (سائق) / sing → singer (مغنٍّ)"], exc: ["cook → cook (الطباخ هو cook نفسه) / dance → dancer / بعضها لها اسم خاص: act → actor"] },
+          { t: "un- / dis- — العكس", rule: "أضف بادئة في البداية فتعكس المعنى. un- هي الأكثر شيوعًا، وdis- للفعل غالبًا.", ex: ["happy → unhappy (غير سعيد) / like → dislike (يكره) / agree → disagree (لا يوافق)"], exc: ["im- قبل p / b / m: possible → impossible (مستحيل)", "in-: correct → incorrect (غير صحيح) / il- قبل l: legal → illegal"] },
+          { t: "الجمع — plurals", rule: "القاعدة: أضف ‎-s‎. الاستثناءات لها منطقها الصوتي أو التاريخي.", ex: ["cat → cats / book → books"], exc: ["بعد s / x / ch / sh أضف -es: box → boxes, watch → watches", "y بعد ساكن ← ies: baby → babies (لكن boy → boys لأن y بعد حرف علة)", "f / fe ← ves: knife → knives, leaf → leaves", "شاذة: child → children, man → men, woman → women, foot → feet, tooth → teeth, person → people, mouse → mice"] },
+          { t: "'s — الملكية", rule: "أضف ‎'s‎ إلى الاسم فتعني «لـ». المنطق: حرف s المختصر من has/ملكية قديمة.", ex: ["Ali's book — كتاب علي / the cat's tail — ذيل القطة"], exc: ["الجمع المنتهي بـ s: فقط ' : the boys' room — غرفة الأولاد", "its (ملكية) ≠ it's (it is): Its tail is long. / It's a cat."] }
+        ],
+        de: [
+          { t: "-lich / -ig / -isch — من اسم إلى صفة", rule: "أضف ‎-lich‎ (يشبه) أو ‎-ig‎ (يحتوي) أو ‎-isch‎ (من/ينتمي) إلى الاسم فتحصل على صفة.", ex: ["Freund → freundlich (ودود) / Woche → wöchentlich (أسبوعي)", "wichtig (مهم) / richtig (صحيح) — من -ig", "englisch (إنجليزي) / deutsch (ألماني) — من -isch"], exc: ["ليست كل صفة تنتهي بـ -lich: plötzlich (فجأة) حال، وليست صفة."] },
+          { t: "-er / -in — الشخص الذي يفعل", rule: "أضف ‎-er‎ إلى الفعل فتحصل على اسم الفاعل (مذكر)، و‎-in‎ للمؤنث.", ex: ["lehren → Lehrer (معلم) / fahren → Fahrer (سائق) / arbeiten → Arbeiter (عامل)", "Lehrer → Lehrerin (معلمة) / Fahrer → Fahrerin (سائقة)"], exc: ["بعضها شاذ: Koch (طباخ) من kochen — بدون -er واضح."] },
+          { t: "-ung — من فعل إلى اسم", rule: "أضف ‎-ung‎ إلى الفعل فتحصل على اسم (مؤنث دائمًا: die). المنطق: نتيجة الفعل أو عملية الفعل.", ex: ["bilden → die Bildung (التعليم) / wohnen → die Wohnung (الشقة) / üben → die Übung (التمرين)"], exc: ["-ung دائمًا die — لا استثناء."] },
+          { t: "-heit / -keit — من صفة إلى اسم", rule: "أضف ‎-heit‎ أو ‎-keit‎ إلى الصفة فتحصل على اسم مجرد (مؤنث دائمًا: die).", ex: ["frei → die Freiheit (الحرية) / möglich → die Möglichkeit (الإمكانية) / krank → die Krankheit (المرض)"], exc: ["-keit بعد صفة تنتهي بـ -lich / -ig: freundlich → Freundlichkeit."] },
+          { t: "ge- — التصريف الثالث", rule: "معظم الأفعال تأخذ ‎ge-‎ في التصريف الثالث (الماضي التام). المنطق: ge- علامة الاكتمال.", ex: ["machen → gemacht / gehen → gegangen / lesen → gelesen"], exc: ["الأفعال المنفصلة: ge- في الوسط: aufstehen → aufgestanden / anrufen → angerufen", "الأفعال المنتهية بـ -ieren: لا تأخذ ge-: studieren → studiert / telefonieren → telefoniert"] },
+          { t: "Umlaut في الجمع", rule: "كثير من الأسماء المذكرة والمحايدة تغيّر حرف العلة (a/o/u ← ä/ö/ü) في الجمع وتضيف -er أو -e.", ex: ["Haus → Häuser / Buch → Bücher / Mann → Männer / Stadt → Städte / Mutter → Mütter / Vater → Väter"], exc: ["ليست كل الأسماء تأخذ Umlaut: Kind → Kinder (بدون Umlaut) / Frau → Frauen"] },
+          { t: "-chen / -lein — التصغير", rule: "أضف ‎-chen‎ أو ‎-lein‎ فتصغّر الشيء وتجعله لطيفًا. الاسم يصبح محايدًا دائمًا (das).", ex: ["Haus → Häuschen (بيت صغير) / Brot → Brötchen (خبز صغير) / Mädchen (فتاة) — من Magd قديمًا"], exc: ["التصغير دائمًا das — حتى لو كان الأصل مذكرًا أو مؤنثًا."] },
+          { t: "الأفعال المنفصلة", rule: "البادئة (an-, auf-, ein-, aus-, mit-, vor-, zu-) تنفصل وتذهب إلى آخر الجملة في المضارع.", ex: ["anrufen (يتصل): Ich rufe dich an. — أتصل بك.", "aufstehen (ينهض): Ich stehe um 7 Uhr auf. — أنهض في السابعة.", "einkaufen (يتسوق): Wir kaufen heute ein. — نتسوق اليوم."], exc: ["في التصريف الثالث تعود البادئة وge- في الوسط: angerufen, aufgestanden, eingekauft."] }
+        ]
+      };
+
+
+      /* ---------- Word logic view (Bank) ---------- */
+      var wlLang = "en";
+      function renderWordLogic() {
+        var lang = wlLang;
+        var box = $("wlBody");
+        if (!box) return;
+        var html = "";
+        // Irregular verbs
+        html += "<h3 class='sub-title'>الأفعال الشاذة — مجموعات حسب النمط (وليس حفظًا عشوائيًا)</h3>";
+        html += "<p class='hint'>الأفعال الشاذة ليست عشوائية: كل مجموعة تتبع نمطًا صوتيًا واحدًا. احفظ النمط، تعرف المجموعة كلها.</p>";
+        (IRREG_VERBS[lang] || []).forEach(function(grp) {
+          html += "<div class='tool-box' style='margin-bottom:14px'><h3 style='margin:0 0 4px'>" + grp.g + "</h3>";
+          html += "<p class='tool-note' style='margin:0 0 8px'>" + grp.note + "</p>";
+          html += "<table style='width:100%;border-collapse:collapse;font-size:.92rem'><tr><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>الفعل</th><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>الماضي</th><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>التصريف 3</th><th style='text-align:right;padding:6px;border-bottom:1px solid var(--line)'>المعنى</th></tr>";
+          grp.verbs.forEach(function(v) {
+            html += "<tr><td style='padding:6px;border-bottom:1px solid var(--line);font-weight:700'>" + v[0] + "</td><td style='padding:6px;border-bottom:1px solid var(--line)'>" + v[1] + "</td><td style='padding:6px;border-bottom:1px solid var(--line)'>" + v[2] + "</td><td style='padding:6px;border-bottom:1px solid var(--line);text-align:right'>" + v[3] + "</td></tr>";
+            html += "<tr><td colspan='4' style='padding:2px 6px 8px;color:var(--muted);font-size:.85rem'>" + v[4] + " — " + v[5] + "</td></tr>";
+          });
+          html += "</table></div>";
+        });
+        // Word formation
+        html += "<h3 class='sub-title' style='margin-top:22px'>كيف تتكون الكلمات — المنطق وليس الحفظ</h3>";
+        html += "<p class='hint'>كل لاحقة لها وظيفة واحدة واضحة. افهم الوظيفة، وستعرف معنى أي كلمة جديدة تقابلها.</p>";
+        (WORD_LOGIC[lang] || []).forEach(function(pat) {
+          html += "<div class='tool-box' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
+          html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
+          html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة:</p><ul style='margin:0 0 8px;padding-right:18px'>";
+          pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+          html += "</ul>";
+          html += "<p style='margin:0 0 4px;font-weight:700'>الشواذ (وهي قليلة — ولهذا تُحفظ):</p><ul style='margin:0;padding-right:18px'>";
+          pat.exc.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+          html += "</ul></div>";
+        });
+        box.innerHTML = html;
+      }
+      if ($("wlLangEn")) $("wlLangEn").addEventListener("click", function(){ wlLang = "en"; $("wlLangEn").classList.add("active-en"); $("wlLangDe").classList.remove("active-de"); renderWordLogic(); });
+      if ($("wlLangDe")) $("wlLangDe").addEventListener("click", function(){ wlLang = "de"; $("wlLangDe").classList.add("active-de"); $("wlLangEn").classList.remove("active-en"); renderWordLogic(); });
+      if ($("wlBackBtn")) $("wlBackBtn").addEventListener("click", function(){ showView("bank"); });
+      renderWordLogic();
 
       /* ---------- Final exam (A1+A2 comprehensive; pass = B1-ready) ---------- */
       var FINAL_PARTS = ["listening", "reading", "grammar", "writing"];
