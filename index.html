@@ -1361,7 +1361,7 @@
         <!-- ======== Word logic (Bank) ======== -->
         <section id="view-wordlogic" hidden>
           <h2 class="view-title">منطق الكلمات</h2>
-          <p class="hint" style="margin-bottom:14px">الفهم أفضل من الحفظ: الأفعال الشاذة مجموعات لها نمط، وكل لاحقة لها وظيفة. افهم المنطق وستعرف الكلمات الجديدة وحدك.</p>
+          <p class="hint" style="margin-bottom:14px">الفهم أفضل من الحفظ: الأفعال الشاذة مجموعات لها نمط، وكل لاحقة لها وظيفة، وكل جملة لها هيكل ثابت. افهم المنطق وستعرف الكلمات والجمل الجديدة وحدك.</p>
           <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
             <button type="button" id="wlLangEn" class="active-en">English · الإنجليزية</button>
             <button type="button" id="wlLangDe">Deutsch · الألمانية</button>
@@ -6315,6 +6315,27 @@ function wrCheck() {
       };
 
 
+      var SENTENCE_LOGIC = {
+        en: [
+          { t: "الهيكل — كل جملة لازم فيها فاعل + فعل", rule: "قانون صارم: الجملة الإنجليزية لا توجد بدون فاعل وبدون فعل. لا فاعل = ليست جملة. لا فعل = ليست جملة. الهيكل: الفاعل (مَن؟) + الفعل (يفعل ماذا؟) + المفعول (مَن/ماذا؟).", ex: ["I drink coffee. — أشرب قهوة. (أنا + أشرب + قهوة)", "Ali reads a book. — علي يقرأ كتابًا.", "She cooks lunch every day. — هي تطبخ الغداء كل يوم.", "My mother makes bread in the morning. — أمي تصنع الخبز في الصباح."], firm: ["«Me hungry» خطأ — لازم: I am hungry. (الفعل be إجباري للوصف)", "«Is raining» خطأ — لازم: It is raining. (الفاعل إجباري، لا تحذفه كما في العربية)", "«I happy» خطأ — لازم: I am happy."] },
+          { t: "الترتيب ثابت — لا تتحرك الكلمات", rule: "في الإنجليزية الترتيب ثابت: الفاعل ثم الفعل ثم المفعول. لا تستطيع تبديلها كما في العربية. من يفعل الشيء يأتي أولًا، ومن يقع عليه الفعل يأتي آخرًا.", ex: ["The dog eats the food. — الكلب يأكل الطعام. (وليس: eats the dog the food)", "I call my friend. — أتصل بصديقي.", "The teacher helps the student. — المعلم يساعد الطالب."], firm: ["إذا بدّلت الترتيب تغيّر المعنى: «The cat eats the fish» ≠ «The fish eats the cat»."] },
+          { t: "أين يذهب المكان والوقت؟", rule: "المكان والوقت يذهبان إلى آخر الجملة عادةً: الفاعل + الفعل + المفعول + المكان + الوقت. ويمكن وضع الوقت في البداية للتأكيد.", ex: ["I drink coffee at home in the morning. — أشرب قهوة في البيت في الصباح.", "She works in an office every day. — تعمل في مكتب كل يوم.", "In the morning, I drink coffee. — في الصباح، أشرب قهوة. (الوقت في البداية = تأكيد)"], firm: ["لا تضع الوقت بين الفاعل والفعل: «I every day drink coffee» خطأ — الصح: I drink coffee every day."] },
+          { t: "كيف تكبّر الجملة خطوة بخطوة", rule: "ابدأ بكلمتين، ثم أضف كلمة كل مرة. هذه الطريقة تبني الجملة بدون خوف — كل إضافة في مكانها الصحيح.", ex: ["I eat. — آكل.", "I eat rice. — آكل رزًا.", "I eat rice at home. — آكل رزًا في البيت.", "I eat rice at home every day. — آكل رزًا في البيت كل يوم.", "I eat rice with my family at home every day. — آكل رزًا مع عائلتي في البيت كل يوم."], firm: ["إذا ضعت، ارجع إلى الهيكل (فاعل + فعل) ثم أضف شيئًا واحدًا فقط."] },
+          { t: "السؤال — الفعل يتحرك إلى الأمام", rule: "لتحويل الجملة إلى سؤال: ضع الفعل المساعد (do / does / is / are) في البداية. الفاعل يبقى في مكانه بعد الفعل المساعد.", ex: ["You like tea. → Do you like tea? — هل تحب الشاي؟", "He works here. → Does he work here? — هل يعمل هنا؟", "She is happy. → Is she happy? — هل هي سعيدة؟", "They are at home. → Are they at home? — هل هم في البيت؟"], firm: ["مع does لا تضف s للفعل: «Does he works?» خطأ — الصح: Does he work?"] },
+          { t: "النفي — don't / doesn't / not", rule: "للنفي أضف don't (مع I/you/we/they) أو doesn't (مع he/she/it) قبل الفعل. مع فعل be أضف not بعده مباشرة.", ex: ["I like coffee. → I don't like coffee. — لا أحب القهوة.", "He works today. → He doesn't work today. — لا يعمل اليوم.", "She is here. → She is not here. — ليست هنا."], firm: ["«I no like coffee» خطأ — لازم don't. / «He don't work» خطأ — مع he استخدم doesn't."] },
+          { t: "الصفة دائمًا قبل الاسم", rule: "الصفة في الإنجليزية تأتي قبل الاسم الذي تصفه، وليس بعده. هذه قاعدة بلا استثناء تقريبًا.", ex: ["a red car — سيارة حمراء (وليس: a car red)", "a big house — بيت كبير", "a beautiful day — يوم جميل", "my old friend — صديقي القديم"], firm: ["«a car red» خطأ — الصفة قبل الاسم دائمًا."] }
+        ],
+        de: [
+          { t: "الهيكل — الفعل في المرتبة الثانية (قانون صارم)", rule: "قانون صارم في الألمانية: الفعل المصرّف يأتي في المرتبة الثانية دائمًا، مهما بدأت الجملة. الفاعل + الفعل (المرتبة 2) + باقي الجملة. هذا أهم قانون في الألمانية.", ex: ["Ich trinke Kaffee. — أشرب قهوة. (أنا + أشرب + قهوة)", "Ali liest ein Buch. — علي يقرأ كتابًا.", "Heute trinke ich Kaffee. — اليوم أشرب قهوة. (اليوم = المرتبة 1، أشرب = المرتبة 2)", "Morgens lese ich ein Buch. — في الصباح أقرأ كتابًا."], firm: ["«Ich heute trinke Kaffee» خطأ — الفعل لازم في المرتبة الثانية.", "«Es ist kalt» — لا تحذف الفاعل: «Ist kalt» خطأ.", "«Ich glücklich» خطأ — لازم: Ich bin glücklich. (فعل sein إجباري)"] },
+          { t: "الترتيب: الزمان ثم الطريقة ثم المكان (TeKaMoLo)", rule: "بعد الفعل والمفعول، الترتيب ثابت: الزمان (متى؟) ثم الطريقة (كيف؟) ثم المكان (أين؟). احفظها: Te-Ka-Mo-Lo.", ex: ["Ich fahre morgen mit dem Bus nach Berlin. — أسافر غدًا بالحافلة إلى برلين. (غدًا = زمان، بالحافلة = طريقة، إلى برلين = مكان)", "Wir essen heute zu Hause. — نأكل اليوم في البيت.", "Er arbeitet jeden Tag im Büro. — يعمل كل يوم في المكتب."], firm: ["«Ich fahre nach Berlin morgen» خطأ — الزمان قبل المكان."] },
+          { t: "القوس الفعلي — الجزء الثاني من الفعل يذهب إلى الآخر", rule: "في الماضي التام ومع الأفعال المساعدة، الجزء الثاني من الفعل يذهب إلى آخر الجملة. الجملة تصبح قوسًا: الفعل الأول في المرتبة 2، والجزء الثاني في النهاية.", ex: ["Ich habe gestern ein Buch gelesen. — قرأت كتابًا أمس. (habe = المرتبة 2، gelesen = في النهاية)", "Ich will morgen nach Berlin fahren. — أريد أن أسافر إلى برلين غدًا.", "Er kann sehr gut schwimmen. — يستطيع السباحة جيدًا."], firm: ["لا تضع الجزء الثاني في الوسط: «Ich habe gelesen ein Buch» خطأ."] },
+          { t: "كيف تكبّر الجملة خطوة بخطوة", rule: "ابدأ بفاعل + فعل، ثم أضف شيئًا واحدًا كل مرة — والفعل يبقى في المرتبة الثانية.", ex: ["Ich esse. — آكل.", "Ich esse Reis. — آكل رزًا.", "Ich esse Reis zu Hause. — آكل رزًا في البيت.", "Ich esse Reis jeden Tag zu Hause. — آكل رزًا كل يوم في البيت.", "Ich esse Reis mit meiner Familie jeden Tag zu Hause. — آكل رزًا مع عائلتي كل يوم في البيت."], firm: ["إذا ضعت، ارجع إلى الهيكل (فاعل + فعل في المرتبة 2) ثم أضف شيئًا واحدًا."] },
+          { t: "السؤال — الفعل يتحرك إلى المرتبة الأولى", rule: "لتحويل الجملة إلى سؤال: ضع الفعل في المرتبة الأولى. ومع أداة الاستفهام (wo, wann, was...) تأتي الأداة أولًا ثم الفعل.", ex: ["Trinkst du Kaffee? — هل تشرب قهوة؟", "Wo wohnst du? — أين تسكن؟", "Wann kommst du? — متى تأتي؟", "Was machst du heute? — ماذا تفعل اليوم؟"], firm: ["السؤال بدون أداة استفهام يبدأ بالفعل مباشرة."] },
+          { t: "النفي — nicht / kein", rule: "للنفي استخدم nicht (للأفعال والصفات) أو kein (بدل أداة النكرة ein/eine). nicht يأتي بعد الفعل أو في آخر الجملة.", ex: ["Ich trinke keinen Kaffee. — لا أشرب قهوة. (kein بدل ein)", "Ich komme heute nicht. — لا آتي اليوم.", "Das ist nicht gut. — هذا ليس جيدًا."], firm: ["«Ich trinke nicht Kaffee» خطأ — مع الاسم استخدم kein وليس nicht."] },
+          { t: "الصفة دائمًا قبل الاسم", rule: "الصفة في الألمانية تأتي قبل الاسم الذي تصفه، مع نهاية تتغير حسب الأداة والحالة (انظر قاعدة نهايات الصفات).", ex: ["ein rotes Auto — سيارة حمراء", "das große Haus — البيت الكبير", "ein schöner Tag — يوم جميل", "mein alter Freund — صديقي القديم"], firm: ["الصفة بعد الاسم خطأ: «ein Auto rotes» خطأ."] }
+        ]
+      };
+
       /* ---------- Word logic view (Bank) ---------- */
       var wlLang = "en";
       function renderWordLogic() {
@@ -6348,12 +6369,27 @@ function wrCheck() {
           pat.exc.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
           html += "</ul></div>";
         });
+        // How a sentence is formed (daily examples)
+        html += "<h3 class='sub-title' style='margin-top:22px'>كيف تتكون الجملة — من كلمتين إلى جملة كاملة</h3>";
+        html += "<p class='hint'>الجملة لها هيكل ثابت. افهم الهيكل مرة واحدة، وستبني أي جملة تريدها. الأمثلة من يومك: الصباح، البيت، السوق، العمل.</p>";
+        (SENTENCE_LOGIC[lang] || []).forEach(function(pat) {
+          html += "<div class='tool-box' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
+          html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
+          html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة من يومك:</p><ul style='margin:0 0 8px;padding-right:18px'>";
+          pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+          html += "</ul>";
+          html += "<p style='margin:0 0 4px;font-weight:700'>انتبه (أخطاء شائعة):</p><ul style='margin:0;padding-right:18px'>";
+          pat.firm.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+          html += "</ul></div>";
+        });
         box.innerHTML = html;
       }
       if ($("wlLangEn")) $("wlLangEn").addEventListener("click", function(){ wlLang = "en"; $("wlLangEn").classList.add("active-en"); $("wlLangDe").classList.remove("active-de"); renderWordLogic(); });
       if ($("wlLangDe")) $("wlLangDe").addEventListener("click", function(){ wlLang = "de"; $("wlLangDe").classList.add("active-de"); $("wlLangEn").classList.remove("active-en"); renderWordLogic(); });
       if ($("wlBackBtn")) $("wlBackBtn").addEventListener("click", function(){ showView("bank"); });
       renderWordLogic();
+
+
 
       /* ---------- Final exam (A1+A2 comprehensive; pass = B1-ready) ---------- */
       var FINAL_PARTS = ["listening", "reading", "grammar", "writing"];
