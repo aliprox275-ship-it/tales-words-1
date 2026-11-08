@@ -828,6 +828,10 @@
       /* soft fade when switching between views — no flash, no jump */
       main > section, #reviewChrome{animation:viewIn .22s ease}
       @keyframes viewIn{from{opacity:0}to{opacity:1}}
+      /* ---------- Focus mode: exam / writing / exercises / word cards ---------- */
+      body.focus-mode .bottomnav, body.focus-mode .appbar{display:none}
+      body.focus-mode .wrap{padding-bottom:24px}
+      .focus-exit{display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px solid var(--line); color:var(--muted); border-radius:99px; padding:6px 14px; font-family:inherit; font-size:.9rem; font-weight:700; cursor:pointer; margin-bottom:14px}
 
       /* reader & prep bars share the app bar's height and shape */
       .reader-top{min-height:var(--bar-h)}
@@ -1084,9 +1088,7 @@
           <div class="home-summary" id="homeSummary"></div>
           <div class="home-grid" id="homeLevels"></div>
           <div class="home-actions">
-            <button class="home-hero" type="button" data-goto="a1test"><span class="home-hero-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></span><span class="home-hero-tx"><b>اختبار المستوى A1</b><small>اعرف مستواك</small></span><span class="home-hero-ar">‹</span></button>
-            <button class="home-hero" type="button" data-goto="finalexam"><span class="home-hero-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></span><span class="home-hero-tx"><b>الامتحان النهائي</b><small>أنهيت A2؟ اثبت أنك جاهز لـ B1</small></span><span class="home-hero-ar">‹</span></button>
-            <div class="home-pair">
+<div class="home-pair">
               <button class="home-card" type="button" data-goto="words"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><b>بطاقات الكلمات</b><small>راجع بسرعة</small></button>
               <button class="home-card" type="button" data-goto="exercises"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><b>تمارين</b><small>اختبر نفسك</small></button>
             </div>
@@ -1154,6 +1156,7 @@
         <!-- ======== Flashcards ======== -->
         <section id="view-words" hidden>
           <h2 class="view-title">بطاقات الكلمات</h2>
+          <button class="focus-exit" type="button" data-goto="home">✕ خروج من البطاقات</button>
           <div class="filters">
             <div class="switch" role="group" aria-label="لغة البطاقات">
               <button data-flang="all" class="active-all" id="fAll">الكل</button>
@@ -1214,7 +1217,7 @@
             <button class="more-link" type="button" data-goto="exercises">تمارين</button>
             <button class="more-link" type="button" data-goto="phrases">عبارات مفيدة</button>
             <button class="more-link" type="button" data-goto="stats">إحصائياتي</button>
-            <button class="more-link" type="button" data-goto="a1test" style="background:var(--accent);color:var(--on-accent);border-color:var(--accent)">اختبار المستوى A1</button> <button class="more-link" type="button" data-goto="finalexam" style="background:var(--accent);color:var(--on-accent);border-color:var(--accent)">الامتحان النهائي (A1+A2)</button> <button class="more-link" type="button" data-goto="writing" style="background:var(--accent-dark);color:var(--on-accent);border-color:var(--accent-dark)">الكتابة A1</button>
+            <button class="more-link" type="button" data-goto="writing" style="background:var(--accent-dark);color:var(--on-accent);border-color:var(--accent-dark)">الكتابة A1</button>
           </div>
         </div>
 
@@ -1313,6 +1316,7 @@
         <!-- ======== Exercises ======== -->
         <section id="view-exercises" hidden>
           <h2 class="view-title">تمارين</h2>
+          <button class="focus-exit" type="button" data-goto="home">✕ خروج من التمارين</button>
           <div class="ex-types" role="group" aria-label="اختيار نوع التمرين">
             <button class="ex-type active" data-ex="fill" type="button">إكمال الفراغ</button>
             <button class="ex-type" data-ex="dict" type="button">الإملاء غيبًا</button>
@@ -1323,9 +1327,27 @@
           <p class="ex-score-line" id="exScoreLine" role="status"></p>
         </section>
 
+        <!-- ======== Exams hub ======== -->
+        <section id="view-exams" hidden>
+          <h2 class="view-title">الامتحانات</h2>
+          <p class="hint" style="margin-bottom:18px">اختر الامتحان — كل امتحان يفتح في مكان مخصص بدون أي شيء يشتتك، وترجع منه بزر الخروج.</p>
+          <div class="tool-box" style="margin-bottom:16px">
+            <h3 style="margin:0 0 6px">اختبار المستوى A1</h3>
+            <p class="tool-note" style="margin:0 0 10px">اختبار رسمي المستوى A1 وفق معايير CEFR (كامبريدج / جوته). الأجزاء: الاستماع (25) · القراءة (25) · القواعد والمفردات (25) · الكتابة (25). النجاح من <b>60%</b>.</p>
+            <p class="hint" id="examsA1Last" role="status" style="margin:0 0 12px"></p>
+            <button class="start-btn" type="button" data-goto="a1test" style="width:100%;padding:14px;font-size:1.1rem">ابدأ اختبار A1</button>
+          </div>
+          <div class="tool-box" style="margin-bottom:16px">
+            <h3 style="margin:0 0 6px">الامتحان النهائي (A1 + A2)</h3>
+            <p class="tool-note" style="margin:0 0 10px">الامتحان الشامل — يغطي كل ما درسته: القصص، بنك الكلمات، القواعد، المحادثة، والكتابة. الأجزاء: الاستماع (25) · القراءة (25) · القواعد والمفردات (25) · الكتابة (25). النجاح من <b>70%</b> يعني أنك جاهز لـ B1.</p>
+            <p class="hint" id="examsFinLast" role="status" style="margin:0 0 12px"></p>
+            <button class="start-btn" type="button" data-goto="finalexam" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الامتحان النهائي</button>
+          </div>
+        </section>
         <!-- ======== A1 Level Test ======== -->
         <section id="view-a1test" hidden>
           <h2 class="view-title">اختبار المستوى A1</h2>
+          <button class="focus-exit" type="button" data-goto="exams">✕ خروج من الاختبار</button>
           <div id="a1StartScreen">
             <p class="hint" style="margin-bottom:18px">اختبار رسمي المستوى A1 وفق معايير CEFR (كامبريدج / جوته). نسبة النجاح <b>60%</b>.</p>
             <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
@@ -1380,6 +1402,7 @@
         <!-- ======== Final Exam (A1+A2) ======== -->
         <section id="view-finalexam" hidden>
           <h2 class="view-title">الامتحان النهائي</h2>
+          <button class="focus-exit" type="button" data-goto="exams">✕ خروج من الامتحان</button>
           <div id="finStartScreen">
             <p class="hint" style="margin-bottom:18px">الامتحان النهائي الشامل (A1 + A2) — يغطي كل ما درسته في التطبيق: القصص، بنك الكلمات، القواعد، المحادثة، والكتابة. النجاح من <b>70%</b> يعني أنك أنهيت A2 وأصبحت <b>جاهزًا لـ B1</b> (لكن B1 نفسه لم يبدأ بعد).</p>
             <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
@@ -1420,6 +1443,7 @@
         <!-- ======== Stats / mastery dashboard ======== -->
         <section id="view-writing" hidden>
           <h2 class="view-title">الكتابة A1</h2>
+          <button class="focus-exit" type="button" data-goto="conversation">✕ خروج من الكتابة</button>
           <div id="wrHome">
             <p class="hint">تمارين كتابة للمستوى A1 فقط (CEFR): استمارة، وصف نفسك، رسالة قصيرة، أسئلة وإجابات. إذا استخدمت «أظهر الكلمة» لا يُحسب التمرين مكتملًا — لازم تعيده بدون تلميح.</p>
             <div class="switch" role="group" aria-label="اللغة" style="margin:14px 0">
@@ -1556,7 +1580,7 @@
       <button class="bnav-btn" type="button" data-main="bank"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span>بنك الكلمات</span></button>
       <button class="bnav-btn" type="button" data-main="grammar"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span><span>قواعد</span></button>
       <button class="bnav-btn" type="button" data-main="conversation"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span><span>محادثة</span></button>
-    </nav>
+    <button class="bnav-btn" type="button" data-main="exams"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span>الامتحانات</span></button>      </nav>
 
     <!-- ======== Reader ======== -->
     <div class="reader" id="reader" hidden role="dialog" aria-modal="true" aria-labelledby="readerTitle">
@@ -4341,8 +4365,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "a1test", "finalexam", "wordlogic", "conversation", "writing"];
+        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
+      var FOCUS_VIEWS = ["a1test", "finalexam", "writing", "exercises", "words"];
       var curView = "home", curReviewSub = "review";
 
       /* ---------- Batch 5: unified shell — last tab, back behavior, exit confirm ----------
@@ -4354,7 +4379,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "قواعد",
-        a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", wordlogic: "منطق الكلمات", writing: "الكتابة A1"
+        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", wordlogic: "منطق الكلمات", writing: "الكتابة A1"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
       var startView = "home";
@@ -4462,8 +4487,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         hPush({ app: 1, view: curView, guard: true }, "#" + curView);
       });
       function mainOf(name){ if (name === "topic") return "stories"; if (name === "banktopic") return "bank";
-        if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation" || name === "wordlogic") return name;
-        if (REVIEW_SUBS.indexOf(name) !== -1 || name === "a1test" || name === "finalexam" || name === "writing") return "review";
+        if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation" || name === "wordlogic" || name === "exams") return name;
+        if (name === "a1test" || name === "finalexam") return "exams";
+        if (REVIEW_SUBS.indexOf(name) !== -1 || name === "writing") return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
       }
       var THEME_KEY = "readerApp.theme.v1";
@@ -4476,12 +4502,15 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var prevView = curView;
         if ($("convReader") && !$("convReader").hidden) { try { convStopAll(); } catch (e) {} $("convReader").hidden = true; document.body.style.overflow = ""; }
         curView = name;
+        if (prevView === "a1test" && name !== "a1test") { try { a1StopAudio(); } catch (e) {} }
+        if (prevView === "finalexam" && name !== "finalexam") { try { finStopAudio(); } catch (e) {} }
         if (VIEW_TITLES[origName]) $("appTitle").textContent = VIEW_TITLES[origName];
         try { localStorage.setItem(LAST_VIEW_KEY, name); } catch (e) { /* ignore */ } saveUiState();
         if (!fromPop && prevFull !== origName) hPush({ app: 1, view: origName }, "#" + origName);
         if (REVIEW_SUBS.indexOf(name) !== -1) curReviewSub = name;
         ALL_VIEWS.forEach(function(v){ $("view-" + v).hidden = v !== name; });
         if (name === "a1test") renderLastResult("a1LastResult", "a1LastResultLine");
+        if (name === "exams") { renderLastResult("a1LastResult", "examsA1Last"); renderLastResult("finalLastResult", "examsFinLast"); }
         if (name === "finalexam") renderLastResult("finalLastResult", "finLastResultLine");
         var main = mainOf(name);
         document.querySelectorAll(".bnav-btn").forEach(function(b){
@@ -4490,6 +4519,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           if (on) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
         });
         $("reviewChrome").hidden = main !== "review";
+        document.body.classList.toggle("focus-mode", FOCUS_VIEWS.indexOf(name) !== -1);
         if (name === "home") { $("reviewChrome").hidden = false; var rp = $("view-" + curReviewSub); if (rp) rp.hidden = false; }
         document.querySelectorAll(".subnav-btn").forEach(function(b){
           var on = b.getAttribute("data-sub") === (name === "home" ? curReviewSub : name);
