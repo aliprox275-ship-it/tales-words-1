@@ -4357,6 +4357,70 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         var lvSaved = localStorage.getItem(LAST_VIEW_KEY);
         if (lvSaved && ALL_VIEWS.indexOf(lvSaved) !== -1) startView = lvSaved;
       } catch (e) { /* storage unavailable: start at home */ }
+      var UI_STATE_KEY = "readerApp.uiState.v1";
+      /* Save the current UI choices (filters, toggles, word-logic section) so
+         exiting the app and coming back restores the same screen AND the same
+         selections, not just the view. */
+      function saveUiState() {
+        try {
+          var st = {};
+          if (typeof curLang !== "undefined") st.curLang = curLang;
+          if (typeof curLevel !== "undefined") st.curLevel = curLevel;
+          if (typeof curTopic !== "undefined") st.curTopic = curTopic;
+          if (typeof bankLang !== "undefined") st.bankLang = bankLang;
+          if (typeof bankTopic !== "undefined") st.bankTopic = bankTopic;
+          if (typeof bankLevel !== "undefined") st.bankLevel = bankLevel;
+          if (typeof bankMode !== "undefined") st.bankMode = bankMode;
+          if (typeof convLang !== "undefined") st.convLang = convLang;
+          if (typeof convLevel !== "undefined") st.convLevel = convLevel;
+          if (typeof gramLevel !== "undefined") st.gramLevel = gramLevel;
+          if (typeof flashLang !== "undefined") st.flashLang = flashLang;
+          if (typeof flashLevel !== "undefined") st.flashLevel = flashLevel;
+          if (typeof flashTopic !== "undefined") st.flashTopic = flashTopic;
+          if (typeof wlLang !== "undefined") st.wlLang = wlLang;
+          if (typeof wlOpenSec !== "undefined") st.wlOpenSec = wlOpenSec;
+          if (typeof a1State !== "undefined" && a1State) st.a1Lang = a1State.lang;
+          if (typeof finState !== "undefined" && finState) st.finLang = finState.lang;
+          localStorage.setItem(UI_STATE_KEY, JSON.stringify(st));
+        } catch (e) { /* ignore */ }
+      }
+      function restoreUiState() {
+        var st = null;
+        try { st = JSON.parse(localStorage.getItem(UI_STATE_KEY) || "null"); } catch (e) {}
+        if (!st || typeof st !== "object") return;
+        function ok(v, list) { return list.indexOf(v) !== -1 ? v : null; }
+        var v;
+        if ((v = ok(st.curLang, ["en", "de"]))) curLang = v;
+        if ((v = ok(st.curLevel, ["all", "A1", "A2"]))) curLevel = v;
+        if (typeof st.curTopic === "string" && st.curTopic) curTopic = st.curTopic;
+        if ((v = ok(st.bankLang, ["en", "de"]))) bankLang = v;
+        if (typeof st.bankTopic === "string" && st.bankTopic) bankTopic = st.bankTopic;
+        if ((v = ok(st.bankLevel, ["all", "A1", "A2"]))) bankLevel = v;
+        if ((v = ok(st.bankMode, ["words", "fam", "idiom", "phrasal", "colloc"]))) bankMode = v;
+        if ((v = ok(st.convLang, ["en", "de"]))) convLang = v;
+        if ((v = ok(st.convLevel, ["A1", "A2"]))) convLevel = v;
+        if ((v = ok(st.gramLevel, ["A1", "A2"]))) gramLevel = v;
+        if ((v = ok(st.flashLang, ["all", "en", "de"]))) flashLang = v;
+        if ((v = ok(st.flashLevel, ["all", "A1", "A2"]))) flashLevel = v;
+        if (typeof st.flashTopic === "string" && st.flashTopic) flashTopic = st.flashTopic;
+        if ((v = ok(st.wlLang, ["en", "de"]))) wlLang = v;
+        if ((v = ok(st.wlOpenSec, ["", "verbs", "formation", "sentence", "speech"]))) wlOpenSec = v;
+        if ((v = ok(st.a1Lang, ["en", "de"]))) { try { a1State.lang = v; } catch (e) {} }
+        if ((v = ok(st.finLang, ["en", "de"]))) { try { finState.lang = v; } catch (e) {} }
+        /* Sync the toggle buttons that their views do not re-render on their own */
+        try {
+          if ($("langEn")) { $("langEn").className = curLang === "en" ? "active-en" : ""; $("langDe").className = curLang === "de" ? "active-de" : ""; }
+          if (typeof setLevelUI === "function") setLevelUI(curLevel);
+          if (typeof setFlashLang === "function") setFlashLang(flashLang);
+          if (typeof setFlashLevel === "function") setFlashLevel(flashLevel);
+          if ($("a1LangEn")) { $("a1LangEn").classList.toggle("active-en", a1State.lang === "en"); $("a1LangDe").classList.toggle("active-de", a1State.lang === "de"); }
+          if ($("finLangEn")) { $("finLangEn").classList.toggle("active-en", finState.lang === "en"); $("finLangDe").classList.toggle("active-de", finState.lang === "de"); }
+          if (typeof renderWordLogic === "function") renderWordLogic();
+        } catch (e) { /* ignore */ }
+      }
+      /* Save on exit: pagehide fires when the app is closed or backgrounded */
+      document.addEventListener("pagehide", saveUiState);
+      document.addEventListener("visibilitychange", function(){ if (document.hidden) saveUiState(); });
       var readerHist = false, prepHist = false, exitingApp = false;
       function hPush(st, hash){ try { history.pushState(st, "", hash); } catch (e) { /* history unavailable */ } }
       function hReplace(st, hash){ try { history.replaceState(st, "", hash); } catch (e) { /* history unavailable */ } }
@@ -4408,7 +4472,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         if ($("convReader") && !$("convReader").hidden) { try { convStopAll(); } catch (e) {} $("convReader").hidden = true; document.body.style.overflow = ""; }
         curView = name;
         if (VIEW_TITLES[origName]) $("appTitle").textContent = VIEW_TITLES[origName];
-        try { localStorage.setItem(LAST_VIEW_KEY, name); } catch (e) { /* ignore */ }
+        try { localStorage.setItem(LAST_VIEW_KEY, name); } catch (e) { /* ignore */ } saveUiState();
         if (!fromPop && prevFull !== origName) hPush({ app: 1, view: origName }, "#" + origName);
         if (REVIEW_SUBS.indexOf(name) !== -1) curReviewSub = name;
         ALL_VIEWS.forEach(function(v){ $("view-" + v).hidden = v !== name; });
@@ -4445,6 +4509,7 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         if (name === "grammar") { gramLang = curLang; renderGrammarHome(); }
         if (name === "a1test") { a1Reset(); } if (name === "writing") { wrReset(); }
         if (name === "conversation") renderConvHome();
+        if (name === "wordlogic") renderWordLogic();
         window.scrollTo(0, 0);
       }
       document.querySelectorAll(".bnav-btn").forEach(function(b){
@@ -10357,6 +10422,7 @@ var AUDIO_FILES = [
       saveMyWords();   // persist SRS fields added by migration to older saved words
       applyTheme(); if ($("themeToggle")) $("themeToggle").addEventListener("click", toggleTheme); renderMyWords();
       if ($("flashTotal")) $("flashTotal").textContent = arNum(flashList.length);
+      restoreUiState();
       renderTopicFilters();
       renderGrid();
       applyZen();
