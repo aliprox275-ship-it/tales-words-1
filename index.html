@@ -835,6 +835,8 @@
       body.focus-mode .bottomnav, body.focus-mode .appbar{display:none}
       body.focus-mode .wrap{padding-bottom:24px}
       .focus-exit{display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px solid var(--line); color:var(--muted); border-radius:99px; padding:6px 14px; font-family:inherit; font-size:.9rem; font-weight:700; cursor:pointer; margin-bottom:14px}
+      .part-pick{display:flex; gap:8px; flex-wrap:wrap}
+      .part-pick button{flex:1 1 40%; border:1px solid var(--line); background:var(--surface); color:var(--ink); padding:10px 12px; border-radius:12px; font-family:inherit; font-size:.95rem; font-weight:700; cursor:pointer}
 
       /* reader & prep bars share the app bar's height and shape */
       .reader-top{min-height:var(--bar-h)}
@@ -1361,9 +1363,17 @@
               <h3 style="margin:0 0 8px">أجزاء الاختبار</h3>
               <p class="tool-note" style="margin:0">1. الاستماع (25) · 2. القراءة (25) · 3. القواعد والمفردات (25) · 4. الكتابة (25)</p>
               <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 60</p>
+              <p class="tool-note" style="margin:8px 0 0">كل محاولة نسخة جديدة: الأسئلة تُسحب عشوائيًا من بنك أكبر — فلا تحفظ الأسئلة، افهمها.</p>
             </div>
             <p id="a1LastResultLine" class="tool-note" style="margin:0 0 12px"></p>
-            <button class="start-btn" type="button" id="a1BeginBtn" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الاختبار</button>
+            <p class="tool-note" style="margin:0 0 8px">أو اختبر جزءًا واحدًا (25 نقطة):</p>
+            <div class="part-pick" style="margin-bottom:14px">
+              <button type="button" data-a1part="listening">الاستماع فقط</button>
+              <button type="button" data-a1part="reading">القراءة فقط</button>
+              <button type="button" data-a1part="grammar">القواعد فقط</button>
+              <button type="button" data-a1part="writing">الكتابة فقط</button>
+            </div>
+            <button class="start-btn" type="button" id="a1BeginBtn" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الاختبار الكامل</button>
           </div>
 
           <div id="a1TestArea" hidden>
@@ -1416,10 +1426,18 @@
               <h3 style="margin:0 0 8px">أجزاء الامتحان</h3>
               <p class="tool-note" style="margin:0">1. الاستماع (25) · 2. القراءة (25) · 3. القواعد والمفردات (25) · 4. الكتابة (25)</p>
               <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 70 · 70–84 جاهز لـ B1 · 85+ جاهز بقوة لـ B1</p>
+              <p class="tool-note" style="margin:8px 0 0">كل محاولة نسخة جديدة: الأسئلة تُسحب عشوائيًا من بنك أكبر — فلا تحفظ الأسئلة، افهمها.</p>
               <p class="tool-note" style="margin:8px 0 0">الاستماع بصوت مسجل (مثل اختبار A1).</p>
             </div>
             <p id="finLastResultLine" class="tool-note" style="margin:0 0 12px"></p>
-            <button class="start-btn" type="button" id="finBeginBtn" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الامتحان النهائي</button>
+            <p class="tool-note" style="margin:0 0 8px">أو اختبر جزءًا واحدًا (25 نقطة):</p>
+            <div class="part-pick" style="margin-bottom:14px">
+              <button type="button" data-finpart="listening">الاستماع فقط</button>
+              <button type="button" data-finpart="reading">القراءة فقط</button>
+              <button type="button" data-finpart="grammar">القواعد فقط</button>
+              <button type="button" data-finpart="writing">الكتابة فقط</button>
+            </div>
+            <button class="start-btn" type="button" id="finBeginBtn" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الامتحان النهائي الكامل</button>
           </div>
 
           <div id="finTestArea" hidden>
@@ -5722,7 +5740,11 @@ function wrCheck() {
             { type: "mc", audio: "My brother works in a hospital. He is a doctor.", q: "What is the speaker's brother?", opts: ["Teacher", "Doctor", "Engineer", "Student"], ans: 1 },
             { type: "mc", audio: "The bus leaves at half past three.", q: "When does the bus leave?", opts: ["2:30", "3:00", "3:30", "4:00"], ans: 2 },
             { type: "mc", audio: "Can I have the menu, please?", q: "Where is this conversation most likely?", opts: ["At school", "In a restaurant", "At the airport", "In a library"], ans: 1 },
-            { type: "mc", audio: "My phone number is zero seven nine, four five six, one two three.", q: "What is the last part of the number?", opts: ["456", "123", "079", "789"], ans: 1 }
+            { type: "mc", audio: "My phone number is zero seven nine, four five six, one two three.", q: "What is the last part of the number?", opts: ["456", "123", "079", "789"], ans: 1 },
+            { type: "mc", audio: "Hello, I am Sara. I live in Cairo. I am a student.", q: "Where does Sara live?", opts: ["In London", "In Cairo", "In Paris", "In Berlin"], ans: 1 },
+            { type: "mc", audio: "The bookshop is open from nine o'clock to seven o'clock.", q: "What time does the bookshop close?", opts: ["9:00", "7:00", "8:00", "6:00"], ans: 1 },
+            { type: "mc", audio: "Anna: Where is the post office? Ben: It is opposite the school.", q: "Where is the post office?", opts: ["Opposite the school", "Next to the bank", "Behind the park", "Near the station"], ans: 0 },
+            { type: "mc", audio: "I have two brothers and one sister. My family is big.", q: "How many sisters does the speaker have?", opts: ["One", "Two", "Three", "Four"], ans: 0 }
           ],
           reading: [
             { type: "tf", text: "Dear John, I am at home today. I am not at work. See you tomorrow. Love, Mary.", q: "Mary is at work today.", ans: false },
@@ -5732,7 +5754,15 @@ function wrCheck() {
             { type: "tf", text: "Meeting: Friday 3 pm in Room 4. Please bring your notebook.", q: "The meeting is on Friday.", ans: true },
             { type: "mc", text: "Bus 12 goes to the city centre. It stops at the hospital and the park.", q: "Where does Bus 12 go?", opts: ["To the airport", "To the city centre", "To the school", "To the station only"], ans: 1 },
             { type: "tf", text: "Sorry, we are closed today. We open tomorrow at 9 o'clock.", q: "The shop is open today.", ans: false },
-            { type: "mc", text: "Hi Sara, Can you come to my party on Saturday? It starts at 7 pm. From Ali.", q: "When is the party?", opts: ["Friday", "Saturday", "Sunday", "Monday"], ans: 1 }
+            { type: "mc", text: "Hi Sara, Can you come to my party on Saturday? It starts at 7 pm. From Ali.", q: "When is the party?", opts: ["Friday", "Saturday", "Sunday", "Monday"], ans: 1 },
+            { type: "tf", text: "Hi Tom, I am at the cinema today. I am not at home. See you on Monday. Love, Anna.", q: "Anna is at home today.", ans: false },
+            { type: "tf", text: "Swimming pool: Open Monday to Saturday 7:00 – 21:00. Closed on Sunday.", q: "The swimming pool is open on Sunday.", ans: false },
+            { type: "tf", text: "Train to Oxford: Leaves at 10:30 from Platform 2.", q: "The train leaves at 10:30.", ans: true },
+            { type: "tf", text: "Please do not feed the animals.", q: "You can feed the animals.", ans: false },
+            { type: "mc", text: "Hotel Sunshine – Free breakfast. Rooms from 50 euros a night. Book online.", q: "What is free at Hotel Sunshine?", opts: ["Lunch", "Breakfast", "Dinner", "Parking"], ans: 1 },
+            { type: "mc", text: "Museum: Open Tuesday to Sunday, 10 am to 6 pm. Tickets: 5 euros.", q: "When is the museum open?", opts: ["Every day", "Tuesday to Sunday", "Only Monday", "Only Sunday"], ans: 1 },
+            { type: "mc", text: "Lost: red umbrella. Please call 0712 345678 if you find it. Thank you.", q: "What colour is the lost umbrella?", opts: ["Red", "Black", "Blue", "Green"], ans: 0 },
+            { type: "mc", text: "Bus 5 goes to the airport. It leaves every 30 minutes.", q: "Where does Bus 5 go?", opts: ["To the city centre", "To the airport", "To the station", "To the hospital"], ans: 1 }
           ],
           grammar: [
             { type: "mc", q: "My name ___ Anna.", opts: ["am", "is", "are", "be"], ans: 1 },
@@ -5754,11 +5784,23 @@ function wrCheck() {
             { type: "mc", q: "I have ___ money.", opts: ["some", "any", "a", "an"], ans: 0 },
             { type: "mc", q: "How ___ apples do you want?", opts: ["much", "many", "more", "most"], ans: 1 },
             { type: "mc", q: "Ali is ___ than Omar.", opts: ["tall", "taller", "tallest", "more tall"], ans: 1 },
-            { type: "mc", q: "They ___ to school yesterday.", opts: ["go", "goes", "went", "going"], ans: 2 }
+            { type: "mc", q: "They ___ to school yesterday.", opts: ["go", "goes", "went", "going"], ans: 2 },
+            { type: "mc", q: "___ you like coffee?", opts: ["Do", "Does", "Is", "Are"], ans: 0 },
+            { type: "mc", q: "They ___ in Berlin.", opts: ["lives", "live", "living", "lived"], ans: 1 },
+            { type: "mc", q: "This is ___ interesting book.", opts: ["a", "an", "the", "—"], ans: 1 },
+            { type: "mc", q: "I go to school ___ bus.", opts: ["in", "on", "by", "at"], ans: 2 },
+            { type: "mc", q: "She ___ TV every evening.", opts: ["watch", "watches", "watching", "watched"], ans: 1 },
+            { type: "mc", q: "We ___ got a car.", opts: ["has", "have", "is", "are"], ans: 1 },
+            { type: "mc", q: "The book is ___ the table.", opts: ["on", "in", "under", "at"], ans: 0 },
+            { type: "mc", q: "___ are you from?", opts: ["Where", "What", "When", "Who"], ans: 0 },
+            { type: "mc", q: "I ___ breakfast at 7 o'clock.", opts: ["has", "have", "am", "is"], ans: 1 },
+            { type: "mc", q: "He ___ from Italy.", opts: ["come", "comes", "coming", "came"], ans: 1 }
           ],
           writing: [
             { type: "form", q: "Complete the form with your information (write in English):", fields: ["Full name", "Age", "City", "Nationality"] },
-            { type: "short", q: "Write 3–5 simple sentences about yourself (name, age, city, job/studies). Minimum 25 words.", minWords: 25 }
+            { type: "short", q: "Write 3–5 simple sentences about yourself (name, age, city, job/studies). Minimum 25 words.", minWords: 25 },
+            { type: "form", q: "Fill in the form about yourself (write in English):", fields: ["Full name", "Age", "City", "Favourite food"] },
+            { type: "short", q: "Write 3–5 simple sentences about your family (who is in your family, what do they do). Minimum 25 words.", minWords: 25 }
           ]
         },
         de: {
@@ -5770,7 +5812,11 @@ function wrCheck() {
             { type: "mc", audio: "Mein Bruder arbeitet in einem Krankenhaus. Er ist Arzt.", q: "Was ist der Bruder?", opts: ["Lehrer", "Arzt", "Ingenieur", "Student"], ans: 1 },
             { type: "mc", audio: "Der Bus fährt um halb vier ab.", q: "Wann fährt der Bus?", opts: ["Um 14:30", "Um 15:00", "Um 15:30", "Um 16:00"], ans: 2 },
             { type: "mc", audio: "Kann ich bitte die Speisekarte haben?", q: "Wo ist dieses Gespräch wahrscheinlich?", opts: ["In der Schule", "Im Restaurant", "Am Flughafen", "In der Bibliothek"], ans: 1 },
-            { type: "mc", audio: "Meine Telefonnummer ist null eins fünf, zwei drei vier, fünf sechs sieben.", q: "Was ist der letzte Teil der Nummer?", opts: ["234", "567", "015", "789"], ans: 1 }
+            { type: "mc", audio: "Meine Telefonnummer ist null eins fünf, zwei drei vier, fünf sechs sieben.", q: "Was ist der letzte Teil der Nummer?", opts: ["234", "567", "015", "789"], ans: 1 },
+            { type: "mc", audio: "Guten Tag, ich heiße Sara. Ich wohne in Kairo. Ich bin Studentin.", q: "Wo wohnt Sara?", opts: ["In London", "In Kairo", "In Paris", "In Berlin"], ans: 1 },
+            { type: "mc", audio: "Die Buchhandlung ist von neun Uhr bis sieben Uhr geöffnet.", q: "Wann schließt die Buchhandlung?", opts: ["Um 9 Uhr", "Um 7 Uhr", "Um 8 Uhr", "Um 6 Uhr"], ans: 1 },
+            { type: "mc", audio: "Anna: Wo ist die Post? Ben: Sie ist gegenüber der Schule.", q: "Wo ist die Post?", opts: ["Gegenüber der Schule", "Neben der Bank", "Hinter dem Park", "In der Nähe des Bahnhofs"], ans: 0 },
+            { type: "mc", audio: "Ich habe zwei Brüder und eine Schwester. Meine Familie ist groß.", q: "Wie viele Schwestern hat der Sprecher?", opts: ["Eine", "Zwei", "Drei", "Vier"], ans: 0 }
           ],
           reading: [
             { type: "tf", text: "Lieber Hans, ich bin heute zu Hause. Ich bin nicht bei der Arbeit. Bis morgen. Liebe Grüße, Maria.", q: "Maria ist heute bei der Arbeit.", ans: false },
@@ -5780,7 +5826,15 @@ function wrCheck() {
             { type: "tf", text: "Besprechung: Freitag 15 Uhr in Raum 4. Bitte bringen Sie Ihr Heft mit.", q: "Die Besprechung ist am Freitag.", ans: true },
             { type: "mc", text: "Der Bus 12 fährt in die Innenstadt. Er hält am Krankenhaus und am Park.", q: "Wohin fährt der Bus 12?", opts: ["Zum Flughafen", "In die Innenstadt", "Zur Schule", "Nur zum Bahnhof"], ans: 1 },
             { type: "tf", text: "Entschuldigung, wir haben heute geschlossen. Wir öffnen morgen um 9 Uhr.", q: "Das Geschäft ist heute geöffnet.", ans: false },
-            { type: "mc", text: "Hallo Sara, kannst du am Samstag zu meiner Party kommen? Sie beginnt um 19 Uhr. Von Ali.", q: "Wann ist die Party?", opts: ["Freitag", "Samstag", "Sonntag", "Montag"], ans: 1 }
+            { type: "mc", text: "Hallo Sara, kannst du am Samstag zu meiner Party kommen? Sie beginnt um 19 Uhr. Von Ali.", q: "Wann ist die Party?", opts: ["Freitag", "Samstag", "Sonntag", "Montag"], ans: 1 },
+            { type: "tf", text: "Hallo Tom, ich bin heute im Kino. Ich bin nicht zu Hause. Bis Montag. Liebe Grüße, Anna.", q: "Anna ist heute zu Hause.", ans: false },
+            { type: "tf", text: "Schwimmbad: Geöffnet Montag bis Samstag 7:00 – 21:00 Uhr. Sonntags geschlossen.", q: "Das Schwimmbad ist sonntags geöffnet.", ans: false },
+            { type: "tf", text: "Zug nach Oxford: Abfahrt um 10:30 Uhr von Gleis 2.", q: "Der Zug fährt um 10:30 Uhr ab.", ans: true },
+            { type: "tf", text: "Bitte füttern Sie die Tiere nicht.", q: "Man darf die Tiere füttern.", ans: false },
+            { type: "mc", text: "Hotel Sonnenschein – Frühstück inklusive. Zimmer ab 50 Euro pro Nacht. Online buchen.", q: "Was ist im Hotel Sonnenschein kostenlos?", opts: ["Mittagessen", "Frühstück", "Abendessen", "Parken"], ans: 1 },
+            { type: "mc", text: "Museum: Geöffnet Dienstag bis Sonntag, 10 bis 18 Uhr. Eintritt: 5 Euro.", q: "Wann ist das Museum geöffnet?", opts: ["Jeden Tag", "Dienstag bis Sonntag", "Nur montags", "Nur sonntags"], ans: 1 },
+            { type: "mc", text: "Verloren: roter Regenschirm. Bitte anrufen: 0712 345678. Danke.", q: "Welche Farbe hat der verlorene Regenschirm?", opts: ["Rot", "Schwarz", "Blau", "Grün"], ans: 0 },
+            { type: "mc", text: "Bus 5 fährt zum Flughafen. Er fährt alle 30 Minuten.", q: "Wohin fährt Bus 5?", opts: ["In die Stadtmitte", "Zum Flughafen", "Zum Bahnhof", "Zum Krankenhaus"], ans: 1 }
           ],
           grammar: [
             { type: "mc", q: "Ich ___ Anna.", opts: ["bin", "bist", "ist", "sind"], ans: 0 },
@@ -5802,11 +5856,23 @@ function wrCheck() {
             { type: "mc", q: "Ich habe ___ Geld.", opts: ["etwas", "kein", "nicht", "nie"], ans: 0 },
             { type: "mc", q: "Wie ___ Äpfel möchtest du?", opts: ["viel", "viele", "mehr", "meisten"], ans: 1 },
             { type: "mc", q: "Ali ist ___ als Omar.", opts: ["groß", "größer", "am größten", "mehr groß"], ans: 1 },
-            { type: "mc", q: "Sie ___ gestern zur Schule.", opts: ["gehen", "geht", "gingen", "gegangen"], ans: 2 }
+            { type: "mc", q: "Sie ___ gestern zur Schule.", opts: ["gehen", "geht", "gingen", "gegangen"], ans: 2 },
+            { type: "mc", q: "Du ___ mein Freund.", opts: ["bist", "bin", "ist", "seid"], ans: 0 },
+            { type: "mc", q: "Er ___ aus Deutschland.", opts: ["bin", "bist", "ist", "seid"], ans: 2 },
+            { type: "mc", q: "Ihr ___ Lehrer.", opts: ["seid", "sind", "bist", "ist"], ans: 0 },
+            { type: "mc", q: "Ich ___ einen Bruder.", opts: ["hat", "hast", "habe", "haben"], ans: 2 },
+            { type: "mc", q: "Das ist ___ Haus.", opts: ["ein", "eine", "einen", "einer"], ans: 0 },
+            { type: "mc", q: "Sie ___ jeden Tag zur Schule.", opts: ["geht", "gehen", "gehe", "gehst"], ans: 0 },
+            { type: "mc", q: "Wann ___ du zur Schule?", opts: ["gehst", "geht", "gehe", "gehen"], ans: 0 },
+            { type: "mc", q: "Ich trinke ___ Wasser.", opts: ["ein", "einen", "eine", "einem"], ans: 0 },
+            { type: "mc", q: "Der Mann ___ einen Hund.", opts: ["hat", "hast", "habe", "haben"], ans: 0 },
+            { type: "mc", q: "Ich komme ___ Berlin.", opts: ["aus", "in", "nach", "von"], ans: 0 }
           ],
           writing: [
             { type: "form", q: "Füllen Sie das Formular aus (auf Deutsch):", fields: ["Vollständiger Name", "Alter", "Stadt", "Nationalität"] },
-            { type: "short", q: "Schreiben Sie 3–5 einfache Sätze über sich selbst (Name, Alter, Stadt, Beruf/Studium). Mindestens 25 Wörter.", minWords: 25 }
+            { type: "short", q: "Schreiben Sie 3–5 einfache Sätze über sich selbst (Name, Alter, Stadt, Beruf/Studium). Mindestens 25 Wörter.", minWords: 25 },
+            { type: "form", q: "Fülle das Formular mit deinen Informationen aus (schreibe auf Deutsch):", fields: ["Name", "Alter", "Stadt", "Lieblingsessen"] },
+            { type: "short", q: "Schreibe 3–5 einfache Sätze über deine Familie (wer ist in deiner Familie, was machen sie). Mindestens 25 Wörter.", minWords: 25 }
           ]
         }
       };
@@ -5824,7 +5890,12 @@ function wrCheck() {
             { type: "mc", audio: "If it rains tomorrow, we will stay at home and watch a film.", q: "What will they do if it rains?", opts: ["Go out", "Stay at home and watch a film", "Go shopping", "Visit friends"], ans: 1 },
             { type: "mc", audio: "I worked in this hospital for three years. Then I moved to a bigger hospital in the city centre.", q: "Where does he work now?", opts: ["In a small clinic", "In a bigger hospital in the city centre", "In a school", "In an office"], ans: 1 },
             { type: "mc", audio: "Excuse me, could you tell me where the nearest pharmacy is? I need some medicine for my headache.", q: "What does the person need?", opts: ["Medicine for a headache", "A doctor", "A hospital", "A taxi"], ans: 0 },
-            { type: "mc", audio: "We are going to visit my grandmother next weekend. She lives in a small village near the mountains.", q: "Where does the grandmother live?", opts: ["In a city", "In a small village near the mountains", "In London", "In a hotel"], ans: 1 }
+            { type: "mc", audio: "We are going to visit my grandmother next weekend. She lives in a small village near the mountains.", q: "Where does the grandmother live?", opts: ["In a city", "In a small village near the mountains", "In London", "In a hotel"], ans: 1 },
+            { type: "mc", audio: "I have been learning English for two years. I practise every day.", q: "How long has the speaker been learning English?", opts: ["One year", "Two years", "Three years", "Every day"], ans: 1 },
+            { type: "mc", audio: "I am going to visit my friend on Saturday. We will go to the cinema.", q: "What will the speaker do on Saturday?", opts: ["Visit a friend", "Go to work", "Stay at home", "Go shopping"], ans: 0 },
+            { type: "mc", audio: "Anna: I have just finished my homework. Ben: Great! Let's go to the park.", q: "What has Anna just finished?", opts: ["Her homework", "Her lunch", "Her book", "Her work"], ans: 0 },
+            { type: "mc", audio: "The train to London leaves at half past nine. Please be on time.", q: "What time does the train leave?", opts: ["9:00", "9:30", "10:00", "10:30"], ans: 1 },
+            { type: "mc", audio: "My favourite season is autumn because the weather is cool and the leaves are beautiful.", q: "Why does the speaker like autumn?", opts: ["It is hot", "The weather is cool", "It snows", "It rains a lot"], ans: 1 }
           ],
           reading: [
             { type: "tf", text: "Notice: The swimming pool is closed on Mondays. It opens on Tuesday at 8 am.", q: "The swimming pool is open on Monday.", ans: false },
@@ -5836,7 +5907,17 @@ function wrCheck() {
             { type: "tf", text: "To stay healthy, you should eat vegetables and fruit every day, drink enough water, and walk for thirty minutes. You should not eat a lot of fast food or drink a lot of soft drinks.", q: "You should drink a lot of soft drinks to stay healthy.", ans: false },
             { type: "mc", text: "I started my new job last month. I work in an office in the city centre. My job is to answer emails and help customers. My colleagues are friendly, and my boss is kind. I like my job, but I have to get up very early every day.", q: "What is his job?", opts: ["Answer emails and help customers", "Drive a bus", "Teach children", "Cook food"], ans: 0 },
             { type: "mc", text: "If you want to learn a language, you must practise every day. Read short texts, listen to the language, and speak with other people. Do not be afraid of mistakes — they help you learn.", q: "What should you NOT be afraid of?", opts: ["Reading", "Mistakes", "Listening", "Speaking"], ans: 1 },
-            { type: "tf", text: "The museum is open from Tuesday to Sunday, 10 am to 6 pm. It is closed on Mondays. Tickets cost 10 dollars for adults and 5 dollars for children under 12.", q: "The museum is open on Mondays.", ans: false }
+            { type: "tf", text: "The museum is open from Tuesday to Sunday, 10 am to 6 pm. It is closed on Mondays. Tickets cost 10 dollars for adults and 5 dollars for children under 12.", q: "The museum is open on Mondays.", ans: false },
+            { type: "tf", text: "Dear Mr Smith, Thank you for your email. The meeting is on Monday at 10 am in Room 5. Please bring your passport. Best regards, Lisa.", q: "The meeting is on Monday.", ans: true },
+            { type: "tf", text: "Recipe: Mix the flour and the sugar. Add two eggs and a little milk. Bake for 30 minutes.", q: "You need three eggs for this recipe.", ans: false },
+            { type: "tf", text: "The new library is open from 8 am to 8 pm. You can borrow books, use the computers, and study in the quiet room.", q: "You can use computers in the library.", ans: true },
+            { type: "tf", text: "Weather today: It will be sunny in the morning and rainy in the afternoon. Take an umbrella.", q: "It will rain in the morning.", ans: false },
+            { type: "tf", text: "Job advertisement: We need a waiter for our restaurant. You must speak English and German. Please send your CV.", q: "The restaurant needs a cook.", ans: false },
+            { type: "mc", text: "Tom's Day: Tom gets up at 6:30. He has breakfast, then he goes to work by bus. In the evening he cooks dinner and reads a book.", q: "How does Tom go to work?", opts: ["By car", "By bus", "By train", "On foot"], ans: 1 },
+            { type: "mc", text: "A Letter: Dear Sara, I am writing from Paris. The city is beautiful. Yesterday I visited the Eiffel Tower. Tomorrow I will go to a museum.", q: "Where is the writer?", opts: ["In London", "In Paris", "In Berlin", "In Rome"], ans: 1 },
+            { type: "mc", text: "Healthy Food: Eat fruit and vegetables every day. Drink water. Do not eat too much sugar.", q: "What should you drink?", opts: ["Juice", "Coffee", "Water", "Milk"], ans: 2 },
+            { type: "mc", text: "The cinema is closed on Mondays. Films start at 5 pm and 8 pm. Tickets cost 8 euros.", q: "How much is a ticket?", opts: ["5 euros", "6 euros", "8 euros", "10 euros"], ans: 2 },
+            { type: "mc", text: "Anna's hobby is painting. She paints every weekend. Her favourite colour is blue.", q: "When does Anna paint?", opts: ["Every day", "Every weekend", "Every month", "Every year"], ans: 1 }
           ],
           grammar: [
             { type: "mc", q: "I ___ from Iraq.", opts: ["am", "is", "are", "be"], ans: 0 },
@@ -5858,12 +5939,25 @@ function wrCheck() {
             { type: "mc", q: "The opposite of 'hot' is ___.", opts: ["cold", "warm", "big", "small"], ans: 0 },
             { type: "mc", q: "She gave the book to ___.", opts: ["I", "me", "my", "mine"], ans: 1 },
             { type: "mc", q: "He speaks English ___.", opts: ["good", "well", "better", "best"], ans: 1 },
-            { type: "mc", q: "I lived in London ___ two years.", opts: ["since", "for", "at", "in"], ans: 1 }
+            { type: "mc", q: "I lived in London ___ two years.", opts: ["since", "for", "at", "in"], ans: 1 },
+            { type: "mc", q: "I ___ TV yesterday.", opts: ["watch", "watched", "watching", "watches"], ans: 1 },
+            { type: "mc", q: "She ___ just finished her homework.", opts: ["has", "have", "is", "are"], ans: 0 },
+            { type: "mc", q: "This book is ___ than that one.", opts: ["interesting", "more interesting", "most interesting", "interestinger"], ans: 1 },
+            { type: "mc", q: "I ___ visit my grandmother tomorrow.", opts: ["will", "would", "shall", "can"], ans: 0 },
+            { type: "mc", q: "You ___ wear a seatbelt in the car.", opts: ["must", "mustn't", "don't have to", "can't"], ans: 0 },
+            { type: "mc", q: "They ___ to London last year.", opts: ["go", "went", "gone", "going"], ans: 1 },
+            { type: "mc", q: "I am ___ than my brother.", opts: ["tall", "taller", "tallest", "more tall"], ans: 1 },
+            { type: "mc", q: "We ___ dinner at the moment.", opts: ["cook", "cooks", "are cooking", "cooked"], ans: 2 },
+            { type: "mc", q: "He ___ speak German very well.", opts: ["can", "cans", "could to", "can to"], ans: 0 },
+            { type: "mc", q: "I ___ my keys. I can't find them.", opts: ["lost", "have lost", "lose", "am losing"], ans: 1 }
           ],
           writing: [
             { type: "form", q: "Complete the form with your information (write in English):", fields: ["Full name", "Age", "City", "Nationality"] },
             { type: "short", q: "Write 3–5 simple sentences about your daily routine. Minimum 25 words.", minWords: 25 },
-            { type: "long", q: "Write a short text (40–60 words) about your last holiday or a trip you want to take. Use the past tense.", minWords: 40 }
+            { type: "long", q: "Write a short text (40–60 words) about your last holiday or a trip you want to take. Use the past tense.", minWords: 40 },
+            { type: "form", q: "Fill in the form about yourself (write in English):", fields: ["Full name", "Age", "Email", "Country"] },
+            { type: "short", q: "Write 5–7 sentences about your last holiday (where did you go, what did you do, did you like it). Minimum 25 words.", minWords: 25 },
+            { type: "long", q: "Write a short email (40+ words) to a friend: invite them to your birthday party (when, where, what time, what to bring).", minWords: 40 }
           ]
         },
         de: {
@@ -5877,7 +5971,12 @@ function wrCheck() {
             { type: "mc", audio: "Wenn es morgen regnet, bleiben wir zu Hause und sehen einen Film.", q: "Was machen sie, wenn es regnet?", opts: ["Sie gehen aus", "Sie bleiben zu Hause und sehen einen Film", "Sie gehen einkaufen", "Sie besuchen Freunde"], ans: 1 },
             { type: "mc", audio: "Ich habe drei Jahre in diesem Krankenhaus gearbeitet. Dann bin ich in ein größeres Krankenhaus im Stadtzentrum gezogen.", q: "Wo arbeitet er jetzt?", opts: ["In einer kleinen Klinik", "In einem größeren Krankenhaus im Stadtzentrum", "In einer Schule", "In einem Büro"], ans: 1 },
             { type: "mc", audio: "Entschuldigung, können Sie mir sagen, wo die nächste Apotheke ist? Ich brauche ein Medikament gegen meine Kopfschmerzen.", q: "Was braucht die Person?", opts: ["Ein Medikament gegen Kopfschmerzen", "Einen Arzt", "Ein Krankenhaus", "Ein Taxi"], ans: 0 },
-            { type: "mc", audio: "Wir werden meine Großmutter nächstes Wochenende besuchen. Sie wohnt in einem kleinen Dorf in der Nähe der Berge.", q: "Wo wohnt die Großmutter?", opts: ["In einer Stadt", "In einem kleinen Dorf in der Nähe der Berge", "In London", "In einem Hotel"], ans: 1 }
+            { type: "mc", audio: "Wir werden meine Großmutter nächstes Wochenende besuchen. Sie wohnt in einem kleinen Dorf in der Nähe der Berge.", q: "Wo wohnt die Großmutter?", opts: ["In einer Stadt", "In einem kleinen Dorf in der Nähe der Berge", "In London", "In einem Hotel"], ans: 1 },
+            { type: "mc", audio: "Ich lerne seit zwei Jahren Deutsch. Ich übe jeden Tag.", q: "Wie lange lernt der Sprecher schon Deutsch?", opts: ["Ein Jahr", "Zwei Jahre", "Drei Jahre", "Jeden Tag"], ans: 1 },
+            { type: "mc", audio: "Ich werde am Samstag meinen Freund besuchen. Wir gehen ins Kino.", q: "Was wird der Sprecher am Samstag machen?", opts: ["Einen Freund besuchen", "Zur Arbeit gehen", "Zu Hause bleiben", "Einkaufen gehen"], ans: 0 },
+            { type: "mc", audio: "Anna: Ich habe gerade meine Hausaufgaben gemacht. Ben: Super! Lass uns in den Park gehen.", q: "Was hat Anna gerade gemacht?", opts: ["Ihre Hausaufgaben", "Ihr Mittagessen", "Ihr Buch", "Ihre Arbeit"], ans: 0 },
+            { type: "mc", audio: "Der Bus zum Flughafen fährt um Viertel nach acht. Bitte seien Sie pünktlich.", q: "Wann fährt der Bus ab?", opts: ["Um 8 Uhr", "Um Viertel nach acht", "Um 9 Uhr", "Um halb neun"], ans: 1 },
+            { type: "mc", audio: "Meine Lieblingsjahreszeit ist der Herbst, weil das Wetter kühl ist und die Blätter schön sind.", q: "Warum mag der Sprecher den Herbst?", opts: ["Es ist heiß", "Das Wetter ist kühl", "Es schneit", "Es regnet viel"], ans: 1 }
           ],
           reading: [
             { type: "tf", text: "Hinweis: Das Schwimmbad ist montags geschlossen. Es öffnet dienstags um 8 Uhr.", q: "Das Schwimmbad ist montags geöffnet.", ans: false },
@@ -5889,7 +5988,17 @@ function wrCheck() {
             { type: "tf", text: "Um gesund zu bleiben, sollte man jeden Tag Gemüse und Obst essen, genug Wasser trinken und dreißig Minuten spazieren gehen. Man sollte nicht viel Fast Food essen oder viele Softdrinks trinken.", q: "Man sollte viele Softdrinks trinken, um gesund zu bleiben.", ans: false },
             { type: "mc", text: "Ich habe letzten Monat meinen neuen Job angefangen. Ich arbeite in einem Büro im Stadtzentrum. Meine Aufgabe ist es, E-Mails zu beantworten und Kunden zu helfen. Meine Kollegen sind freundlich, und mein Chef ist nett. Ich mag meinen Job, aber ich muss jeden Tag sehr früh aufstehen.", q: "Was ist seine Aufgabe?", opts: ["E-Mails beantworten und Kunden helfen", "Einen Bus fahren", "Kinder unterrichten", "Essen kochen"], ans: 0 },
             { type: "mc", text: "Wenn du eine Sprache lernen willst, musst du jeden Tag üben. Lies kurze Texte, höre die Sprache und sprich mit anderen Menschen. Habe keine Angst vor Fehlern — sie helfen dir beim Lernen.", q: "Wovor sollte man keine Angst haben?", opts: ["Lesen", "Fehler", "Hören", "Sprechen"], ans: 1 },
-            { type: "tf", text: "Das Museum ist von Dienstag bis Sonntag, 10 bis 18 Uhr, geöffnet. Montags ist es geschlossen. Tickets kosten 10 Dollar für Erwachsene und 5 Dollar für Kinder unter 12 Jahren.", q: "Das Museum ist montags geöffnet.", ans: false }
+            { type: "tf", text: "Das Museum ist von Dienstag bis Sonntag, 10 bis 18 Uhr, geöffnet. Montags ist es geschlossen. Tickets kosten 10 Dollar für Erwachsene und 5 Dollar für Kinder unter 12 Jahren.", q: "Das Museum ist montags geöffnet.", ans: false },
+            { type: "tf", text: "Sehr geehrter Herr Smith, vielen Dank für Ihre E-Mail. Das Treffen ist am Montag um 10 Uhr in Raum 5. Bitte bringen Sie Ihren Pass mit. Mit freundlichen Grüßen, Lisa.", q: "Das Treffen ist am Montag.", ans: true },
+            { type: "tf", text: "Rezept: Mehl und Zucker mischen. Zwei Eier und etwas Milch hinzufügen. 30 Minuten backen.", q: "Man braucht drei Eier für dieses Rezept.", ans: false },
+            { type: "tf", text: "Die neue Bibliothek ist von 8 bis 20 Uhr geöffnet. Man kann Bücher ausleihen, die Computer benutzen und im Ruheraum lernen.", q: "Man kann in der Bibliothek Computer benutzen.", ans: true },
+            { type: "tf", text: "Wetter heute: Am Morgen ist es sonnig und am Nachmittag regnerisch. Nehmen Sie einen Regenschirm mit.", q: "Es regnet am Morgen.", ans: false },
+            { type: "tf", text: "Stellenanzeige: Wir suchen einen Kellner für unser Restaurant. Sie müssen Englisch und Deutsch sprechen. Bitte schicken Sie Ihren Lebenslauf.", q: "Das Restaurant sucht einen Koch.", ans: false },
+            { type: "mc", text: "Toms Tag: Tom steht um 6:30 Uhr auf. Er frühstückt, dann fährt er mit dem Bus zur Arbeit. Am Abend kocht er und liest ein Buch.", q: "Wie fährt Tom zur Arbeit?", opts: ["Mit dem Auto", "Mit dem Bus", "Mit dem Zug", "Zu Fuß"], ans: 1 },
+            { type: "mc", text: "Ein Brief: Liebe Sara, ich schreibe aus Paris. Die Stadt ist schön. Gestern habe ich den Eiffelturm besucht. Morgen gehe ich in ein Museum.", q: "Wo ist der Schreiber?", opts: ["In London", "In Paris", "In Berlin", "In Rom"], ans: 1 },
+            { type: "mc", text: "Gesundes Essen: Iss jeden Tag Obst und Gemüse. Trink Wasser. Iss nicht zu viel Zucker.", q: "Was soll man trinken?", opts: ["Saft", "Kaffee", "Wasser", "Milch"], ans: 2 },
+            { type: "mc", text: "Das Kino ist montags geschlossen. Filme beginnen um 17 Uhr und um 20 Uhr. Karten kosten 8 Euro.", q: "Wie viel kostet eine Karte?", opts: ["5 Euro", "6 Euro", "8 Euro", "10 Euro"], ans: 2 },
+            { type: "mc", text: "Annas Hobby ist Malen. Sie malt jedes Wochenende. Ihre Lieblingsfarbe ist Blau.", q: "Wann malt Anna?", opts: ["Jeden Tag", "Jedes Wochenende", "Jeden Monat", "Jedes Jahr"], ans: 1 }
           ],
           grammar: [
             { type: "mc", q: "Ich ___ aus dem Irak.", opts: ["bin", "bist", "ist", "sind"], ans: 0 },
@@ -5911,33 +6020,82 @@ function wrCheck() {
             { type: "mc", q: "Das Gegenteil von 'heiß' ist ___.", opts: ["kalt", "warm", "groß", "klein"], ans: 0 },
             { type: "mc", q: "Sie hat das Buch ___ gegeben.", opts: ["ich", "mir", "mich", "mein"], ans: 1 },
             { type: "mc", q: "Er spricht Englisch ___.", opts: ["gut", "gute", "guter", "gutes"], ans: 0 },
-            { type: "mc", q: "Ich habe zwei Jahre in London ___.", opts: ["gelebt", "lebe", "leben", "lebte"], ans: 0 }
+            { type: "mc", q: "Ich habe zwei Jahre in London ___.", opts: ["gelebt", "lebe", "leben", "lebte"], ans: 0 },
+            { type: "mc", q: "Ich ___ gestern einen Film gesehen.", opts: ["hat", "habe", "bin", "ist"], ans: 1 },
+            { type: "mc", q: "Er ___ nach Berlin gefahren.", opts: ["hat", "ist", "haben", "sein"], ans: 1 },
+            { type: "mc", q: "Das Buch ist ___ als das andere.", opts: ["interessant", "interessanter", "am interessantesten", "mehr interessant"], ans: 1 },
+            { type: "mc", q: "Ich ___ morgen meine Oma besuchen.", opts: ["werde", "wird", "wirst", "werden"], ans: 0 },
+            { type: "mc", q: "Du ___ im Auto einen Gurt tragen.", opts: ["musst", "musst nicht", "darfst nicht", "kannst nicht"], ans: 0 },
+            { type: "mc", q: "Sie ___ letztes Jahr nach London gefahren.", opts: ["ist", "sind", "hat", "haben"], ans: 1 },
+            { type: "mc", q: "Ich bin ___ als mein Bruder.", opts: ["groß", "größer", "am größten", "mehr groß"], ans: 1 },
+            { type: "mc", q: "Wir ___ gerade zu Abend.", opts: ["essen", "esst", "isst", "esse"], ans: 0 },
+            { type: "mc", q: "Er ___ sehr gut Deutsch sprechen.", opts: ["kann", "können", "kannst", "könnt"], ans: 0 },
+            { type: "mc", q: "Ich ___ meine Schlüssel verloren. Ich kann sie nicht finden.", opts: ["habe", "hat", "bin", "ist"], ans: 0 }
           ],
           writing: [
             { type: "form", q: "Füllen Sie das Formular aus (auf Deutsch):", fields: ["Vollständiger Name", "Alter", "Stadt", "Nationalität"] },
             { type: "short", q: "Schreiben Sie 3–5 Sätze über Ihren Tagesablauf. Mindestens 25 Wörter.", minWords: 25 },
-            { type: "long", q: "Schreiben Sie einen kurzen Text (40–60 Wörter) über Ihren letzten Urlaub oder eine Reise, die Sie machen möchten. Verwenden Sie die Vergangenheit.", minWords: 40 }
+            { type: "long", q: "Schreiben Sie einen kurzen Text (40–60 Wörter) über Ihren letzten Urlaub oder eine Reise, die Sie machen möchten. Verwenden Sie die Vergangenheit.", minWords: 40 },
+            { type: "form", q: "Fülle das Formular mit deinen Informationen aus (schreibe auf Deutsch):", fields: ["Name", "Alter", "E-Mail", "Land"] },
+            { type: "short", q: "Schreibe 5–7 Sätze über deinen letzten Urlaub (wohin bist du gefahren, was hast du gemacht, hat es dir gefallen). Mindestens 25 Wörter.", minWords: 25 },
+            { type: "long", q: "Schreibe eine kurze E-Mail (40+ Wörter) an einen Freund: Lade ihn zu deiner Geburtstagsparty ein (wann, wo, um wie viel Uhr, was soll er mitbringen).", minWords: 40 }
           ]
         }
       };
 
       var A1_PARTS = ["listening", "reading", "grammar", "writing"];
       var A1_PART_NAMES = { listening: "الاستماع", reading: "القراءة", grammar: "القواعد والمفردات", writing: "الكتابة" };
+      /* ---------- Exam versions: fresh random paper every attempt ---------- */
+      var A1_DRAW = { listening: 8, reading: 8, grammar: 20 };
+      var FIN_DRAW = { listening: 10, reading: 10, grammar: 20 };
+      function examDrawList(pool, n) {
+        var idx = [];
+        for (var i = 0; i < pool.length; i++) idx.push(i);
+        idx = shuffleArr(idx).slice(0, Math.min(n, pool.length));
+        return idx.map(function(pi) {
+          var q = pool[pi], c = {};
+          for (var k in q) c[k] = q[k];
+          if (Array.isArray(c.opts)) c.opts = c.opts.slice();
+          c._ai = pi;
+          if (c.type === "mc" && c.opts) {
+            var order = [];
+            for (var j = 0; j < c.opts.length; j++) order.push(j);
+            order = shuffleArr(order);
+            c.opts = order.map(function(oi) { return c.opts[oi]; });
+            c.ans = order.indexOf(c.ans);
+          }
+          return c;
+        });
+      }
+      function examDrawWriting(pool) {
+        var byType = {};
+        pool.forEach(function(q) { (byType[q.type] = byType[q.type] || []).push(q); });
+        var out = [];
+        ["form", "short", "long"].forEach(function(t) {
+          var arr = byType[t] || [];
+          if (arr.length) { var q = arr[Math.floor(Math.random() * arr.length)], c = {}; for (var k in q) c[k] = q[k]; out.push(c); }
+        });
+        return out;
+      }
 
       function a1Reset() {
         a1StopAudio();
-        a1State = { lang: a1State.lang || "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false };
+        a1State = { lang: a1State.lang || "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false, parts: A1_PARTS.slice(), lists: {} };
         $("a1StartScreen").hidden = false;
         $("a1TestArea").hidden = true;
         $("a1ResultScreen").hidden = true;
       }
 
-      function a1Start() {
+      function a1Start(mode) {
+        var m = (typeof mode === "string" && A1_PARTS.indexOf(mode) !== -1) ? mode : "full";
         a1State.started = true;
         a1State.part = 0;
         a1State.q = 0;
         a1State.answers = {};
         a1State.scores = {listening:0, reading:0, grammar:0, writing:0};
+        a1State.parts = (m === "full") ? A1_PARTS.slice() : [m];
+        a1State.lists = {};
+        a1State.parts.forEach(function(pp){ var pool = A1_DATA[a1State.lang][pp] || []; a1State.lists[pp] = (pp === "writing") ? examDrawWriting(pool) : examDrawList(pool, A1_DRAW[pp] || pool.length); });
         $("a1StartScreen").hidden = true;
         $("a1TestArea").hidden = false;
         $("a1ResultScreen").hidden = true;
@@ -5946,11 +6104,12 @@ function wrCheck() {
 
       function a1CurrentList() {
         var lang = a1State.lang;
-        var part = A1_PARTS[a1State.part];
+        var part = (a1State.parts || A1_PARTS)[a1State.part];
+        if (a1State.lists && a1State.lists[part]) return a1State.lists[part];
         return A1_DATA[lang][part] || [];
       }
 
-      var A1_AUDIO = { en: ["audio-exam/en-01.mp3", "audio-exam/en-02.mp3", "audio-exam/en-03.mp3", "audio-exam/en-04.mp3", "audio-exam/en-05.mp3", "audio-exam/en-06.mp3", "audio-exam/en-07.mp3", "audio-exam/en-08.mp3"], de: ["audio-exam/de-01.mp3", "audio-exam/de-02.mp3", "audio-exam/de-03.mp3", "audio-exam/de-04.mp3", "audio-exam/de-05.mp3", "audio-exam/de-06.mp3", "audio-exam/de-07.mp3", "audio-exam/de-08.mp3"] };
+      var A1_AUDIO = { en: ["audio-exam/en-01.mp3", "audio-exam/en-02.mp3", "audio-exam/en-03.mp3", "audio-exam/en-04.mp3", "audio-exam/en-05.mp3", "audio-exam/en-06.mp3", "audio-exam/en-07.mp3", "audio-exam/en-08.mp3", "audio-exam/en-09.mp3", "audio-exam/en-10.mp3", "audio-exam/en-11.mp3", "audio-exam/en-12.mp3"], de: ["audio-exam/de-01.mp3", "audio-exam/de-02.mp3", "audio-exam/de-03.mp3", "audio-exam/de-04.mp3", "audio-exam/de-05.mp3", "audio-exam/de-06.mp3", "audio-exam/de-07.mp3", "audio-exam/de-08.mp3", "audio-exam/de-09.mp3", "audio-exam/de-10.mp3", "audio-exam/de-11.mp3", "audio-exam/de-12.mp3"] };
       var a1AudioEl = null;
       function a1StopAudio() {
         if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (e) {} }
@@ -5980,9 +6139,9 @@ function wrCheck() {
       function a1RenderQuestion() {
         a1StopAudio();
         var list = a1CurrentList();
-        var partName = A1_PART_NAMES[A1_PARTS[a1State.part]];
+        var partName = A1_PART_NAMES[(a1State.parts || A1_PARTS)[a1State.part]];
         var totalInPart = list.length;
-        $("a1Progress").textContent = partName + " — سؤال " + (a1State.q + 1) + " من " + totalInPart + "  |  الجزء " + (a1State.part + 1) + "/4";
+        $("a1Progress").textContent = partName + " — سؤال " + (a1State.q + 1) + " من " + totalInPart + "  |  الجزء " + (a1State.part + 1) + "/" + (a1State.parts || A1_PARTS).length;
 
         var item = list[a1State.q];
         var box = $("a1QuestionBox");
@@ -5997,7 +6156,7 @@ function wrCheck() {
             playBtn.className = "start-btn";
             playBtn.style.marginBottom = "12px";
             playBtn.innerHTML = SPK + " استمع";
-            playBtn.onclick = function(){ a1PlayExam(item.audio, a1State.q); };
+            playBtn.onclick = function(){ a1PlayExam(item.audio, (typeof item._ai === "number" ? item._ai : a1State.q)); };
             box.appendChild(playBtn);
             var small = document.createElement("p");
             small.style.fontSize = ".85rem";
@@ -6144,7 +6303,7 @@ function wrCheck() {
         var list = a1CurrentList();
         if (a1State.q < list.length - 1) {
           a1State.q++;
-        } else if (a1State.part < A1_PARTS.length - 1) {
+        } else if (a1State.part < (a1State.parts || A1_PARTS).length - 1) {
           a1State.part++;
           a1State.q = 0;
         }
@@ -6176,8 +6335,8 @@ function wrCheck() {
       }
 
       function a1ScorePart(partIdx) {
-        var part = A1_PARTS[partIdx];
-        var list = A1_DATA[a1State.lang][part];
+        var part = (a1State.parts || A1_PARTS)[partIdx];
+        var list = (a1State.lists && a1State.lists[part]) || A1_DATA[a1State.lang][part];
         var score = 0;
         var max = 25;
         if (part === "writing") {
@@ -6218,7 +6377,7 @@ function wrCheck() {
       function a1Finish() {
         a1StopAudio();
         var total = 0;
-        A1_PARTS.forEach(function(p, i) {
+        (a1State.parts || A1_PARTS).forEach(function(p, i) {
           var s = a1ScorePart(i);
           a1State.scores[p] = s;
           total += s;
@@ -6226,15 +6385,18 @@ function wrCheck() {
         $("a1TestArea").hidden = true;
         $("a1ResultScreen").hidden = false;
 
-        var passed = total >= 60;
-        var band = !passed ? "" : total >= 90 ? " — A1 قوي، جاهز لـ A2" : total >= 80 ? " — A1 جيد" : " — A1";
-        $("a1ScoreBig").textContent = total + " / 100";
+        var maxTotal = (a1State.parts || A1_PARTS).length * 25;
+        var passMark = Math.round(maxTotal * 0.6);
+        var passed = total >= passMark;
+        var single = (a1State.parts || A1_PARTS).length === 1;
+        var band = !passed ? "" : single ? "" : total >= 90 ? " — A1 قوي، جاهز لـ A2" : total >= 80 ? " — A1 جيد" : " — A1";
+        $("a1ScoreBig").textContent = total + " / " + maxTotal;
         $("a1ScoreBig").style.color = passed ? "var(--ok)" : "var(--bad)";
-        $("a1PassFail").textContent = passed ? "✓ ناجح — مبروك!" + band : "✗ لم تحقق نسبة النجاح (60%)";
+        $("a1PassFail").textContent = passed ? (single ? "✓ ناجح في هذا الجزء — أحسنت!" : "✓ ناجح — مبروك!" + band) : "✗ لم تحقق نسبة النجاح (60%)" + (single ? " في هذا الجزء" : "");
         $("a1PassFail").style.color = passed ? "var(--ok)" : "var(--bad)";
 
         var html = "<table style='width:100%;border-collapse:collapse'>";
-        A1_PARTS.forEach(function(p) {
+        (a1State.parts || A1_PARTS).forEach(function(p) {
           html += "<tr><td style='padding:8px;border-bottom:1px solid var(--line)'>" + A1_PART_NAMES[p] + "</td>";
           html += "<td style='padding:8px;border-bottom:1px solid var(--line);text-align:left;font-weight:800'>" + a1State.scores[p] + " / 25</td></tr>";
         });
@@ -6242,7 +6404,7 @@ function wrCheck() {
         $("a1Breakdown").innerHTML = html;
 
         // Save last result
-        try {
+        if (!single) try {
           localStorage.setItem("a1LastResult", JSON.stringify({
             lang: a1State.lang, total: total, scores: a1State.scores, date: new Date().toISOString(), passed: passed
           }));
@@ -6260,6 +6422,7 @@ function wrCheck() {
         $("a1LangEn").classList.remove("active-en");
       });
       if ($("a1BeginBtn")) $("a1BeginBtn").addEventListener("click", a1Start);
+      document.querySelectorAll("[data-a1part]").forEach(function(b){ b.addEventListener("click", function(){ a1Start(b.getAttribute("data-a1part")); }); });
       if ($("a1NextBtn")) $("a1NextBtn").addEventListener("click", a1Next);
       if ($("a1PrevBtn")) $("a1PrevBtn").addEventListener("click", a1Prev);
       if ($("a1FinishBtn")) $("a1FinishBtn").addEventListener("click", a1Finish);
@@ -6612,17 +6775,21 @@ function wrCheck() {
       var finState = { lang: "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false };
       function finReset() {
         if (typeof finStopAudio === "function") finStopAudio();
-        finState = { lang: finState.lang || "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false };
+        finState = { lang: finState.lang || "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false, parts: FINAL_PARTS.slice(), lists: {} };
         $("finStartScreen").hidden = false;
         $("finTestArea").hidden = true;
         $("finResultScreen").hidden = true;
       }
-      function finStart() {
+      function finStart(mode) {
+        var m = (typeof mode === "string" && FINAL_PARTS.indexOf(mode) !== -1) ? mode : "full";
         finState.started = true;
         finState.part = 0;
         finState.q = 0;
         finState.answers = {};
         finState.scores = {listening:0, reading:0, grammar:0, writing:0};
+        finState.parts = (m === "full") ? FINAL_PARTS.slice() : [m];
+        finState.lists = {};
+        finState.parts.forEach(function(pp){ var pool = FINAL_DATA[finState.lang][pp] || []; finState.lists[pp] = (pp === "writing") ? examDrawWriting(pool) : examDrawList(pool, FIN_DRAW[pp] || pool.length); });
         $("finStartScreen").hidden = true;
         $("finTestArea").hidden = false;
         $("finResultScreen").hidden = true;
@@ -6630,7 +6797,8 @@ function wrCheck() {
       }
       function finCurrentList() {
         var lang = finState.lang;
-        var part = FINAL_PARTS[finState.part];
+        var part = (finState.parts || FINAL_PARTS)[finState.part];
+        if (finState.lists && finState.lists[part]) return finState.lists[part];
         return FINAL_DATA[lang][part] || [];
       }
       function renderLastResult(key, elId) {
@@ -6648,7 +6816,7 @@ function wrCheck() {
         var verdict = r.passed ? "✅ ناجح" : "❌ لم ينجح";
         el.textContent = "آخر نتيجة (" + langName + "): " + r.total + "/100 — " + verdict + (d ? " · " + d : "");
       }
-      var FINAL_AUDIO = { en: ["audio-exam/final-en-01.mp3", "audio-exam/final-en-02.mp3", "audio-exam/final-en-03.mp3", "audio-exam/final-en-04.mp3", "audio-exam/final-en-05.mp3", "audio-exam/final-en-06.mp3", "audio-exam/final-en-07.mp3", "audio-exam/final-en-08.mp3", "audio-exam/final-en-09.mp3", "audio-exam/final-en-10.mp3"], de: ["audio-exam/final-de-01.mp3", "audio-exam/final-de-02.mp3", "audio-exam/final-de-03.mp3", "audio-exam/final-de-04.mp3", "audio-exam/final-de-05.mp3", "audio-exam/final-de-06.mp3", "audio-exam/final-de-07.mp3", "audio-exam/final-de-08.mp3", "audio-exam/final-de-09.mp3", "audio-exam/final-de-10.mp3"] };
+      var FINAL_AUDIO = { en: ["audio-exam/final-en-01.mp3", "audio-exam/final-en-02.mp3", "audio-exam/final-en-03.mp3", "audio-exam/final-en-04.mp3", "audio-exam/final-en-05.mp3", "audio-exam/final-en-06.mp3", "audio-exam/final-en-07.mp3", "audio-exam/final-en-08.mp3", "audio-exam/final-en-09.mp3", "audio-exam/final-en-10.mp3", "audio-exam/final-en-11.mp3", "audio-exam/final-en-12.mp3", "audio-exam/final-en-13.mp3", "audio-exam/final-en-14.mp3", "audio-exam/final-en-15.mp3"], de: ["audio-exam/final-de-01.mp3", "audio-exam/final-de-02.mp3", "audio-exam/final-de-03.mp3", "audio-exam/final-de-04.mp3", "audio-exam/final-de-05.mp3", "audio-exam/final-de-06.mp3", "audio-exam/final-de-07.mp3", "audio-exam/final-de-08.mp3", "audio-exam/final-de-09.mp3", "audio-exam/final-de-10.mp3", "audio-exam/final-de-11.mp3", "audio-exam/final-de-12.mp3", "audio-exam/final-de-13.mp3", "audio-exam/final-de-14.mp3", "audio-exam/final-de-15.mp3"] };
       var finAudioEl = null;
       function finStopAudio() {
         if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (e) {} }
@@ -6669,9 +6837,9 @@ function wrCheck() {
       function finRenderQuestion() {
         if (typeof a1StopAudio === "function") a1StopAudio();
         var list = finCurrentList();
-        var partName = FINAL_PART_NAMES[FINAL_PARTS[finState.part]];
+        var partName = FINAL_PART_NAMES[(finState.parts || FINAL_PARTS)[finState.part]];
         var totalInPart = list.length;
-        $("finProgress").textContent = partName + " — سؤال " + (finState.q + 1) + " من " + totalInPart + "  |  الجزء " + (finState.part + 1) + "/4";
+        $("finProgress").textContent = partName + " — سؤال " + (finState.q + 1) + " من " + totalInPart + "  |  الجزء " + (finState.part + 1) + "/" + (finState.parts || FINAL_PARTS).length;
         var item = list[finState.q];
         var box = $("finQuestionBox");
         box.innerHTML = "";
@@ -6683,7 +6851,7 @@ function wrCheck() {
             playBtn.className = "start-btn";
             playBtn.style.marginBottom = "12px";
             playBtn.innerHTML = SPK + " استمع";
-            playBtn.onclick = function(){ finPlayExam(item.audio, finState.q); };
+            playBtn.onclick = function(){ finPlayExam(item.audio, (typeof item._ai === "number" ? item._ai : finState.q)); };
             box.appendChild(playBtn);
             var small = document.createElement("p");
             small.style.fontSize = ".85rem";
@@ -6826,7 +6994,7 @@ function wrCheck() {
         var list = finCurrentList();
         if (finState.q < list.length - 1) {
           finState.q++;
-        } else if (finState.part < FINAL_PARTS.length - 1) {
+        } else if (finState.part < (finState.parts || FINAL_PARTS).length - 1) {
           finState.part++;
           finState.q = 0;
         }
@@ -6842,8 +7010,8 @@ function wrCheck() {
         finRenderQuestion();
       }
       function finScorePart(partIdx) {
-        var part = FINAL_PARTS[partIdx];
-        var list = FINAL_DATA[finState.lang][part];
+        var part = (finState.parts || FINAL_PARTS)[partIdx];
+        var list = (finState.lists && finState.lists[part]) || FINAL_DATA[finState.lang][part];
         var score = 0;
         if (part === "writing") {
           var formFilled = 0;
@@ -6891,27 +7059,30 @@ function wrCheck() {
       function finFinish() {
         if (typeof a1StopAudio === "function") a1StopAudio();
         var total = 0;
-        FINAL_PARTS.forEach(function(p, i) {
+        (finState.parts || FINAL_PARTS).forEach(function(p, i) {
           var sc = finScorePart(i);
           finState.scores[p] = sc;
           total += sc;
         });
         $("finTestArea").hidden = true;
         $("finResultScreen").hidden = false;
-        var passed = total >= 70;
-        var band = !passed ? "" : total >= 85 ? " — جاهز بقوة لـ B1" : " — جاهز لـ B1";
-        $("finScoreBig").textContent = total + " / 100";
+        var maxTotal = (finState.parts || FINAL_PARTS).length * 25;
+        var passMark = Math.round(maxTotal * 0.6);
+        var passed = total >= passMark;
+        var single = (finState.parts || FINAL_PARTS).length === 1;
+        var band = !passed ? "" : single ? "" : total >= 85 ? " — جاهز بقوة لـ B1" : " — جاهز لـ B1";
+        $("finScoreBig").textContent = total + " / " + maxTotal;
         $("finScoreBig").style.color = passed ? "var(--ok)" : "var(--bad)";
-        $("finPassFail").textContent = passed ? "✓ ناجح — مبروك!" + band : "✗ لم تحقق نسبة النجاح (70%) — أكملت A2 لكنك لست جاهزًا لـ B1 بعد";
+        $("finPassFail").textContent = passed ? (single ? "✓ ناجح في هذا الجزء — أحسنت!" : "✓ ناجح — مبروك!" + band) : (single ? "✗ لم تحقق نسبة النجاح (60%) في هذا الجزء" : "✗ لم تحقق نسبة النجاح (70%) — أكملت A2 لكنك لست جاهزًا لـ B1 بعد");
         $("finPassFail").style.color = passed ? "var(--ok)" : "var(--bad)";
         var html = "<table style='width:100%;border-collapse:collapse'>";
-        FINAL_PARTS.forEach(function(p) {
+        (finState.parts || FINAL_PARTS).forEach(function(p) {
           html += "<tr><td style='padding:8px;border-bottom:1px solid var(--line)'>" + FINAL_PART_NAMES[p] + "</td>";
           html += "<td style='padding:8px;border-bottom:1px solid var(--line);text-align:left;font-weight:800'>" + finState.scores[p] + " / 25</td></tr>";
         });
         html += "</table>";
         $("finBreakdown").innerHTML = html;
-        try {
+        if (!single) try {
           localStorage.setItem("finalLastResult", JSON.stringify({
             lang: finState.lang, total: total, scores: finState.scores, date: new Date().toISOString(), passed: passed
           }));
@@ -6927,6 +7098,7 @@ function wrCheck() {
         $("finLangEn").classList.remove("active-en");
       });
       if ($("finBeginBtn")) $("finBeginBtn").addEventListener("click", finStart);
+      document.querySelectorAll("[data-finpart]").forEach(function(b){ b.addEventListener("click", function(){ finStart(b.getAttribute("data-finpart")); }); });
       if ($("finNextBtn")) $("finNextBtn").addEventListener("click", finNext);
       if ($("finPrevBtn")) $("finPrevBtn").addEventListener("click", finPrev);
       if ($("finFinishBtn")) $("finFinishBtn").addEventListener("click", finFinish);
