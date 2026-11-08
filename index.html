@@ -1085,6 +1085,22 @@
       .tsheet-empty{text-align:center; color:var(--muted); margin:18px 0 6px}
       @keyframes tsheetIn{from{transform:translateY(28px); opacity:.4} to{transform:none; opacity:1}}
       @keyframes tsheetFade{from{opacity:0}}
+      /* ---------- Side menu drawer (hamburger): non-learning actions ---------- */
+      .menu-btn{flex:0 0 auto;width:36px;height:36px;padding:0;border:1px solid var(--line);border-radius:99px;background:var(--surface);color:var(--ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+      .menu-btn svg{width:20px;height:20px}
+      .menu-backdrop{position:fixed;inset:0;z-index:120;background:rgba(0,0,0,.55);display:flex;justify-content:flex-start;animation:tsheetFade .18s ease}
+      .menu-drawer{width:min(320px,86vw);height:100%;overflow-y:auto;background:var(--surface);border-inline-end:1px solid var(--line);box-shadow:12px 0 40px rgba(0,0,0,.35);padding:18px 16px 24px;animation:menuIn .22s ease}
+      @keyframes menuIn{from{transform:translateX(24px);opacity:.4}to{transform:none;opacity:1}}
+      .menu-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+      .menu-title{margin:0;font-size:1.25rem;font-weight:800}
+      .menu-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+      .menu-ic{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+      .menu-ic svg{width:22px;height:22px}
+      .menu-ic-share{background:#d8efe6;color:#2f5d58}
+      .menu-ic-google{background:#e2e4ff;color:#5a63c8}
+      .menu-ic-audio{background:#f7ecc8;color:#8a6d1a}
+      .menu-drawer .more-link{flex:1;min-width:0;justify-content:flex-start;text-align:start}
+      .menu-drawer .audio-offline-prog{margin:0 0 10px;color:var(--muted);font-size:.9rem;line-height:1.55}
           .conv-write{margin-top:16px; border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:12px 14px}
       .conv-write summary{font-weight:800; cursor:pointer; list-style:none; color:var(--ink)}
       .conv-write summary::-webkit-details-marker{display:none}
@@ -1101,6 +1117,7 @@
     <!-- ======== Unified app bar (same on every section) ======== -->
     <header class="appbar">
       <div class="appbar-in">
+        <button class="menu-btn" id="menuBtn" type="button" aria-label="القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
         <span class="appbar-title" id="appTitle">Tales &amp; Words</span>
         <span class="appbar-stat"><b id="statDone">0</b>/<b id="statTotal">302</b> قصة · <b id="statWords">0</b> كلمة جديدة</span> <button class="theme-toggle" id="themeToggle" type="button" aria-label="تبديل المظهر"><svg class="spk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
       </div>
@@ -1108,6 +1125,15 @@
         <div class="progress-fill" id="progressFill"></div>
       </div>
     </header>
+    <div class="menu-backdrop" id="menuDrawerBackdrop" hidden>
+      <div class="menu-drawer" role="dialog" aria-label="القائمة">
+        <div class="menu-head"><h3 class="menu-title">القائمة</h3><button class="tsheet-x" id="menuDrawerX" type="button" aria-label="إغلاق">✕</button></div>
+        <div class="menu-row"><span class="menu-ic menu-ic-share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span><button class="more-link" type="button" id="shareAppBtn">شارك التطبيق</button></div>
+        <div class="menu-row"><span class="menu-ic menu-ic-google"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><button class="more-link" type="button" id="googleSyncBtn">تسجيل دخول كوكل</button></div>
+        <div class="menu-row"><span class="menu-ic menu-ic-audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span><button class="more-link" type="button" id="audioOfflineBtn">تحميل الصوت للاستخدام بدون نت</button></div>
+        <div class="audio-offline-prog" id="audioOfflineProg" hidden></div>
+      </div>
+    </div>
 
     <div class="wrap">
 
@@ -1130,13 +1156,7 @@
               <button class="home-card" type="button" data-goto="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg><b>إحصائياتي</b><small>تقدمك اليومي</small></button>
             </div>
           </div>
-          <div class="more-links">
-            <button class="more-link" type="button" id="shareAppBtn">شارك التطبيق</button>
-            <button class="more-link" type="button" id="googleSyncBtn">تسجيل دخول كوكل</button>
-            <button class="more-link" type="button" id="audioOfflineBtn">تحميل الصوت للاستخدام بدون نت</button>
-            <div class="audio-offline-prog" id="audioOfflineProg" hidden></div>
-            
-          </div>
+
         </section>
 
         <!-- ======== Grammar A1 + A2 ======== -->
@@ -4525,6 +4545,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       document.addEventListener("keydown", function(e){
         if (e.key === "Escape" && exitPopEl && !exitPopEl.hidden) hideExitDialog();
         else if (e.key === "Escape" && $("topicSheetBackdrop") && !$("topicSheetBackdrop").hidden) { if (window.closeTopicSheet) window.closeTopicSheet(); }
+        else if (e.key === "Escape" && $("menuDrawerBackdrop") && !$("menuDrawerBackdrop").hidden) { if (window.closeMenuDrawer) window.closeMenuDrawer(); }
       });
 
       window.addEventListener("popstate", function(e){
@@ -4535,6 +4556,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         else if (!$("prep").hidden) { prepHist = false; closePrepNow(); showView("stories", true); closedOverlay = true; }
         else if (!$("convReader").hidden) { convStopAll(); $("convReader").hidden = true; document.body.style.overflow = ""; closedOverlay = true; }
         else if ($("topicSheetBackdrop") && !$("topicSheetBackdrop").hidden) { if (window.closeTopicSheetNow) window.closeTopicSheetNow(); closedOverlay = true; }
+        else if ($("menuDrawerBackdrop") && !$("menuDrawerBackdrop").hidden) { if (window.closeMenuDrawerNow) window.closeMenuDrawerNow(); closedOverlay = true; }
         if (closedOverlay) return;
         if (st.view && st.view !== fullViewName()) { showView(st.view, true); return; }
         showExitDialog();
@@ -4551,6 +4573,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       function toggleTheme(){ var cur = document.documentElement.getAttribute("data-theme") || "dark"; var next = (cur === "dark" ? "light" : "dark"); try { localStorage.setItem(THEME_KEY, next); } catch (e) {} applyTheme(); }
       function fullViewName(){ return (curView === "home" && REVIEW_SUBS.indexOf(curReviewSub) !== -1) ? curReviewSub : curView; }
       function showView(name, fromPop){         try { if (window.closeTopicSheetNow) window.closeTopicSheetNow(); } catch (e) {}
+        try { if (window.closeMenuDrawerNow) window.closeMenuDrawerNow(); } catch (e) {}
         var origName = name; var prevFull = fullViewName();
         if (REVIEW_SUBS.indexOf(name) !== -1) { curReviewSub = name; name = "home"; }
         var prevView = curView;
@@ -9686,6 +9709,38 @@ function bankSpeak(text, lang){
           });
         });
 
+      })();
+
+      /* ---------- Side menu drawer: share / Google account / offline audio ---------- */
+      (function(){
+        var backdrop = $("menuDrawerBackdrop");
+        var btn = $("menuBtn");
+        if (!backdrop || !btn) return;
+        var menuHist = false;
+        function closeNow(){
+          menuHist = false;
+          backdrop.hidden = true;
+          document.body.style.overflow = "";
+        }
+        function openMenu(){
+          backdrop.hidden = false;
+          document.body.style.overflow = "hidden";
+          menuHist = true;
+          hPush({ app: 1, view: curView, drawer: 1 }, "#" + curView);
+        }
+        function closeMenu(){
+          if (menuHist) { try { history.back(); return; } catch (e) { /* fall through */ } }
+          closeNow();
+        }
+        btn.addEventListener("click", openMenu);
+        $("menuDrawerX").addEventListener("click", closeMenu);
+        backdrop.addEventListener("click", function(e){ if (e.target === backdrop) closeMenu(); });
+        /* share + Google open their own sheets/popups: close the drawer behind them.
+           Audio download stays open so its progress stays visible. */
+        if ($("shareAppBtn")) $("shareAppBtn").addEventListener("click", function(){ closeMenu(); });
+        if ($("googleSyncBtn")) $("googleSyncBtn").addEventListener("click", function(){ closeMenu(); });
+        window.closeMenuDrawerNow = closeNow;
+        window.closeMenuDrawer = closeMenu;
       })();
 
       /* ---------- الصوت أوفلاين: تحميل كل الحزم مرة واحدة (واي فاي) ----------
