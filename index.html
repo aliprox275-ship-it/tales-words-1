@@ -837,6 +837,32 @@
       .focus-exit{display:inline-flex; align-items:center; gap:6px; background:transparent; border:1px solid var(--line); color:var(--muted); border-radius:99px; padding:6px 14px; font-family:inherit; font-size:.9rem; font-weight:700; cursor:pointer; margin-bottom:14px}
       .part-pick{display:flex; gap:8px; flex-wrap:wrap}
       .part-pick button{flex:1 1 40%; border:1px solid var(--line); background:var(--surface); color:var(--ink); padding:10px 12px; border-radius:12px; font-family:inherit; font-size:.95rem; font-weight:700; cursor:pointer}
+      /* exam start screens: hero + pass bar + part cards (redesign 2026-11-08) */
+      .exam-hero{margin:2px 0 14px}
+      .exam-hero-badge{display:inline-block;padding:5px 12px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--muted);font-size:.82rem;font-weight:700}
+      .exam-hero-title{margin:10px 0 4px;font-size:1.55rem;line-height:1.25}
+      .exam-hero-sub{margin:0;color:var(--muted);font-size:.95rem;line-height:1.55}
+      .exam-passbar{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+      .exam-passbar-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+      .exam-passbar-top b{font-size:1.05rem}
+      .exam-passbar-top span{color:var(--muted);font-size:.9rem;white-space:nowrap}
+      .exam-passbar-track{position:relative;height:10px;border-radius:999px;background:var(--surface2);margin:12px 0 10px}
+      .exam-passbar-fill{position:absolute;inset-inline-start:0;top:0;bottom:0;border-radius:999px;background:var(--accent)}
+      .exam-passbar-tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);border-radius:2px}
+      .exam-passbar-rule{margin:0 0 6px;color:var(--ink);font-size:.92rem}
+      .exam-passbar-note{margin:0;color:var(--muted);font-size:.9rem;line-height:1.55}
+      .exam-parts-cap{margin:0 0 8px;color:var(--muted);font-size:.92rem}
+      .exam-parts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+      .exam-part{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font-family:inherit;text-align:start;cursor:pointer}
+      .exam-part:active{transform:scale(.98)}
+      .exam-part-ic{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:12px}
+      .exam-part-ic svg{width:22px;height:22px}
+      .exam-part-name{font-weight:700;font-size:1rem}
+      .exam-part-pts{color:var(--muted);font-size:.85rem}
+      .exam-part-ic-listen{background:#d8efe6;color:#2f5d58}
+      .exam-part-ic-read{background:#f3e3c8;color:#8a5a1d}
+      .exam-part-ic-grammar{background:#e2e4ff;color:#5a63c8}
+      .exam-part-ic-write{background:#f7ecc8;color:#8a6d1a}
 
       /* reader & prep bars share the app bar's height and shape */
       .reader-top{min-height:var(--bar-h)}
@@ -1354,24 +1380,28 @@
           <h2 class="view-title">اختبار المستوى A1</h2>
           <button class="focus-exit" type="button" data-goto="exams">✕ خروج من الاختبار</button>
           <div id="a1StartScreen">
-            <p class="hint" style="margin-bottom:18px">اختبار رسمي المستوى A1 وفق معايير CEFR (كامبريدج / جوته). نسبة النجاح <b>60%</b>.</p>
-            <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
+            <div class="exam-hero">
+              <span class="exam-hero-badge">المستوى A1</span>
+              <h2 class="exam-hero-title">اختبار رسمي</h2>
+              <p class="exam-hero-sub">وفق معايير CEFR (كامبريدج / جوته). نسبة النجاح 60%.</p>
+            </div>
+            <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:14px">
               <button type="button" id="a1LangEn" class="active-en">English · الإنجليزية</button>
               <button type="button" id="a1LangDe">Deutsch · الألمانية</button>
             </div>
-            <div class="tool-box" style="margin-bottom:16px">
-              <h3 style="margin:0 0 8px">أجزاء الاختبار</h3>
-              <p class="tool-note" style="margin:0">1. الاستماع (25) · 2. القراءة (25) · 3. القواعد والمفردات (25) · 4. الكتابة (25)</p>
-              <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 60 · ويجب 15/25 على الأقل في كل جزء</p>
-              <p class="tool-note" style="margin:8px 0 0">كل محاولة نسخة جديدة: الأسئلة تُسحب عشوائيًا من بنك أكبر — فلا تحفظ الأسئلة، افهمها.</p>
+            <div class="exam-passbar">
+              <div class="exam-passbar-top"><b>المجموع 100 نقطة</b><span>النجاح من 60</span></div>
+              <div class="exam-passbar-track"><div class="exam-passbar-fill" style="width:60%"></div><i class="exam-passbar-tick" style="inset-inline-start:calc(60% - 1px)"></i></div>
+              <p class="exam-passbar-rule">ويجب 15/25 على الأقل في كل جزء</p>
+              <p class="exam-passbar-note">كل محاولة نسخة جديدة: الأسئلة تُسحب عشوائيًا من بنك أكبر — فلا تحفظ الأسئلة، افهمها.</p>
             </div>
             <p id="a1LastResultLine" class="tool-note" style="margin:0 0 12px"></p>
-            <p class="tool-note" style="margin:0 0 8px">أو اختبر جزءًا واحدًا (25 نقطة):</p>
-            <div class="part-pick" style="margin-bottom:14px">
-              <button type="button" data-a1part="listening">الاستماع فقط</button>
-              <button type="button" data-a1part="reading">القراءة فقط</button>
-              <button type="button" data-a1part="grammar">القواعد فقط</button>
-              <button type="button" data-a1part="writing">الكتابة فقط</button>
+            <p class="exam-parts-cap">أو اختبر جزءًا واحدًا (25 نقطة):</p>
+            <div class="exam-parts">
+              <button type="button" class="exam-part" data-a1part="listening"><span class="exam-part-ic exam-part-ic-listen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></span><span class="exam-part-name">الاستماع</span><span class="exam-part-pts">25 نقطة</span></button>
+              <button type="button" class="exam-part" data-a1part="reading"><span class="exam-part-ic exam-part-ic-read"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="exam-part-name">القراءة</span><span class="exam-part-pts">25 نقطة</span></button>
+              <button type="button" class="exam-part" data-a1part="grammar"><span class="exam-part-ic exam-part-ic-grammar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg></span><span class="exam-part-name">القواعد والمفردات</span><span class="exam-part-pts">25 نقطة</span></button>
+              <button type="button" class="exam-part" data-a1part="writing"><span class="exam-part-ic exam-part-ic-write"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></span><span class="exam-part-name">الكتابة</span><span class="exam-part-pts">25 نقطة</span></button>
             </div>
             <button class="start-btn" type="button" id="a1BeginBtn" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الاختبار الكامل</button>
           </div>
@@ -1417,25 +1447,28 @@
           <h2 class="view-title">الامتحان النهائي</h2>
           <button class="focus-exit" type="button" data-goto="exams">✕ خروج من الامتحان</button>
           <div id="finStartScreen">
-            <p class="hint" style="margin-bottom:18px">الامتحان النهائي الشامل (A1 + A2) — يغطي كل ما درسته في التطبيق: القصص، بنك الكلمات، القواعد، المحادثة، والكتابة. النجاح من <b>70%</b> يعني أنك أنهيت A2 وأصبحت <b>جاهزًا لـ B1</b> (لكن B1 نفسه لم يبدأ بعد).</p>
-            <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
+            <div class="exam-hero">
+              <span class="exam-hero-badge">A1 + A2</span>
+              <h2 class="exam-hero-title">الامتحان النهائي</h2>
+              <p class="exam-hero-sub">شامل: القصص، بنك الكلمات، القواعد، المحادثة، والكتابة. النجاح من 70% يعني أنك أنهيت A2 وأصبحت جاهزًا لـ B1.</p>
+            </div>
+            <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:14px">
               <button type="button" id="finLangEn" class="active-en">English · الإنجليزية</button>
               <button type="button" id="finLangDe">Deutsch · الألمانية</button>
             </div>
-            <div class="tool-box" style="margin-bottom:16px">
-              <h3 style="margin:0 0 8px">أجزاء الامتحان</h3>
-              <p class="tool-note" style="margin:0">1. الاستماع (25) · 2. القراءة (25) · 3. القواعد والمفردات (25) · 4. الكتابة (25)</p>
-              <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 70 · ويجب 15/25 على الأقل في كل جزء · 70–84 جاهز لـ B1 · 85+ جاهز بقوة لـ B1</p>
-              <p class="tool-note" style="margin:8px 0 0">كل محاولة نسخة جديدة: الأسئلة تُسحب عشوائيًا من بنك أكبر — فلا تحفظ الأسئلة، افهمها.</p>
-              <p class="tool-note" style="margin:8px 0 0">الاستماع بصوت مسجل (مثل اختبار A1).</p>
+            <div class="exam-passbar">
+              <div class="exam-passbar-top"><b>المجموع 100 نقطة</b><span>النجاح من 70</span></div>
+              <div class="exam-passbar-track"><div class="exam-passbar-fill" style="width:70%"></div><i class="exam-passbar-tick" style="inset-inline-start:calc(70% - 1px)"></i></div>
+              <p class="exam-passbar-rule">ويجب 15/25 على الأقل في كل جزء · 70–84 جاهز لـ B1 · 85+ جاهز بقوة لـ B1</p>
+              <p class="exam-passbar-note">كل محاولة نسخة جديدة: الأسئلة تُسحب عشوائيًا من بنك أكبر — فلا تحفظ الأسئلة، افهمها. الاستماع بصوت مسجل (مثل اختبار A1).</p>
             </div>
             <p id="finLastResultLine" class="tool-note" style="margin:0 0 12px"></p>
-            <p class="tool-note" style="margin:0 0 8px">أو اختبر جزءًا واحدًا (25 نقطة):</p>
-            <div class="part-pick" style="margin-bottom:14px">
-              <button type="button" data-finpart="listening">الاستماع فقط</button>
-              <button type="button" data-finpart="reading">القراءة فقط</button>
-              <button type="button" data-finpart="grammar">القواعد فقط</button>
-              <button type="button" data-finpart="writing">الكتابة فقط</button>
+            <p class="exam-parts-cap">أو اختبر جزءًا واحدًا (25 نقطة):</p>
+            <div class="exam-parts">
+              <button type="button" class="exam-part" data-finpart="listening"><span class="exam-part-ic exam-part-ic-listen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg></span><span class="exam-part-name">الاستماع</span><span class="exam-part-pts">25 نقطة</span></button>
+              <button type="button" class="exam-part" data-finpart="reading"><span class="exam-part-ic exam-part-ic-read"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span class="exam-part-name">القراءة</span><span class="exam-part-pts">25 نقطة</span></button>
+              <button type="button" class="exam-part" data-finpart="grammar"><span class="exam-part-ic exam-part-ic-grammar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/></svg></span><span class="exam-part-name">القواعد والمفردات</span><span class="exam-part-pts">25 نقطة</span></button>
+              <button type="button" class="exam-part" data-finpart="writing"><span class="exam-part-ic exam-part-ic-write"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></span><span class="exam-part-name">الكتابة</span><span class="exam-part-pts">25 نقطة</span></button>
             </div>
             <button class="start-btn" type="button" id="finBeginBtn" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الامتحان النهائي الكامل</button>
           </div>
