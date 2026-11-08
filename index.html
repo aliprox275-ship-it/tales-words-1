@@ -1366,6 +1366,7 @@
             <button type="button" id="wlLangEn" class="active-en">English · الإنجليزية</button>
             <button type="button" id="wlLangDe">Deutsch · الألمانية</button>
           </div>
+          <div id="wlNav" style="margin-bottom:14px"></div>
           <div id="wlBody"></div>
           <button type="button" id="wlBackBtn" class="end-btn" style="margin-top:12px">العودة إلى بنك الكلمات</button>
         </section>
@@ -6351,63 +6352,142 @@ function wrCheck() {
 
       /* ---------- Word logic view (Bank) ---------- */
       var wlLang = "en";
+      var wlOpenSec = "verbs";
+      function wlToggleSec(key) {
+        wlOpenSec = (wlOpenSec === key) ? "" : key;
+        renderWordLogic();
+        if (wlOpenSec) { var el = $("wl-sec-" + wlOpenSec); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }
+      }
+      function wlOpenSecFn(key) {
+        wlOpenSec = key;
+        renderWordLogic();
+        var el = $("wl-sec-" + key);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      function wlJumpTo(id, secKey) {
+        wlOpenSec = secKey;
+        renderWordLogic();
+        setTimeout(function() {
+          var el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 60);
+      }
       function renderWordLogic() {
         var lang = wlLang;
         var box = $("wlBody");
+        var nav = $("wlNav");
         if (!box) return;
-        var html = "";
-        // Irregular verbs
-        html += "<h3 class='sub-title'>الأفعال الشاذة — مجموعات حسب النمط (وليس حفظًا عشوائيًا)</h3>";
-        html += "<p class='hint'>الأفعال الشاذة ليست عشوائية: كل مجموعة تتبع نمطًا صوتيًا واحدًا. احفظ النمط، تعرف المجموعة كلها.</p>";
-        (IRREG_VERBS[lang] || []).forEach(function(grp) {
-          html += "<div class='tool-box' style='margin-bottom:14px'><h3 style='margin:0 0 4px'>" + grp.g + "</h3>";
-          html += "<p class='tool-note' style='margin:0 0 8px'>" + grp.note + "</p>";
-          html += "<table style='width:100%;border-collapse:collapse;font-size:.92rem'><tr><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>الفعل</th><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>الماضي</th><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>التصريف 3</th><th style='text-align:right;padding:6px;border-bottom:1px solid var(--line)'>المعنى</th></tr>";
-          grp.verbs.forEach(function(v) {
-            html += "<tr><td style='padding:6px;border-bottom:1px solid var(--line);font-weight:700'>" + v[0] + "</td><td style='padding:6px;border-bottom:1px solid var(--line)'>" + v[1] + "</td><td style='padding:6px;border-bottom:1px solid var(--line)'>" + v[2] + "</td><td style='padding:6px;border-bottom:1px solid var(--line);text-align:right'>" + v[3] + "</td></tr>";
-            html += "<tr><td colspan='4' style='padding:2px 6px 8px;color:var(--muted);font-size:.85rem'>" + v[4] + " — " + v[5] + "</td></tr>";
+        var SECTIONS = [
+          { key: "verbs", title: "الأفعال الشاذة", sub: "مجموعات حسب النمط" },
+          { key: "formation", title: "كيف تتكون الكلمات", sub: "اللواحق ووظيفتها" },
+          { key: "sentence", title: "كيف تتكون الجملة", sub: "من كلمتين إلى جملة كاملة" },
+          { key: "speech", title: "الكلام الطبيعي", sub: "اختصارات ونطق سريع" }
+        ];
+        // ---- Nav: 4 section buttons + word-formation pattern chips (fast jump to -ly etc.) ----
+        var navHtml = "<div style='display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px'>";
+        SECTIONS.forEach(function(sec) {
+          var on = wlOpenSec === sec.key;
+          navHtml += "<button type='button' onclick='wlOpenSecFn(\"" + sec.key + "\")' style='flex:1 1 40%;padding:12px 8px;border-radius:12px;border:1px solid " + (on ? "var(--accent)" : "var(--line)") + ";background:" + (on ? "var(--accent)" : "var(--surface)") + ";color:" + (on ? "var(--on-accent)" : "inherit") + ";font-weight:800;cursor:pointer'>" + sec.title + "</button>";
+        });
+        navHtml += "</div>";
+        // Pattern chips (current language) — one tap to -ly, -ed, etc.
+        var pats = WORD_LOGIC[lang] || [];
+        if (pats.length) {
+          navHtml += "<div style='display:flex;flex-wrap:wrap;gap:6px'>";
+          pats.forEach(function(pat, i) {
+            var label = (pat.t || "").split(" — ")[0];
+            navHtml += "<button type='button' onclick='wlJumpTo(\"wl-pat-" + i + "\", \"formation\")' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + label + "</button>";
           });
-          html += "</table></div>";
-        });
-        // Word formation
-        html += "<h3 class='sub-title' style='margin-top:22px'>كيف تتكون الكلمات — المنطق وليس الحفظ</h3>";
-        html += "<p class='hint'>كل لاحقة لها وظيفة واحدة واضحة. افهم الوظيفة، وستعرف معنى أي كلمة جديدة تقابلها.</p>";
-        (WORD_LOGIC[lang] || []).forEach(function(pat) {
-          html += "<div class='tool-box' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
-          html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
-          html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة:</p><ul style='margin:0 0 8px;padding-right:18px'>";
-          pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-          html += "</ul>";
-          html += "<p style='margin:0 0 4px;font-weight:700'>الشواذ (وهي قليلة — ولهذا تُحفظ):</p><ul style='margin:0;padding-right:18px'>";
-          pat.exc.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-          html += "</ul></div>";
-        });
-        // How a sentence is formed (daily examples)
-        html += "<h3 class='sub-title' style='margin-top:22px'>كيف تتكون الجملة — من كلمتين إلى جملة كاملة</h3>";
-        html += "<p class='hint'>الجملة لها هيكل ثابت. افهم الهيكل مرة واحدة، وستبني أي جملة تريدها. الأمثلة من يومك: الصباح، البيت، السوق، العمل.</p>";
-        (SENTENCE_LOGIC[lang] || []).forEach(function(pat) {
-          html += "<div class='tool-box' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
-          html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
-          html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة من يومك:</p><ul style='margin:0 0 8px;padding-right:18px'>";
-          pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-          html += "</ul>";
-          html += "<p style='margin:0 0 4px;font-weight:700'>انتبه (أخطاء شائعة):</p><ul style='margin:0;padding-right:18px'>";
-          pat.firm.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-          html += "</ul></div>";
-        });
-        // Natural speech: contractions, reductions, linking
-        html += "<h3 class='sub-title' style='margin-top:22px'>الكلام الطبيعي — الاختصارات والنطق السريع</h3>";
-        html += "<p class='hint'>الناطقون الأصليون لا يتكلمون كما يكتبون. هذه هي الطريقة التي يبدو بها الكلام الحقيقي — افهمها لتتابع الأفلام والمحادثات، واستخدمها لتبدو طبيعيًا.</p>";
-        (SPEECH_LOGIC[lang] || []).forEach(function(pat) {
-          html += "<div class='tool-box' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
-          html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
-          html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة من يومك:</p><ul style='margin:0 0 8px;padding-right:18px'>";
-          pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-          html += "</ul>";
-          html += "<p style='margin:0 0 4px;font-weight:700'>انتبه:</p><ul style='margin:0;padding-right:18px'>";
-          pat.firm.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-          html += "</ul></div>";
-        });
+          navHtml += "</div>";
+        }
+        if (nav) nav.innerHTML = navHtml;
+        // ---- Body: 4 collapsible sections ----
+        var html = "";
+        // Verbs
+        html += "<div class='tool-box' id='wl-sec-verbs' style='margin-bottom:12px'><button type='button' onclick='wlToggleSec(\"verbs\")' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>الأفعال الشاذة — مجموعات حسب النمط (وليس حفظًا عشوائيًا) " + (wlOpenSec === "verbs" ? "▾" : "▸") + "</button>";
+        if (wlOpenSec === "verbs") {
+          html += "<p class='hint'>الأفعال الشاذة ليست عشوائية: كل مجموعة تتبع نمطًا صوتيًا واحدًا. احفظ النمط، تعرف المجموعة كلها.</p>";
+          html += "<div style='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px'>";
+          (IRREG_VERBS[lang] || []).forEach(function(grp, i) {
+            html += "<button type='button' onclick='wlJumpTo(\"wl-vg-" + i + "\", \"verbs\")' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + grp.g.split(" — ")[0] + "</button>";
+          });
+          html += "</div>";
+          (IRREG_VERBS[lang] || []).forEach(function(grp, gi) {
+            html += "<div id='wl-vg-" + gi + "' style='margin-bottom:14px'><h3 style='margin:0 0 4px'>" + grp.g + "</h3>";
+            html += "<p class='tool-note' style='margin:0 0 8px'>" + grp.note + "</p>";
+            html += "<table style='width:100%;border-collapse:collapse;font-size:.92rem'><tr><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>الفعل</th><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>الماضي</th><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>التصريف 3</th><th style='text-align:right;padding:6px;border-bottom:1px solid var(--line)'>المعنى</th></tr>";
+            grp.verbs.forEach(function(v) {
+              html += "<tr><td style='padding:6px;border-bottom:1px solid var(--line);font-weight:700'>" + v[0] + "</td><td style='padding:6px;border-bottom:1px solid var(--line)'>" + v[1] + "</td><td style='padding:6px;border-bottom:1px solid var(--line)'>" + v[2] + "</td><td style='padding:6px;border-bottom:1px solid var(--line);text-align:right'>" + v[3] + "</td></tr>";
+              html += "<tr><td colspan='4' style='padding:2px 6px 8px;color:var(--muted);font-size:.85rem'>" + v[4] + " — " + v[5] + "</td></tr>";
+            });
+            html += "</table></div>";
+          });
+        }
+        html += "</div>";
+        // Formation
+        html += "<div class='tool-box' id='wl-sec-formation' style='margin-bottom:12px'><button type='button' onclick='wlToggleSec(\"formation\")' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>كيف تتكون الكلمات — المنطق وليس الحفظ " + (wlOpenSec === "formation" ? "▾" : "▸") + "</button>";
+        if (wlOpenSec === "formation") {
+          html += "<p class='hint'>كل لاحقة لها وظيفة واحدة واضحة. افهم الوظيفة، وستعرف معنى أي كلمة جديدة تقابلها.</p>";
+          html += "<div style='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px'>";
+          pats.forEach(function(pat, i) {
+            var label = (pat.t || "").split(" — ")[0];
+            html += "<button type='button' onclick='wlJumpTo(\"wl-pat-" + i + "\", \"formation\")' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + label + "</button>";
+          });
+          html += "</div>";
+          pats.forEach(function(pat, i) {
+            html += "<div id='wl-pat-" + i + "' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
+            html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
+            html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة:</p><ul style='margin:0 0 8px;padding-right:18px'>";
+            pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+            html += "</ul>";
+            html += "<p style='margin:0 0 4px;font-weight:700'>الشواذ (وهي قليلة — ولهذا تُحفظ):</p><ul style='margin:0;padding-right:18px'>";
+            pat.exc.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+            html += "</ul></div>";
+          });
+        }
+        html += "</div>";
+        // Sentence
+        html += "<div class='tool-box' id='wl-sec-sentence' style='margin-bottom:12px'><button type='button' onclick='wlToggleSec(\"sentence\")' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>كيف تتكون الجملة — من كلمتين إلى جملة كاملة " + (wlOpenSec === "sentence" ? "▾" : "▸") + "</button>";
+        if (wlOpenSec === "sentence") {
+          html += "<p class='hint'>الجملة لها هيكل ثابت. افهم الهيكل مرة واحدة، وستبني أي جملة تريدها. الأمثلة من يومك: الصباح، البيت، السوق، العمل.</p>";
+          html += "<div style='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px'>";
+          (SENTENCE_LOGIC[lang] || []).forEach(function(pat, i) {
+            html += "<button type='button' onclick='wlJumpTo(\"wl-sent-" + i + "\", \"sentence\")' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + (pat.t || "").split(" — ")[0] + "</button>";
+          });
+          html += "</div>";
+          (SENTENCE_LOGIC[lang] || []).forEach(function(pat, i) {
+            html += "<div id='wl-sent-" + i + "' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
+            html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
+            html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة من يومك:</p><ul style='margin:0 0 8px;padding-right:18px'>";
+            pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+            html += "</ul>";
+            html += "<p style='margin:0 0 4px;font-weight:700'>انتبه (أخطاء شائعة):</p><ul style='margin:0;padding-right:18px'>";
+            pat.firm.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+            html += "</ul></div>";
+          });
+        }
+        html += "</div>";
+        // Speech
+        html += "<div class='tool-box' id='wl-sec-speech' style='margin-bottom:12px'><button type='button' onclick='wlToggleSec(\"speech\")' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>الكلام الطبيعي — الاختصارات والنطق السريع " + (wlOpenSec === "speech" ? "▾" : "▸") + "</button>";
+        if (wlOpenSec === "speech") {
+          html += "<p class='hint'>الناطقون الأصليون لا يتكلمون كما يكتبون. هذه هي الطريقة التي يبدو بها الكلام الحقيقي — افهمها لتتابع الأفلام والمحادثات، واستخدمها لتبدو طبيعيًا.</p>";
+          html += "<div style='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px'>";
+          (SPEECH_LOGIC[lang] || []).forEach(function(pat, i) {
+            html += "<button type='button' onclick='wlJumpTo(\"wl-sp-" + i + "\", \"speech\")' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + (pat.t || "").split(" — ")[0] + "</button>";
+          });
+          html += "</div>";
+          (SPEECH_LOGIC[lang] || []).forEach(function(pat, i) {
+            html += "<div id='wl-sp-" + i + "' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
+            html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
+            html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة من يومك:</p><ul style='margin:0 0 8px;padding-right:18px'>";
+            pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+            html += "</ul>";
+            html += "<p style='margin:0 0 4px;font-weight:700'>انتبه:</p><ul style='margin:0;padding-right:18px'>";
+            pat.firm.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
+            html += "</ul></div>";
+          });
+        }
+        html += "</div>";
         box.innerHTML = html;
       }
       if ($("wlLangEn")) $("wlLangEn").addEventListener("click", function(){ wlLang = "en"; $("wlLangEn").classList.add("active-en"); $("wlLangDe").classList.remove("active-de"); renderWordLogic(); });
