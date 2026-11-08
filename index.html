@@ -1101,6 +1101,18 @@
       .menu-ic-audio{background:#f7ecc8;color:#8a6d1a}
       .menu-drawer .more-link{flex:1;min-width:0;justify-content:flex-start;text-align:start}
       .menu-drawer .audio-offline-prog{margin:0 0 10px;color:var(--muted);font-size:.9rem;line-height:1.55}
+      /* ---------- Word logic cards (same card language as Bank topics) ---------- */
+      .wl-forms{display:flex;align-items:center;gap:6px 10px;flex-wrap:wrap}
+      .wl-form-lab{font-size:.85rem;color:var(--muted);font-weight:700}
+      .wl-form{font-family:var(--font-serif);direction:ltr;unicode-bidi:isolate;font-weight:700;font-size:1.05rem}
+      .bank-speak.wl-sm{width:30px;height:30px;font-size:.8rem}
+      .wl-demo{font-family:var(--font-serif);direction:ltr;unicode-bidi:isolate;text-align:left;font-weight:700;font-size:1.02rem}
+      .wl-sub{font-weight:800;margin:12px 0 6px}
+      .wl-pat-title{font-size:1.12rem;font-weight:800;margin-bottom:8px}
+      .wl-group{margin-bottom:18px}
+      .wl-group>h3{margin:0 0 6px;font-size:1.1rem}
+      .wl-group .bank-idiom-note{margin-bottom:10px}
+      .wl-exs{display:flex;flex-direction:column;gap:10px}
           .conv-write{margin-top:16px; border:1px solid var(--line); border-radius:14px; background:var(--surface); padding:12px 14px}
       .conv-write summary{font-weight:800; cursor:pointer; list-style:none; color:var(--ink)}
       .conv-write summary::-webkit-details-marker{display:none}
@@ -6700,120 +6712,167 @@ function wrCheck() {
           if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 60);
       }
+      /* ---------- Word logic: speech + parsing helpers ---------- */
+      var wlSayList = [];
+      function wlEsc(s){ return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+      function wlSayBtn(text, kind, sm){
+        var i = wlSayList.length;
+        wlSayList.push({ text: text, kind: kind, lang: wlLang });
+        return "<button type='button' class='bank-speak" + (sm ? " wl-sm" : "") + "' data-wl='say' data-say='" + i + "' aria-label='استمع'>" + SPK + "</button>";
+      }
+      function wlSay(i){
+        var it = wlSayList[i];
+        if (!it) return;
+        try { stopVocab(); } catch (e) {}
+        var t = it.text, lang = it.lang;
+        if (it.kind === "word") t = wlSpeechText(t);
+        var seg = null;
+        try {
+          if (it.kind === "word") seg = bankWordBundle(t, lang) || bankWordBundleA2(t, lang) || vocabWordSeg(t, lang) || socialWordBundle(t, lang);
+          else seg = storyExampleBundle(t, lang) || bankExampleA2BySentence(t, lang);
+        } catch (e) { seg = null; }
+        playBundle(seg, wlSpeechText(t), lang);
+      }
+      function wlSpeechText(t){
+        var x = String(t || "");
+        x = x.replace(/\([^)]*[\u0600-\u06FF][^)]*\)/g, " ");
+        x = x.replace(/[\u0600-\u06FF][^\u0600-\u06FFa-zA-ZäöüÄÖÜß]*/g, " ");
+        x = x.replace(/[\u0600-\u06FF]/g, " ");
+        x = x.replace(/→/g, ", ").replace(/←/g, ", ").replace(/\+/g, " ").replace(/\s*\/\s*/g, ", ").replace(/—/g, " ").replace(/[«»"]/g, "");
+        x = x.replace(/\s+/g, " ").replace(/(,\s*)+/g, ", ").replace(/^\s*,\s*|\s*,\s*$/g, "").replace(/^\s+|\s+$/g, "");
+        return x;
+      }
+      function wlParseEx(s){
+        var parts = String(s || "").split(" — ");
+        var ar = "";
+        if (parts.length > 1 && /[\u0600-\u06FF]/.test(parts[parts.length - 1])) ar = parts.pop();
+        var foreign = parts.join(" — ");
+        var demo = "", sent = "";
+        var ci = foreign.lastIndexOf(": ");
+        if (ci !== -1) { demo = foreign.slice(0, ci); sent = foreign.slice(ci + 2); }
+        else sent = foreign;
+        return { demo: demo, sent: sent, ar: ar };
+      }
+      function wlExRow(s){
+        var p = wlParseEx(s);
+        var h = "";
+        if (p.demo) h += "<div class='wl-demo' dir='ltr'>" + wlEsc(p.demo) + "</div>";
+        var say = wlSpeechText(p.sent || p.demo);
+        if (!say) return "<div class='ea'>" + wlEsc(s) + "</div>";
+        h += "<div class='bank-ex'>";
+        if (p.sent) h += "<span class='ef'>" + wlEsc(p.sent) + "</span>";
+        if (p.ar) h += "<span class='ea'>" + wlEsc(p.ar) + "</span>";
+        if (say) h += wlSayBtn(say, "ex");
+        h += "</div>";
+        return h;
+      }
+      function wlPatternCard(pat, id, excLabel, excKey){
+        var h = "<article class='bank-card' id='" + id + "'>";
+        h += "<div class='wl-pat-title'>" + wlEsc(pat.t) + "</div>";
+        h += "<div class='bank-idiom-note'>" + wlEsc(pat.rule) + "</div>";
+        h += "<div class='wl-sub'>أمثلة:</div><div class='wl-exs'>";
+        (pat.ex || []).forEach(function(e){ h += wlExRow(e); });
+        h += "</div>";
+        var exc = pat[excKey] || [];
+        if (exc.length) {
+          h += "<div class='wl-sub'>" + excLabel + "</div><div class='wl-exs'>";
+          exc.forEach(function(e){ h += wlExRow(e); });
+          h += "</div>";
+        }
+        h += "</article>";
+        return h;
+      }
+      function wlVerbCard(v){
+        var h = "<article class='bank-card'>";
+        h += "<div class='bank-card-top'><span class='bank-word " + wlLang + "' dir='ltr'>" + wlEsc(v[0]) + " — " + wlEsc(v[1]) + " — " + wlEsc(v[2]) + "</span>" + wlSayBtn(v[0], "word") + "</div>";
+        h += "<div class='wl-forms'><span class='wl-form-lab'>الماضي</span><span class='wl-form' dir='ltr'>" + wlEsc(v[1]) + "</span>" + wlSayBtn(v[1], "word", true) + "<span class='wl-form-lab'>التصريف 3</span><span class='wl-form' dir='ltr'>" + wlEsc(v[2]) + "</span>" + wlSayBtn(v[2], "word", true) + "</div>";
+        h += "<div class='bank-mean'>" + wlEsc(v[3]) + "</div>";
+        h += "<div class='bank-ex'><span class='ef'>" + wlEsc(v[4]) + "</span><span class='ea'>" + wlEsc(v[5]) + "</span>" + wlSayBtn(v[4], "ex") + "</div>";
+        h += "</article>";
+        return h;
+      }
       function renderWordLogic() {
         var lang = wlLang;
         var box = $("wlBody");
         var nav = $("wlNav");
         if (!box) return;
+        wlSayList = [];
         var SECTIONS = [
           { key: "verbs", title: "الأفعال الشاذة", sub: "مجموعات حسب النمط" },
           { key: "formation", title: "كيف تتكون الكلمات", sub: "اللواحق ووظيفتها" },
           { key: "sentence", title: "كيف تتكون الجملة", sub: "من كلمتين إلى جملة كاملة" },
           { key: "speech", title: "الكلام الطبيعي", sub: "اختصارات ونطق سريع" }
         ];
-        // ---- Nav: 4 section buttons + word-formation pattern chips (fast jump to -ly etc.) ----
         var navHtml = "<div style='display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px'>";
-        SECTIONS.forEach(function(sec) {
+        SECTIONS.forEach(function(sec, si) {
           var on = wlOpenSec === sec.key;
-          navHtml += "<button type='button' onclick='wlOpenSecFn(\"" + sec.key + "\")' style='flex:1 1 40%;padding:12px 8px;border-radius:12px;border:1px solid " + (on ? "var(--accent)" : "var(--line)") + ";background:" + (on ? "var(--accent)" : "var(--surface)") + ";color:" + (on ? "var(--on-accent)" : "inherit") + ";font-weight:800;cursor:pointer'>" + sec.title + "</button>";
+          navHtml += "<button type='button' data-wl='open' data-sec='" + sec.key + "' style='flex:1 1 40%;padding:12px 8px;border-radius:12px;border:1px solid " + (on ? "var(--accent)" : "var(--line)") + ";background:" + (on ? "var(--accent)" : "var(--surface)") + ";color:" + (on ? "var(--on-accent)" : "inherit") + ";font-weight:800;cursor:pointer'>" + arNum(si + 1) + " · " + sec.title + "</button>";
         });
         navHtml += "</div>";
-        // Pattern chips (current language) — one tap to -ly, -ed, etc.
         var pats = WORD_LOGIC[lang] || [];
         if (pats.length) {
           navHtml += "<div style='display:flex;flex-wrap:wrap;gap:6px'>";
           pats.forEach(function(pat, i) {
             var label = (pat.t || "").split(" — ")[0];
-            navHtml += "<button type='button' onclick='wlJumpTo(\"wl-pat-" + i + "\", \"formation\")' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + label + "</button>";
+            navHtml += "<button type='button' data-wl='jump' data-id='wl-pat-" + i + "' data-sec='formation' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + wlEsc(label) + "</button>";
           });
           navHtml += "</div>";
         }
         if (nav) nav.innerHTML = navHtml;
-        // ---- Body: 4 collapsible sections ----
         var html = "";
-        // Verbs
-        html += "<div class='tool-box' id='wl-sec-verbs' style='margin-bottom:12px'><button type='button' onclick='wlToggleSec(\"verbs\")' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>الأفعال الشاذة — مجموعات حسب النمط (وليس حفظًا عشوائيًا) " + (wlOpenSec === "verbs" ? "▾" : "▸") + "</button>";
+        html += "<div class='tool-box' id='wl-sec-verbs' style='margin-bottom:12px'><button type='button' data-wl='toggle' data-sec='verbs' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>" + arNum(1) + " · الأفعال الشاذة — مجموعات حسب النمط (وليس حفظًا عشوائيًا) " + (wlOpenSec === "verbs" ? "▾" : "▸") + "</button>";
         if (wlOpenSec === "verbs") {
-          html += "<p class='hint'>الأفعال الشاذة ليست عشوائية: كل مجموعة تتبع نمطًا صوتيًا واحدًا. احفظ النمط، تعرف المجموعة كلها.</p>";
+          html += "<p class='hint'>الأفعال الشاذة ليست عشوائية: كل مجموعة تتبع نمطًا صوتيًا واحدًا. احفظ النمط، تعرف المجموعة كلها. اضغط 🔊 لتسمع كل صيغة والمثال.</p>";
           html += "<div style='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px'>";
           (IRREG_VERBS[lang] || []).forEach(function(grp, i) {
-            html += "<button type='button' onclick='wlJumpTo(\"wl-vg-" + i + "\", \"verbs\")' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + grp.g.split(" — ")[0] + "</button>";
+            html += "<button type='button' data-wl='jump' data-id='wl-vg-" + i + "' data-sec='verbs' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + wlEsc(grp.g.split(" — ")[0]) + "</button>";
           });
           html += "</div>";
           (IRREG_VERBS[lang] || []).forEach(function(grp, gi) {
-            html += "<div id='wl-vg-" + gi + "' style='margin-bottom:14px'><h3 style='margin:0 0 4px'>" + grp.g + "</h3>";
-            html += "<p class='tool-note' style='margin:0 0 8px'>" + grp.note + "</p>";
-            html += "<table style='width:100%;border-collapse:collapse;font-size:.92rem'><tr><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>الفعل</th><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>الماضي</th><th style='text-align:left;padding:6px;border-bottom:1px solid var(--line)'>التصريف 3</th><th style='text-align:right;padding:6px;border-bottom:1px solid var(--line)'>المعنى</th></tr>";
-            grp.verbs.forEach(function(v) {
-              html += "<tr><td style='padding:6px;border-bottom:1px solid var(--line);font-weight:700'>" + v[0] + "</td><td style='padding:6px;border-bottom:1px solid var(--line)'>" + v[1] + "</td><td style='padding:6px;border-bottom:1px solid var(--line)'>" + v[2] + "</td><td style='padding:6px;border-bottom:1px solid var(--line);text-align:right'>" + v[3] + "</td></tr>";
-              html += "<tr><td colspan='4' style='padding:2px 6px 8px;color:var(--muted);font-size:.85rem'>" + v[4] + " — " + v[5] + "</td></tr>";
-            });
-            html += "</table></div>";
+            html += "<div class='wl-group' id='wl-vg-" + gi + "'><h3>" + wlEsc(grp.g) + "</h3><div class='bank-idiom-note'>" + wlEsc(grp.note) + "</div><div class='bank-grid'>";
+            grp.verbs.forEach(function(v) { html += wlVerbCard(v); });
+            html += "</div></div>";
           });
         }
         html += "</div>";
-        // Formation
-        html += "<div class='tool-box' id='wl-sec-formation' style='margin-bottom:12px'><button type='button' onclick='wlToggleSec(\"formation\")' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>كيف تتكون الكلمات — المنطق وليس الحفظ " + (wlOpenSec === "formation" ? "▾" : "▸") + "</button>";
+        html += "<div class='tool-box' id='wl-sec-formation' style='margin-bottom:12px'><button type='button' data-wl='toggle' data-sec='formation' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>" + arNum(2) + " · كيف تتكون الكلمات — المنطق وليس الحفظ " + (wlOpenSec === "formation" ? "▾" : "▸") + "</button>";
         if (wlOpenSec === "formation") {
           html += "<p class='hint'>كل لاحقة لها وظيفة واحدة واضحة. افهم الوظيفة، وستعرف معنى أي كلمة جديدة تقابلها.</p>";
           html += "<div style='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px'>";
           pats.forEach(function(pat, i) {
             var label = (pat.t || "").split(" — ")[0];
-            html += "<button type='button' onclick='wlJumpTo(\"wl-pat-" + i + "\", \"formation\")' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + label + "</button>";
+            html += "<button type='button' data-wl='jump' data-id='wl-pat-" + i + "' data-sec='formation' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + wlEsc(label) + "</button>";
           });
           html += "</div>";
-          pats.forEach(function(pat, i) {
-            html += "<div id='wl-pat-" + i + "' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
-            html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
-            html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة:</p><ul style='margin:0 0 8px;padding-right:18px'>";
-            pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-            html += "</ul>";
-            html += "<p style='margin:0 0 4px;font-weight:700'>الشواذ (وهي قليلة — ولهذا تُحفظ):</p><ul style='margin:0;padding-right:18px'>";
-            pat.exc.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-            html += "</ul></div>";
-          });
+          html += "<div class='bank-grid'>";
+          pats.forEach(function(pat, i) { html += wlPatternCard(pat, "wl-pat-" + i, "الشواذ (وهي قليلة — ولهذا تُحفظ):", "exc"); });
+          html += "</div>";
         }
         html += "</div>";
-        // Sentence
-        html += "<div class='tool-box' id='wl-sec-sentence' style='margin-bottom:12px'><button type='button' onclick='wlToggleSec(\"sentence\")' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>كيف تتكون الجملة — من كلمتين إلى جملة كاملة " + (wlOpenSec === "sentence" ? "▾" : "▸") + "</button>";
+        html += "<div class='tool-box' id='wl-sec-sentence' style='margin-bottom:12px'><button type='button' data-wl='toggle' data-sec='sentence' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>" + arNum(3) + " · كيف تتكون الجملة — من كلمتين إلى جملة كاملة " + (wlOpenSec === "sentence" ? "▾" : "▸") + "</button>";
         if (wlOpenSec === "sentence") {
           html += "<p class='hint'>الجملة لها هيكل ثابت. افهم الهيكل مرة واحدة، وستبني أي جملة تريدها. الأمثلة من يومك: الصباح، البيت، السوق، العمل.</p>";
           html += "<div style='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px'>";
           (SENTENCE_LOGIC[lang] || []).forEach(function(pat, i) {
-            html += "<button type='button' onclick='wlJumpTo(\"wl-sent-" + i + "\", \"sentence\")' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + (pat.t || "").split(" — ")[0] + "</button>";
+            html += "<button type='button' data-wl='jump' data-id='wl-sent-" + i + "' data-sec='sentence' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + wlEsc((pat.t || "").split(" — ")[0]) + "</button>";
           });
           html += "</div>";
-          (SENTENCE_LOGIC[lang] || []).forEach(function(pat, i) {
-            html += "<div id='wl-sent-" + i + "' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
-            html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
-            html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة من يومك:</p><ul style='margin:0 0 8px;padding-right:18px'>";
-            pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-            html += "</ul>";
-            html += "<p style='margin:0 0 4px;font-weight:700'>انتبه (أخطاء شائعة):</p><ul style='margin:0;padding-right:18px'>";
-            pat.firm.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-            html += "</ul></div>";
-          });
+          html += "<div class='bank-grid'>";
+          (SENTENCE_LOGIC[lang] || []).forEach(function(pat, i) { html += wlPatternCard(pat, "wl-sent-" + i, "انتبه (أخطاء شائعة):", "firm"); });
+          html += "</div>";
         }
         html += "</div>";
-        // Speech
-        html += "<div class='tool-box' id='wl-sec-speech' style='margin-bottom:12px'><button type='button' onclick='wlToggleSec(\"speech\")' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>الكلام الطبيعي — الاختصارات والنطق السريع " + (wlOpenSec === "speech" ? "▾" : "▸") + "</button>";
+        html += "<div class='tool-box' id='wl-sec-speech' style='margin-bottom:12px'><button type='button' data-wl='toggle' data-sec='speech' style='width:100%;text-align:right;background:none;border:0;font-size:1.05rem;font-weight:800;cursor:pointer;padding:2px 0'>" + arNum(4) + " · الكلام الطبيعي — الاختصارات والنطق السريع " + (wlOpenSec === "speech" ? "▾" : "▸") + "</button>";
         if (wlOpenSec === "speech") {
           html += "<p class='hint'>الناطقون الأصليون لا يتكلمون كما يكتبون. هذه هي الطريقة التي يبدو بها الكلام الحقيقي — افهمها لتتابع الأفلام والمحادثات، واستخدمها لتبدو طبيعيًا.</p>";
           html += "<div style='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px'>";
           (SPEECH_LOGIC[lang] || []).forEach(function(pat, i) {
-            html += "<button type='button' onclick='wlJumpTo(\"wl-sp-" + i + "\", \"speech\")' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + (pat.t || "").split(" — ")[0] + "</button>";
+            html += "<button type='button' data-wl='jump' data-id='wl-sp-" + i + "' data-sec='speech' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + wlEsc((pat.t || "").split(" — ")[0]) + "</button>";
           });
           html += "</div>";
-          (SPEECH_LOGIC[lang] || []).forEach(function(pat, i) {
-            html += "<div id='wl-sp-" + i + "' style='margin-bottom:14px'><h3 style='margin:0 0 6px'>" + pat.t + "</h3>";
-            html += "<p style='margin:0 0 8px'>" + pat.rule + "</p>";
-            html += "<p style='margin:0 0 4px;font-weight:700'>أمثلة من يومك:</p><ul style='margin:0 0 8px;padding-right:18px'>";
-            pat.ex.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-            html += "</ul>";
-            html += "<p style='margin:0 0 4px;font-weight:700'>انتبه:</p><ul style='margin:0;padding-right:18px'>";
-            pat.firm.forEach(function(e) { html += "<li style='margin:3px 0'>" + e + "</li>"; });
-            html += "</ul></div>";
-          });
+          html += "<div class='bank-grid'>";
+          (SPEECH_LOGIC[lang] || []).forEach(function(pat, i) { html += wlPatternCard(pat, "wl-sp-" + i, "انتبه:", "firm"); });
+          html += "</div>";
         }
         html += "</div>";
         box.innerHTML = html;
@@ -6821,6 +6880,15 @@ function wrCheck() {
       if ($("wlLangEn")) $("wlLangEn").addEventListener("click", function(){ wlLang = "en"; $("wlLangEn").classList.add("active-en"); $("wlLangDe").classList.remove("active-de"); renderWordLogic(); });
       if ($("wlLangDe")) $("wlLangDe").addEventListener("click", function(){ wlLang = "de"; $("wlLangDe").classList.add("active-de"); $("wlLangEn").classList.remove("active-en"); renderWordLogic(); });
       if ($("wlBackBtn")) $("wlBackBtn").addEventListener("click", function(){ showView("bank"); });
+      if ($("view-wordlogic")) $("view-wordlogic").addEventListener("click", function(e){
+        var t = e.target && e.target.closest ? e.target.closest("[data-wl]") : null;
+        if (!t) return;
+        var k = t.getAttribute("data-wl");
+        if (k === "toggle") wlToggleSec(t.getAttribute("data-sec"));
+        else if (k === "open") wlOpenSecFn(t.getAttribute("data-sec"));
+        else if (k === "jump") wlJumpTo(t.getAttribute("data-id"), t.getAttribute("data-sec"));
+        else if (k === "say") wlSay(parseInt(t.getAttribute("data-say"), 10));
+      });
       renderWordLogic();
 
 
