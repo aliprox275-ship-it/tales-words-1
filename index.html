@@ -1332,6 +1332,7 @@
               <p class="tool-note" style="margin:0">1. الاستماع (25) · 2. القراءة (25) · 3. القواعد والمفردات (25) · 4. الكتابة (25)</p>
               <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 60</p>
             </div>
+            <p id="a1LastResultLine" class="tool-note" style="margin:0 0 12px"></p>
             <button class="start-btn" type="button" id="a1BeginBtn" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الاختبار</button>
           </div>
 
@@ -1384,8 +1385,9 @@
               <h3 style="margin:0 0 8px">أجزاء الامتحان</h3>
               <p class="tool-note" style="margin:0">1. الاستماع (25) · 2. القراءة (25) · 3. القواعد والمفردات (25) · 4. الكتابة (25)</p>
               <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 70 · 70–84 جاهز لـ B1 · 85+ جاهز بقوة لـ B1</p>
-              <p class="tool-note" style="margin:8px 0 0">الاستماع بصوت الجهاز (لا توجد تسجيلات جديدة لهذا الامتحان).</p>
+              <p class="tool-note" style="margin:8px 0 0">الاستماع بصوت مسجل (مثل اختبار A1).</p>
             </div>
+            <p id="finLastResultLine" class="tool-note" style="margin:0 0 12px"></p>
             <button class="start-btn" type="button" id="finBeginBtn" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الامتحان النهائي</button>
           </div>
 
@@ -4410,6 +4412,8 @@ var IDIOMS = {"en":[{"p":"break the ice","t":"يبدأ الحديث ويخفف �
         if (!fromPop && prevFull !== origName) hPush({ app: 1, view: origName }, "#" + origName);
         if (REVIEW_SUBS.indexOf(name) !== -1) curReviewSub = name;
         ALL_VIEWS.forEach(function(v){ $("view-" + v).hidden = v !== name; });
+        if (name === "a1test") renderLastResult("a1LastResult", "a1LastResultLine");
+        if (name === "finalexam") renderLastResult("finalLastResult", "finLastResultLine");
         var main = mainOf(name);
         document.querySelectorAll(".bnav-btn").forEach(function(b){
           var on = b.getAttribute("data-main") === main;
@@ -5708,7 +5712,7 @@ function wrCheck() {
       var FINAL_DATA = {
         en: {
           listening: [
-            { type: "mc", audio: "Hello, I am Omar. I live in Baghdad. I am a teacher.", q: "What is Omar's job?", opts: ["Teacher", "Doctor", "Student", "Driver"], ans: 0 },
+            { type: "mc", audio: "Hello, I am Omar. I live in Baghdad, and I am a teacher.", q: "What is Omar's job?", opts: ["Teacher", "Doctor", "Student", "Driver"], ans: 0 },
             { type: "mc", audio: "The shop opens at nine o'clock and closes at five o'clock.", q: "When does the shop close?", opts: ["9:00", "5:00", "10:00", "6:00"], ans: 1 },
             { type: "mc", audio: "Sara: I would like a tea, please. Waiter: With milk or lemon? Sara: With milk, please.", q: "What does Sara want?", opts: ["Tea with milk", "Tea with lemon", "Coffee", "Water"], ans: 0 },
             { type: "mc", audio: "My sister has two children. They are five and seven years old.", q: "How many children does she have?", opts: ["One", "Two", "Three", "Five"], ans: 1 },
@@ -6504,7 +6508,7 @@ function wrCheck() {
       var FINAL_PART_NAMES = { listening: "الاستماع", reading: "القراءة", grammar: "القواعد والمفردات", writing: "الكتابة" };
       var finState = { lang: "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false };
       function finReset() {
-        if (typeof a1StopAudio === "function") a1StopAudio();
+        if (typeof finStopAudio === "function") finStopAudio();
         finState = { lang: finState.lang || "en", part: 0, q: 0, answers: {}, scores: {listening:0, reading:0, grammar:0, writing:0}, started: false };
         $("finStartScreen").hidden = false;
         $("finTestArea").hidden = true;
@@ -6526,13 +6530,38 @@ function wrCheck() {
         var part = FINAL_PARTS[finState.part];
         return FINAL_DATA[lang][part] || [];
       }
-      function finPlayExam(text) {
-        if (typeof a1Speak === "function") { a1Speak(text); return; }
-        if (!window.speechSynthesis) return;
-        window.speechSynthesis.cancel();
-        var u = new SpeechSynthesisUtterance(text);
-        u.lang = finState.lang === "de" ? "de-DE" : "en-US";
-        window.speechSynthesis.speak(u);
+      function renderLastResult(key, elId) {
+        var el = $(elId);
+        if (!el) return;
+        var raw = null;
+        try { raw = localStorage.getItem(key); } catch (e) {}
+        if (!raw) { el.textContent = ""; return; }
+        var r = null;
+        try { r = JSON.parse(raw); } catch (e) {}
+        if (!r || typeof r.total !== "number") { el.textContent = ""; return; }
+        var langName = r.lang === "de" ? "الألمانية" : "الإنجليزية";
+        var d = "";
+        try { d = new Date(r.date).toLocaleDateString(); } catch (e) {}
+        var verdict = r.passed ? "✅ ناجح" : "❌ لم ينجح";
+        el.textContent = "آخر نتيجة (" + langName + "): " + r.total + "/100 — " + verdict + (d ? " · " + d : "");
+      }
+      var FINAL_AUDIO = { en: ["audio-exam/final-en-01.mp3", "audio-exam/final-en-02.mp3", "audio-exam/final-en-03.mp3", "audio-exam/final-en-04.mp3", "audio-exam/final-en-05.mp3", "audio-exam/final-en-06.mp3", "audio-exam/final-en-07.mp3", "audio-exam/final-en-08.mp3", "audio-exam/final-en-09.mp3", "audio-exam/final-en-10.mp3"], de: ["audio-exam/final-de-01.mp3", "audio-exam/final-de-02.mp3", "audio-exam/final-de-03.mp3", "audio-exam/final-de-04.mp3", "audio-exam/final-de-05.mp3", "audio-exam/final-de-06.mp3", "audio-exam/final-de-07.mp3", "audio-exam/final-de-08.mp3", "audio-exam/final-de-09.mp3", "audio-exam/final-de-10.mp3"] };
+      var finAudioEl = null;
+      function finStopAudio() {
+        if (window.speechSynthesis) { try { window.speechSynthesis.cancel(); } catch (e) {} }
+        if (finAudioEl) { try { finAudioEl.pause(); } catch (e) {} finAudioEl = null; }
+      }
+      function finPlayExam(text, qIdx) {
+        finStopAudio();
+        var files = FINAL_AUDIO[finState.lang] || [];
+        var src = files[qIdx];
+        if (!src) { a1Speak(text); return; }
+        var au = new Audio(src);
+        finAudioEl = au;
+        au.onerror = function(){ finAudioEl = null; a1Speak(text); };
+        au.onended = function(){ if (finAudioEl === au) finAudioEl = null; };
+        var played = au.play();
+        if (played && played.catch) played.catch(function(){ finAudioEl = null; a1Speak(text); });
       }
       function finRenderQuestion() {
         if (typeof a1StopAudio === "function") a1StopAudio();
@@ -6551,12 +6580,12 @@ function wrCheck() {
             playBtn.className = "start-btn";
             playBtn.style.marginBottom = "12px";
             playBtn.innerHTML = SPK + " استمع";
-            playBtn.onclick = function(){ finPlayExam(item.audio); };
+            playBtn.onclick = function(){ finPlayExam(item.audio, finState.q); };
             box.appendChild(playBtn);
             var small = document.createElement("p");
             small.style.fontSize = ".85rem";
             small.style.color = "var(--muted)";
-            small.textContent = "(يمكنك الاستماع أكثر من مرة — صوت الجهاز)";
+            small.textContent = "(يمكنك الاستماع أكثر من مرة)";
             box.appendChild(small);
           }
           if (item.text) {
