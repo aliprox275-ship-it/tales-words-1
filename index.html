@@ -1362,7 +1362,7 @@
             <div class="tool-box" style="margin-bottom:16px">
               <h3 style="margin:0 0 8px">أجزاء الاختبار</h3>
               <p class="tool-note" style="margin:0">1. الاستماع (25) · 2. القراءة (25) · 3. القواعد والمفردات (25) · 4. الكتابة (25)</p>
-              <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 60</p>
+              <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 60 · ويجب 15/25 على الأقل في كل جزء</p>
               <p class="tool-note" style="margin:8px 0 0">كل محاولة نسخة جديدة: الأسئلة تُسحب عشوائيًا من بنك أكبر — فلا تحفظ الأسئلة، افهمها.</p>
             </div>
             <p id="a1LastResultLine" class="tool-note" style="margin:0 0 12px"></p>
@@ -1425,7 +1425,7 @@
             <div class="tool-box" style="margin-bottom:16px">
               <h3 style="margin:0 0 8px">أجزاء الامتحان</h3>
               <p class="tool-note" style="margin:0">1. الاستماع (25) · 2. القراءة (25) · 3. القواعد والمفردات (25) · 4. الكتابة (25)</p>
-              <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 70 · 70–84 جاهز لـ B1 · 85+ جاهز بقوة لـ B1</p>
+              <p class="tool-note" style="margin:8px 0 0">المجموع 100 نقطة · النجاح من 70 · ويجب 15/25 على الأقل في كل جزء · 70–84 جاهز لـ B1 · 85+ جاهز بقوة لـ B1</p>
               <p class="tool-note" style="margin:8px 0 0">كل محاولة نسخة جديدة: الأسئلة تُسحب عشوائيًا من بنك أكبر — فلا تحفظ الأسئلة، افهمها.</p>
               <p class="tool-note" style="margin:8px 0 0">الاستماع بصوت مسجل (مثل اختبار A1).</p>
             </div>
@@ -6387,12 +6387,14 @@ function wrCheck() {
 
         var maxTotal = (a1State.parts || A1_PARTS).length * 25;
         var passMark = Math.round(maxTotal * 0.6);
-        var passed = total >= passMark;
+        var weak = [];
+        (a1State.parts || A1_PARTS).forEach(function(pp){ if ((a1State.scores[pp] || 0) < 15) weak.push(pp); });
+        var passed = total >= passMark && weak.length === 0;
         var single = (a1State.parts || A1_PARTS).length === 1;
         var band = !passed ? "" : single ? "" : total >= 90 ? " — A1 قوي، جاهز لـ A2" : total >= 80 ? " — A1 جيد" : " — A1";
         $("a1ScoreBig").textContent = total + " / " + maxTotal;
         $("a1ScoreBig").style.color = passed ? "var(--ok)" : "var(--bad)";
-        $("a1PassFail").textContent = passed ? (single ? "✓ ناجح في هذا الجزء — أحسنت!" : "✓ ناجح — مبروك!" + band) : "✗ لم تحقق نسبة النجاح (60%)" + (single ? " في هذا الجزء" : "");
+        $("a1PassFail").textContent = passed ? (single ? "✓ ناجح في هذا الجزء — أحسنت!" : "✓ ناجح — مبروك!" + band) : (weak.length && !single ? "✗ لم تحقق 15/25 في كل جزء — راجع: " + weak.map(function(pp){ return A1_PART_NAMES[pp]; }).join("، ") : "✗ لم تحقق نسبة النجاح (60%)" + (single ? " في هذا الجزء" : ""));
         $("a1PassFail").style.color = passed ? "var(--ok)" : "var(--bad)";
 
         var html = "<table style='width:100%;border-collapse:collapse'>";
@@ -7068,12 +7070,14 @@ function wrCheck() {
         $("finResultScreen").hidden = false;
         var maxTotal = (finState.parts || FINAL_PARTS).length * 25;
         var passMark = Math.round(maxTotal * 0.6);
-        var passed = total >= passMark;
+        var weak = [];
+        (finState.parts || FINAL_PARTS).forEach(function(pp){ if ((finState.scores[pp] || 0) < 15) weak.push(pp); });
+        var passed = total >= passMark && weak.length === 0;
         var single = (finState.parts || FINAL_PARTS).length === 1;
         var band = !passed ? "" : single ? "" : total >= 85 ? " — جاهز بقوة لـ B1" : " — جاهز لـ B1";
         $("finScoreBig").textContent = total + " / " + maxTotal;
         $("finScoreBig").style.color = passed ? "var(--ok)" : "var(--bad)";
-        $("finPassFail").textContent = passed ? (single ? "✓ ناجح في هذا الجزء — أحسنت!" : "✓ ناجح — مبروك!" + band) : (single ? "✗ لم تحقق نسبة النجاح (60%) في هذا الجزء" : "✗ لم تحقق نسبة النجاح (70%) — أكملت A2 لكنك لست جاهزًا لـ B1 بعد");
+        $("finPassFail").textContent = passed ? (single ? "✓ ناجح في هذا الجزء — أحسنت!" : "✓ ناجح — مبروك!" + band) : (weak.length && !single ? "✗ لم تحقق 15/25 في كل جزء — راجع: " + weak.map(function(pp){ return FINAL_PART_NAMES[pp]; }).join("، ") : (single ? "✗ لم تحقق نسبة النجاح (60%) في هذا الجزء" : "✗ لم تحقق نسبة النجاح (70%) — أكملت A2 لكنك لست جاهزًا لـ B1 بعد"));
         $("finPassFail").style.color = passed ? "var(--ok)" : "var(--bad)";
         var html = "<table style='width:100%;border-collapse:collapse'>";
         (finState.parts || FINAL_PARTS).forEach(function(p) {
