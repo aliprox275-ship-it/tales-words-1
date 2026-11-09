@@ -1419,6 +1419,8 @@
             <button class="ex-type" data-ex="guess" type="button">تخمين المعنى من السياق</button>
             <button class="ex-type" data-ex="correct" type="button">صحّح الخطأ</button>
             <button class="ex-type" data-ex="translate" type="button">ترجم العكس</button>
+            <button class="ex-type" data-ex="listenChoose" type="button">اسمع واختر</button>
+            <button class="ex-type" data-ex="listenFill" type="button">اسمع واملأ</button>
           </div>
           <div class="ex-card" id="exArea"></div>
           <p class="ex-score-line" id="exScoreLine" role="status"></p>
@@ -2759,11 +2761,11 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       }
       var EX_KEY = "readerApp.exResults.v1";
       var exResults = (function(){
-        var def = { fill: { c: 0, t: 0 }, dict: { c: 0, t: 0 }, order: { c: 0, t: 0 }, guess: { c: 0, t: 0 }, correct: { c: 0, t: 0 }, translate: { c: 0, t: 0 } };
+        var def = { fill: { c: 0, t: 0 }, dict: { c: 0, t: 0 }, order: { c: 0, t: 0 }, guess: { c: 0, t: 0 }, correct: { c: 0, t: 0 }, translate: { c: 0, t: 0 }, listenChoose: { c: 0, t: 0 }, listenFill: { c: 0, t: 0 } };
         try {
           var parsed = JSON.parse(localStorage.getItem(EX_KEY) || "null");
           if (parsed && typeof parsed === "object") {
-            ["fill", "dict", "order", "guess", "correct", "translate"].forEach(function(k){
+            ["fill", "dict", "order", "guess", "correct", "translate", "listenChoose", "listenFill"].forEach(function(k){
               if (parsed[k] && typeof parsed[k].c === "number" && typeof parsed[k].t === "number") def[k] = parsed[k];
             });
           }
@@ -13182,12 +13184,13 @@ function wrCheck() {
         var el = $("exScoreLine");
         if (!el) return;
         var c = 0, t = 0;
-        ["fill", "dict", "order", "guess", "correct", "translate"].forEach(function(k){ c += exResults[k].c; t += exResults[k].t; });
+        ["fill", "dict", "order", "guess", "correct", "translate", "listenChoose", "listenFill"].forEach(function(k){ c += exResults[k].c; t += exResults[k].t; });
         el.textContent = t ? ("مجموع نتائج التمارين: " + arNum(c) + " إجابة صحيحة من " + arNum(t) + " محاولة") :
           "لم تُسجَّل نتائج تمارين بعد — جرّب تمرينًا!";
       }
       function exHead(txt){ return '<p class="ex-src">' + escapeHtml(txt) + '</p>'; }
       function newExercise(type){
+        stopListen();
         exState.type = type;
         exState.answered = false;
         exState.sel = [];
@@ -13200,6 +13203,8 @@ function wrCheck() {
         else if (type === "guess") renderGuess();
         else if (type === "correct") renderCorrect();
         else if (type === "translate") renderTranslate();
+        else if (type === "listenChoose") renderListenChoose();
+        else if (type === "listenFill") renderListenFill();
         renderExScore();
       }
       document.querySelectorAll(".ex-type").forEach(function(b){
@@ -13738,6 +13743,208 @@ function wrCheck() {
           fb.className = "ex-feedback " + (ok ? "ok" : "bad");
           fb.textContent = ok ? "ترجمة صحيحة! 🎉" : "الترجمة الصحيحة: " + tokens.join(" ");
         });
+      }
+
+      /* ---------- Focused listening drills: اسمع واختر + اسمع واملأ ----------
+         Training, not assessment: hear a sentence (recorded first — conv
+         turn segment or example-sentence segment — device TTS fallback),
+         then either pick the sentence you heard or type its missing word.
+         Pool = the week's sentences: conversation turns + story/bank
+         example sentences + grammar examples tied to the week's stories. */
+      var _listenCands = null, _listenCandsKey = "";
+      function buildListenPool(weekOnly){
+        var out = [], seen = {};
+        function add(text, ar, w, lang, level, src, story, seg){
+          if (!text || !ar) return;
+          var n = text.split(/\s+/).length;
+          if (n < 3 || n > 12) return;
+          if (/[“”„«»":\d]/.test(text)) return;
+          if (ar.split(/\s+/).length < 2) return;
+          var k = lang + "|" + text;
+          if (seen[k]) return; seen[k] = true;
+          out.push({ text: text, ar: ar, w: w || "", lang: lang, level: level, src: src, story: story, seg: seg || null });
+        }
+        var ids = weekOnly ? weekStoryIds() : null;
+        var idSet = null;
+        if (ids) { idSet = {}; ids.forEach(function(id){ idSet[id] = true; }); }
+        var topics = {};
+        STORIES.forEach(function(s){ if (!idSet || idSet[s.id]) topics[s.topic + "|" + s.lang + "|" + s.level] = true; });
+        ["A1", "A2"].forEach(function(lv){
+          var data = lv === "A2" ? CONV_DATA_A2 : CONV_DATA;
+          var offs = lv === "A2" ? (typeof CONV_OFFSETS_A2 !== "undefined" ? CONV_OFFSETS_A2 : null) : (typeof CONV_OFFSETS !== "undefined" ? CONV_OFFSETS : null);
+          ["en", "de"].forEach(function(lg){
+            (data[lg] || []).forEach(function(d){
+              if (!topics[d.topic + "|" + lg + "|" + lv]) return;
+              (d.conv.turns || []).forEach(function(tn, ti){
+                var txt = (tn.t || "").trim();
+                if (!txt) return;
+                var seg = null;
+                if (offs) {
+                  var n = ti + 1;
+                  var key = d.topic + "-" + lg + (lv === "A2" ? "-a2" : "") + "-t" + (n < 10 ? "0" + n : "" + n);
+                  var o = offs[key];
+                  if (o) seg = { url: o[0], start: o[1], end: o[2] };
+                }
+                add(txt, (tn.ar || "").trim(), "", lg, lv, "conv", { id: "conv-" + d.topic, titleAr: d.title, lang: lg, level: lv, topic: d.topic }, seg);
+              });
+            });
+          });
+        });
+        STORIES.forEach(function(s){
+          if (idSet && !idSet[s.id]) return;
+          (s.vocab || []).forEach(function(v){
+            add((v.ef || "").trim(), (v.ea || "").trim(), v.w || "", s.lang, s.level, "story", s, null);
+          });
+        });
+        [BANK_DATA, BANK_DATA2].forEach(function(bd){
+          ["en", "de"].forEach(function(lg){
+            var tps = bd[lg] || {};
+            Object.keys(tps).forEach(function(tp){
+              (tps[tp] || []).forEach(function(it){
+                add((it[2] || "").trim(), (it[3] || "").trim(), it[0] || "", lg, null, "bank", { id: "bank-" + tp, titleAr: tp, lang: lg }, null);
+              });
+            });
+          });
+        });
+        ["A1", "A2"].forEach(function(lv){
+          var g = lv === "A2" ? GRAMMAR_A2 : GRAMMAR_A1;
+          ["en", "de"].forEach(function(lg){
+            (g[lg] || []).forEach(function(rule){
+              (rule.examples || []).forEach(function(ex){
+                if (idSet && !idSet[ex.story]) return;
+                if (!ex.f || !ex.a) return;
+                add(ex.f, ex.a, "", lg, lv, "gram", { id: "gram-" + rule.id, titleAr: rule.titleAr, lang: lg, level: lv }, null);
+              });
+            });
+          });
+        });
+        return out;
+      }
+      function listenCandidates(){
+        var ids = weekStoryIds();
+        var key = ids.join(",");
+        if (_listenCands && _listenCandsKey === key) return _listenCands;
+        var out = buildListenPool(true);
+        if (out.length < 20) out = buildListenPool(false);
+        _listenCands = out; _listenCandsKey = key;
+        return out;
+      }
+      function listenSegFor(item){
+        if (item.seg) return item.seg;
+        var seg = null;
+        try { seg = vocabExampleSeg(item.w || "", item.text, item.lang); } catch (e) { seg = null; }
+        return seg;
+      }
+      function listenPlay(item){
+        var seg = listenSegFor(item);
+        if (seg) playBundle(seg, item.text, item.lang);
+        else speakText(item.text, item.lang);
+      }
+      function stopListen(){
+        try { stopSpeakText(); } catch (e) {}
+        try { stopRecorded(); } catch (e) {}
+      }
+      function renderListenChoose(){
+        var cands = listenCandidates().filter(function(x){
+          var n = x.text.split(/\s+/).length;
+          return n >= 4 && n <= 10;
+        });
+        var c = pickRandom(cands);
+        var others = shuffleArr(cands.filter(function(x){
+          return x.lang === c.lang && x.text !== c.text && Math.abs(x.text.split(/\s+/).length - c.text.split(/\s+/).length) <= 3;
+        })).slice(0, 3);
+        if (others.length < 3) {
+          var extra = shuffleArr(cands.filter(function(x){ return x.lang === c.lang && x.text !== c.text && others.indexOf(x) === -1; })).slice(0, 3 - others.length);
+          others = others.concat(extra);
+        }
+        var opts = shuffleArr([{ t: c.text, ok: true }].concat(others.map(function(x){ return { t: x.text, ok: false }; })));
+        exState.cur = c;
+        $("exArea").innerHTML =
+          exHead("اسمع واختر · " + exSrcLabel(c) + " — استمع ثم اختر الجملة التي سمعتها") +
+          '<div class="ex-actions" style="margin:0 0 14px">' +
+            '<button class="ex-btn gold" id="exPlay" type="button">' + SPK + ' استمع للجملة</button>' +
+          '</div>' +
+          '<div class="ex-opts" id="exOpts"></div>' +
+          '<div class="ex-actions">' +
+            '<button class="ex-btn ghost" id="exNext" type="button">سؤال جديد ←</button>' +
+          '</div>' +
+          '<p class="ex-feedback" id="exFb" role="status"></p>';
+        $("exPlay").addEventListener("click", function(){ listenPlay(c); });
+        var box = $("exOpts");
+        opts.forEach(function(o){
+          var b = document.createElement("button");
+          b.className = "opt";
+          b.type = "button";
+          b.textContent = o.t;
+          b.setAttribute("lang", c.lang);
+          b.addEventListener("click", function(){
+            if (exState.answered) return;
+            exState.answered = true;
+            recordEx("listenChoose", o.ok);
+            var all = box.querySelectorAll(".opt");
+            opts.forEach(function(oo, i){ if (oo.ok) all[i].classList.add("correct"); });
+            if (!o.ok) b.classList.add("wrong");
+            var fb = $("exFb");
+            fb.className = "ex-feedback " + (o.ok ? "ok" : "bad");
+            fb.textContent = o.ok ? "صحيح! 🎉 سمعتها صح." : "الجملة الصحيحة: " + c.text + " (" + c.ar + ")";
+          });
+          box.appendChild(b);
+        });
+        $("exNext").addEventListener("click", function(){ stopListen(); newExercise("listenChoose"); });
+        listenPlay(c);
+      }
+      function renderListenFill(){
+        var cands = listenCandidates().filter(function(x){
+          var n = x.text.split(/\s+/).length;
+          return n >= 5 && n <= 12;
+        });
+        var c = pickRandom(cands);
+        var tokens = c.text.split(/\s+/);
+        var idxs = [];
+        tokens.forEach(function(tok, i){
+          var w = tok.replace(/[^A-Za-zÄÖÜäöüß']/g, "");
+          if (i > 0 && w.length >= 3) idxs.push(i);
+        });
+        var bi = pickRandom(idxs);
+        if (bi === undefined) { renderListenFill(); return; }
+        var raw = tokens[bi];
+        var mm = raw.match(/^(.*?)([.,!?;:]*)$/);
+        var word = mm[1], punct = mm[2];
+        var blanked = tokens.slice(0, bi).join(" ") + " ______" + punct + (bi < tokens.length - 1 ? " " + tokens.slice(bi + 1).join(" ") : "");
+        exState.cur = { story: c.story, src: c.src, stageTitle: c.stageTitle, ruleTitle: c.ruleTitle, text: c.text, ar: c.ar, lang: c.lang, token: word, item: c };
+        $("exArea").innerHTML =
+          exHead("اسمع واملأ · " + exSrcLabel(c) + " — استمع واكتب الكلمة الناقصة") +
+          '<div class="ex-actions" style="margin:0 0 14px">' +
+            '<button class="ex-btn gold" id="exPlay" type="button">' + SPK + ' استمع للجملة</button>' +
+          '</div>' +
+          '<p class="ex-sentence" lang="' + c.lang + '">' + escapeHtml(blanked) + '</p>' +
+          '<div class="ex-input-row">' +
+            '<input class="ex-input" id="exInput" dir="ltr" lang="' + c.lang + '" autocomplete="off" autocapitalize="none" placeholder="اكتب الكلمة الناقصة" />' +
+            '<button class="ex-btn" id="exCheck" type="button">تحقق</button>' +
+          '</div>' +
+          '<div class="ex-actions">' +
+            '<button class="ex-btn ghost" id="exHint" type="button">💡 تلميح</button>' +
+            '<button class="ex-btn ghost" id="exNext" type="button">سؤال جديد ←</button>' +
+          '</div>' +
+          '<p class="ex-feedback" id="exFb" role="status"></p>';
+        $("exPlay").addEventListener("click", function(){ listenPlay(c); });
+        $("exNext").addEventListener("click", function(){ stopListen(); newExercise("listenFill"); });
+        $("exHint").addEventListener("click", function(){
+          $("exFb").textContent = "المعنى بالعربية: «" + c.ar + "» — والكلمة تبدأ بـ \"" + word.charAt(0) + "…\"";
+          $("exFb").className = "ex-feedback";
+        });
+        $("exCheck").addEventListener("click", function(){
+          if (exState.answered) return;
+          var val = normWord($("exInput").value);
+          var ok = val !== "" && val === normWord(word);
+          exState.answered = true;
+          recordEx("listenFill", ok);
+          var fb = $("exFb");
+          fb.className = "ex-feedback " + (ok ? "ok" : "bad");
+          fb.textContent = ok ? "صحيح! 🎉 الكلمة هي: " + word : "ليست صحيحة — الكلمة الصحيحة: " + word + " — الجملة: " + c.text;
+        });
+        $("exInput").focus();
+        listenPlay(c);
       }
 
       function renderGuess(){
