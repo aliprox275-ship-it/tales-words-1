@@ -1415,8 +1415,10 @@
           <div class="ex-types" role="group" aria-label="اختيار نوع التمرين">
             <button class="ex-type active" data-ex="fill" type="button">إكمال الفراغ</button>
             <button class="ex-type" data-ex="dict" type="button">الإملاء غيبًا</button>
-            <button class="ex-type" data-ex="order" type="button">ترتيب الكلمات</button>
+            <button class="ex-type" data-ex="order" type="button">رتّب الجملة</button>
             <button class="ex-type" data-ex="guess" type="button">تخمين المعنى من السياق</button>
+            <button class="ex-type" data-ex="correct" type="button">صحّح الخطأ</button>
+            <button class="ex-type" data-ex="translate" type="button">ترجم العكس</button>
           </div>
           <div class="ex-card" id="exArea"></div>
           <p class="ex-score-line" id="exScoreLine" role="status"></p>
@@ -2757,11 +2759,11 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       }
       var EX_KEY = "readerApp.exResults.v1";
       var exResults = (function(){
-        var def = { fill: { c: 0, t: 0 }, dict: { c: 0, t: 0 }, order: { c: 0, t: 0 }, guess: { c: 0, t: 0 } };
+        var def = { fill: { c: 0, t: 0 }, dict: { c: 0, t: 0 }, order: { c: 0, t: 0 }, guess: { c: 0, t: 0 }, correct: { c: 0, t: 0 }, translate: { c: 0, t: 0 } };
         try {
           var parsed = JSON.parse(localStorage.getItem(EX_KEY) || "null");
           if (parsed && typeof parsed === "object") {
-            ["fill", "dict", "order", "guess"].forEach(function(k){
+            ["fill", "dict", "order", "guess", "correct", "translate"].forEach(function(k){
               if (parsed[k] && typeof parsed[k].c === "number" && typeof parsed[k].t === "number") def[k] = parsed[k];
             });
           }
@@ -13129,6 +13131,8 @@ function wrCheck() {
       function exSrcLabel(c){
         if (c.src === "conv") return "من محادثة «" + (c.stageTitle || c.story.titleAr) + "»";
         if (c.src === "gram") return "من قاعدة «" + (c.ruleTitle || c.story.titleAr) + "»";
+        if (c.src === "curated") return "جملة تدريبية";
+        if (c.src === "bank") return "من بنك الكلمات";
         return "من قصة «" + c.story.titleAr + "»";
       }
       var _fillCands = null, _fillCandsKey = "";
@@ -13178,7 +13182,7 @@ function wrCheck() {
         var el = $("exScoreLine");
         if (!el) return;
         var c = 0, t = 0;
-        ["fill", "dict", "order", "guess"].forEach(function(k){ c += exResults[k].c; t += exResults[k].t; });
+        ["fill", "dict", "order", "guess", "correct", "translate"].forEach(function(k){ c += exResults[k].c; t += exResults[k].t; });
         el.textContent = t ? ("مجموع نتائج التمارين: " + arNum(c) + " إجابة صحيحة من " + arNum(t) + " محاولة") :
           "لم تُسجَّل نتائج تمارين بعد — جرّب تمرينًا!";
       }
@@ -13194,6 +13198,8 @@ function wrCheck() {
         else if (type === "dict") renderDict();
         else if (type === "order") renderOrder();
         else if (type === "guess") renderGuess();
+        else if (type === "correct") renderCorrect();
+        else if (type === "translate") renderTranslate();
         renderExScore();
       }
       document.querySelectorAll(".ex-type").forEach(function(b){
@@ -13313,7 +13319,7 @@ function wrCheck() {
         exState.cur = { story: c.story, tokens: tokens, shuffled: shuffled };
         exState.sel = [];
         $("exArea").innerHTML =
-          exHead("ترتيب الكلمات · " + exSrcLabel(c) + " — اضغط الكلمات بالترتيب الصحيح لتكوين الجملة") +
+          exHead("رتّب الجملة · " + exSrcLabel(c) + " — اضغط الكلمات بالترتيب الصحيح لتكوين الجملة") +
           '<div class="chip-answer" id="exAnswer"></div>' +
           '<div class="chip-pool" id="exPool"></div>' +
           '<div class="ex-actions">' +
@@ -13372,6 +13378,365 @@ function wrCheck() {
           recordEx("order", ok);
           fb.className = "ex-feedback " + (ok ? "ok" : "bad");
           fb.textContent = ok ? "ترتيب صحيح! 🎉" : "الترتيب الصحيح: " + tokens.join(" ");
+        });
+      }
+
+      /* ---------- Production drills: صحّح الخطأ + ترجم العكس ----------
+         Correct: a real sentence from the week's material with ONE planted
+         error (past tense, 3rd-person -s, a/an, comparatives, be-agreement,
+         Perfekt auxiliary, dative after mit/für, noun capitalisation). The
+         wrong word is highlighted; pick the right replacement.
+         Translate: an Arabic sentence; rebuild the foreign sentence from
+         shuffled word chips (same tap-to-build UI as the order drill). */
+      var CORRECT_PAST = {went:"go",took:"take",saw:"see",ate:"eat",wrote:"write",drove:"drive",bought:"buy",brought:"bring",thought:"think",gave:"give",found:"find",left:"leave",made:"make",told:"tell",came:"come",ran:"run",spoke:"speak",chose:"choose",broke:"break",forgot:"forget",got:"get",knew:"know",met:"meet",paid:"pay",said:"say",sat:"sit",slept:"sleep",spent:"spend",stood:"stand",won:"win",wore:"wear"};
+      var CORRECT_VERBS = ["go","like","live","work","play","eat","watch","read","need","want","come","see","take","get","make","help","look","drink","cook","study","walk","run","sing","dance","swim","open","close","start","finish","visit","call","speak","listen","ask","answer","buy","sell","clean","wash","drive","write","sleep","stand","sit","win","wear","forget","bring","think","give","find","leave","tell","meet","pay","know"];
+      var CORRECT_COMP = {better:["best","good"],bigger:["biggest","big"],easier:["easiest","easy"],faster:["fastest","fast"],cheaper:["cheapest","cheap"],nicer:["nicest","nice"],longer:["longest","long"],stronger:["strongest","strong"],taller:["tallest","tall"],smaller:["smallest","small"],hotter:["hottest","hot"]};
+      var CORRECT_SEIN_PART = ["gegangen","gekommen","gefahren","geflogen","geblieben","aufgestanden","angekommen","eingekauft","aufgewacht"];
+      var CORRECT_HABEN_PART = ["gegessen","getrunken","gelesen","gekauft","gemacht","gespielt","gearbeitet","gelernt","geschrieben","gesehen","gehört","besucht"];
+      function corrReplace(text, idx, len, rep){ return text.slice(0, idx) + rep + text.slice(idx + len); }
+      function corrWrongPast(base){ return base.charAt(base.length - 1) === "e" ? base + "d" : base + "ed"; }
+      function corrDistinct(opts){
+        var out = [];
+        opts.forEach(function(o){ if (out.indexOf(o) === -1) out.push(o); });
+        return out;
+      }
+      var CORRECT_TRANSFORMS = [
+        { lang: "en", name: "past", tryFn: function(text){
+          var m = /\b(went|took|saw|ate|wrote|drove|bought|brought|thought|gave|found|left|made|told|came|ran|spoke|chose|broke|forgot|got|knew|met|paid|said|sat|slept|spent|stood|won|wore)\b/.exec(text);
+          if (!m) return null;
+          var past = m[1], base = CORRECT_PAST[past], wrong = corrWrongPast(base);
+          return { wrong: corrReplace(text, m.index, past.length, wrong), start: m.index, end: m.index + wrong.length, right: past, opts: [past, wrong, base, base + "ing"], explain: "الماضي الشاذ ما ياخذ ed — " + past + " مو " + wrong + "." };
+        } },
+        { lang: "en", name: "thirdS", tryFn: function(text){
+          var m = /\b(he|she|it)\s+([a-z]+s)\b/i.exec(text);
+          if (!m) return null;
+          var v = m[2].toLowerCase(), base = null, fourth = null;
+          if (v === "has") { base = "have"; fourth = "had"; }
+          else if (v === "does") { base = "do"; fourth = "did"; }
+          else if (v.slice(-3) === "ies" && CORRECT_VERBS.indexOf(v.slice(0, -3) + "y") !== -1) { base = v.slice(0, -3) + "y"; fourth = base + "ed"; }
+          else if (v.slice(-2) === "es" && CORRECT_VERBS.indexOf(v.slice(0, -2)) !== -1) { base = v.slice(0, -2); fourth = base + "ed"; }
+          else if (CORRECT_VERBS.indexOf(v.slice(0, -1)) !== -1) { base = v.slice(0, -1); fourth = base + "ed"; }
+          else return null;
+          var vi = m.index + m[0].lastIndexOf(m[2]);
+          return { wrong: corrReplace(text, vi, v.length, base), start: vi, end: vi + base.length, right: v, opts: [v, base, base + "ing", fourth], explain: "مع he / she / it الفعل ياخذ s — " + v + " مو " + base + "." };
+        } },
+        { lang: "en", name: "didPast", tryFn: function(text){
+          var m = /\bdid\s+(you|he|she|we|they|i)\s+([a-z]+)\b/i.exec(text);
+          if (!m) return null;
+          var base = m[2].toLowerCase(), past = null;
+          for (var k in CORRECT_PAST) if (CORRECT_PAST[k] === base) past = k;
+          if (!past) return null;
+          var vi = m.index + m[0].lastIndexOf(m[2]);
+          return { wrong: corrReplace(text, vi, base.length, past), start: vi, end: vi + past.length, right: base, opts: [base, past, base + "ing", base + "s"], explain: "بعد did يجي الفعل بصيغته الأساسية — did you " + base + " مو did you " + past + "." };
+        } },
+        { lang: "en", name: "aAn", tryFn: function(text){
+          var m = /\ban\s+([aeiou]\w*)/i.exec(text);
+          if (m && ["hour","honest","university","one","european","unicorn"].indexOf(m[1].toLowerCase()) === -1) {
+            var wi = m.index;
+            return { wrong: corrReplace(text, wi, 2, "a"), start: wi, end: wi + 1, right: "an", opts: ["an", "a", "the", "some"], explain: "قبل صوت العلة نستخدم an مو a." };
+          }
+          var m2 = /\ba\s+([^aeiou\s]\w*)/i.exec(text);
+          if (!m2) return null;
+          var wi2 = m2.index;
+          return { wrong: corrReplace(text, wi2, 1, "an"), start: wi2, end: wi2 + 2, right: "a", opts: ["a", "an", "the", "some"], explain: "قبل صوت ساكن نستخدم a مو an." };
+        } },
+        { lang: "en", name: "moreBetter", tryFn: function(text){
+          var m = /\b(better|bigger|easier|faster|cheaper|nicer|longer|stronger|taller|smaller|hotter)\b/.exec(text);
+          if (!m) return null;
+          var comp = m[1], sup = CORRECT_COMP[comp][0], base = CORRECT_COMP[comp][1];
+          var span = "more " + comp;
+          var before = text.slice(0, m.index);
+          if (/more\s+$/.test(before)) {
+            var mi = before.lastIndexOf("more");
+            return { wrong: text, start: mi, end: m.index + comp.length, right: comp, opts: [comp, span, sup, base], explain: "المقارنة القصيرة ما تحتاج more — " + comp + " مو " + span + "." };
+          }
+          return { wrong: text.slice(0, m.index) + "more " + text.slice(m.index), start: m.index, end: m.index + span.length, right: comp, opts: [comp, span, sup, base], explain: "المقارنة القصيرة ما تحتاج more — " + comp + " مو " + span + "." };
+        } },
+        { lang: "en", name: "beAgree", tryFn: function(text){
+          var m = /\b(we|they|you)\s+are\b/i.exec(text);
+          if (m) {
+            var vi = m.index + m[0].lastIndexOf("are");
+            return { wrong: corrReplace(text, vi, 3, "is"), start: vi, end: vi + 2, right: "are", opts: ["are", "is", "am", "were"], explain: "مع we / they / you نستخدم are مو is." };
+          }
+          var m2 = /\b(he|she|it)\s+is\b/i.exec(text);
+          if (!m2) return null;
+          var vi2 = m2.index + m2[0].lastIndexOf("is");
+          return { wrong: corrReplace(text, vi2, 2, "are"), start: vi2, end: vi2 + 3, right: "is", opts: ["is", "are", "am", "was"], explain: "مع he / she / it نستخدم is مو are." };
+        } },
+        { lang: "en", name: "haveAge", tryFn: function(text){
+          var m = /\bI\s+am\s+(\d+)\s+years\s+old\b/.exec(text);
+          if (!m) return null;
+          var vi = m.index + 2;
+          return { wrong: corrReplace(text, vi, 2, "have"), start: vi, end: vi + 4, right: "am", opts: ["am", "have", "is", "are"], explain: "العمر بالإنجليزي مع am مو have — I am 22 مو I have 22." };
+        } },
+        { lang: "de", name: "perfektSein", tryFn: function(text){
+          var sp = CORRECT_SEIN_PART.join("|"), hp = CORRECT_HABEN_PART.join("|");
+          var m = new RegExp("\\b(ich|er)\\s+(bin|ist)\\s+(" + sp + ")\\b", "i").exec(text);
+          if (m) {
+            var wrongAux = m[2].toLowerCase() === "bin" ? "habe" : "hat";
+            var right = m[2];
+            var vi = m.index + m[0].indexOf(m[2]);
+            var third = m[1].toLowerCase() === "er" ? "bin" : "ist";
+            return { wrong: corrReplace(text, vi, m[2].length, wrongAux), start: vi, end: vi + wrongAux.length, right: right, opts: [right, wrongAux, third, "war"], explain: "أفعال الحركة بالـ Perfekt تاخذ sein مو haben — " + right + " " + m[3] + "." };
+          }
+          var m2 = new RegExp("\\b(ich|er)\\s+(habe|hat)\\s+(" + hp + ")\\b", "i").exec(text);
+          if (!m2) return null;
+          var wrongAux2 = m2[2].toLowerCase() === "habe" ? "bin" : "ist";
+          var right2 = m2[2];
+          var vi2 = m2.index + m2[0].indexOf(m2[2]);
+          var third2 = m2[1].toLowerCase() === "er" ? "bin" : "ist";
+          return { wrong: corrReplace(text, vi2, m2[2].length, wrongAux2), start: vi2, end: vi2 + wrongAux2.length, right: right2, opts: [right2, wrongAux2, third2, "war"], explain: "هالفعل بالـ Perfekt ياخذ haben مو sein — " + right2 + " " + m2[3] + "." };
+        } },
+        { lang: "de", name: "mitDativ", tryFn: function(text){
+          var map = {meinem: "meinen", deinem: "deinen", seinem: "seinen", einem: "einen"};
+          var m = /\bmit\s+(meinem|deinem|seinem|einem)\b/.exec(text);
+          if (m) {
+            var r = m[1], w = map[r];
+            var vi = m.index + m[0].indexOf(r);
+            var fem = r.slice(0, -2) + "er", base = r.slice(0, -2);
+            return { wrong: corrReplace(text, vi, r.length, w), start: vi, end: vi + w.length, right: r, opts: [r, w, fem, base], explain: "بعد mit يجي Dativ — " + r + " مو " + w + "." };
+          }
+          var m2 = /\bmit\s+(der|dem)\b/.exec(text);
+          if (!m2) return null;
+          var r2 = m2[1], w2 = r2 === "der" ? "die" : "das";
+          var vi2 = m2.index + m2[0].indexOf(r2);
+          return { wrong: corrReplace(text, vi2, r2.length, w2), start: vi2, end: vi2 + w2.length, right: r2, opts: [r2, w2, "den", r2 === "der" ? "dem" : "der"], explain: "بعد mit يجي Dativ — " + r2 + " مو " + w2 + "." };
+        } },
+        { lang: "de", name: "fuerAkk", tryFn: function(text){
+          var map = {meinen: "meinem", deinen: "deinem", seinen: "seinem", einen: "einem", den: "dem"};
+          var m = /\bfür\s+(meinen|deinen|seinen|einen|den)\b/.exec(text);
+          if (!m) return null;
+          var r = m[1], w = map[r];
+          var vi = m.index + m[0].indexOf(r);
+          var fem = r.slice(0, -2) + "er", base = r.slice(0, -2);
+          var opts = [r, w, fem, base];
+          if (r === "den") opts = [r, w, "der", "die"];
+          return { wrong: corrReplace(text, vi, r.length, w), start: vi, end: vi + w.length, right: r, opts: opts, explain: "بعد für يجي Akkusativ — " + r + " مو " + w + "." };
+        } },
+        { lang: "de", name: "deCapital", tryFn: function(text){
+          var m = /\b([Dd]er|[Dd]ie|[Dd]as|[Dd]en|[Dd]em)\s+([A-ZÄÖÜ][a-zäöüß]+)\b/.exec(text);
+          if (!m) return null;
+          var cap = m[2], low = cap.charAt(0).toLowerCase() + cap.slice(1);
+          var vi = m.index + m[0].lastIndexOf(cap);
+          return { wrong: corrReplace(text, vi, cap.length, low), start: vi, end: vi + low.length, right: cap, opts: [cap, low, cap + "n", cap + "en"], explain: "الاسم بالألماني ينكتب بحرف كبير دائمًا — " + cap + " مو " + low + "." };
+        } }
+      ];
+      var CORRECT_FALLBACK = [
+        { lang: "en", wrong: "Yesterday I goed to school.", mark: "goed", right: "went", opts: ["went", "goed", "go", "going"], explain: "الماضي الشاذ ما ياخذ ed — went مو goed." },
+        { lang: "en", wrong: "She go to school every day.", mark: "go", right: "goes", opts: ["goes", "go", "going", "goed"], explain: "مع he / she / it الفعل ياخذ s — goes مو go." },
+        { lang: "en", wrong: "Did you went home?", mark: "went", right: "go", opts: ["go", "went", "goes", "going"], explain: "بعد did يجي الفعل بصيغته الأساسية — did you go مو did you went." },
+        { lang: "en", wrong: "I saw a elephant at the zoo.", mark: "a", right: "an", opts: ["an", "a", "the", "some"], explain: "قبل صوت العلة نستخدم an مو a." },
+        { lang: "en", wrong: "This book is more better than that one.", mark: "more better", right: "better", opts: ["better", "more better", "best", "good"], explain: "المقارنة القصيرة ما تحتاج more — better مو more better." },
+        { lang: "en", wrong: "They is happy today.", mark: "is", right: "are", opts: ["are", "is", "am", "were"], explain: "مع we / they / you نستخدم are مو is." },
+        { lang: "de", wrong: "Ich habe gegangen.", mark: "habe", right: "bin", opts: ["bin", "habe", "ist", "war"], explain: "أفعال الحركة بالـ Perfekt تاخذ sein مو haben." },
+        { lang: "de", wrong: "Ich bin gegessen.", mark: "bin", right: "habe", opts: ["habe", "bin", "ist", "war"], explain: "هالفعل بالـ Perfekt ياخذ haben مو sein." },
+        { lang: "de", wrong: "Ich gehe mit meinen Freund.", mark: "meinen", right: "meinem", opts: ["meinem", "meinen", "meiner", "mein"], explain: "بعد mit يجي Dativ — meinem مو meinen." },
+        { lang: "de", wrong: "Das ist für meinem Bruder.", mark: "meinem", right: "meinen", opts: ["meinen", "meinem", "meiner", "mein"], explain: "بعد für يجي Akkusativ — meinen مو meinem." },
+        { lang: "de", wrong: "Der hund ist groß.", mark: "hund", right: "Hund", opts: ["Hund", "hund", "Hundn", "Hunden"], explain: "الاسم بالألماني ينكتب بحرف كبير دائمًا — Hund مو hund." },
+        { lang: "de", wrong: "Ich gehe mit die Frau.", mark: "die", right: "der", opts: ["der", "die", "den", "dem"], explain: "بعد mit يجي Dativ — der مو die." }
+      ];
+      function renderCorrect(){
+        var cands = weekSentences().filter(function(x){
+          var n = x.text.split(/\s+/).length;
+          return n >= 5 && n <= 12 && !/[“”„«»":]/.test(x.text);
+        });
+        if (!cands.length) cands = sentencePool();
+        var item = null, tries = 0;
+        while (!item && tries < 15) {
+          tries++;
+          var c = pickRandom(cands);
+          var lang = c.lang || (c.story && c.story.lang) || "en";
+          var order = shuffleArr(CORRECT_TRANSFORMS.slice());
+          for (var i = 0; i < order.length; i++) {
+            if (order[i].lang !== lang) continue;
+            var r = order[i].tryFn(c.text, c);
+            if (!r) continue;
+            var opts = corrDistinct(r.opts);
+            if (opts.length < 4 || opts.indexOf(r.right) === -1) continue;
+            item = { story: c.story, src: c.src, stageTitle: c.stageTitle, ruleTitle: c.ruleTitle, lang: lang, wrong: r.wrong, start: r.start, end: r.end, right: r.right, opts: shuffleArr(opts), explain: r.explain };
+            break;
+          }
+        }
+        if (!item) {
+          var f = pickRandom(CORRECT_FALLBACK);
+          var si = f.wrong.indexOf(f.mark);
+          item = { story: { titleAr: "تدريب" }, src: "curated", lang: f.lang, wrong: f.wrong, start: si, end: si + f.mark.length, right: f.right, opts: shuffleArr(f.opts.slice()), explain: f.explain };
+        }
+        exState.cur = item;
+        var correctSent = item.wrong.slice(0, item.start) + item.right + item.wrong.slice(item.end);
+        var marked = escapeHtml(item.wrong.slice(0, item.start)) + "<mark>" + escapeHtml(item.wrong.slice(item.start, item.end)) + "</mark>" + escapeHtml(item.wrong.slice(item.end));
+        $("exArea").innerHTML =
+          exHead("صحّح الخطأ · " + exSrcLabel(item) + " — شنو الغلط بالجملة؟ اختر الكلمة الصحيحة") +
+          '<p class="ex-sentence" lang="' + item.lang + '">' + marked + '</p>' +
+          '<div class="ex-opts" id="exOpts"></div>' +
+          '<div class="ex-actions">' +
+            '<button class="ex-btn ghost" id="exNext" type="button">سؤال جديد ←</button>' +
+          '</div>' +
+          '<p class="ex-feedback" id="exFb" role="status"></p>';
+        var box = $("exOpts");
+        item.opts.forEach(function(o){
+          var b = document.createElement("button");
+          b.className = "opt";
+          b.type = "button";
+          b.textContent = o;
+          b.setAttribute("lang", item.lang);
+          b.addEventListener("click", function(){
+            if (exState.answered) return;
+            exState.answered = true;
+            var ok = o === item.right;
+            recordEx("correct", ok);
+            var all = box.querySelectorAll(".opt");
+            item.opts.forEach(function(oo, i){ if (oo === item.right) all[i].classList.add("correct"); });
+            if (!ok) b.classList.add("wrong");
+            var fb = $("exFb");
+            fb.className = "ex-feedback " + (ok ? "ok" : "bad");
+            fb.textContent = ok ? "صحيح! 🎉 " + item.explain : "الصحيح: «" + item.right + "» — " + item.explain + " الجملة الصحيحة: " + correctSent;
+          });
+          box.appendChild(b);
+        });
+        $("exNext").addEventListener("click", function(){ newExercise("correct"); });
+      }
+      var _trCands = null, _trCandsKey = "";
+      function buildTranslatePool(weekOnly){
+        var out = [], seen = {};
+        function add(f, a, lang, level, src, story){
+          if (!f || !a) return;
+          var fw = f.split(/\s+/).length;
+          if (fw < 3 || fw > 10) return;
+          if (/[“”„«»":\d]/.test(f)) return;
+          if (a.split(/\s+/).length < 2) return;
+          var k = lang + "|" + f;
+          if (seen[k]) return; seen[k] = true;
+          out.push({ f: f, a: a, lang: lang, level: level, src: src, story: story });
+        }
+        var ids = weekOnly ? weekStoryIds() : null;
+        var idSet = null;
+        if (ids) { idSet = {}; ids.forEach(function(id){ idSet[id] = true; }); }
+        STORIES.forEach(function(s){
+          if (idSet && !idSet[s.id]) return;
+          if (!s.paras) return;
+          s.paras.forEach(function(p){
+            var fs = splitSentences(p.f), as = splitSentences(p.a);
+            if (fs.length !== as.length) return;
+            fs.forEach(function(ft, i){ add(ft, as[i], s.lang, s.level, "story", s); });
+          });
+        });
+        var topics = {};
+        STORIES.forEach(function(s){ if (!idSet || idSet[s.id]) topics[s.topic + "|" + s.lang + "|" + s.level] = true; });
+        ["A1", "A2"].forEach(function(lv){
+          var data = lv === "A2" ? CONV_DATA_A2 : CONV_DATA;
+          ["en", "de"].forEach(function(lg){
+            (data[lg] || []).forEach(function(d){
+              if (!topics[d.topic + "|" + lg + "|" + lv]) return;
+              (d.conv.turns || []).forEach(function(tn){
+                add((tn.t || "").trim(), (tn.ar || "").trim(), lg, lv, "conv", { id: "conv-" + d.topic, titleAr: d.title, lang: lg, level: lv, topic: d.topic });
+              });
+            });
+          });
+        });
+        ["A1", "A2"].forEach(function(lv){
+          var g = lv === "A2" ? GRAMMAR_A2 : GRAMMAR_A1;
+          ["en", "de"].forEach(function(lg){
+            (g[lg] || []).forEach(function(rule){
+              (rule.examples || []).forEach(function(ex){
+                if (idSet && !idSet[ex.story]) return;
+                if (!ex.f || !ex.a) return;
+                add(ex.f, ex.a, lg, lv, "gram", { id: "gram-" + rule.id, titleAr: rule.titleAr, lang: lg, level: lv });
+              });
+            });
+          });
+        });
+        [BANK_DATA, BANK_DATA2].forEach(function(bd){
+          ["en", "de"].forEach(function(lg){
+            var tps = bd[lg] || {};
+            Object.keys(tps).forEach(function(tp){
+              (tps[tp] || []).forEach(function(it){
+                add(it[2], it[3], lg, null, "bank", { id: "bank-" + tp, titleAr: tp, lang: lg });
+              });
+            });
+          });
+        });
+        return out;
+      }
+      function translateCandidates(){
+        var ids = weekStoryIds();
+        var key = ids.join(",");
+        if (_trCands && _trCandsKey === key) return _trCands;
+        var out = buildTranslatePool(true);
+        if (out.length < 20) out = buildTranslatePool(false);
+        _trCands = out; _trCandsKey = key;
+        return out;
+      }
+      function renderTranslate(){
+        var cands = translateCandidates();
+        var c = pickRandom(cands);
+        var tokens = c.f.split(/\s+/);
+        var shuffled = shuffleArr(tokens);
+        if (shuffled.join(" ") === tokens.join(" ")) shuffled = shuffleArr(tokens);
+        exState.cur = { story: c.story, src: c.src, tokens: tokens, shuffled: shuffled, lang: c.lang };
+        exState.sel = [];
+        var langName = c.lang === "en" ? "English" : "Deutsch";
+        $("exArea").innerHTML =
+          exHead("ترجم العكس · " + exSrcLabel(c) + " — ترجم هاي الجملة لـ " + langName) +
+          '<p class="ex-sentence" dir="rtl" lang="ar">' + escapeHtml(c.a) + '</p>' +
+          '<div class="chip-answer" id="exAnswer"></div>' +
+          '<div class="chip-pool" id="exPool"></div>' +
+          '<div class="ex-actions">' +
+            '<button class="ex-btn" id="exCheck" type="button">تحقق</button>' +
+            '<button class="ex-btn ghost" id="exReset" type="button">إعادة الترتيب</button>' +
+            '<button class="ex-btn ghost" id="exNext" type="button">جملة جديدة ←</button>' +
+          '</div>' +
+          '<p class="ex-feedback" id="exFb" role="status"></p>';
+        function drawTranslate(){
+          var pool = $("exPool"), ans = $("exAnswer");
+          pool.innerHTML = ""; ans.innerHTML = "";
+          if (!exState.sel.length) ans.innerHTML = '<span style="color:var(--muted); font-weight:700">ستظهر كلماتك هنا…</span>';
+          exState.cur.shuffled.forEach(function(tok, i){
+            var used = exState.sel.some(function(s){ return s.i === i; });
+            var b = document.createElement("button");
+            b.className = "chip" + (used ? " used" : "");
+            b.type = "button";
+            b.textContent = tok;
+            b.setAttribute("lang", c.lang);
+            b.addEventListener("click", function(){
+              if (exState.answered) return;
+              exState.sel.push({ i: i, tok: tok });
+              drawTranslate();
+            });
+            pool.appendChild(b);
+          });
+          exState.sel.forEach(function(s, pos){
+            var b = document.createElement("button");
+            b.className = "chip";
+            b.type = "button";
+            b.textContent = s.tok;
+            b.setAttribute("lang", c.lang);
+            b.title = "اضغط لإرجاع الكلمة";
+            b.addEventListener("click", function(){
+              if (exState.answered) return;
+              exState.sel.splice(pos, 1);
+              drawTranslate();
+            });
+            ans.appendChild(b);
+          });
+        }
+        drawTranslate();
+        $("exReset").addEventListener("click", function(){ if (!exState.answered) { exState.sel = []; drawTranslate(); } });
+        $("exNext").addEventListener("click", function(){ newExercise("translate"); });
+        $("exCheck").addEventListener("click", function(){
+          if (exState.answered) return;
+          var fb = $("exFb");
+          if (exState.sel.length < tokens.length) {
+            fb.className = "ex-feedback";
+            fb.textContent = "أكمل كل الكلمات أولًا (" + arNum(exState.sel.length) + " من " + arNum(tokens.length) + ").";
+            return;
+          }
+          var mine = exState.sel.map(function(s){ return s.tok; }).join(" ");
+          var ok = mine === tokens.join(" ");
+          exState.answered = true;
+          recordEx("translate", ok);
+          fb.className = "ex-feedback " + (ok ? "ok" : "bad");
+          fb.textContent = ok ? "ترجمة صحيحة! 🎉" : "الترجمة الصحيحة: " + tokens.join(" ");
         });
       }
 
@@ -13448,7 +13813,7 @@ function wrCheck() {
         var listenPct = Math.min(100, Math.round(listenCount / STORIES.length * 100));
         var wT = exResults.fill.t + exResults.dict.t, wC = exResults.fill.c + exResults.dict.c;
         var writePct = wT ? Math.round(wC / wT * 100) : 0;
-        var oT = exResults.order.t + exResults.guess.t, oC = exResults.order.c + exResults.guess.c;
+        var oT = exResults.order.t + exResults.guess.t + (exResults.correct ? exResults.correct.t : 0) + (exResults.translate ? exResults.translate.t : 0), oC = exResults.order.c + exResults.guess.c + (exResults.correct ? exResults.correct.c : 0) + (exResults.translate ? exResults.translate.c : 0);
         var undPct = oT ? Math.round(oC / oT * 100) : 0;
         var ltm = myWords.filter(function(w){ return w.interval > 14; }).length;
         $("statsSkills").innerHTML =
