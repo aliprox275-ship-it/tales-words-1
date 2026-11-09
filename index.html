@@ -755,6 +755,13 @@
           .due-card-main span{font-weight:800}
           .due-sub{color:var(--muted); margin:6px 0 12px; font-weight:700}
           .due-card .start-btn{width:100%}
+          .plan-head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:10px}
+          .plan-head b{font-size:1.2rem}
+          .plan-nav{display:flex; gap:8px; margin:12px 0 14px}
+          .plan-nav .ex-btn{flex:1}
+          .plan-done{background:var(--accent-tint); border:1px solid var(--line); border-radius:var(--r-card); padding:14px 16px; margin-bottom:14px; font-weight:800}
+          .plan-mark{border:1px solid var(--line); background:var(--surface); border-radius:99px; padding:6px 12px; font-weight:800; cursor:pointer; font-family:inherit}
+          .plan-mark.known{background:var(--ok); border-color:var(--ok); color:#fff}
 .today-home-line{font-size:.85rem;font-weight:600;opacity:.85}
 .today-head{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:14px 16px;margin:12px 0}
 .today-topic-ico{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;background:var(--accent-tint);border-radius:12px}
@@ -1192,6 +1199,7 @@
             </div>
             <button class="home-wide" type="button" data-goto="writing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg><b>الكتابة</b><span class="home-hero-ar">‹</span></button>
             <button class="home-wide" type="button" data-goto="today" id="todayHomeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg><b>مسار اليوم</b><span class="today-home-line" id="todayHomeLine"></span><span class="home-hero-ar">‹</span></button>
+            <button class="home-wide" type="button" data-goto="plan100" id="planHomeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><b>خطة الـ 100 يوم</b><span class="today-home-line" id="planHomeLine"></span><span class="home-hero-ar">‹</span></button>
             <h3 class="sub-title">تابع تقدمك</h3>
             <div class="home-pair">
               <button class="home-card" type="button" data-goto="mywords"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><b>كلماتي</b><small>كلمات حفظتها</small></button>
@@ -1212,6 +1220,19 @@
             </div>
           </div>
           <div id="todayBox"></div>
+        </section>
+
+        <!-- ======== 100-day plan: خطة الـ 100 يوم ======== -->
+        <section id="view-plan100" hidden>
+          <h2 class="view-title">خطة الـ 100 يوم</h2>
+          <p class="gram-hint">25 كلمة كل يوم × 100 يوم = كل بنك الكلمات (2500). الخطة ثابتة ومرتبة: اليوم ينحسب بس من تخلّص كل كلماته، والغياب ما يأخرها — ماكو تواريخ. لكل لغة خطتها الخاصة.</p>
+          <div class="filters">
+            <div class="switch" role="group" aria-label="لغة الخطة">
+              <button class="active-en" id="planLangEn">English · الإنجليزية</button>
+              <button id="planLangDe">Deutsch · الألمانية</button>
+            </div>
+          </div>
+          <div id="planBox"></div>
         </section>
 
         <!-- ======== Grammar A1 + A2 ======== -->
@@ -4502,7 +4523,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "today"];
+        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "today", "plan100"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var FOCUS_VIEWS = ["a1test", "finalexam", "writing", "exercises", "words"];
       var curView = "home", curReviewSub = "review";
@@ -4516,7 +4537,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "قواعد",
-        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", wordlogic: "منطق الكلمات", writing: "الكتابة", today: "مسار اليوم"
+        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", wordlogic: "منطق الكلمات", writing: "الكتابة", today: "مسار اليوم", plan100: "خطة الـ 100 يوم"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
       var startView = "home";
@@ -4686,6 +4707,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (name === "conversation") renderConvHome();
         if (name === "wordlogic") renderWordLogic();
         if (name === "today") renderToday();
+        if (name === "plan100") { planViewDay = 0; renderPlan100(); }
         window.scrollTo(0, 0);
       }
       document.querySelectorAll(".bnav-btn").forEach(function(b){
@@ -4896,6 +4918,120 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var en = $("todayLangEn"), de = $("todayLangDe");
         if (en && !en.dataset.todayBound) { en.dataset.todayBound = "1"; en.addEventListener("click", function(){ curLang = "en"; saveUiState(); renderToday(); }); }
         if (de && !de.dataset.todayBound) { de.dataset.todayBound = "1"; de.addEventListener("click", function(){ curLang = "de"; saveUiState(); renderToday(); }); }
+      })();
+
+      /* ---------- 100-day plan: 25 words/day x 100 = 2500 ----------
+         FIXED bank order (A1 topics, then A2 topics + general), per language.
+         A day counts ONLY when all 25 of its words are marked «أعرفها» —
+         the current day is DERIVED from the marks, so there are no dates
+         anywhere: missed days change nothing. */
+      var _plan100Cache = {};
+      function plan100Words(lang){
+        if (_plan100Cache[lang]) return _plan100Cache[lang];
+        var out = [];
+        (BANK_TOPIC_ORDER || []).forEach(function(tp){
+          ((BANK_DATA[lang] || {})[tp] || []).forEach(function(r){
+            out.push({ w: r[0], t: r[1], ef: r[2], ea: r[3], emoji: r[4] || "", lang: lang, topic: tp, level: "A1" });
+          });
+        });
+        (BANK2_TOPIC_ORDER || []).forEach(function(tp){
+          ((BANK_DATA2[lang] || {})[tp] || []).forEach(function(r){
+            out.push({ w: r[0], t: r[1], ef: r[2], ea: r[3], emoji: r[4] || "", lang: lang, topic: tp, level: "A2" });
+          });
+        });
+        _plan100Cache[lang] = out;
+        return out;
+      }
+      function plan100DayWords(lang, day){ return plan100Words(lang).slice(25 * (day - 1), 25 * day); }
+      function plan100CurrentDay(lang){
+        var words = plan100Words(lang), day = 1;
+        while (day <= 100) {
+          var ws = words.slice(25 * (day - 1), 25 * day);
+          if (!ws.length) break;
+          var allKnown = true;
+          for (var i = 0; i < ws.length; i++) { if (wordMark(lang, ws[i].w) !== "known") { allKnown = false; break; } }
+          if (!allKnown) break;
+          day++;
+        }
+        return day;
+      }
+      var planViewDay = 0;
+      function plan100SyncLang(){
+        var en = $("planLangEn"), de = $("planLangDe");
+        if (!en || !de) return;
+        en.className = curLang === "en" ? "active-en" : "";
+        de.className = curLang === "de" ? "active-de" : "";
+      }
+      function renderPlan100(){
+        plan100SyncLang();
+        var lang = curLang;
+        var cur = plan100CurrentDay(lang);
+        var maxDay = cur > 100 ? 100 : cur;
+        if (!planViewDay || planViewDay < 1 || planViewDay > maxDay) planViewDay = maxDay;
+        var day = planViewDay;
+        var ws = plan100DayWords(lang, day);
+        var known = 0;
+        ws.forEach(function(x){ if (wordMark(lang, x.w) === "known") known++; });
+        var box = $("planBox");
+        var html = "";
+        if (cur > 100) html += '<div class="plan-done">🎉 أكملت خطة الـ 100 يوم — كل كلمات البنك (2500) معروفة. تقدر تراجع أي يوم من الأيام السابقة.</div>';
+        html += '<div class="plan-head"><b>اليوم ' + arNum(day) + ' من 100</b><span>' + arNum(known) + ' / ' + arNum(ws.length) + ' كلمة معروفة</span></div>';
+        html += '<div class="progress-track" role="progressbar" aria-label="تقدم اليوم"><div class="progress-fill" style="width:' + Math.round(known / ws.length * 100) + '%"></div></div>';
+        html += '<div class="plan-nav"><button class="ex-btn ghost" id="planPrev" type="button"' + (day <= 1 ? ' disabled' : '') + '>→ اليوم السابق</button>' +
+          '<button class="ex-btn ghost" id="planNext" type="button"' + (day >= maxDay ? ' disabled' : '') + '>اليوم التالي ←</button></div>';
+        html += '<div class="bank-grid">';
+        ws.forEach(function(x, i){
+          var isKnown = wordMark(lang, x.w) === "known";
+          html += '<div class="bank-card">' +
+            '<div class="bank-card-top"><span class="bank-word" lang="' + lang + '">' + escapeHtml(x.w) + '</span>' +
+            '<button class="bank-speak" type="button" data-plansay="w:' + i + '" aria-label="استمع للكلمة">' + SPK + '</button></div>' +
+            '<div class="bank-mean">' + escapeHtml(x.t) + '</div>' +
+            (x.ef ? '<div class="bank-ex"><span class="ef" lang="' + lang + '">' + escapeHtml(x.ef) + '</span><span class="ea">' + escapeHtml(x.ea) + '</span>' +
+              '<button class="bank-speak" type="button" data-plansay="e:' + i + '" aria-label="استمع للمثال">' + SPK + '</button></div>' : '') +
+            '<div class="bank-card-foot"><button class="plan-mark' + (isKnown ? ' known' : '') + '" type="button" data-planmark="' + i + '">' + (isKnown ? '✓ أعرفها' : 'أعرفها') + '</button>' +
+            '<span class="bank-topic-chip">' + escapeHtml(x.topic) + ' · ' + x.level + '</span></div>' +
+            '</div>';
+        });
+        html += '</div>';
+        box.innerHTML = html;
+        box._planWords = ws;
+        box._planLang = lang;
+      }
+      (function(){
+        var box = document.getElementById("planBox");
+        if (!box) return;
+        box.addEventListener("click", function(ev){
+          var t = ev.target.closest("[data-planmark], [data-plansay], #planPrev, #planNext");
+          if (!t) return;
+          var ws = box._planWords || [], lang = box._planLang || curLang;
+          if (t.id === "planPrev") { if (planViewDay > 1) { planViewDay--; renderPlan100(); } return; }
+          if (t.id === "planNext") { var cur = plan100CurrentDay(lang); if (planViewDay < Math.min(cur, 100)) { planViewDay++; renderPlan100(); } return; }
+          var attr = t.getAttribute("data-planmark") || t.getAttribute("data-plansay") || "0";
+          var idx = parseInt(attr.split(":").pop(), 10);
+          var x = ws[idx];
+          if (!x) return;
+          if (t.hasAttribute("data-planmark")) {
+            var wasViewingCurrent = planViewDay >= plan100CurrentDay(lang);
+            var isKnown = wordMark(lang, x.w) === "known";
+            setWordMark(lang, x.w, isKnown ? "" : "known");
+            if (wasViewingCurrent) planViewDay = 0;
+            renderPlan100();
+            return;
+          }
+          var kind = t.getAttribute("data-plansay").split(":")[0];
+          if (kind === "w") {
+            var seg = null;
+            try { seg = bankWordBundle(x.w, lang) || bankWordBundleA2(x.w, lang) || vocabWordSeg(x.w, lang) || socialWordBundle(x.w, lang); } catch (e) { seg = null; }
+            if (seg) playBundle(seg, x.w, lang); else bankSpeak(x.w, lang);
+          } else {
+            var seg2 = null;
+            try { seg2 = vocabExampleSeg(x.w, x.ef, lang); } catch (e) { seg2 = null; }
+            if (seg2) playBundle(seg2, x.ef, lang); else bankSpeak(x.ef, lang);
+          }
+        });
+        var en = document.getElementById("planLangEn"), de = document.getElementById("planLangDe");
+        if (en) en.addEventListener("click", function(){ curLang = "en"; planViewDay = 0; saveUiState(); renderPlan100(); });
+        if (de) de.addEventListener("click", function(){ curLang = "de"; planViewDay = 0; saveUiState(); renderPlan100(); });
       })();
 
       /* ======== Conversation stages: one A1 dialogue per topic, device TTS, one voice per speaker ======== */
@@ -12272,6 +12408,8 @@ function wrCheck() {
         
         var thl = $("todayHomeLine");
         if (thl) { var tpi = todayTopicInfo(); thl.textContent = tpi ? (tpi.topic.ar + " · " + arNum(tpi.done) + "/" + arNum(tpi.total)) : "أكملت كل المواضيع ✓"; }
+        var phl = $("planHomeLine");
+        if (phl) { var pc = plan100CurrentDay(curLang); phl.textContent = pc > 100 ? "أكملت الـ 100 يوم ✓" : ("اليوم " + arNum(pc) + " من 100"); }
         renderDueCard();
 
       }
