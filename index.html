@@ -749,6 +749,12 @@
       .home-card svg{width:30px; height:30px; color:var(--accent)}
       .home-card small{font-size:.9rem; font-weight:600; color:var(--muted)}
       .home-wide{display:flex; align-items:center; gap:12px; width:100%; background:transparent; border:1.5px solid var(--accent); border-radius:var(--r-card); color:var(--accent); padding:15px 18px; font-family:inherit; font-size:1.1rem; font-weight:800; text-align:start; cursor:pointer}
+          .due-card{background:var(--accent-tint); border:1px solid var(--line); border-radius:var(--r-card); padding:18px; margin-bottom:16px; box-shadow:var(--shadow-card)}
+          .due-card-main{display:flex; align-items:baseline; gap:10px}
+          .due-card-main b{font-size:2rem; line-height:1}
+          .due-card-main span{font-weight:800}
+          .due-sub{color:var(--muted); margin:6px 0 12px; font-weight:700}
+          .due-card .start-btn{width:100%}
 .today-home-line{font-size:.85rem;font-weight:600;opacity:.85}
 .today-head{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:14px 16px;margin:12px 0}
 .today-topic-ico{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;background:var(--accent-tint);border-radius:12px}
@@ -1174,6 +1180,11 @@
           <div class="streak-box" id="streakBox"></div>
           <div class="home-summary" id="homeSummary"></div>
           <div class="home-grid" id="homeLevels"></div>
+          <div class="due-card" id="dueCard">
+            <div class="due-card-main"><b id="dueCount">0</b><span id="dueText">كلمات مستحقة للمراجعة اليوم</span></div>
+            <p class="due-sub" id="dueSub"></p>
+            <button class="start-btn" id="dueStart" type="button" data-goto="review">ابدأ المراجعة ←</button>
+          </div>
           <div class="home-actions">
 <div class="home-pair">
               <button class="home-card" type="button" data-goto="words"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><b>بطاقات الكلمات</b><small>راجع بسرعة</small></button>
@@ -12261,7 +12272,32 @@ function wrCheck() {
         
         var thl = $("todayHomeLine");
         if (thl) { var tpi = todayTopicInfo(); thl.textContent = tpi ? (tpi.topic.ar + " · " + arNum(tpi.done) + "/" + arNum(tpi.total)) : "أكملت كل المواضيع ✓"; }
+        renderDueCard();
 
+      }
+      function renderDueCard(){
+        var el = $("dueCard");
+        if (!el) return;
+        var due = dueWords().length, total = myWords.length;
+        var mastered = myWords.filter(function(w){ return w.interval > 14; }).length;
+        $("dueCount").textContent = arNum(due);
+        var btn = $("dueStart"), sub = $("dueSub"), txt = $("dueText");
+        if (total === 0) {
+          txt.textContent = "لا كلمات محفوظة بعد";
+          sub.textContent = "احفظ كلمات من القصص والبنك، وبتظهر هنا للمراجعة حسب نظام التكرار.";
+          btn.textContent = "تصفح البنك ←";
+          btn.setAttribute("data-goto", "bank");
+        } else if (due === 0) {
+          txt.textContent = "لا كلمات مستحقة اليوم ✓";
+          sub.textContent = "كل كلماتك مراجَعة — " + arNum(total) + " محفوظة · " + arNum(mastered) + " متقنة.";
+          btn.textContent = "عرض كلماتي ←";
+          btn.setAttribute("data-goto", "mywords");
+        } else {
+          txt.textContent = due === 1 ? "كلمة واحدة مستحقة للمراجعة اليوم" : (due === 2 ? "كلمتان مستحقتان للمراجعة اليوم" : (due <= 10 ? "كلمات مستحقة للمراجعة اليوم" : "كلمة مستحقة للمراجعة اليوم"));
+          sub.textContent = arNum(total) + " كلمة محفوظة · " + arNum(mastered) + " متقنة — راجعها قبل ما تنساها.";
+          btn.textContent = "ابدأ المراجعة ←";
+          btn.setAttribute("data-goto", "review");
+        }
       }
 
       /* ---------- Language & level filters ---------- */
@@ -12733,6 +12769,7 @@ function wrCheck() {
         return s.indexOf(best) !== -1;
       }
       function renderReviewCard(){
+        renderDueCard();
         $("revDueCount").textContent = arNum(dueWords().length);
         $("revTotal").textContent = arNum(myWords.length);
         var scopeEl = $("revScope");
