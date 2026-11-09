@@ -764,9 +764,10 @@
           .plan-mark.known{background:var(--ok); border-color:var(--ok); color:#fff}
           .prep-vocab-note{color:var(--muted); font-weight:700; margin:0 0 10px}
           .prep-chips{display:flex; flex-wrap:wrap; gap:8px}
-          .vocab-chip{background:var(--surface); border:1px solid rgba(47,93,88,.3); border-radius:99px; padding:6px 12px; display:flex; gap:6px; align-items:baseline}
+          .vocab-chip{background:var(--surface); border:1px solid rgba(47,93,88,.3); border-radius:99px; padding:6px 12px; display:flex; gap:6px; align-items:center; cursor:pointer}
           .vocab-chip .w{font-weight:800}
           .vocab-chip .t{color:var(--muted); font-weight:700}
+          .vocab-chip .bank-speak{width:28px; height:28px; font-size:.9rem; display:flex; align-items:center; justify-content:center}
           .vocab-toggle{background:none; border:0; font:inherit; font-family:var(--font-serif); font-size:1.2rem; font-weight:800; cursor:pointer; display:flex; align-items:center; gap:8px; padding:0; color:inherit; text-align:start}
           .vocab-count{font-size:.85rem; color:var(--muted); font-family:inherit; font-weight:700}
           .vocab-known{opacity:.55}
@@ -4097,6 +4098,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           chip.innerHTML = '<span class="w" lang="' + s.lang + '"></span><span class="t"></span>';
           chip.querySelector(".w").textContent = v.w;
           chip.querySelector(".t").textContent = v.t;
+          var sb = document.createElement("button"); sb.type = "button"; sb.className = "bank-speak"; sb.setAttribute("aria-label", "استمع إلى نطق الكلمة"); sb.innerHTML = SPK; chip.appendChild(sb);
           vl.appendChild(chip);
         });
         var start = $("prepStart");
@@ -4127,6 +4129,15 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       }
       $("prepBack").addEventListener("click", closePrep);
       $("prepBackTop").addEventListener("click", closePrep);
+      $("prepVocab").addEventListener("click", function(ev){
+        var chip = ev.target.closest(".vocab-chip");
+        if (!chip || !prepStory) return;
+        var w = chip.querySelector(".w").textContent;
+        stopVocab();
+        var seg = null;
+        try { seg = bankWordBundle(w, prepStory.lang) || bankWordBundleA2(w, prepStory.lang) || vocabWordSeg(w, prepStory.lang) || socialWordBundle(w, prepStory.lang); } catch (e) { seg = null; }
+        if (seg) playBundle(seg, w, prepStory.lang); else bankSpeak(w, prepStory.lang);
+      });
       $("prepStart").addEventListener("click", function(){
         if (!prepStory) return;
         var id = prepStory.id;
