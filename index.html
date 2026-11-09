@@ -762,6 +762,14 @@
           .plan-done{background:var(--accent-tint); border:1px solid var(--line); border-radius:var(--r-card); padding:14px 16px; margin-bottom:14px; font-weight:800}
           .plan-mark{border:1px solid var(--line); background:var(--surface); border-radius:99px; padding:6px 12px; font-weight:800; cursor:pointer; font-family:inherit}
           .plan-mark.known{background:var(--ok); border-color:var(--ok); color:#fff}
+          .prep-vocab-note{color:var(--muted); font-weight:700; margin:0 0 10px}
+          .prep-chips{display:flex; flex-wrap:wrap; gap:8px}
+          .vocab-chip{background:var(--surface); border:1px solid rgba(47,93,88,.3); border-radius:99px; padding:6px 12px; display:flex; gap:6px; align-items:baseline}
+          .vocab-chip .w{font-weight:800}
+          .vocab-chip .t{color:var(--muted); font-weight:700}
+          .vocab-toggle{background:none; border:0; font:inherit; font-family:var(--font-serif); font-size:1.2rem; font-weight:800; cursor:pointer; display:flex; align-items:center; gap:8px; padding:0; color:inherit; text-align:start}
+          .vocab-count{font-size:.85rem; color:var(--muted); font-family:inherit; font-weight:700}
+          .vocab-known{opacity:.55}
 .today-home-line{font-size:.85rem;font-weight:600;opacity:.85}
 .today-head{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:14px 16px;margin:12px 0}
 .today-topic-ico{width:44px;height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:center;background:var(--accent-tint);border-radius:12px}
@@ -1802,8 +1810,8 @@
         </section>
 
         <section class="vocab-box">
-          <h3>مفردات القصة</h3>
-          <div class="vocab-list" id="vocabList"></div>
+          <h3><button class="vocab-toggle" id="vocabToggle" type="button" aria-expanded="false">مفردات القصة <span class="vocab-count" id="vocabCount"></span><span class="vocab-caret" id="vocabCaret">▸</span></button></h3>
+          <div class="vocab-list" id="vocabList" hidden></div>
         </section>
 
         <button class="done-btn" id="markDone">أنهيت قراءة هذه القصة ✓</button>
@@ -1834,8 +1842,9 @@
         <div class="cover-art prep-cover-art" id="prepCover" aria-hidden="true"></div>
         <div class="card-meta" id="prepMeta" style="margin-bottom:10px"></div>
         <h2><span class="foreign" id="prepForeignTitle"></span><span id="prepTitle"></span></h2>
-        <h3 style="font-size:1.2rem; margin:0 0 4px">المفردات المستهدفة</h3>
-        <div class="vocab-list" id="prepVocab"></div>
+        <h3 style="font-size:1.2rem; margin:0 0 4px">كلمات جديدة قبل القراءة</h3>
+        <p class="prep-vocab-note" id="prepVocabNote"></p>
+        <div class="prep-chips" id="prepVocab"></div>
         <button class="prep-start" id="prepStart" type="button">ابدأ القراءة ←</button>
         <div class="prep-actions">
           <button class="prep-back" id="prepBack" type="button">→ رجوع للمكتبة</button>
@@ -4042,6 +4051,22 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       var prepStory = null;
 
       function prepStop(){ stopVocab(); }
+      function vocabItemEl(s, v){
+        var item = document.createElement("div");
+        item.className = "vocab-item";
+        item.innerHTML = '<span class="w" lang="' + s.lang + '"></span><span class="t"></span>' +
+          '<span class="e"><span class="ef" lang="' + s.lang + '"></span> — <span class="ea"></span></span>';
+        item.querySelector(".w").textContent = v.w;
+        var vmc = wordMarkClass(s.lang, v.w); if (vmc) item.querySelector(".w").classList.add(vmc);
+        var tEl = item.querySelector(".t");
+        tEl.appendChild(document.createTextNode(v.t));
+        item.querySelector(".ef").textContent = v.ef;
+        item.querySelector(".ea").textContent = v.ea;
+        var vb = document.createElement("button"); vb.type = "button"; vb.className = "bank-speak"; vb.setAttribute("aria-label", "استمع إلى المثال"); vb.innerHTML = SPK;
+        vb.addEventListener("click", function(){ stopVocab(); var u = vocabExampleSeg(v.w, v.ef, s.lang); if (u) playBundle(u, v.ef, s.lang); else bankSpeak(v.ef, s.lang); });
+        item.appendChild(vb);
+        return item;
+      }
       function openPrep(id){
         var s = null;
         STORIES.forEach(function(x){ if (x.id === id) s = x; });
@@ -4061,18 +4086,18 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         $("prepTitle").textContent = s.titleAr;
         var vl = $("prepVocab");
         vl.innerHTML = "";
-        s.vocab.forEach(function(v){
-          var item = document.createElement("div");
-          item.className = "vocab-item";
-          item.innerHTML = '<span class="w" lang="' + s.lang + '"></span><span class="t"></span>' +
-            '<span class="e"><span class="ef" lang="' + s.lang + '"></span> — <span class="ea"></span></span>';
-          item.querySelector(".w").textContent = v.w;
-          var vmc = wordMarkClass(s.lang, v.w); if (vmc) item.querySelector(".w").classList.add(vmc);
-          var tEl = item.querySelector(".t");
-          tEl.appendChild(document.createTextNode(v.t));
-          item.querySelector(".ef").textContent = v.ef;
-          item.querySelector(".ea").textContent = v.ea; var vb = document.createElement("button"); vb.type = "button"; vb.className = "bank-speak"; vb.setAttribute("aria-label", "استمع إلى المثال"); vb.innerHTML = SPK; vb.addEventListener("click", function(){ stopVocab(); var u = vocabExampleSeg(v.w, v.ef, s.lang); if (u) playBundle(u, v.ef, s.lang); else bankSpeak(v.ef, s.lang); }); item.appendChild(vb);
-          vl.appendChild(item);
+        var newWords = s.vocab.filter(function(v){ return wordMark(s.lang, v.w) !== "known"; });
+        var knownN = s.vocab.length - newWords.length;
+        $("prepVocabNote").textContent = newWords.length === 0
+          ? "تعرف كل كلمات القصة ✓ — ابدأ القراءة مباشرة."
+          : ("كلمات جديدة: " + arNum(newWords.length) + (knownN > 0 ? " · تعرف " + arNum(knownN) + " كلمة ✓" : ""));
+        newWords.forEach(function(v){
+          var chip = document.createElement("div");
+          chip.className = "vocab-chip";
+          chip.innerHTML = '<span class="w" lang="' + s.lang + '"></span><span class="t"></span>';
+          chip.querySelector(".w").textContent = v.w;
+          chip.querySelector(".t").textContent = v.t;
+          vl.appendChild(chip);
         });
         var start = $("prepStart");
         start.className = "prep-start " + s.lang;
@@ -4380,19 +4405,17 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
 
         var vl = $("vocabList");
         vl.innerHTML = "";
-        s.vocab.forEach(function(v){
-          var item = document.createElement("div");
-          item.className = "vocab-item";
-          item.innerHTML = '<span class="w" lang="' + s.lang + '"></span><span class="t"></span>' +
-            '<span class="e"><span class="ef" lang="' + s.lang + '"></span> — <span class="ea"></span></span>';
-          item.querySelector(".w").textContent = v.w;
-          var vmc = wordMarkClass(s.lang, v.w); if (vmc) item.querySelector(".w").classList.add(vmc);
-          var tEl = item.querySelector(".t");
-          tEl.appendChild(document.createTextNode(v.t));
-          item.querySelector(".ef").textContent = v.ef;
-          item.querySelector(".ea").textContent = v.ea; var vb = document.createElement("button"); vb.type = "button"; vb.className = "bank-speak"; vb.setAttribute("aria-label", "استمع إلى المثال"); vb.innerHTML = SPK; vb.addEventListener("click", function(){ stopVocab(); var u = vocabExampleSeg(v.w, v.ef, s.lang); if (u) playBundle(u, v.ef, s.lang); else bankSpeak(v.ef, s.lang); }); item.appendChild(vb);
-          vl.appendChild(item);
+        var newV = [], knownV = [];
+        s.vocab.forEach(function(v){ (wordMark(s.lang, v.w) === "known" ? knownV : newV).push(v); });
+        newV.concat(knownV).forEach(function(v){
+          var it = vocabItemEl(s, v);
+          if (wordMark(s.lang, v.w) === "known") it.classList.add("vocab-known");
+          vl.appendChild(it);
         });
+        $("vocabCount").textContent = "· " + arNum(s.vocab.length) + " كلمة · " + arNum(newV.length) + " جديدة";
+        vl.hidden = true;
+        $("vocabToggle").setAttribute("aria-expanded", "false");
+        $("vocabCaret").textContent = "▸";
 
         
         updateDoneBtn();
@@ -4430,6 +4453,13 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         closeReaderNow();
       }
       $("readerBack").addEventListener("click", closeReader);
+      $("vocabToggle").addEventListener("click", function(){
+        var vl = $("vocabList");
+        var open = vl.hidden;
+        vl.hidden = !open;
+        $("vocabToggle").setAttribute("aria-expanded", open ? "true" : "false");
+        $("vocabCaret").textContent = open ? "▾" : "▸";
+      });
 
       /* ---------- Mark done ---------- */
       function updateDoneBtn(){
