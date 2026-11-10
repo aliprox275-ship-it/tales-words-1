@@ -15325,6 +15325,13 @@ var BANK_CHUNK_MAP_A2 = {"en":{"travel":{"journey":"en-fix2-a2-chunk03.mp3","jou
         a._recCleanup = cleanup;
         function fallback(){
           if (fellBack) return; fellBack = true;
+          /* Never speak for a superseded element: when the user taps another
+             word while this one is still starting, stopRecorded pauses this
+             element and its play() promise rejects with AbortError — that
+             rejection must NOT trigger device TTS, or the old word is spoken
+             over the new one (the repeat). Only fall back while this element
+             is still the current one. */
+          if (recAudio !== a) { cleanup(); return; }
           cleanup();
           try { a.pause(); } catch (e) {}
           if (fallbackFn) fallbackFn(); else bankSpeak(fallbackText, lang);
@@ -15336,6 +15343,7 @@ var BANK_CHUNK_MAP_A2 = {"en":{"travel":{"journey":"en-fix2-a2-chunk03.mp3","jou
         }
         function stopSeg(){
           if (fellBack) return;
+          if (recAudio !== a) return; /* stale timer: never clear the new element's stop timer */
           cleanup();
           try { a.pause(); } catch (e) {}
           callDone();
@@ -15372,7 +15380,7 @@ var BANK_CHUNK_MAP_A2 = {"en":{"travel":{"journey":"en-fix2-a2-chunk03.mp3","jou
           var remain = (seg.end - a.currentTime) * 1000 / (a.playbackRate || 1);
           if (remain < 0) remain = 0;
           if (recTimer) { try { clearTimeout(recTimer); } catch (e) {} }
-          recTimer = setTimeout(function(){ stopSeg(); }, remain + 400); /* backup only: the precise stop is timeupdate (playback position), so a stall can never cut the word early; the timer only fires if timeupdate is broken */
+          recTimer = setTimeout(function(){ stopSeg(); }, remain + 200); /* backup only: the precise stop is timeupdate (playback position), so a stall can never cut the word early; 200 ms stays inside the 0.24 s silence gap around each word, so a late stop can never bleed into the next word */
         };
         handlers.timeupdate = function(){
           if (!fellBack && a.currentTime >= seg.end) stopSeg();
