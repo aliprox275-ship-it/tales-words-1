@@ -1,27 +1,27 @@
-/* تطبيق القراءة — Service Worker
+/* تطبيق القراءة — Service Worker v19 (Obelisk redesign)
    - التثبيت: يخزّن هيكل التطبيق فقط (الصفحة + manifest + الأيقونات).
-   - الصوت المسجل (A1 + A2): حزم audio-a1-bundles/ و audio-a2-bundles/ و
-     audio-conv-bundles/ و audio-exam/ — تُخزَّن كاملة في كاش صوت مستقل
-     (reading-audio-v1) وتُقدَّم طلبات Range منها:
+   - الصوت المسجل (Obelisk): حزم Opus تحت audio-obelisk/ — أسماؤها تحمل
+     بصمة محتوى (hash) فلا يمكن أن تُقدَّم نسخة قديمة أبدًا. تُخزَّن كاملة
+     في كاش صوت مُصدَر (tw-audio-v19) وتُقدَّم طلبات Range منها:
      * عند التشغيل أونلاين: أول مرة تُنزَّل الحزمة كاملة وتُحفظ، وبعدها
        كل المقاطع منها تُقدَّم من الكاش.
-     * زر «تحميل الصوت للاستخدام بدون نت» بالصفحة ينزّل كل الحزم (886 ملف،
-       526 ميغا) مرة واحدة على واي فاي.
+     * زر «تحميل الصوت للاستخدام بدون نت» بالصفحة ينزّل كل الحزم
+       (114 ملف، ~250 ميغا) مرة واحدة على واي فاي.
      * أوفلاين: أي حزمة محفوظة تشتغل؛ واللي ما انحفظت يرجع صوت الجهاز.
      (السبب: Cache API ما يقبل تخزين ردود 206 الجزئية، فلازم نخزّن الملف
      الكامل ونقطّع منه.)
+   - الـ manifest (audio-obelisk/manifest-<lang>.json): network-first،
+     لأنه يتحدث عند كل إعادة تسجيل.
    - التشغيل: network-first للصفحة والتنقلات؛ والأصول الثابتة
-     (الصور والأيقونات والـmanifest) بـ stale-while-revalidate:
-     تُقدَّم من الكاش فورًا وتُحدَّث بالخلفية. عند الانقطاع تُقدَّم
-     النسخة المخزّنة فيعمل التطبيق أوفلاين.
+     (الصور والأيقونات والـmanifest) بـ stale-while-revalidate.
    - التحديث: كاش مُصدَر؛ النسخة الجديدة تحذف كل الكاشات القديمة
-     بأسمائها السابقة ما عدا كاش الصوت (حتى لا يُمسح الـ 526 ميغا
-     عند كل تحديث للهيكل)، وتُفعّل نفسها (skipWaiting + clients.claim)
-     فيتحدث التطبيق المثبت تلقائيًا. */
+     بأسمائها السابقة — بما فيها كاش الصوت القديم (reading-audio-v1،
+     572 ميغا من الحزم القديمة) لأن النظام الجديد لا يستخدمه أبدًا —
+     وتُفعّل نفسها (skipWaiting + clients.claim). */
 
-var VERSION = "v18";
+var VERSION = "v19";
 var SHELL_CACHE = "reading-shell-" + VERSION;
-var AUDIO_CACHE = "reading-audio-v1";
+var AUDIO_CACHE = "tw-audio-" + VERSION;
 
 var SHELL_FILES = [
   "./",
@@ -48,8 +48,9 @@ self.addEventListener("activate", function (event) {
   event.waitUntil(
     caches.keys().then(function (keys) {
       return Promise.all(keys.map(function (key) {
-        // نحذف كل كاش قديم ما عدا كاش الهيكل الحالي وكاش الصوت
-        // (كاش الصوت يُحفظ حتى لا يُعاد تنزيل الـ 526 ميغا عند كل تحديث)
+        // v19: نحذف كل كاش قديم ما عدا كاش الهيكل الحالي وكاش الصوت الجديد.
+        // كاش الصوت القديم (reading-audio-v1) يُحذف عمدًا: النظام الجديد
+        // لا يطلب الحزم القديمة أبدًا، فيتحرر ~572 ميغا من الهاتف.
         if (key !== SHELL_CACHE && key !== AUDIO_CACHE) {
           return caches.delete(key);
         }
@@ -79,8 +80,7 @@ function networkFirst(request, cacheName) {
 }
 
 /* Stale-while-revalidate للأصول الثابتة (صور/أيقونات/manifest):
-   تُقدَّم نسخة الكاش فورًا وتُحدَّث من الشبكة في الخلفية،
-   فتظهر الأغلفة لحظيًا عند تكرار الزيارة حتى على اتصال بطيء. */
+   تُقدَّم نسخة الكاش فورًا وتُحدَّث من الشبكة في الخلفية. */
 function staleWhileRevalidate(request, cacheName) {
   return caches.open(cacheName).then(function (cache) {
     return cache.match(request, { ignoreSearch: true }).then(function (hit) {
@@ -93,7 +93,7 @@ function staleWhileRevalidate(request, cacheName) {
   });
 }
 
-/* ---- الصوت أوفلاين (v18) ----
+/* ---- الصوت أوفلاين (v19) ----
    المشغّل يطلب مقطعًا صغيرًا من حزمة كبيرة عبر Range، والـ Cache API
    يرفض تخزين رد 206 جزئي. الحل: نخزّن الملف الكامل، ونقطّع منه Range. */
 function parseRange(header, total) {
@@ -115,12 +115,18 @@ function parseRange(header, total) {
   return { start: start, end: end };
 }
 
-function serveFromBuffer(res, rangeHeader) {
+function audioContentType(url) {
+  if (url.indexOf(".opus") !== -1) return "audio/ogg";
+  return "audio/mpeg";
+}
+
+function serveFromBuffer(res, rangeHeader, url) {
   return res.arrayBuffer().then(function (buf) {
     var total = buf.byteLength;
+    var ct = audioContentType(url || "");
     if (!rangeHeader) {
       return new Response(buf, { status: 200, headers: {
-        "Content-Type": "audio/mpeg",
+        "Content-Type": ct,
         "Content-Length": String(total),
         "Accept-Ranges": "bytes"
       } });
@@ -131,7 +137,7 @@ function serveFromBuffer(res, rangeHeader) {
     }
     var slice = buf.slice(r.start, r.end + 1);
     return new Response(slice, { status: 206, headers: {
-      "Content-Type": "audio/mpeg",
+      "Content-Type": ct,
       "Content-Length": String(r.end - r.start + 1),
       "Content-Range": "bytes " + r.start + "-" + r.end + "/" + total,
       "Accept-Ranges": "bytes"
@@ -144,12 +150,12 @@ function audioResponse(request) {
   var rangeHeader = request.headers.get("Range");
   return caches.open(AUDIO_CACHE).then(function (cache) {
     return cache.match(url, { ignoreSearch: true }).then(function (hit) {
-      if (hit) return serveFromBuffer(hit, rangeHeader);
+      if (hit) return serveFromBuffer(hit, rangeHeader, url);
       return fetch(url).then(function (res) {
         if (!res || !res.ok) return res;
         var copy = res.clone();
         cache.put(url, copy).catch(function () {});
-        return serveFromBuffer(res, rangeHeader);
+        return serveFromBuffer(res, rangeHeader, url);
       });
     });
   });
@@ -163,10 +169,14 @@ self.addEventListener("fetch", function (event) {
   try { url = new URL(request.url); } catch (e) { return; }
   if (url.origin !== self.location.origin) return; // خطوط Google وغيرها تمر كما هي
 
-  /* v18: حزم الصوت تُخدَّم من كاش الصوت (ملف كامل + تقطيع Range).
-     أول تشغيل أونلاين ينزّل الحزمة كاملة ويحفظها؛ أوفلاين تُقدَّم
-     المحفوظة، واللي ما انحفظت ترجع 503 فيتحول المشغّل لصوت الجهاز. */
-  if (url.pathname.indexOf("/audio-a1-bundles/") === 0 || url.pathname.indexOf("/audio-a2-bundles/") === 0 || url.pathname.indexOf("/audio-exam/") === 0 || url.pathname.indexOf("/audio-conv-bundles/") === 0) {
+  /* v19: حزم Obelisk (audio-obelisk/*.opus) تُخدَّم من كاش الصوت
+     (ملف كامل + تقطيع Range). أسماؤها تحمل بصمة محتوى فالكاش آمن.
+     ملفات الـ manifest (JSON) تُخدَّم network-first لأنها تتحدث. */
+  if (url.pathname.indexOf("/audio-obelisk/") === 0) {
+    if (/\.json$/.test(url.pathname)) {
+      event.respondWith(networkFirst(request, SHELL_CACHE));
+      return;
+    }
     event.respondWith(audioResponse(request).catch(function () {
       return new Response(null, { status: 503 });
     }));
