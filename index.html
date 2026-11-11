@@ -5045,42 +5045,257 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (de && !de.dataset.todayBound) { de.dataset.todayBound = "1"; de.addEventListener("click", function(){ curLang = "de"; saveUiState(); renderToday(); }); }
       })();
 
-      /* ---------- 100-day plan: 25 words/day x 100 = 2500 ----------
-         FIXED bank order (A1 topics, then A2 topics + general), per language.
-         A day counts ONLY when all 25 of its words are marked «أعرفها» —
-         the current day is DERIVED from the marks, so there are no dates
-         anywhere: missed days change nothing. */
+            /* ---------- 100-day plan, story-based (redesign 2026-11-12) ----------
+         One story per day (in app order, per language), 25 words taken from
+         INSIDE that story: its vocab list first, topped up to 25 with distinct
+         words from the story's own paragraphs that exist in the bank.
+         A day is done when the story is marked done (doneSet) AND the
+         listen+write round (dictation) was attempted. Words spelled wrong
+         are reviewed in writing on the NEXT day (derived queue: failed words
+         from earlier days that are still not marked «أعرفها»).
+         No dates anywhere: the current day is derived from doneSet + dict
+         results, so missed days change nothing. Days already finished under
+         the old bank-order plan (all 25 old words known) count as dictation-
+         done, so earlier progress is kept. */
+      var PLAN_DICT_KEY = "readerApp.plan100.dict.v1";
+      var planDictStore = (function(){
+        try { var p = JSON.parse(localStorage.getItem(PLAN_DICT_KEY) || "null"); if (p && typeof p === "object" && !Array.isArray(p)) return p; } catch (e) {}
+        return {};
+      })();
+      function savePlanDict(){ try { localStorage.setItem(PLAN_DICT_KEY, JSON.stringify(planDictStore)); } catch (e) {} }
+      function planDictKey(lang, day){ return lang + ":" + day; }
+      function planDictGet(lang, day){ return planDictStore[planDictKey(lang, day)] || null; }
+      function planDictSave(lang, day, entry){ planDictStore[planDictKey(lang, day)] = entry; savePlanDict(); }
+      function planStripArticle(w){
+        return String(w || "").replace(/^(der|die|das|den|dem|einen|einem|einer)\s+/i, "");
+      }
+      var _planBankLookup = {};
+      function planBankLookup(lang){
+        if (_planBankLookup[lang]) return _planBankLookup[lang];
+        var map = {};
+        [BANK_DATA, BANK_DATA2].forEach(function(B){
+          var d = B && B[lang];
+          if (!d) return;
+          Object.keys(d).forEach(function(tp){
+            (d[tp] || []).forEach(function(r){
+              var base = planStripArticle(r[0]).toLowerCase();
+              if (!map[base]) map[base] = { w: r[0], t: r[1], ef: r[2], ea: r[3] };
+            });
+          });
+        });
+        _planBankLookup[lang] = map;
+        return map;
+      }
+      var _plan100StoriesCache = {};
+      function plan100Stories(lang){
+        if (_plan100StoriesCache[lang]) return _plan100StoriesCache[lang];
+        var out = STORIES.filter(function(s){ return s.lang === lang; });
+        _plan100StoriesCache[lang] = out;
+        return out;
+      }
+      function plan100Story(lang, day){
+        var arr = plan100Stories(lang);
+        return arr[day - 1] || null;
+      }
       var _plan100Cache = {};
-      function plan100Words(lang){
-        if (_plan100Cache[lang]) return _plan100Cache[lang];
+      function plan100DayWords(lang, day){
+        var ck = lang + ":" + day;
+        if (_plan100Cache[ck]) return _plan100Cache[ck];
+        var out = [];
+        var story = plan100Story(lang, day);
+        if (!story) { _plan100Cache[ck] = out; return out; }
+        var have = {};
+        (story.vocab || []).forEach(function(v){
+          var w = String(v.w || "");
+          if (!w) return;
+          have[planStripArticle(w).toLowerCase()] = true;
+          have[w.toLowerCase()] = true;
+          out.push({ w: w, t: v.t || "", ef: v.ef || "", ea: v.ea || "", lang: lang, topic: story.topic, level: story.level, story: story.id, src: "vocab" });
+        });
+        if (out.length < 25) {
+          var lookup = planBankLookup(lang);
+          var text = (story.paras || []).map(function(p){ return p.f || ""; }).join(" ");
+          var tokens = text.toLowerCase().match(/[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\u00DF]+/g) || [];
+          var seen = {};
+          var fresh = [], known = [];
+          tokens.forEach(function(tok){
+            var base = planStripArticle(tok).toLowerCase();
+            if (have[base] || have[tok] || seen[base]) return;
+            var row = lookup[base];
+            if (!row) return;
+            seen[base] = true;
+            var item = { w: row.w, t: row.t, ef: row.ef, ea: row.ea, lang: lang, topic: story.topic, level: story.level, story: story.id, src: "para" };
+            if (wordMark(lang, row.w) === "known") known.push(item); else fresh.push(item);
+          });
+          var extra = fresh.concat(known);
+          for (var i = 0; i < extra.length && out.length < 25; i++) out.push(extra[i]);
+        }
+        out = out.slice(0, 25);
+        _plan100Cache[ck] = out;
+        return out;
+      }
+      function plan100LegacyDayWords(lang, day){
         var out = [];
         (BANK_TOPIC_ORDER || []).forEach(function(tp){
           ((BANK_DATA[lang] || {})[tp] || []).forEach(function(r){
-            out.push({ w: r[0], t: r[1], ef: r[2], ea: r[3], emoji: r[4] || "", lang: lang, topic: tp, level: "A1" });
+            out.push({ w: r[0], t: r[1], ef: r[2], ea: r[3], lang: lang, topic: tp, level: "A1" });
           });
         });
         (BANK2_TOPIC_ORDER || []).forEach(function(tp){
           ((BANK_DATA2[lang] || {})[tp] || []).forEach(function(r){
-            out.push({ w: r[0], t: r[1], ef: r[2], ea: r[3], emoji: r[4] || "", lang: lang, topic: tp, level: "A2" });
+            out.push({ w: r[0], t: r[1], ef: r[2], ea: r[3], lang: lang, topic: tp, level: "A2" });
           });
         });
-        _plan100Cache[lang] = out;
+        return out.slice(25 * (day - 1), 25 * day);
+      }
+      function plan100ReviewWords(lang, day){
+        var out = [], seen = {};
+        for (var d = 1; d < day; d++) {
+          var e = planDictGet(lang, d);
+          if (!e || !e.failed) continue;
+          e.failed.forEach(function(x){
+            var k = lang + ":" + String(x.w || "").toLowerCase();
+            if (seen[k]) return;
+            seen[k] = true;
+            if (wordMark(lang, x.w) === "known") return;
+            out.push({ w: x.w, t: x.t || "", ef: x.ef || "", ea: x.ea || "", lang: lang, src: "review" });
+          });
+        }
         return out;
       }
-      function plan100DayWords(lang, day){ return plan100Words(lang).slice(25 * (day - 1), 25 * day); }
+      function plan100DayDone(lang, day){
+        var story = plan100Story(lang, day);
+        if (!story || !doneSet[story.id]) return false;
+        if (planDictGet(lang, day)) return true;
+        var legacy = plan100LegacyDayWords(lang, day);
+        if (!legacy.length) return false;
+        for (var i = 0; i < legacy.length; i++) { if (wordMark(lang, legacy[i].w) !== "known") return false; }
+        return true;
+      }
       function plan100CurrentDay(lang){
-        var words = plan100Words(lang), day = 1;
-        while (day <= 100) {
-          var ws = words.slice(25 * (day - 1), 25 * day);
-          if (!ws.length) break;
-          var allKnown = true;
-          for (var i = 0; i < ws.length; i++) { if (wordMark(lang, ws[i].w) !== "known") { allKnown = false; break; } }
-          if (!allKnown) break;
-          day++;
-        }
+        var day = 1;
+        while (day <= 100) { if (!plan100DayDone(lang, day)) break; day++; }
         return day;
       }
+      function plan100Grammar(lang, day){
+        var story = plan100Story(lang, day);
+        if (!story) return null;
+        var rules = [];
+        try { rules = todayTopicRules(lang, story.level, story.topic) || []; } catch (e) { rules = []; }
+        if (rules.length) return { rule: rules[0], level: story.level };
+        var all = (story.level === "A2" ? GRAMMAR_A2 : GRAMMAR_A1)[lang] || [];
+        if (!all.length) return null;
+        return { rule: all[(day - 1) % all.length], level: story.level };
+      }
+      function plan100Conv(lang, day){
+        var story = plan100Story(lang, day);
+        if (!story) return null;
+        var idx = -1;
+        try { idx = todayConvIdx(lang, story.level, story.topic); } catch (e) { idx = -1; }
+        if (idx < 0) return null;
+        var arr = (story.level === "A2" ? CONV_DATA_A2 : CONV_DATA)[lang] || [];
+        var stage = arr[idx];
+        if (!stage) return null;
+        return { stage: stage, idx: idx, level: story.level };
+      }
+      function planPlayWord(x, lang){
+        var seg = null;
+        try { seg = bankWordBundle(x.w, lang) || bankWordBundleA2(x.w, lang) || vocabWordSeg(x.w, lang) || socialWordBundle(x.w, lang); } catch (e) { seg = null; }
+        if (seg) playBundle(seg, x.w, lang, null, null, null, 1); else bankSpeak(x.w, lang);
+      }
+      function planDictOk(input, word, lang){
+        var a = normWord(input), b = normWord(word);
+        if (a !== "" && a === b) return true;
+        if (lang === "de") { var c = normWord(planStripArticle(word)); if (a !== "" && a === c) return true; }
+        return false;
+      }
+      /* ---------- Dictation trainer (listen + write) ----------
+         One trainer per container (day words / review words). State lives on
+         the container so the two trainers stay independent. Updates happen
+         in place during a round; only completion re-renders the whole plan. */
+      function planDictRender(box){
+        var st = box._dict;
+        if (!st) return;
+        var list = st.list || [];
+        var total = list.length;
+        if (!total) { box.innerHTML = ""; return; }
+        if (st.done) {
+          var cor = 0;
+          Object.keys(st.results).forEach(function(k){ if (st.results[k]) cor++; });
+          var failed = list.filter(function(x, i){ return !st.results[i]; });
+          var h = '<div class="plan-dict-done">النتيجة: <b>' + arNum(cor) + ' / ' + arNum(total) + '</b> صحيحة ✓</div>';
+          if (failed.length) {
+            h += '<div class="plan-dict-failed">الكلمات التي تحتاج مراجعة كتابية غدًا:</div><div class="bank-grid">';
+            failed.forEach(function(x){
+              h += '<div class="bank-card"><div class="bank-card-top"><span class="bank-word" lang="' + st.lang + '">' + escapeHtml(x.w) + '</span>' +
+                '<button class="bank-speak" type="button" data-dictsay="' + escapeHtml(x.w) + '" aria-label="استمع للكلمة">' + SPK + '</button></div>' +
+                '<div class="bank-mean">' + escapeHtml(x.t) + '</div></div>';
+            });
+            h += '</div>';
+          } else {
+            h += '<div class="plan-dict-done">ممتاز — كل الكلمات صحيحة 🎉</div>';
+          }
+          box.innerHTML = h;
+          return;
+        }
+        var x = list[st.idx];
+        var h2 = '<div class="plan-dict-head"><b>' + (st.mode === "review" ? "🔁 مراجعة الكتابة" : "✍️ اسمع واكتب") + '</b><span>' + arNum(st.idx + 1) + ' / ' + arNum(total) + '</span></div>' +
+          '<div class="ex-actions" style="margin:0 0 10px"><button class="ex-btn gold" type="button" data-dictplay>' + SPK + ' استمع للكلمة</button></div>' +
+          '<div class="ex-input-row"><input class="ex-input" data-dictinput dir="ltr" lang="' + st.lang + '" autocomplete="off" autocapitalize="none" placeholder="اكتب الكلمة التي سمعتها" />' +
+          '<button class="ex-btn" type="button" data-dictcheck>تحقق</button></div>' +
+          '<p class="ex-feedback" data-dictfb role="status"></p>' +
+          '<div class="ex-actions"><button class="ex-btn ghost" type="button" data-dictnext hidden>الكلمة التالية ←</button></div>';
+        box.innerHTML = h2;
+        var inp = box.querySelector("[data-dictinput]");
+        if (inp) inp.focus();
+        planPlayWord(x, st.lang);
+      }
+      function planDictCheck(box){
+        var st = box._dict;
+        if (!st || st.done) return;
+        var list = st.list || [];
+        var x = list[st.idx];
+        if (!x) return;
+        var inp = box.querySelector("[data-dictinput]");
+        var fb = box.querySelector("[data-dictfb]");
+        var val = inp ? inp.value : "";
+        var ok = planDictOk(val, x.w, st.lang);
+        st.results[st.idx] = ok;
+        if (ok) { try { setWordMark(st.lang, x.w, "known"); } catch (e) {} }
+        if (fb) {
+          fb.className = "ex-feedback " + (ok ? "ok" : "bad");
+          fb.textContent = ok ? "صحيح! 🎉 «" + x.w + "» تعني: " + x.t : "ليست صحيحة — الكلمة الصحيحة: «" + x.w + "» تعني: " + x.t;
+        }
+        var chk = box.querySelector("[data-dictcheck]");
+        if (chk) chk.disabled = true;
+        if (inp) inp.disabled = true;
+        var nx = box.querySelector("[data-dictnext]");
+        if (nx) { nx.hidden = false; nx.textContent = (st.idx + 1 >= list.length) ? "عرض النتيجة ←" : "الكلمة التالية ←"; nx.focus(); }
+      }
+      function planDictNext(box){
+        var st = box._dict;
+        if (!st || st.done) return;
+        st.idx++;
+        if (st.idx >= st.list.length) {
+          st.done = true;
+          if (st.mode === "day") {
+            var cor = 0, failed = [];
+            st.list.forEach(function(x, i){ if (st.results[i]) cor++; else failed.push({ w: x.w, t: x.t, ef: x.ef, ea: x.ea }); });
+            planDictSave(st.lang, st.day, { done: true, correct: cor, total: st.list.length, failed: failed });
+          }
+          renderPlan100();
+          return;
+        }
+        planDictRender(box);
+      }
+      function planDictStart(box){
+        var st = box._dict;
+        if (!st) return;
+        st.idx = 0; st.results = {}; st.done = false; st.active = true;
+        planDictRender(box);
+      }
       var planViewDay = 0;
+      var planFlash = { key: "", idx: 0, shown: false };
       function plan100SyncLang(){
         var en = $("planLangEn"), de = $("planLangDe");
         if (!en || !de) return;
@@ -5094,17 +5309,38 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var maxDay = cur > 100 ? 100 : cur;
         if (!planViewDay || planViewDay < 1 || planViewDay > maxDay) planViewDay = maxDay;
         var day = planViewDay;
+        var story = plan100Story(lang, day);
         var ws = plan100DayWords(lang, day);
         var known = 0;
         ws.forEach(function(x){ if (wordMark(lang, x.w) === "known") known++; });
         var box = $("planBox");
+        if (!story) { box.innerHTML = '<div class="plan-done">لا توجد قصة لهذا اليوم بعد.</div>'; return; }
+        var storyDone = !!doneSet[story.id];
+        var dict = planDictGet(lang, day);
+        var rev = plan100ReviewWords(lang, day);
+        var gram = plan100Grammar(lang, day);
+        var conv = plan100Conv(lang, day);
         var html = "";
-        if (cur > 100) html += '<div class="plan-done">🎉 أكملت خطة الـ 100 يوم — كل كلمات البنك (2500) معروفة. تقدر تراجع أي يوم من الأيام السابقة.</div>';
+        if (cur > 100) html += '<div class="plan-done">🎉 أكملت خطة الـ 100 يوم — 100 قصة وكل كلماتها. تقدر تراجع أي يوم من الأيام السابقة.</div>';
         html += '<div class="plan-head"><b>اليوم ' + arNum(day) + ' من 100</b><span>' + arNum(known) + ' / ' + arNum(ws.length) + ' كلمة معروفة</span></div>';
-        html += '<div class="progress-track" role="progressbar" aria-label="تقدم اليوم"><div class="progress-fill" style="width:' + Math.round(known / ws.length * 100) + '%"></div></div>';
+        html += '<div class="progress-track" role="progressbar" aria-label="تقدم اليوم"><div class="progress-fill" style="width:' + Math.round(known / Math.max(1, ws.length) * 100) + '%"></div></div>';
         html += '<div class="plan-nav"><button class="ex-btn ghost" id="planPrev" type="button"' + (day <= 1 ? ' disabled' : '') + '>→ اليوم السابق</button>' +
           '<button class="ex-btn ghost" id="planNext" type="button"' + (day >= maxDay ? ' disabled' : '') + '>اليوم التالي ←</button></div>';
-        html += '<div class="bank-grid">';
+        if (rev.length) {
+          html += '<h3 class="gram-sec">🔁 مراجعة الكتابة — كلمات من أيام سابقة (' + arNum(rev.length) + ')</h3>' +
+            '<p style="margin:0 0 8px">كلمات ما عرفت تكتبها قبل — اسمعها واكتبها، والصحيحة منها تنحسب «أعرفها» وتختفي من المراجعة.</p>' +
+            '<div class="bank-card" data-dictbox="review" data-day="' + day + '"></div>';
+        }
+        html += '<h3 class="gram-sec">📖 قصة اليوم</h3>' +
+          '<div class="bank-card"><div class="bank-card-top"><span class="bank-word" lang="' + lang + '">' + escapeHtml(story.title) + '</span>' +
+          (storyDone ? '<span class="done-tag">مقروءة ✓</span>' : '') + '</div>' +
+          '<div class="bank-mean">' + escapeHtml(story.titleAr || "") + '</div>' +
+          '<div class="bank-card-foot"><button class="ex-btn" type="button" data-planstory="open">اقرأ القصة ←</button>' +
+          (storyDone ? '' : '<button class="ex-btn ghost" type="button" data-planstory="done">قريتها من قبل ✓</button>') +
+          '<span class="bank-topic-chip">' + escapeHtml(story.topic) + ' · ' + story.level + '</span></div></div>';
+        html += '<h3 class="gram-sec">✍️ كلمات اليوم — اسمع واكتب (' + arNum(ws.length) + ' كلمة من داخل القصة)</h3>' +
+          '<div class="bank-card" data-dictbox="day" data-day="' + day + '"></div>';
+        html += '<h3 class="gram-sec">📚 كلمات اليوم</h3><div class="bank-grid">';
         ws.forEach(function(x, i){
           var isKnown = wordMark(lang, x.w) === "known";
           html += '<div class="bank-card">' +
@@ -5114,23 +5350,148 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             (x.ef ? '<div class="bank-ex"><span class="ef" lang="' + lang + '">' + escapeHtml(x.ef) + '</span><span class="ea">' + escapeHtml(x.ea) + '</span>' +
               '<button class="bank-speak" type="button" data-plansay="e:' + i + '" aria-label="استمع للمثال">' + SPK + '</button></div>' : '') +
             '<div class="bank-card-foot"><button class="plan-mark' + (isKnown ? ' known' : '') + '" type="button" data-planmark="' + i + '">' + (isKnown ? '✓ أعرفها' : 'أعرفها') + '</button>' +
-            '<span class="bank-topic-chip">' + escapeHtml(x.topic) + ' · ' + x.level + '</span></div>' +
+            '<span class="bank-topic-chip">' + escapeHtml(x.topic) + ' · ' + x.level + (x.src === "para" ? ' · من نص القصة' : '') + '</span></div>' +
             '</div>';
         });
         html += '</div>';
+        html += '<h3 class="gram-sec">🃏 بطاقات الترجمة — خمّن المعنى</h3><div class="bank-card" data-flashbox="1"></div>';
+        if (gram) {
+          html += '<h3 class="gram-sec">📖 قاعدة اليوم</h3>' +
+            '<div class="bank-card"><div class="bank-card-top"><span class="bank-word">' + escapeHtml(gram.rule.titleAr || gram.rule.title) + '</span></div>' +
+            '<div class="bank-mean">' + escapeHtml(gram.rule.title || "") + '</div>' +
+            (gram.rule.explanationAr ? '<div class="bank-ex"><span class="ea">' + escapeHtml(gram.rule.explanationAr) + '</span></div>' : '') +
+            '<div class="bank-card-foot"><button class="ex-btn" type="button" data-plangram="open">افتح القاعدة كاملة ←</button></div></div>';
+        }
+        if (conv) {
+          html += '<h3 class="gram-sec">💬 محادثة اليوم</h3>' +
+            '<div class="bank-card"><div class="bank-card-top"><span class="bank-word">' + escapeHtml(conv.stage.title || conv.stage.topicAr || "") + '</span></div>' +
+            '<div class="bank-mean">' + escapeHtml((conv.stage.conv && conv.stage.conv.speakers ? conv.stage.conv.speakers.join(" × ") : "") + ' · ' + ((conv.stage.conv && conv.stage.conv.turns ? conv.stage.conv.turns.length : 0)) + ' جملة') + '</div>' +
+            '<div class="bank-card-foot"><button class="ex-btn" type="button" data-planconv="open">افتح المحادثة ←</button>' +
+            '<span class="bank-topic-chip">' + escapeHtml(conv.stage.topic) + ' · ' + conv.level + '</span></div></div>';
+        } else {
+          html += '<p style="margin:10px 0 0;opacity:.65">لا توجد محادثة لهذا الموضوع بعد — المحادثات موجودة لـ 12 موضوع من 17.</p>';
+        }
         box.innerHTML = html;
         box._planWords = ws;
         box._planLang = lang;
+        box._planStory = story;
+        box._planDay = day;
+        box._planGram = gram;
+        box._planConv = conv;
+        var fk = lang + ":" + day;
+        if (planFlash.key !== fk) planFlash = { key: fk, idx: 0, shown: false };
+        planFlashRender(box);
+        var dboxes = box.querySelectorAll("[data-dictbox]");
+        for (var bi = 0; bi < dboxes.length; bi++) {
+          var db = dboxes[bi];
+          var mode = db.getAttribute("data-dictbox");
+          var list = mode === "review" ? rev : ws;
+          var existing = planDictGet(lang, day);
+          var st0 = db._dict;
+          if (!st0 || st0.mode !== mode || st0.day !== day || st0.list !== list) {
+            var done0 = false;
+            if (mode === "day" && existing) done0 = true;
+            db._dict = { mode: mode, day: day, lang: lang, list: list, idx: 0, results: {}, active: false, done: done0 };
+            if (done0) {
+              var _cor = existing.correct || 0;
+              db._dict.results = {};
+              list.forEach(function(x, ii){ db._dict.results[ii] = (existing.failed || []).every(function(f){ return String(f.w).toLowerCase() !== String(x.w).toLowerCase(); }); });
+            }
+          }
+          var st = db._dict;
+          if (st.done) { planDictRender(db); continue; }
+          if (!st.active) {
+            db.innerHTML = '<div class="plan-dict-head"><b>' + (mode === "review" ? "🔁 مراجعة الكتابة" : "✍️ اسمع واكتب") + '</b><span>' + arNum(list.length) + ' كلمة</span></div>' +
+              '<p style="margin:6px 0 10px">اسمع كل كلمة واكتبها — بالنهاية تشوف نتيجتك، والكلمات الخاطئة تراجعها كتابيًا باليوم الجاي.</p>' +
+              '<button class="ex-btn gold" type="button" data-dictstart>ابدأ 🔊</button>';
+          } else {
+            planDictRender(db);
+          }
+        }
+      }
+      function planFlashRender(box){
+        var fb = box.querySelector("[data-flashbox]");
+        if (!fb) return;
+        var ws = box._planWords || [];
+        if (!ws.length) { fb.innerHTML = ""; return; }
+        if (planFlash.idx < 0) planFlash.idx = 0;
+        if (planFlash.idx >= ws.length) planFlash.idx = ws.length - 1;
+        var item = ws[planFlash.idx];
+        var isKnown = wordMark(box._planLang || curLang, item.w) === "known";
+        fb.innerHTML = '<div class="plan-dict-head"><b>🃏 خمّن الترجمة</b><span>' + arNum(planFlash.idx + 1) + ' / ' + arNum(ws.length) + '</span></div>' +
+          '<div style="text-align:center;padding:10px 0 4px"><span class="bank-word" lang="' + (box._planLang || curLang) + '" style="font-size:1.35em">' + escapeHtml(item.w) + '</span></div>' +
+          '<div style="text-align:center;min-height:1.6em;margin:4px 0">' + (planFlash.shown ? '<span class="bank-mean">' + escapeHtml(item.t) + '</span>' + (item.ef ? ' <span class="ef" lang="' + (box._planLang || curLang) + '">' + escapeHtml(item.ef) + '</span>' : '') : '<span style="font-size:1.4em">؟</span>') + '</div>' +
+          '<div class="ex-actions"><button class="ex-btn" type="button" data-flashflip>' + (planFlash.shown ? "إخفاء المعنى" : "إظهار المعنى") + '</button>' +
+          '<button class="bank-speak" type="button" data-flashsay aria-label="استمع للكلمة">' + SPK + '</button></div>' +
+          '<div class="ex-actions"><button class="ex-btn ghost" type="button" data-flashprev' + (planFlash.idx <= 0 ? ' disabled' : '') + '>→ السابقة</button>' +
+          '<button class="plan-mark' + (isKnown ? ' known' : '') + '" type="button" data-flashmark>' + (isKnown ? '✓ أعرفها' : 'أعرفها') + '</button>' +
+          '<button class="ex-btn ghost" type="button" data-flashnext' + (planFlash.idx >= ws.length - 1 ? ' disabled' : '') + '>التالية ←</button></div>';
       }
       (function(){
         var box = document.getElementById("planBox");
         if (!box) return;
         box.addEventListener("click", function(ev){
-          var t = ev.target.closest("[data-planmark], [data-plansay], #planPrev, #planNext");
+          var t = ev.target.closest("[data-planmark], [data-plansay], [data-planstory], [data-plangram], [data-planconv], [data-dictstart], [data-dictplay], [data-dictcheck], [data-dictnext], [data-dictsay], [data-flashflip], [data-flashprev], [data-flashnext], [data-flashmark], [data-flashsay], #planPrev, #planNext");
           if (!t) return;
           var ws = box._planWords || [], lang = box._planLang || curLang;
+          var day = box._planDay || planViewDay || 1;
           if (t.id === "planPrev") { if (planViewDay > 1) { planViewDay--; renderPlan100(); } return; }
           if (t.id === "planNext") { var cur = plan100CurrentDay(lang); if (planViewDay < Math.min(cur, 100)) { planViewDay++; renderPlan100(); } return; }
+          if (t.hasAttribute("data-planstory")) {
+            var kind = t.getAttribute("data-planstory");
+            var story = box._planStory;
+            if (!story) return;
+            if (kind === "open") { try { openPrep(story.id); } catch (e) {} return; }
+            if (kind === "done") { doneSet[story.id] = Date.now(); saveDoneSet(); try { logActivity("story"); } catch (e) {} renderPlan100(); return; }
+            return;
+          }
+          if (t.hasAttribute("data-plangram")) {
+            var g = box._planGram;
+            if (!g) return;
+            curLang = lang; gramLevel = g.level;
+            showView("grammar");
+            try { renderGrammarRule(g.rule.id); } catch (e) {}
+            return;
+          }
+          if (t.hasAttribute("data-planconv")) {
+            var c = box._planConv;
+            if (!c) return;
+            convLang = lang; convLevel = c.level;
+            showView("conversation");
+            try { openConvReader(c.idx); } catch (e) {}
+            return;
+          }
+          var db = t.closest("[data-dictbox]");
+          if (db && db._dict) {
+            if (t.hasAttribute("data-dictstart")) { planDictStart(db); return; }
+            if (t.hasAttribute("data-dictplay")) { var _x = db._dict.list[db._dict.idx]; if (_x) planPlayWord(_x, db._dict.lang); return; }
+            if (t.hasAttribute("data-dictcheck")) { planDictCheck(db); return; }
+            if (t.hasAttribute("data-dictnext")) { planDictNext(db); return; }
+            if (t.hasAttribute("data-dictsay")) {
+              var _w = t.getAttribute("data-dictsay");
+              var _x2 = null;
+              db._dict.list.forEach(function(xx){ if (String(xx.w).toLowerCase() === String(_w).toLowerCase()) _x2 = xx; });
+              if (_x2) planPlayWord(_x2, db._dict.lang);
+              return;
+            }
+            return;
+          }
+          if (t.hasAttribute("data-flashflip")) { planFlash.shown = !planFlash.shown; planFlashRender(box); return; }
+          if (t.hasAttribute("data-flashprev")) { if (planFlash.idx > 0) { planFlash.idx--; planFlash.shown = false; planFlashRender(box); } return; }
+          if (t.hasAttribute("data-flashnext")) { if (planFlash.idx < ws.length - 1) { planFlash.idx++; planFlash.shown = false; planFlashRender(box); } return; }
+          if (t.hasAttribute("data-flashmark")) {
+            var fi = ws[planFlash.idx];
+            if (!fi) return;
+            var fk2 = wordMark(lang, fi.w) === "known";
+            setWordMark(lang, fi.w, fk2 ? "" : "known");
+            renderPlan100();
+            return;
+          }
+          if (t.hasAttribute("data-flashsay")) {
+            var fi2 = ws[planFlash.idx];
+            if (fi2) planPlayWord(fi2, lang);
+            return;
+          }
           var attr = t.getAttribute("data-planmark") || t.getAttribute("data-plansay") || "0";
           var idx = parseInt(attr.split(":").pop(), 10);
           var x = ws[idx];
@@ -5143,11 +5504,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             renderPlan100();
             return;
           }
-          var kind = t.getAttribute("data-plansay").split(":")[0];
-          if (kind === "w") {
-            var seg = null;
-            try { seg = bankWordBundle(x.w, lang) || bankWordBundleA2(x.w, lang) || vocabWordSeg(x.w, lang) || socialWordBundle(x.w, lang); } catch (e) { seg = null; }
-            if (seg) playBundle(seg, x.w, lang, null, null, null, 1); else bankSpeak(x.w, lang);
+          var kind2 = t.getAttribute("data-plansay").split(":")[0];
+          if (kind2 === "w") {
+            planPlayWord(x, lang);
           } else {
             var seg2 = null;
             try { seg2 = vocabExampleSeg(x.w, x.ef, lang); } catch (e) { seg2 = null; }
