@@ -1211,8 +1211,7 @@
               <button class="home-card" type="button" data-goto="exercises"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><b>تمارين</b><small>اختبر نفسك</small></button>
             </div>
             <button class="home-wide" type="button" data-goto="writing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg><b>الكتابة</b><span class="home-hero-ar">‹</span></button>
-            <button class="home-wide" type="button" data-goto="today" id="todayHomeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg><b>مسار اليوم</b><span class="today-home-line" id="todayHomeLine"></span><span class="home-hero-ar">‹</span></button>
-            <button class="home-wide" type="button" data-goto="plan100" id="planHomeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><b>خطة الـ 100 يوم</b><span class="today-home-line" id="planHomeLine"></span><span class="home-hero-ar">‹</span></button>
+                        <button class="home-wide" type="button" data-goto="plan100" id="planHomeBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><b>خطة الـ 100 يوم</b><span class="today-home-line" id="planHomeLine"></span><span class="home-hero-ar">‹</span></button>
             <h3 class="sub-title">تابع تقدمك</h3>
             <div class="home-pair">
               <button class="home-card" type="button" data-goto="mywords"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><b>كلماتي</b><small>كلمات حفظتها</small></button>
@@ -1222,23 +1221,10 @@
 
         </section>
 
-        <!-- ======== Daily guided path: مسار اليوم ======== -->
-        <section id="view-today" hidden>
-          <h2 class="view-title">مسار اليوم</h2>
-          <p class="gram-hint">خطوة بخطوة على نفس الموضوع: قواعد، ثم قصة، ثم محادثة، ثم كتابة، ثم مراجعة. خلّص موضوع وانتقل للي بعده — والتقدم ينحفظ لكل لغة لوحدها.</p>
-          <div class="filters">
-            <div class="switch" role="group" aria-label="لغة المسار">
-              <button class="active-en" id="todayLangEn">English · الإنجليزية</button>
-              <button id="todayLangDe">Deutsch · الألمانية</button>
-            </div>
-          </div>
-          <div id="todayBox"></div>
-        </section>
-
         <!-- ======== 100-day plan: خطة الـ 100 يوم ======== -->
         <section id="view-plan100" hidden>
           <h2 class="view-title">خطة الـ 100 يوم</h2>
-          <p class="gram-hint">25 كلمة كل يوم × 100 يوم = كل بنك الكلمات (2500). الخطة ثابتة ومرتبة: اليوم ينحسب بس من تخلّص كل كلماته، والغياب ما يأخرها — ماكو تواريخ. لكل لغة خطتها الخاصة.</p>
+          <p class="gram-hint">25 كلمة كل يوم × 100 يوم = كل بنك الكلمات (2500). أول خطوة: اكتب الكلمات الـ25 وتأكد من إملائك، بعدين اقرأ القصة. اليوم ينحسب بس من تخلّص كل كلماته، والغياب ما يأخرها — ماكو تواريخ. لكل لغة خطتها الخاصة.</p>
           <div class="filters">
             <div class="switch" role="group" aria-label="لغة الخطة">
               <button class="active-en" id="planLangEn">English · الإنجليزية</button>
@@ -4645,7 +4631,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "today", "plan100"];
+        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "plan100"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var FOCUS_VIEWS = ["a1test", "finalexam", "writing", "exercises", "words"];
       var curView = "home", curReviewSub = "review";
@@ -4659,7 +4645,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "قواعد",
-        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", wordlogic: "منطق الكلمات", writing: "الكتابة", today: "مسار اليوم", plan100: "خطة الـ 100 يوم"
+        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", wordlogic: "منطق الكلمات", writing: "الكتابة", plan100: "خطة الـ 100 يوم"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
       var startView = "home";
@@ -4831,7 +4817,6 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (name === "a1test") { a1Reset(); } if (name === "writing") { wrReset(); }
         if (name === "conversation") renderConvHome();
         if (name === "wordlogic") renderWordLogic();
-        if (name === "today") renderToday();
         if (name === "plan100") { planViewDay = 0; renderPlan100(); }
         window.scrollTo(0, 0);
       }
@@ -4847,204 +4832,6 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       document.querySelectorAll("[data-goto]").forEach(function(b){
         b.addEventListener("click", function(){ showView(b.getAttribute("data-goto")); });
       });
-      /* ---------- Daily guided path (مسار اليوم): one topic at a time ----------
-         Order per topic: grammar -> story -> conversation -> writing -> review.
-         Progress is per language; topics run in TOPICS order (A1 topics first,
-         then A2). Story / writing / review steps auto-complete from real stores
-         (a story marked done, a clean writing task, an empty review queue);
-         grammar and conversation are ticked by hand. */
-      var TODAY_KEY = "readerApp.today.v1";
-      var todayStore = (function(){
-        try {
-          var p = JSON.parse(localStorage.getItem(TODAY_KEY) || "null");
-          if (p && typeof p === "object" && p.done && p.pos) return p;
-        } catch (e) {}
-        return { done: {}, pos: { en: "intro", de: "intro" } };
-      })();
-      function todaySave(){ try { localStorage.setItem(TODAY_KEY, JSON.stringify(todayStore)); } catch (e) {} }
-      function todayTopicSlug(){
-        var s = todayStore.pos[curLang];
-        if (!s) return null;
-        var ok = false;
-        TOPICS.forEach(function(t){ if (t.slug === s) ok = true; });
-        return ok ? s : "intro";
-      }
-      function todayTopic(){
-        var slug = todayTopicSlug();
-        if (!slug) return null;
-        var t = null;
-        TOPICS.forEach(function(x){ if (x.slug === slug) t = x; });
-        return t;
-      }
-      function todayTopicRules(lang, level, topicSlug){
-        var map = {};
-        STORIES.forEach(function(s){ map[s.id] = s; });
-        var all = (level === "A2" ? GRAMMAR_A2 : GRAMMAR_A1)[lang] || [];
-        return all.filter(function(r){
-          return (r.stories || []).some(function(sid){
-            var st = map[sid];
-            return st && st.topic === topicSlug && st.level === level && st.lang === lang;
-          });
-        });
-      }
-      function todayConvIdx(lang, level, topicSlug){
-        var arr = (level === "A2" ? CONV_DATA_A2 : CONV_DATA)[lang] || [];
-        for (var i = 0; i < arr.length; i++) if (arr[i].topic === topicSlug) return i;
-        return -1;
-      }
-      function todayNextStory(lang, level, topicSlug){
-        var list = STORIES.filter(function(s){ return s.lang === lang && s.level === level && s.topic === topicSlug; });
-        if (!list.length) return null;
-        for (var i = 0; i < list.length; i++) if (!doneSet[list[i].id]) return list[i];
-        return list[0];
-      }
-      function todayWritingDone(lang, level, topicSlug){
-        var pre = lang + "-" + (level === "A2" ? "A2-" : "") + topicSlug + "-";
-        var cc = (typeof wrState !== "undefined" && wrState.completedClean) || {};
-        for (var k in cc) if (cc.hasOwnProperty(k) && k.indexOf(pre) === 0 && cc[k]) return true;
-        return false;
-      }
-      function todaySteps(){
-        var t = todayTopic();
-        if (!t) return [];
-        var lang = curLang, level = t.level, slug = t.slug;
-        var key = function(step){ return lang + "-" + level + "-" + slug + "-" + step; };
-        var manual = function(step){ return !!todayStore.done[key(step)]; };
-        var rules = todayTopicRules(lang, level, slug);
-        var convI = todayConvIdx(lang, level, slug);
-        var story = todayNextStory(lang, level, slug);
-        var due = 0;
-        try { due = dueWords().length; } catch (e) {}
-        var storyDone = false;
-        STORIES.forEach(function(s){ if (s.lang === lang && s.level === level && s.topic === slug && doneSet[s.id]) storyDone = true; });
-        return [
-          { id: "grammar", num: "١", title: "القواعد", desc: rules.length ? (rules.length + " قاعدة بهذا الموضوع — ابدأ بأول قاعدة") : "لا توجد قاعدة مرتبطة بهذا الموضوع", state: rules.length ? (manual("grammar") ? "done" : "todo") : "na", note: rules.length ? rules[0].titleAr : "" },
-          { id: "story", num: "٢", title: "القصة", desc: story ? ("اقرأ «" + story.titleAr + "»") : "لا توجد قصة بهذا الموضوع", state: story ? ((storyDone || manual("story")) ? "done" : "todo") : "na", note: "" },
-          { id: "conv", num: "٣", title: "المحادثة", desc: convI >= 0 ? "اسمع المحادثة بين شخصين عن هذا الموضوع" : "لا توجد محادثة لهذا الموضوع بعد", state: convI >= 0 ? (manual("conv") ? "done" : "todo") : "na", note: "" },
-          { id: "writing", num: "٤", title: "الكتابة", desc: "اكتب عن هذا الموضوع — ٨ تمارين", state: (todayWritingDone(lang, level, slug) || manual("writing")) ? "done" : "todo", note: "" },
-          { id: "review", num: "٥", title: "المراجعة", desc: due > 0 ? ("عندك " + due + " كلمة مستحقة اليوم") : "لا توجد كلمات مستحقة اليوم", state: (due === 0 || manual("review")) ? "done" : "todo", note: "" }
-        ];
-      }
-      function todayTopicInfo(){
-        var t = todayTopic();
-        if (!t) return null;
-        var steps = todaySteps().filter(function(s){ return s.state !== "na"; });
-        var done = steps.filter(function(s){ return s.state === "done"; }).length;
-        return { topic: t, steps: steps, done: done, total: steps.length, allDone: steps.length > 0 && done === steps.length };
-      }
-      function todayAdvance(){
-        var t = todayTopic();
-        if (!t) return;
-        var idx = -1;
-        TOPICS.forEach(function(x, i){ if (x.slug === t.slug) idx = i; });
-        var next = TOPICS[idx + 1];
-        todayStore.pos[curLang] = next ? next.slug : null;
-        todaySave();
-      }
-      function renderToday(){
-        var box = $("todayBox");
-        if (!box) return;
-        $("todayLangEn").className = curLang === "en" ? "active-en" : "";
-        $("todayLangDe").className = curLang === "de" ? "active-de" : "";
-        var info = todayTopicInfo();
-        if (!info) {
-          box.innerHTML =
-            '<div class="card"><div class="card-body"><h3>أكملت كل المواضيع ✓</h3>' +
-            '<p>خلصت الـ ١٧ موضوع باللغة ' + (curLang === "en" ? "الإنجليزية" : "الألمانية") + '. تقدر تعيد الدورة من جديد، أو تكمل باللغة الثانية.</p>' +
-            '<button class="more-link" type="button" data-todayrestart="1">ابدأ الدورة من جديد</button></div></div>';
-          return;
-        }
-        var t = info.topic;
-        var all = todaySteps();
-        var naNotes = [];
-        all.forEach(function(s){ if (s.state === "na") naNotes.push(s.title); });
-        var html = '<div class="today-head"><span class="today-topic-ico">' + topicIconSVG(t.slug) + '</span>' +
-          '<div><div class="today-topic">' + t.ar + ' · مستوى ' + t.level + ' · ' + (curLang === "en" ? "English" : "Deutsch") + '</div>' +
-          '<div class="today-prog">أنجزت ' + arNum(info.done) + ' من ' + arNum(info.total) + ' خطوات</div></div></div>';
-        info.steps.forEach(function(st){
-          html += '<div class="today-step' + (st.state === "done" ? " done" : "") + '">' +
-            '<span class="today-num">' + (st.state === "done" ? "✓" : st.num) + '</span>' +
-            '<div class="today-body"><div class="today-title">' + st.title + '</div>' +
-            '<div class="today-desc">' + st.desc + (st.note ? " — " + st.note : "") + '</div>' +
-            '<div class="today-btns">' +
-            '<button class="today-open" type="button" data-todayopen="' + st.id + '">ابدأ ←</button>' +
-            (st.state === "done"
-              ? '<button class="today-tick is-done" type="button" data-todaytick="' + st.id + '">تم ✓ — اضغط للإلغاء</button>'
-              : '<button class="today-tick" type="button" data-todaytick="' + st.id + '">سجلها كمنجزة ✓</button>') +
-            '</div></div></div>';
-        });
-        if (naNotes.length) html += '<p class="today-note">ملاحظة: ' + naNotes.join(" و") + ' غير متوفرة لهذا الموضوع، فما تنحسب بالخطوات.</p>';
-        if (info.allDone) {
-          html += '<div class="card"><div class="card-body"><h3>أكملت موضوع «' + t.ar + '» ✓</h3>' +
-            '<p>انتقل للموضوع اللي بعده، أو راجع خطواته من فوق.</p>' +
-            '<button class="more-link" type="button" data-todaynext="1">الموضوع التالي ←</button></div></div>';
-        } else {
-          html += '<button class="more-link" type="button" data-todayskip="1">تخطَّ هذا الموضوع ←</button>';
-        }
-        box.innerHTML = html;
-      }
-      function todayOpen(stepId){
-        var t = todayTopic();
-        if (!t) return;
-        var lang = curLang, level = t.level, slug = t.slug;
-        if (stepId === "grammar") {
-          var rules = todayTopicRules(lang, level, slug);
-          if (!rules.length) return;
-          curLang = lang; gramLevel = level;
-          showView("grammar");
-          renderGrammarRule(rules[0].id);
-        } else if (stepId === "story") {
-          var s = todayNextStory(lang, level, slug);
-          if (!s) return;
-          openPrep(s.id);
-        } else if (stepId === "conv") {
-          var di = todayConvIdx(lang, level, slug);
-          if (di < 0) return;
-          convLang = lang; convLevel = level;
-          showView("conversation");
-          openConvReader(di);
-        } else if (stepId === "writing") {
-          wrState.lang = lang; wrState.level = level;
-          if ($("wrLangEn")) $("wrLangEn").classList.toggle("active-en", lang === "en");
-          if ($("wrLangDe")) $("wrLangDe").classList.toggle("active-de", lang === "de");
-          if ($("wrLvlA1")) $("wrLvlA1").className = level === "A1" ? "active-lvl" : "";
-          if ($("wrLvlA2")) $("wrLvlA2").className = level === "A2" ? "active-lvl" : "";
-          showView("writing");
-          wrOpenTopic(slug);
-        } else if (stepId === "review") {
-          showView("review");
-        }
-      }
-      (function todayBind(){
-        var box = $("todayBox");
-        if (box && !box.dataset.todayBound) {
-          box.dataset.todayBound = "1";
-          box.addEventListener("click", function(e){
-            var el = e.target;
-            while (el && el !== box && !(el.getAttribute && (el.getAttribute("data-todayopen") || el.getAttribute("data-todaytick") || el.getAttribute("data-todaynext") || el.getAttribute("data-todayrestart") || el.getAttribute("data-todayskip")))) el = el.parentNode;
-            if (!el || el === box) return;
-            if (el.getAttribute("data-todaynext") || el.getAttribute("data-todayskip")) { todayAdvance(); renderToday(); return; }
-            if (el.getAttribute("data-todayrestart")) {
-              var dk = Object.keys(todayStore.done);
-              dk.forEach(function(k){ if (k.indexOf(curLang + "-") === 0) delete todayStore.done[k]; });
-              todayStore.pos[curLang] = "intro";
-              todaySave(); renderToday(); return;
-            }
-            if (el.getAttribute("data-todaytick")) {
-              var t = todayTopic();
-              if (!t) return;
-              var k2 = curLang + "-" + t.level + "-" + t.slug + "-" + el.getAttribute("data-todaytick");
-              if (todayStore.done[k2]) delete todayStore.done[k2]; else todayStore.done[k2] = true;
-              todaySave(); renderToday(); return;
-            }
-            if (el.getAttribute("data-todayopen")) todayOpen(el.getAttribute("data-todayopen"));
-          });
-        }
-        var en = $("todayLangEn"), de = $("todayLangDe");
-        if (en && !en.dataset.todayBound) { en.dataset.todayBound = "1"; en.addEventListener("click", function(){ curLang = "en"; saveUiState(); renderToday(); }); }
-        if (de && !de.dataset.todayBound) { de.dataset.todayBound = "1"; de.addEventListener("click", function(){ curLang = "de"; saveUiState(); renderToday(); }); }
-      })();
-
             /* ---------- 100-day plan, story-based (redesign 2026-11-12) ----------
          One story per day (in app order, per language), 25 words taken from
          INSIDE that story: its vocab list first, topped up to 25 with distinct
@@ -5180,20 +4967,26 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       function plan100Grammar(lang, day){
         var story = plan100Story(lang, day);
         if (!story) return null;
-        var rules = [];
-        try { rules = todayTopicRules(lang, story.level, story.topic) || []; } catch (e) { rules = []; }
-        if (rules.length) return { rule: rules[0], level: story.level };
+        var map = {};
+        STORIES.forEach(function(s){ map[s.id] = s; });
         var all = (story.level === "A2" ? GRAMMAR_A2 : GRAMMAR_A1)[lang] || [];
+        var rules = all.filter(function(r){
+          return (r.stories || []).some(function(sid){
+            var st = map[sid];
+            return st && st.topic === story.topic && st.level === story.level && st.lang === lang;
+          });
+        });
+        if (rules.length) return { rule: rules[0], level: story.level };
         if (!all.length) return null;
         return { rule: all[(day - 1) % all.length], level: story.level };
       }
       function plan100Conv(lang, day){
         var story = plan100Story(lang, day);
         if (!story) return null;
-        var idx = -1;
-        try { idx = todayConvIdx(lang, story.level, story.topic); } catch (e) { idx = -1; }
-        if (idx < 0) return null;
         var arr = (story.level === "A2" ? CONV_DATA_A2 : CONV_DATA)[lang] || [];
+        var idx = -1;
+        for (var i = 0; i < arr.length; i++) if (arr[i].topic === story.topic) { idx = i; break; }
+        if (idx < 0) return null;
         var stage = arr[idx];
         if (!stage) return null;
         return { stage: stage, idx: idx, level: story.level };
@@ -5326,6 +5119,8 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         html += '<div class="progress-track" role="progressbar" aria-label="تقدم اليوم"><div class="progress-fill" style="width:' + Math.round(known / Math.max(1, ws.length) * 100) + '%"></div></div>';
         html += '<div class="plan-nav"><button class="ex-btn ghost" id="planPrev" type="button"' + (day <= 1 ? ' disabled' : '') + '>→ اليوم السابق</button>' +
           '<button class="ex-btn ghost" id="planNext" type="button"' + (day >= maxDay ? ' disabled' : '') + '>اليوم التالي ←</button></div>';
+        html += '<h3 class="gram-sec">✍️ اكتب كلمات اليوم — تأكد من إملائك (' + arNum(ws.length) + ' كلمة)</h3>' +
+          '<div class="bank-card" data-dictbox="day" data-day="' + day + '"></div>';
         if (rev.length) {
           html += '<h3 class="gram-sec">🔁 مراجعة الكتابة — كلمات من أيام سابقة (' + arNum(rev.length) + ')</h3>' +
             '<p style="margin:0 0 8px">كلمات ما عرفت تكتبها قبل — اسمعها واكتبها، والصحيحة منها تنحسب «أعرفها» وتختفي من المراجعة.</p>' +
@@ -5338,8 +5133,6 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           '<div class="bank-card-foot"><button class="ex-btn" type="button" data-planstory="open">اقرأ القصة ←</button>' +
           (storyDone ? '' : '<button class="ex-btn ghost" type="button" data-planstory="done">قريتها من قبل ✓</button>') +
           '<span class="bank-topic-chip">' + escapeHtml(story.topic) + ' · ' + story.level + '</span></div></div>';
-        html += '<h3 class="gram-sec">✍️ كلمات اليوم — اسمع واكتب (' + arNum(ws.length) + ' كلمة من داخل القصة)</h3>' +
-          '<div class="bank-card" data-dictbox="day" data-day="' + day + '"></div>';
         html += '<h3 class="gram-sec">📚 كلمات اليوم</h3><div class="bank-grid">';
         ws.forEach(function(x, i){
           var isKnown = wordMark(lang, x.w) === "known";
@@ -5403,7 +5196,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           if (!st.active) {
             db.innerHTML = '<div class="plan-dict-head"><b>' + (mode === "review" ? "🔁 مراجعة الكتابة" : "✍️ اسمع واكتب") + '</b><span>' + arNum(list.length) + ' كلمة</span></div>' +
               '<p style="margin:6px 0 10px">اسمع كل كلمة واكتبها — بالنهاية تشوف نتيجتك، والكلمات الخاطئة تراجعها كتابيًا باليوم الجاي.</p>' +
-              '<button class="ex-btn gold" type="button" data-dictstart>ابدأ 🔊</button>';
+              '<button class="ex-btn gold" type="button" data-dictstart>ابدأ الكتابة 🔊</button>';
           } else {
             planDictRender(db);
           }
@@ -12880,8 +12673,6 @@ function wrCheck() {
             '</ul></article>';
         }).join("");
         
-        var thl = $("todayHomeLine");
-        if (thl) { var tpi = todayTopicInfo(); thl.textContent = tpi ? (tpi.topic.ar + " · " + arNum(tpi.done) + "/" + arNum(tpi.total)) : "أكملت كل المواضيع ✓"; }
         var phl = $("planHomeLine");
         if (phl) { var pc = plan100CurrentDay(curLang); phl.textContent = pc > 100 ? "أكملت الـ 100 يوم ✓" : ("اليوم " + arNum(pc) + " من 100"); }
         renderDueCard();
