@@ -1224,7 +1224,7 @@
         <!-- ======== 100-day plan: خطة الـ 100 يوم ======== -->
         <section id="view-plan100" hidden>
           <h2 class="view-title">خطة الـ 100 يوم</h2>
-          <p class="gram-hint">25 كلمة كل يوم × 100 يوم = كل بنك الكلمات (2500). أول خطوة: اكتب الكلمات الـ25 وتأكد من إملائك، بعدين اقرأ القصة. اليوم ينحسب بس من تخلّص كل كلماته، والغياب ما يأخرها — ماكو تواريخ. لكل لغة خطتها الخاصة.</p>
+          <p class="gram-hint">25 كلمة كل يوم × 100 يوم = كل بنك الكلمات (2500). الترتيب: اقرأ القصة، بعدين الكلمات والبطاقات، بعدين اكتب الكلمات وتأكد من إملائك، بعدين المحادثة، بعدين القاعدة. الكلمات من القصة الحالية والقصص السابقة بدون تكرار. اليوم ينحسب بس من تخلّص كل كلماته، والغياب ما يأخرها — ماكو تواريخ. لكل لغة خطتها الخاصة.</p>
           <div class="filters">
             <div class="switch" role="group" aria-label="لغة الخطة">
               <button class="active-en" id="planLangEn">English · الإنجليزية</button>
@@ -1342,14 +1342,7 @@
             <button class="subnav-btn" role="tab" aria-selected="false" type="button" data-sub="reviewweek">الأسبوع</button>
             <button class="subnav-btn" role="tab" aria-selected="false" type="button" data-sub="reviewmonth">الشهر</button>
           </div>
-          <div class="more-links">
-            
-            <button class="more-link" type="button" data-goto="words">بطاقات الكلمات</button>
-            <button class="more-link" type="button" data-goto="exercises">تمارين</button>
-            <button class="more-link" type="button" data-goto="phrases">عبارات مفيدة</button>
-            <button class="more-link" type="button" data-goto="stats">إحصائياتي</button>
-            <button class="more-link" type="button" data-goto="writing" style="background:var(--accent-dark);color:var(--on-accent);border-color:var(--accent-dark)">الكتابة</button>
-          </div>
+
         </div>
 
         <!-- ======== My words ======== -->
@@ -1458,6 +1451,14 @@
             <button class="ex-type" data-ex="listenChoose" type="button">اسمع واختر</button>
             <button class="ex-type" data-ex="listenFill" type="button">اسمع واملأ</button>
           </div>
+          <div class="filters">
+            <div class="switch" role="group" aria-label="مستوى التمارين">
+              <button class="active-lvl" id="exLvlA1" type="button">A1</button>
+              <button id="exLvlA2" type="button">A2</button>
+            </div>
+          </div>
+          <div class="topic-filters" id="exTopics" role="group" aria-label="موضوع التمارين"></div>
+          <p class="gram-hint" id="exScopeLine"></p>
           <div class="ex-card" id="exArea"></div>
           <p class="ex-score-line" id="exScoreLine" role="status"></p>
         </section>
@@ -4885,20 +4886,79 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         return arr[day - 1] || null;
       }
       var _plan100Cache = {};
+      var _plan100UsedCache = {};
+      function plan100UsedBefore(lang, day){
+        var ck = lang + ":" + day;
+        if (_plan100UsedCache[ck]) return _plan100UsedCache[ck];
+        var used = {};
+        for (var d = 1; d < day; d++) {
+          plan100DayWords(lang, d).forEach(function(x){
+            var k = planStripArticle(String(x.w || "")).toLowerCase();
+            if (k) used[k] = true;
+            var k2 = String(x.w || "").toLowerCase();
+            if (k2) used[k2] = true;
+          });
+        }
+        _plan100UsedCache[ck] = used;
+        return used;
+      }
+      var _planBankList = {};
+      function planBankList(lang){
+        if (_planBankList[lang]) return _planBankList[lang];
+        var out = [];
+        [BANK_DATA, BANK_DATA2].forEach(function(B){
+          var d = B && B[lang];
+          if (!d) return;
+          Object.keys(d).forEach(function(tp){
+            (d[tp] || []).forEach(function(r){
+              out.push({ w: r[0], t: r[1], ef: r[2], ea: r[3], topic: tp });
+            });
+          });
+        });
+        _planBankList[lang] = out;
+        return out;
+      }
       function plan100DayWords(lang, day){
         var ck = lang + ":" + day;
         if (_plan100Cache[ck]) return _plan100Cache[ck];
         var out = [];
         var story = plan100Story(lang, day);
         if (!story) { _plan100Cache[ck] = out; return out; }
+        var used = plan100UsedBefore(lang, day);
         var have = {};
+        function normKey(w){ return planStripArticle(String(w || "")).toLowerCase(); }
+        function isUsed(w){
+          var k = normKey(w), k2 = String(w || "").toLowerCase();
+          return !!(used[k] || used[k2] || have[k] || have[k2]);
+        }
+        function addItem(item){
+          var k = normKey(item.w), k2 = String(item.w || "").toLowerCase();
+          if (!k || have[k] || have[k2]) return false;
+          have[k] = true; have[k2] = true;
+          out.push(item);
+          return true;
+        }
         (story.vocab || []).forEach(function(v){
           var w = String(v.w || "");
-          if (!w) return;
-          have[planStripArticle(w).toLowerCase()] = true;
-          have[w.toLowerCase()] = true;
-          out.push({ w: w, t: v.t || "", ef: v.ef || "", ea: v.ea || "", lang: lang, topic: story.topic, level: story.level, story: story.id, src: "vocab" });
+          if (!w || isUsed(w)) return;
+          addItem({ w: w, t: v.t || "", ef: v.ef || "", ea: v.ea || "", lang: lang, topic: story.topic, level: story.level, story: story.id, src: "vocab" });
         });
+        if (out.length < 25) {
+          var stories = plan100Stories(lang);
+          var prevFresh = [], prevKnown = [];
+          for (var di = 0; di < day - 1 && di < stories.length; di++) {
+            var ps = stories[di];
+            if (!ps || !ps.vocab) continue;
+            ps.vocab.forEach(function(v){
+              var w = String(v.w || "");
+              if (!w || isUsed(w)) return;
+              var item = { w: w, t: v.t || "", ef: v.ef || "", ea: v.ea || "", lang: lang, topic: ps.topic, level: ps.level, story: ps.id, src: "prev" };
+              if (wordMark(lang, w) === "known") prevKnown.push(item); else prevFresh.push(item);
+            });
+          }
+          var prevExtra = prevFresh.concat(prevKnown);
+          for (var i = 0; i < prevExtra.length && out.length < 25; i++) addItem(prevExtra[i]);
+        }
         if (out.length < 25) {
           var lookup = planBankLookup(lang);
           var text = (story.paras || []).map(function(p){ return p.f || ""; }).join(" ");
@@ -4907,7 +4967,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           var fresh = [], known = [];
           tokens.forEach(function(tok){
             var base = planStripArticle(tok).toLowerCase();
-            if (have[base] || have[tok] || seen[base]) return;
+            if (have[base] || have[tok] || used[base] || used[tok] || seen[base]) return;
             var row = lookup[base];
             if (!row) return;
             seen[base] = true;
@@ -4915,7 +4975,20 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             if (wordMark(lang, row.w) === "known") known.push(item); else fresh.push(item);
           });
           var extra = fresh.concat(known);
-          for (var i = 0; i < extra.length && out.length < 25; i++) out.push(extra[i]);
+          for (var i = 0; i < extra.length && out.length < 25; i++) addItem(extra[i]);
+        }
+        if (out.length < 25) {
+          var bankList = planBankList(lang);
+          var bankSame = [], bankOther = [];
+          bankList.forEach(function(r){
+            if (r.topic === story.topic) bankSame.push(r); else bankOther.push(r);
+          });
+          var bankExtra = bankSame.concat(bankOther);
+          for (var bi = 0; bi < bankExtra.length && out.length < 25; bi++) {
+            var br = bankExtra[bi];
+            if (isUsed(br.w)) continue;
+            addItem({ w: br.w, t: br.t, ef: br.ef, ea: br.ea, lang: lang, topic: br.topic, level: story.level, story: story.id, src: "bank" });
+          }
         }
         out = out.slice(0, 25);
         _plan100Cache[ck] = out;
@@ -5119,13 +5192,6 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         html += '<div class="progress-track" role="progressbar" aria-label="تقدم اليوم"><div class="progress-fill" style="width:' + Math.round(known / Math.max(1, ws.length) * 100) + '%"></div></div>';
         html += '<div class="plan-nav"><button class="ex-btn ghost" id="planPrev" type="button"' + (day <= 1 ? ' disabled' : '') + '>→ اليوم السابق</button>' +
           '<button class="ex-btn ghost" id="planNext" type="button"' + (day >= maxDay ? ' disabled' : '') + '>اليوم التالي ←</button></div>';
-        html += '<h3 class="gram-sec">✍️ اكتب كلمات اليوم — تأكد من إملائك (' + arNum(ws.length) + ' كلمة)</h3>' +
-          '<div class="bank-card" data-dictbox="day" data-day="' + day + '"></div>';
-        if (rev.length) {
-          html += '<h3 class="gram-sec">🔁 مراجعة الكتابة — كلمات من أيام سابقة (' + arNum(rev.length) + ')</h3>' +
-            '<p style="margin:0 0 8px">كلمات ما عرفت تكتبها قبل — اسمعها واكتبها، والصحيحة منها تنحسب «أعرفها» وتختفي من المراجعة.</p>' +
-            '<div class="bank-card" data-dictbox="review" data-day="' + day + '"></div>';
-        }
         html += '<h3 class="gram-sec">📖 قصة اليوم</h3>' +
           '<div class="bank-card"><div class="bank-card-top"><span class="bank-word" lang="' + lang + '">' + escapeHtml(story.title) + '</span>' +
           (storyDone ? '<span class="done-tag">مقروءة ✓</span>' : '') + '</div>' +
@@ -5143,17 +5209,18 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             (x.ef ? '<div class="bank-ex"><span class="ef" lang="' + lang + '">' + escapeHtml(x.ef) + '</span><span class="ea">' + escapeHtml(x.ea) + '</span>' +
               '<button class="bank-speak" type="button" data-plansay="e:' + i + '" aria-label="استمع للمثال">' + SPK + '</button></div>' : '') +
             '<div class="bank-card-foot"><button class="plan-mark' + (isKnown ? ' known' : '') + '" type="button" data-planmark="' + i + '">' + (isKnown ? '✓ أعرفها' : 'أعرفها') + '</button>' +
-            '<span class="bank-topic-chip">' + escapeHtml(x.topic) + ' · ' + x.level + (x.src === "para" ? ' · من نص القصة' : '') + '</span></div>' +
+            '<span class="bank-topic-chip">' + escapeHtml(x.topic) + ' · ' + x.level + (x.src === "para" ? ' · من نص القصة' : (x.src === "prev" ? ' · من قصة سابقة' : (x.src === "bank" ? ' · من البنك' : ''))) + '</span></div>' +
             '</div>';
         });
         html += '</div>';
         html += '<h3 class="gram-sec">🃏 بطاقات الترجمة — خمّن المعنى</h3><div class="bank-card" data-flashbox="1"></div>';
-        if (gram) {
-          html += '<h3 class="gram-sec">📖 قاعدة اليوم</h3>' +
-            '<div class="bank-card"><div class="bank-card-top"><span class="bank-word">' + escapeHtml(gram.rule.titleAr || gram.rule.title) + '</span></div>' +
-            '<div class="bank-mean">' + escapeHtml(gram.rule.title || "") + '</div>' +
-            (gram.rule.explanationAr ? '<div class="bank-ex"><span class="ea">' + escapeHtml(gram.rule.explanationAr) + '</span></div>' : '') +
-            '<div class="bank-card-foot"><button class="ex-btn" type="button" data-plangram="open">افتح القاعدة كاملة ←</button></div></div>';
+        html += '<h3 class="gram-sec">✍️ كتابة كلمات اليوم — تأكد من إملائك (' + arNum(ws.length) + ' كلمة)</h3>' +
+          '<p style="margin:0 0 8px">اسمع كل كلمة واكتبها — بالنهاية تشوف نتيجتك، والكلمات الخاطئة تراجعها كتابيًا باليوم الجاي.</p>' +
+          '<div class="bank-card" data-dictbox="day" data-day="' + day + '"></div>';
+        if (rev.length) {
+          html += '<h3 class="gram-sec">🔁 مراجعة الكتابة — كلمات من أيام سابقة (' + arNum(rev.length) + ')</h3>' +
+            '<p style="margin:0 0 8px">كلمات ما عرفت تكتبها قبل — اسمعها واكتبها، والصحيحة منها تنحسب «أعرفها» وتختفي من المراجعة.</p>' +
+            '<div class="bank-card" data-dictbox="review" data-day="' + day + '"></div>';
         }
         if (conv) {
           html += '<h3 class="gram-sec">💬 محادثة اليوم</h3>' +
@@ -5163,6 +5230,13 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             '<span class="bank-topic-chip">' + escapeHtml(conv.stage.topic) + ' · ' + conv.level + '</span></div></div>';
         } else {
           html += '<p style="margin:10px 0 0;opacity:.65">لا توجد محادثة لهذا الموضوع بعد — المحادثات موجودة لـ 12 موضوع من 17.</p>';
+        }
+        if (gram) {
+          html += '<h3 class="gram-sec">📖 قاعدة اليوم</h3>' +
+            '<div class="bank-card"><div class="bank-card-top"><span class="bank-word">' + escapeHtml(gram.rule.titleAr || gram.rule.title) + '</span></div>' +
+            '<div class="bank-mean">' + escapeHtml(gram.rule.title || "") + '</div>' +
+            (gram.rule.explanationAr ? '<div class="bank-ex"><span class="ea">' + escapeHtml(gram.rule.explanationAr) + '</span></div>' : '') +
+            '<div class="bank-card-foot"><button class="ex-btn" type="button" data-plangram="open">افتح القاعدة كاملة ←</button></div></div>';
         }
         box.innerHTML = html;
         box._planWords = ws;
@@ -13555,7 +13629,7 @@ function wrCheck() {
         return out;
       }
       function weekSentences(){
-        var ids = weekStoryIds(), idSet = {};
+        var ids = exStoryIds(), idSet = {};
         ids.forEach(function(id){ idSet[id] = true; });
         var out = [];
         sentencePool().forEach(function(x){
@@ -13598,7 +13672,7 @@ function wrCheck() {
       }
       var _fillCands = null, _fillCandsKey = "";
       function fillCandidates(){
-        var ids = weekStoryIds();
+        var ids = exStoryIds();
         var key = ids.join(",");
         if (_fillCands && _fillCandsKey === key) return _fillCands;
         _fillCands = buildFillCands(ids);
@@ -13638,7 +13712,7 @@ function wrCheck() {
         });
         return out;
       }
-      var exState = { type: null, cur: null, answered: false, sel: [] };
+      var exState = { type: null, cur: null, answered: false, sel: [], level: "A1", topic: "all" };
       function renderExScore(){
         var el = $("exScoreLine");
         if (!el) return;
@@ -13648,8 +13722,71 @@ function wrCheck() {
           "لم تُسجَّل نتائج تمارين بعد — جرّب تمرينًا!";
       }
       function exHead(txt){ return '<p class="ex-src">' + escapeHtml(txt) + '</p>'; }
+      function exStoryIds(){
+        var out = [];
+        STORIES.forEach(function(s){
+          if (s.lang !== curLang) return;
+          if (exState.level !== "all" && s.level !== exState.level) return;
+          if (exState.topic !== "all" && s.topic !== exState.topic) return;
+          out.push(s.id);
+        });
+        return out;
+      }
+      function exTopicName(slug){
+        if (slug === "all") return "كل المواضيع";
+        var f = null;
+        TOPICS.forEach(function(tp){ if (tp.slug === slug) f = tp; });
+        return f ? f.ar : slug;
+      }
+      function renderExTopics(){
+        var box = $("exTopics");
+        if (!box) return;
+        box.innerHTML = "";
+        var lbl = document.createElement("span");
+        lbl.className = "tf-label";
+        lbl.textContent = "الموضوع:";
+        box.appendChild(lbl);
+        var all = document.createElement("button");
+        all.type = "button";
+        all.className = "topic-chip show-all" + (exState.topic === "all" ? " active" : "");
+        all.textContent = "عرض الكل";
+        all.addEventListener("click", function(){ exState.topic = "all"; renderExTopics(); renderExScope(); newExercise(exState.type || "fill"); });
+        box.appendChild(all);
+        TOPICS.forEach(function(tp){
+          if (tp.level !== exState.level) return;
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "topic-chip" + (exState.topic === tp.slug ? " active" : "");
+          b.textContent = tp.ar;
+          b.addEventListener("click", function(){ exState.topic = tp.slug; renderExTopics(); renderExScope(); newExercise(exState.type || "fill"); });
+          box.appendChild(b);
+        });
+        var a1 = $("exLvlA1"), a2 = $("exLvlA2");
+        if (a1) a1.className = exState.level === "A1" ? "active-lvl" : "";
+        if (a2) a2.className = exState.level === "A2" ? "active-lvl" : "";
+      }
+      function renderExScope(){
+        var el = $("exScopeLine");
+        if (!el) return;
+        var n = exStoryIds().length;
+        el.textContent = "المستوى " + exState.level + " · " + exTopicName(exState.topic) + " · " + arNum(n) + " قصة في هذا النطاق";
+      }
+      function exSetLevel(lvl){
+        exState.level = lvl;
+        exState.topic = "all";
+        renderExTopics();
+        renderExScope();
+        newExercise(exState.type || "fill");
+      }
+      (function exBind(){
+        var a1 = $("exLvlA1"), a2 = $("exLvlA2");
+        if (a1 && !a1.dataset.exBound) { a1.dataset.exBound = "1"; a1.addEventListener("click", function(){ exSetLevel("A1"); }); }
+        if (a2 && !a2.dataset.exBound) { a2.dataset.exBound = "1"; a2.addEventListener("click", function(){ exSetLevel("A2"); }); }
+      })();
       function newExercise(type){
         stopListen();
+        renderExTopics();
+        renderExScope();
         exState.type = type;
         exState.answered = false;
         exState.sel = [];
@@ -14123,7 +14260,7 @@ function wrCheck() {
         return out;
       }
       function translateCandidates(){
-        var ids = weekStoryIds();
+        var ids = exStoryIds();
         var key = ids.join(",");
         if (_trCands && _trCandsKey === key) return _trCands;
         var out = buildTranslatePool(true);
@@ -14275,7 +14412,7 @@ function wrCheck() {
         return out;
       }
       function listenCandidates(){
-        var ids = weekStoryIds();
+        var ids = exStoryIds();
         var key = ids.join(",");
         if (_listenCands && _listenCandsKey === key) return _listenCands;
         var out = buildListenPool(true);
@@ -14405,7 +14542,7 @@ function wrCheck() {
         var c = pickRandom(fillCandidates());
         exState.cur = c;
         var others = [];
-        var weekIds = weekStoryIds(), weekSet = {};
+        var weekIds = exStoryIds(), weekSet = {};
         weekIds.forEach(function(id){ weekSet[id] = true; });
         STORIES.forEach(function(s){
           if (s.lang !== c.story.lang || !weekSet[s.id]) return;
