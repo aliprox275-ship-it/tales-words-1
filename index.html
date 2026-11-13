@@ -167,7 +167,7 @@
       }
       .flash-lang{font-weight:800; font-size:.9rem; letter-spacing:.02em}
       .flash-lang.en{color:var(--accent)} .flash-lang.de{color:var(--accent)}
-      .flash-word{font-family:var(--font-serif); direction:ltr; font-size:clamp(2rem,7vw,3rem); font-weight:700; line-height:1.2}
+      .flash-word{overflow-wrap:anywhere; font-family:var(--font-serif); direction:ltr; font-size:clamp(2rem,7vw,3rem); font-weight:700; line-height:1.2}
       .flash-ar{font-size:1.5rem; font-weight:700}
       .flash-ex{color:var(--muted); max-width:52ch}
       .flash-speak{display:flex; gap:10px; margin-top:16px; justify-content:center; flex-wrap:wrap}
@@ -221,7 +221,7 @@
       }
       .bank-card-top{display:flex; align-items:center; gap:10px}
       .bank-emoji{font-size:1.5rem; line-height:1}
-      .bank-word{font-family:var(--font-serif); direction:ltr; unicode-bidi:isolate; font-size:1.3rem; font-weight:700; flex:1; min-width:0}
+      .bank-word{overflow-wrap:anywhere; font-family:var(--font-serif); direction:ltr; unicode-bidi:isolate; font-size:1.3rem; font-weight:700; flex:1; min-width:0}
       .bank-word.en{color:var(--accent)} .bank-word.de{color:var(--accent)}
       .bank-speak{
         border:1px solid var(--line); background:var(--surface2); color:var(--ink); border-radius:99px;
@@ -306,11 +306,11 @@
       .sent{border-radius:10px; padding:3px 8px; margin-inline:-8px; transition:background .25s ease}
       .sent + .sent{margin-top:16px}
       .sent.kara-sent{background:rgba(47,93,88,.14); box-shadow:0 0 0 1px rgba(47,93,88,.35)}
-      .lesson-box,.vocab-box,.quiz-box{
+      .lesson-box,.vocab-box{
         border-radius:18px; padding:22px; margin-top:30px; background:rgba(47,93,88,.05);
         border:1px solid rgba(47,93,88,.22);
       }
-      .lesson-box h3,.vocab-box h3,.quiz-box h3{margin:0 0 10px; font-family:var(--font-serif); font-size:1.2rem}
+      .lesson-box h3,.vocab-box h3{margin:0 0 10px; font-family:var(--font-serif); font-size:1.2rem}
       .lesson-box p{margin:0}
       .vocab-list{display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px; margin-top:12px}
       .vocab-item{background:var(--surface); border:1px solid rgba(47,93,88,.3); border-radius:12px; padding:10px 14px}
@@ -336,7 +336,6 @@
         border:0; border-radius:12px; padding:13px 26px; font-weight:800; font-size:1.02rem; color:#fff;
         background:var(--accent);
       }
-      .quiz-result{font-weight:800; margin-top:12px; min-height:1.6em}
       .done-btn{background:var(--ok); width:100%; margin-top:30px; padding:16px}
       .done-btn.is-done{background:transparent; color:var(--ok); border:2px solid var(--ok)}
       .read-progress{
@@ -510,7 +509,7 @@
       .ex-type.active{background:var(--ink); color:var(--surface); border-color:var(--ink)}
       .ex-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); box-shadow:var(--shadow-card); padding:24px 22px}
       .ex-src{color:var(--muted); font-weight:700; font-size:.92rem; margin:0 0 10px}
-      .ex-sentence{font-family:var(--font-serif); direction:ltr; text-align:left; font-size:1.3rem; line-height:1.8; margin:0 0 16px}
+      .ex-sentence{overflow-wrap:anywhere; font-family:var(--font-serif); direction:ltr; text-align:left; font-size:1.3rem; line-height:1.8; margin:0 0 16px}
       .ex-sentence mark{background:rgba(47,93,88,.20); border-radius:4px; padding:0 4px}
       .ex-input-row{display:flex; gap:10px; flex-wrap:wrap; align-items:stretch}
       .ex-input{flex:1; min-width:200px; border:1.5px solid var(--line); border-radius:12px; padding:12px 14px; font-size:1.1rem; font-family:var(--font-serif); background:var(--surface); color:var(--ink)}
@@ -665,7 +664,6 @@
       .reader.zen .path-map,
       .reader.zen .lesson-box,
       .reader.zen .vocab-box,
-      .reader.zen .quiz-box,
       .reader.zen .done-btn,
       .reader.zen .para-a,
       .reader.zen .chose-note,
@@ -729,7 +727,6 @@
         padding:9px 18px; border-radius:99px; font-size:.98rem; font-weight:700;
       }
       .subnav-btn.active{background:var(--accent); color:#fff; border-color:var(--accent)}
-      .more-links{display:flex; gap:10px; flex-wrap:wrap; margin:0 0 22px}
       .more-link{
         flex:1 1 150px; display:flex; align-items:center; justify-content:center; gap:8px;
         background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card);
@@ -761,6 +758,7 @@
           .plan-nav .ex-btn{flex:1}
           .plan-done{background:var(--accent-tint); border:1px solid var(--line); border-radius:var(--r-card); padding:14px 16px; margin-bottom:14px; font-weight:800}
           .plan-mark{border:1px solid var(--line); background:var(--surface); border-radius:99px; padding:6px 12px; font-weight:800; cursor:pointer; font-family:inherit}
+      .plan-mark.mistake{background:rgba(250,204,21,.20); color:var(--warn); border-color:rgba(250,204,21,.55)}
           .plan-mark.known{background:var(--ok); border-color:var(--ok); color:#fff}
           .prep-vocab-note{color:var(--muted); font-weight:700; margin:0 0 10px}
           .prep-chips{display:flex; flex-wrap:wrap; gap:8px}
@@ -1216,6 +1214,7 @@
             <div class="home-pair">
               <button class="home-card" type="button" data-goto="mywords"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><b>كلماتي</b><small>كلمات حفظتها</small></button>
               <button class="home-card" type="button" data-goto="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg><b>إحصائياتي</b><small>تقدمك اليومي</small></button>
+              <button class="home-card" type="button" data-goto="phrases"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><b>عبارات مفيدة</b><small>عبارات جاهزة للاستخدام</small></button>
             </div>
           </div>
 
@@ -1537,6 +1536,7 @@
         <!-- ======== Word logic (Bank) ======== -->
         <section id="view-wordlogic" hidden>
           <h2 class="view-title">منطق الكلمات</h2>
+          <button class="focus-exit" type="button" data-goto="bank">✕ خروج من منطق الكلمات</button>
           <p class="hint" style="margin-bottom:14px">الفهم أفضل من الحفظ: الأفعال الشاذة مجموعات لها نمط، وكل لاحقة لها وظيفة، وكل جملة لها هيكل ثابت، والكلام الطبيعي له اختصاراته. افهم المنطق وستعرف الكلمات والجمل الجديدة وحدك.</p>
           <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
             <button type="button" id="wlLangEn" class="active-en">English · الإنجليزية</button>
@@ -2864,7 +2864,10 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             });
             return list;
           }
-        } catch (e) { /* storage unavailable (e.g. private mode): in-memory fallback */ }
+        } catch (e) {
+          /* Corrupt stored words: stash a backup copy so a bad parse never wipes them. */
+          try { var raw0 = localStorage.getItem(WORDS_KEY); if (raw0) localStorage.setItem(WORDS_KEY + ".backup", raw0); } catch (e2) {}
+        }
         return [];
       })();           // [{w, t, lang, src, reps, interval, due, ease, ts?, savedAt, lastReviewedAt}] persisted in localStorage
 
@@ -4204,7 +4207,6 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
          TTS engine so every existing call site keeps working. */
       function stopPlayback(){ karaStop(); }
       function pausePlayback(){ if (kara.playing && !kara.paused) karaPauseResume(); }
-      function resumePlayback(){ if (kara.playing && kara.paused) karaPauseResume(); }
       function startPara(i){
         if (!currentStory) return;
         karaStart(paraEls.slice(i).map(function(p, j){
@@ -4775,6 +4777,10 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var prevView = curView;
         if ($("convReader") && !$("convReader").hidden) { try { convStopAll(); } catch (e) {} $("convReader").hidden = true; document.body.style.overflow = ""; }
         curView = name;
+        if (name === "writing") {
+          var wrEx = document.querySelector('#view-writing .focus-exit');
+          if (wrEx) wrEx.setAttribute("data-goto", (prevView && prevView !== "writing") ? prevView : "home");
+        }
         if (prevView === "a1test" && name !== "a1test") { try { a1StopAudio(); } catch (e) {} }
         if (prevView === "finalexam" && name !== "finalexam") { try { finStopAudio(); } catch (e) {} }
         if (VIEW_TITLES[origName]) $("appTitle").textContent = VIEW_TITLES[origName];
@@ -4918,6 +4924,25 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         _planBankList[lang] = out;
         return out;
       }
+      var _planFutureVocabCache = {};
+      function planFutureStoryVocab(lang, day){
+        var ck = lang + ":" + day;
+        if (_planFutureVocabCache[ck]) return _planFutureVocabCache[ck];
+        var set = {};
+        var stories = plan100Stories(lang);
+        for (var di = day; di < stories.length; di++) {
+          var s = stories[di];
+          if (!s || !s.vocab) continue;
+          s.vocab.forEach(function(v){
+            var w = String(v.w || "");
+            if (!w) return;
+            set[planStripArticle(w).toLowerCase()] = true;
+            set[w.toLowerCase()] = true;
+          });
+        }
+        _planFutureVocabCache[ck] = set;
+        return set;
+      }
       function plan100DayWords(lang, day){
         var ck = lang + ":" + day;
         if (_plan100Cache[ck]) return _plan100Cache[ck];
@@ -4984,10 +5009,17 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             if (r.topic === story.topic) bankSame.push(r); else bankOther.push(r);
           });
           var bankExtra = bankSame.concat(bankOther);
-          for (var bi = 0; bi < bankExtra.length && out.length < 25; bi++) {
-            var br = bankExtra[bi];
-            if (isUsed(br.w)) continue;
-            addItem({ w: br.w, t: br.t, ef: br.ef, ea: br.ea, lang: lang, topic: br.topic, level: story.level, story: story.id, src: "bank" });
+          var futureVocab = planFutureStoryVocab(lang, day);
+          for (var pass = 0; pass < 2 && out.length < 25; pass++) {
+            for (var bi = 0; bi < bankExtra.length && out.length < 25; bi++) {
+              var br = bankExtra[bi];
+              if (isUsed(br.w)) continue;
+              if (pass === 0) {
+                var fk = planStripArticle(br.w).toLowerCase(), fk2 = String(br.w || "").toLowerCase();
+                if (futureVocab[fk] || futureVocab[fk2]) continue;
+              }
+              addItem({ w: br.w, t: br.t, ef: br.ef, ea: br.ea, lang: lang, topic: br.topic, level: story.level, story: story.id, src: "bank" });
+            }
           }
         }
         out = out.slice(0, 25);
@@ -5084,7 +5116,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (!st) return;
         var list = st.list || [];
         var total = list.length;
-        if (!total) { box.innerHTML = ""; return; }
+        if (!total) { box.innerHTML = '<p style="margin:6px 0">لا كلمات اليوم.</p>'; return; }
         if (st.done) {
           var cor = 0;
           Object.keys(st.results).forEach(function(k){ if (st.results[k]) cor++; });
@@ -5101,6 +5133,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           } else {
             h += '<div class="plan-dict-done">ممتاز — كل الكلمات صحيحة 🎉</div>';
           }
+          h += '<div class="ex-actions"><button class="ex-btn" type="button" data-dictstart>↻ أعد الإملاء</button></div>';
           box.innerHTML = h;
           return;
         }
@@ -5285,6 +5318,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (planFlash.idx >= ws.length) planFlash.idx = ws.length - 1;
         var item = ws[planFlash.idx];
         var isKnown = wordMark(box._planLang || curLang, item.w) === "known";
+        var isMistake = wordMark(box._planLang || curLang, item.w) === "mistake";
         fb.innerHTML = '<div class="plan-dict-head"><b>🃏 خمّن الترجمة</b><span>' + arNum(planFlash.idx + 1) + ' / ' + arNum(ws.length) + '</span></div>' +
           '<div style="text-align:center;padding:10px 0 4px"><span class="bank-word" lang="' + (box._planLang || curLang) + '" style="font-size:1.35em">' + escapeHtml(item.w) + '</span></div>' +
           '<div style="text-align:center;min-height:1.6em;margin:4px 0">' + (planFlash.shown ? '<span class="bank-mean">' + escapeHtml(item.t) + '</span>' + (item.ef ? ' <span class="ef" lang="' + (box._planLang || curLang) + '">' + escapeHtml(item.ef) + '</span>' : '') : '<span style="font-size:1.4em">؟</span>') + '</div>' +
@@ -5292,13 +5326,14 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           '<button class="bank-speak" type="button" data-flashsay aria-label="استمع للكلمة">' + SPK + '</button></div>' +
           '<div class="ex-actions"><button class="ex-btn ghost" type="button" data-flashprev' + (planFlash.idx <= 0 ? ' disabled' : '') + '>→ السابقة</button>' +
           '<button class="plan-mark' + (isKnown ? ' known' : '') + '" type="button" data-flashmark>' + (isKnown ? '✓ أعرفها' : 'أعرفها') + '</button>' +
+          '<button class="plan-mark' + (isMistake ? ' mistake' : '') + '" type="button" data-flashmistake>' + (isMistake ? '✓ أخطأت في كتابته' : 'أخطأت في كتابته') + '</button>' +
           '<button class="ex-btn ghost" type="button" data-flashnext' + (planFlash.idx >= ws.length - 1 ? ' disabled' : '') + '>التالية ←</button></div>';
       }
       (function(){
         var box = document.getElementById("planBox");
         if (!box) return;
         box.addEventListener("click", function(ev){
-          var t = ev.target.closest("[data-planmark], [data-plansay], [data-planstory], [data-plangram], [data-planconv], [data-dictstart], [data-dictplay], [data-dictcheck], [data-dictnext], [data-dictsay], [data-flashflip], [data-flashprev], [data-flashnext], [data-flashmark], [data-flashsay], #planPrev, #planNext");
+          var t = ev.target.closest("[data-planmark], [data-plansay], [data-planstory], [data-plangram], [data-planconv], [data-dictstart], [data-dictplay], [data-dictcheck], [data-dictnext], [data-dictsay], [data-flashflip], [data-flashprev], [data-flashnext], [data-flashmark], [data-flashmistake], [data-flashsay], #planPrev, #planNext");
           if (!t) return;
           var ws = box._planWords || [], lang = box._planLang || curLang;
           var day = box._planDay || planViewDay || 1;
@@ -5354,6 +5389,14 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             renderPlan100();
             return;
           }
+          if (t.hasAttribute("data-flashmistake")) {
+            var fi3 = ws[planFlash.idx];
+            if (!fi3) return;
+            var fk3 = wordMark(lang, fi3.w) === "mistake";
+            setWordMark(lang, fi3.w, fk3 ? "" : "mistake");
+            renderPlan100();
+            return;
+          }
           if (t.hasAttribute("data-flashsay")) {
             var fi2 = ws[planFlash.idx];
             if (fi2) planPlayWord(fi2, lang);
@@ -5391,12 +5434,10 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       var convLang = (typeof curLang !== "undefined" && curLang) ? curLang : "en";
         var convLevel = "A1";
         function convData(){ return convLevel === "A2" ? CONV_DATA_A2 : CONV_DATA; }
-        function convOffsets(){ return convLevel === "A2" ? CONV_OFFSETS_A2 : CONV_OFFSETS; }
       var convPlay = { on: false, di: -1, ti: 0 };
       function convEsc(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 var CONV_OFFSETS = {}; /* Obelisk redesign: replaced by the manifest. */
 var CONV_OFFSETS_A2 = {}; /* Obelisk redesign: replaced by the manifest. */
-        function convSegKey(di, ti){ var d = convData()[convLang][di]; if (!d) return null; var n = ti + 1; return d.topic + "-" + convLang + (convLevel === "A2" ? "-a2" : "") + "-t" + (n < 10 ? "0" + n : "" + n); }
         function convPlayTurn(text, lang, spk, di, ti, onend){
           var seg = null;
           try { var d = convData()[convLang][di]; if (d && d.conv && d.conv.id) seg = obSeg("c|" + d.conv.id + "|" + ti); } catch (e) { seg = null; }
@@ -13144,6 +13185,10 @@ function wrCheck() {
       var revStats = { good: 0, hard: 0, forgot: 0 };
       var revScopeLabel = null;   // null = the standard due-words (SRS) session
       function gotoTab(name){ showView(name); }
+      function restartReview(){
+        if (revScopeLabel) startScopedReview(revQueue, revScopeLabel);
+        else startReview();
+      }
       function startReview(){
         revScopeLabel = null;
         revQueue = dueWords();
@@ -13345,6 +13390,11 @@ function wrCheck() {
         var p2 = document.createElement("p");
         p2.textContent = "الكلمات المستحقة المتبقية اليوم: " + arNum(dueWords().length) + " (كلمات «نسيتها» تعود اليوم — أعد فتح هذا التبويب لمراجعتها من جديد).";
         box.appendChild(h); box.appendChild(p1); box.appendChild(p2);
+        var rb = document.createElement("button");
+        rb.type = "button"; rb.className = "ex-btn";
+        rb.textContent = "↻ أعد الجلسة";
+        rb.addEventListener("click", function(){ restartReview(); });
+        box.appendChild(rb);
         box.hidden = false;
       }
       function rateCurrent(grade){
@@ -13769,7 +13819,9 @@ function wrCheck() {
         var el = $("exScopeLine");
         if (!el) return;
         var n = exStoryIds().length;
-        el.textContent = "المستوى " + exState.level + " · " + exTopicName(exState.topic) + " · " + arNum(n) + " قصة في هذا النطاق";
+        el.textContent = n === 0
+          ? "لا قصص بهذا الموضوع في " + exState.level + " — أعرض كل القصص بدلاً منه"
+          : "المستوى " + exState.level + " · " + exTopicName(exState.topic) + " · " + arNum(n) + " قصة في هذا النطاق";
       }
       function exSetLevel(lvl){
         exState.level = lvl;
@@ -15153,13 +15205,6 @@ var BANK_CHUNK_MAP_A2 = {"en":{"travel":{"journey":"en-fix2-a2-chunk03v2.mp3","j
           try { a.removeAttribute("src"); a.load(); } catch (e) {}
         }
       }
-      function bankSlug(w, lang){
-        if (lang === "de" && w === "Sie") return "sie-formal";
-        var s = (w || "").toLowerCase().replace(/\u00df/g, "ss").replace(/['\u2019]/g, "-");
-        s = s.replace(/[^a-z0-9\u00e4\u00f6\u00fc\- ]/g, "");
-        s = s.replace(/\s+/g, "-").replace(/-+/g, "-").replace(/^-+|-+$/g, "");
-        return s;
-      }
       function bundleSeg(bundle, key){
         /* Returns {url,start,end} for a segment of a bundle, or null when
            the segment does not exist (e.g. one of the 9 failed recordings)
@@ -15168,19 +15213,6 @@ var BANK_CHUNK_MAP_A2 = {"en":{"travel":{"journey":"en-fix2-a2-chunk03v2.mp3","j
         var b = AUDIO_BUNDLE_OFFSETS[bundle];
         if (!b || !b[key]) return null;
         return { url: "audio-a1-bundles/" + bundle, start: b[key][0], end: b[key][1] };
-      }
-      function bundleSegA2(bundle, key){
-        /* A2 story paragraphs and A2 bank segments (Phase 4, bank wiring): same contract as bundleSeg --
-           {url,start,end}, or null when the bundle/key does not exist, so
-           the caller falls back to device TTS for the correct paragraph.
-           The 14 failed A2 paras have NO offset entry (they were never
-           bundled), so they return null here -- never a neighbouring
-           segment, never silence. URL root is audio-a2-bundles/, never
-           audio-a1-bundles/ (A1 callers keep using bundleSeg unchanged). */
-        if (typeof AUDIO_BUNDLE_OFFSETS === "undefined") return null;
-        var b = AUDIO_BUNDLE_OFFSETS[bundle];
-        if (!b || !b[key]) return null;
-        return { url: "audio-a2-bundles/" + bundle, start: b[key][0], end: b[key][1] };
       }
       /* Obelisk audio (2026-11-11 redesign): one recorded voice for the whole
          app. The manifest (audio-obelisk/manifest-<lang>.json) maps a lookup
@@ -15198,7 +15230,7 @@ var BANK_CHUNK_MAP_A2 = {"en":{"travel":{"journey":"en-fix2-a2-chunk03v2.mp3","j
       function obLoadManifest(lang){
         if (OB_MANIFEST[lang]) return Promise.resolve(OB_MANIFEST[lang]);
         if (OB_MANIFEST_PROMISE[lang]) return OB_MANIFEST_PROMISE[lang];
-        OB_MANIFEST_PROMISE[lang] = fetch("audio-obelisk/manifest-" + lang + ".json").then(function(r){ if (!r.ok) throw new Error("manifest " + lang + " " + r.status); return r.json(); }).then(function(m){ OB_MANIFEST[lang] = m; return m; }).catch(function(e){ OB_MANIFEST_PROMISE[lang] = null; return null; });
+        OB_MANIFEST_PROMISE[lang] = fetch("audio-obelisk/manifest-" + lang + ".json").then(function(r){ if (!r.ok) throw new Error("manifest " + lang + " " + r.status); return r.json(); }).then(function(m){ OB_MANIFEST[lang] = m; return m; }).catch(function(e){ OB_MANIFEST_PROMISE[lang] = null; if (!window._obManifestWarned) { window._obManifestWarned = true; try { showToast("تعذّر تحميل الصوت المسجّل — أُستخدم صوت الجهاز بدلاً منه"); } catch (e2) {} } return null; });
         return OB_MANIFEST_PROMISE[lang];
       }
       try { obLoadManifest("en"); obLoadManifest("de"); } catch (e) {}
@@ -15540,15 +15572,6 @@ var _ttsNoVoiceWarned = false;
           synth.speak(u);
         } catch (e) { showToast("تعذّر تشغيل نطق الكلمة"); }
       }
-      function bankStoryKey(w, lang){
-        var k = (w || "").toLowerCase().replace(/[^a-z0-9\säöüß]/g, " ").replace(/\s+/g, " ").trim();
-        if (lang === "de") {
-          var parts = k.split(" ");
-          if (parts.length > 1 && ["der", "die", "das", "ein", "eine"].indexOf(parts[0]) !== -1) parts.shift();
-          k = parts.join(" ");
-        }
-        return k;
-      }
       function bankCard(item){
         var card = document.createElement("article");
         card.className = "bank-card";
@@ -15635,9 +15658,6 @@ var _ttsNoVoiceWarned = false;
         this.className = "active-de"; $("bankLangEn").className = "";
         bankCollapseBoxes(); renderBankBoxes(); renderBank();
       });
-      function setBankMode(mode){
-        if (mode === "fam") selectBankFam("all"); else selectBankTopic("all");
-      }
       $("bankTopicsHead").addEventListener("click", function(){ toggleBankBox("topics"); });
       $("bankFamHead").addEventListener("click", function(){ toggleBankBox("fam"); });
       $("bankIdiomHead").addEventListener("click", function(){ toggleBankBox("idiom"); });
