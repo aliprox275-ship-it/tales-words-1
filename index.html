@@ -762,8 +762,11 @@ input,textarea,select{font-size:16px}
           .due-card .start-btn{width:100%}
           .plan-head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:10px}
           .plan-head b{font-size:1.2rem}
-          .plan-nav{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 14px}
-#planJump{min-width:0; flex:0 0 76px}
+          .plan-days{display:flex; gap:6px; overflow-x:auto; padding:4px 2px 10px; margin:4px 0 10px; scrollbar-width:thin; -webkit-overflow-scrolling:touch}
+.plan-day{flex:0 0 auto; min-width:40px; height:40px; padding:0 8px; border-radius:10px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); font-weight:800; font-size:1rem; cursor:pointer}
+.plan-day.done{background:var(--ok); border-color:var(--ok); color:#fff}
+.plan-day.cur{outline:2.5px solid var(--accent); outline-offset:1px}
+.plan-day:disabled{opacity:.45; cursor:default}
           .plan-nav .ex-btn{flex:1}
           .plan-done{background:var(--accent-tint); border:1px solid var(--line); border-radius:var(--r-card); padding:14px 16px; margin-bottom:14px; font-weight:800}
           .plan-mark{border:1px solid var(--line); background:var(--surface); border-radius:99px; padding:6px 12px; font-weight:800; cursor:pointer; font-family:inherit}
@@ -4867,6 +4870,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         else if ($("menuDrawerBackdrop") && !$("menuDrawerBackdrop").hidden) { if (window.closeMenuDrawerNow) window.closeMenuDrawerNow(); closedOverlay = true; }
         if (closedOverlay) return;
         if (st.view && st.view !== fullViewName()) { showView(st.view, true); return; }
+        var mainBack = mainOf(fullViewName());
+        if (mainBack && mainBack !== fullViewName()) { showView(mainBack, true); return; }
+        if (fullViewName() !== "home") { showView("home", true); return; }
         showExitDialog();
         hPush({ app: 1, view: curView, guard: true }, "#" + curView);
       });
@@ -5333,10 +5339,13 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (cur > 100) html += '<div class="plan-done">🎉 أكملت خطة الـ 100 يوم — 100 قصة وكل كلماتها. تقدر تراجع أي يوم من الأيام السابقة.</div>';
         html += '<div class="plan-head"><b>اليوم ' + arNum(day) + ' من 100</b><span>' + arNum(known) + ' / ' + arNum(ws.length) + ' كلمة معروفة</span></div>';
         html += '<div class="progress-track" role="progressbar" aria-label="تقدم اليوم"><div class="progress-fill" style="width:' + Math.round(known / Math.max(1, ws.length) * 100) + '%"></div></div>';
-        html += '<div class="plan-nav"><button class="ex-btn ghost" id="planPrev" type="button"' + (day <= 1 ? ' disabled' : '') + '>→ اليوم السابق</button>' +
-          '<input class="ex-input" id="planJump" type="number" min="1" max="100" placeholder="يوم…" aria-label="اذهب إلى يوم محدد" style="width:76px;text-align:center" />' +
-          '<button class="ex-btn ghost" id="planJumpGo" type="button">اذهب</button>' +
-          '<button class="ex-btn ghost" id="planNext" type="button"' + (day >= maxDay ? ' disabled' : '') + '>اليوم التالي ←</button></div>';
+        var daysHtml = '';
+        for (var d = 1; d <= 100; d++) {
+          var dDone = plan100DayDone(lang, d);
+          var dFuture = d > maxDay;
+          daysHtml += '<button type="button" class="plan-day' + (dDone ? ' done' : '') + (d === day ? ' cur' : '') + '" data-planday="' + d + '"' + (dFuture ? ' disabled' : '') + '>' + arNum(d) + '</button>';
+        }
+        html += '<div class="plan-days" id="planDays" aria-label="أيام الخطة">' + daysHtml + '</div>';
         html += '<h3 class="gram-sec">📖 قصة اليوم</h3>' +
           '<div class="bank-card"><div class="bank-card-top"><span class="bank-word" lang="' + lang + '">' + escapeHtml(story.title) + '</span>' +
           (storyDone ? '<span class="done-tag">مقروءة ✓</span>' : '') + '</div>' +
@@ -5390,6 +5399,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         box._planDay = day;
         box._planGram = gram;
         box._planConv = conv;
+        try { var strip = document.getElementById("planDays"); if (strip) { var curChip = strip.querySelector(".plan-day.cur"); if (curChip && curChip.scrollIntoView) curChip.scrollIntoView({inline:"center", block:"nearest"}); } } catch (e) {}
         var fk = lang + ":" + day;
         if (planFlash.key !== fk) planFlash = { key: fk, idx: 0, shown: false };
         planFlashRender(box);
@@ -5445,18 +5455,14 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var box = document.getElementById("planBox");
         if (!box) return;
         box.addEventListener("click", function(ev){
-          var t = ev.target.closest("[data-planmark], [data-plansay], [data-planstory], [data-plangram], [data-planconv], [data-dictstart], [data-dictplay], [data-dictcheck], [data-dictnext], [data-dictsay], [data-flashflip], [data-flashprev], [data-flashnext], [data-flashmark], [data-flashmistake], [data-flashsay], #planPrev, #planNext, #planJumpGo");
+          var t = ev.target.closest("[data-planmark], [data-plansay], [data-planstory], [data-plangram], [data-planconv], [data-dictstart], [data-dictplay], [data-dictcheck], [data-dictnext], [data-dictsay], [data-flashflip], [data-flashprev], [data-flashnext], [data-flashmark], [data-flashmistake], [data-flashsay], [data-planday]");
           if (!t) return;
           var ws = box._planWords || [], lang = box._planLang || curLang;
           var day = box._planDay || planViewDay || 1;
-          if (t.id === "planPrev") { if (planViewDay > 1) { planViewDay--; renderPlan100(); } return; }
-          if (t.id === "planNext") { var cur = plan100CurrentDay(lang); if (planViewDay < Math.min(cur, 100)) { planViewDay++; renderPlan100(); } return; }
-          if (t.id === "planJumpGo") {
-            var inp = document.getElementById("planJump");
-            var n = inp ? parseInt(inp.value, 10) : NaN;
-            var cur2 = plan100CurrentDay(lang);
-            var maxD = Math.min(cur2, 100);
-            if (!isNaN(n)) { planViewDay = Math.max(1, Math.min(maxD, n)); renderPlan100(); }
+          if (t.hasAttribute("data-planday")) {
+            var nd = parseInt(t.getAttribute("data-planday"), 10);
+            var maxD2 = Math.min(plan100CurrentDay(lang), 100);
+            if (!isNaN(nd) && nd >= 1 && nd <= maxD2) { planViewDay = nd; renderPlan100(); }
             return;
           }
           if (t.hasAttribute("data-planstory")) {
