@@ -6423,13 +6423,24 @@ function convVoice(lang, idx){
           });
         }
       })();
+      /* Walk up from the click target to the nearest element carrying the
+         action attribute: the per-turn speaker icon is an <svg>/<path>
+         inside its button, so e.target itself has no data-* attribute
+         and a direct read would miss the action. */
+      function convAttr(t, attr){
+        while (t) {
+          if (t.getAttribute) { var v = t.getAttribute(attr); if (v !== null) return v; }
+          t = t.parentNode;
+        }
+        return null;
+      }
       (function convBind(){
         var box = $("convList");
         if (box && !box.dataset.convBound) {
           box.dataset.convBound = "1";
           box.addEventListener("click", function(e){
             var t = e.target;
-            var gram = t.getAttribute ? t.getAttribute("data-convgram") : null;
+            var gram = convAttr(t, "data-convgram");
             if (gram) {
               convStopAll();
               showView("grammar");
@@ -6437,9 +6448,9 @@ function convVoice(lang, idx){
               renderGrammarHome(); renderGrammarRule(gram);
               return;
             }
-            var one = t.getAttribute ? t.getAttribute("data-convplay") : null;
-            var all = t.getAttribute ? t.getAttribute("data-convall") : null;
-            var stp = t.getAttribute ? t.getAttribute("data-convstop") : null;
+            var one = convAttr(t, "data-convplay");
+            var all = convAttr(t, "data-convall");
+            var stp = convAttr(t, "data-convstop");
             if (one) {
               var p = one.split(":");
               var d = convData()[convLang][parseInt(p[0], 10)].conv;
@@ -6533,7 +6544,7 @@ function convVoice(lang, idx){
           }, true);
           rb.addEventListener("click", function(e){
             var t = e.target;
-            var gram = t.getAttribute ? t.getAttribute("data-convgram") : null;
+            var gram = convAttr(t, "data-convgram");
             if (gram) {
               convStopAll();
               showView("grammar");
@@ -6541,9 +6552,9 @@ function convVoice(lang, idx){
               renderGrammarHome(); renderGrammarRule(gram);
               return;
             }
-            var one = t.getAttribute ? t.getAttribute("data-convplay") : null;
-            var all = t.getAttribute ? t.getAttribute("data-convall") : null;
-            var stp = t.getAttribute ? t.getAttribute("data-convstop") : null;
+            var one = convAttr(t, "data-convplay");
+            var all = convAttr(t, "data-convall");
+            var stp = convAttr(t, "data-convstop");
             if (one) {
               var p = one.split(":");
               var d = convData()[convLang][parseInt(p[0], 10)].conv;
