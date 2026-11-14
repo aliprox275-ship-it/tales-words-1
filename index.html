@@ -1194,6 +1194,7 @@
         <div class="menu-row"><span class="menu-ic menu-ic-audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span><button class="more-link" type="button" id="audioOfflineBtn">تحميل الصوت للاستخدام بدون نت</button></div>
         <div class="menu-row"><span class="menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span><button class="more-link" type="button" id="exportBtn">تصدير نسخة احتياطية</button></div>
         <div class="menu-row"><span class="menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span><button class="more-link" type="button" id="importBtn">استيراد نسخة احتياطية</button></div>
+        <div class="menu-row" id="installRow"><span class="menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v12"/><polyline points="6 8 12 14 18 8"/><path d="M4 20h16"/></svg></span><button class="more-link" type="button" id="installAppBtn">تثبيت التطبيق على الهاتف</button></div>
         <input type="file" id="importFile" accept="application/json,.json" hidden />
         <div class="audio-offline-prog" id="audioOfflineProg" hidden></div>
       </div>
@@ -15922,6 +15923,28 @@ var _ttsNoVoiceWarned = false;
       });
       syncGoalButtons();
 
+      var deferredInstallPrompt = null;
+      var isStandalone = (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
+      window.addEventListener("beforeinstallprompt", function(e){
+        e.preventDefault();
+        deferredInstallPrompt = e;
+        var row = $("installRow"); if (row) row.hidden = false;
+      });
+      window.addEventListener("appinstalled", function(){ deferredInstallPrompt = null; var row = $("installRow"); if (row) row.hidden = true; });
+      (function(){ var row = $("installRow"); if (row && isStandalone) row.hidden = true; })();
+      $("installAppBtn").addEventListener("click", function(){
+        if (deferredInstallPrompt) {
+          deferredInstallPrompt.prompt();
+          deferredInstallPrompt.userChoice.then(function(choice){
+            if (choice && choice.outcome === "accepted") showToast("جارٍ تثبيت التطبيق…");
+            deferredInstallPrompt = null;
+          });
+        } else if (isStandalone) {
+          showToast("التطبيق مثبّت أصلًا — يفتح الآن كتطبيق");
+        } else {
+          showToast("من قائمة كروم ⋮ اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»");
+        }
+      });
       $("exportBtn").addEventListener("click", function(){ exportProgress(); });
       $("importBtn").addEventListener("click", function(){ $("importFile").click(); });
       $("importFile").addEventListener("change", function(){ importProgress(this.files && this.files[0]); this.value = ""; });
