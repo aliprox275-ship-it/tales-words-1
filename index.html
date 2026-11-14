@@ -5538,6 +5538,10 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         try { if (window.closeMenuDrawerNow) window.closeMenuDrawerNow(); } catch (e) {}
         var origName = name; var prevFull = fullViewName();
         if (REVIEW_SUBS.indexOf(name) !== -1) { curReviewSub = name; name = "home"; }
+        /* Home always restores the daily review: a stale curReviewSub
+           (week/month/mywords) would leave #view-review (كلمات اليوم /
+           مستحقة اليوم) hidden under Home until reload. */
+        if (origName === "home") curReviewSub = "review";
         var prevView = curView;
         if ($("convReader") && !$("convReader").hidden) { try { convStopAll(); } catch (e) {} $("convReader").hidden = true; document.body.style.overflow = ""; }
         curView = name;
