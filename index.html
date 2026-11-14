@@ -5007,6 +5007,14 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var arr = plan100Stories(lang);
         return arr[day - 1] || null;
       }
+      function plan100StoriesForDay(lang, day){
+        var arr = plan100Stories(lang);
+        var first = arr[day - 1] || null;
+        if (!first) return [];
+        if (day <= 50) return [first];
+        var second = arr[100 + (day - 51)] || null;
+        return second ? [first, second] : [first];
+      }
       var _plan100Cache = {};
       var _plan100UsedCache = {};
       function plan100UsedBefore(lang, day){
@@ -5063,7 +5071,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var ck = lang + ":" + day;
         if (_plan100Cache[ck]) return _plan100Cache[ck];
         var out = [];
-        var story = plan100Story(lang, day);
+        var dayStories = plan100StoriesForDay(lang, day);
+        var story = dayStories[0] || null;
+        var target = day > 50 ? 50 : 25;
         if (!story) { _plan100Cache[ck] = out; return out; }
         var used = plan100UsedBefore(lang, day);
         var have = {};
@@ -5079,12 +5089,14 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           out.push(item);
           return true;
         }
-        (story.vocab || []).forEach(function(v){
-          var w = String(v.w || "");
-          if (!w || isUsed(w)) return;
-          addItem({ w: w, t: v.t || "", ef: v.ef || "", ea: v.ea || "", lang: lang, topic: story.topic, level: story.level, story: story.id, src: "vocab" });
+        dayStories.forEach(function(st){
+          (st.vocab || []).forEach(function(v){
+            var w = String(v.w || "");
+            if (!w || isUsed(w)) return;
+            addItem({ w: w, t: v.t || "", ef: v.ef || "", ea: v.ea || "", lang: lang, topic: st.topic, level: st.level, story: st.id, src: "vocab" });
+          });
         });
-        if (out.length < 25) {
+        if (out.length < target) {
           var stories = plan100Stories(lang);
           var prevFresh = [], prevKnown = [];
           for (var di = 0; di < day - 1 && di < stories.length; di++) {
@@ -5098,11 +5110,11 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             });
           }
           var prevExtra = prevFresh.concat(prevKnown);
-          for (var i = 0; i < prevExtra.length && out.length < 25; i++) addItem(prevExtra[i]);
+          for (var i = 0; i < prevExtra.length && out.length < target; i++) addItem(prevExtra[i]);
         }
-        if (out.length < 25) {
+        if (out.length < target) {
           var lookup = planBankLookup(lang);
-          var text = (story.paras || []).map(function(p){ return p.f || ""; }).join(" ");
+          var text = dayStories.map(function(st){ return (st.paras || []).map(function(p){ return p.f || ""; }).join(" "); }).join(" ");
           var tokens = text.toLowerCase().match(/[A-Za-z\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u00FF\u00DF]+/g) || [];
           var seen = {};
           var fresh = [], known = [];
@@ -5116,9 +5128,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             if (wordMark(lang, row.w) === "known") known.push(item); else fresh.push(item);
           });
           var extra = fresh.concat(known);
-          for (var i = 0; i < extra.length && out.length < 25; i++) addItem(extra[i]);
+          for (var i = 0; i < extra.length && out.length < target; i++) addItem(extra[i]);
         }
-        if (out.length < 25) {
+        if (out.length < target) {
           var bankList = planBankList(lang);
           var bankSame = [], bankOther = [];
           bankList.forEach(function(r){
@@ -5126,19 +5138,19 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           });
           var bankExtra = bankSame.concat(bankOther);
           var futureVocab = planFutureStoryVocab(lang, day);
-          for (var pass = 0; pass < 2 && out.length < 25; pass++) {
-            for (var bi = 0; bi < bankExtra.length && out.length < 25; bi++) {
+          for (var pass = 0; pass < 3 && out.length < target; pass++) {
+            for (var bi = 0; bi < bankExtra.length && out.length < target; bi++) {
               var br = bankExtra[bi];
-              if (isUsed(br.w)) continue;
+              if (pass < 2 && isUsed(br.w)) continue;
               if (pass === 0) {
                 var fk = planStripArticle(br.w).toLowerCase(), fk2 = String(br.w || "").toLowerCase();
                 if (futureVocab[fk] || futureVocab[fk2]) continue;
               }
-              addItem({ w: br.w, t: br.t, ef: br.ef, ea: br.ea, lang: lang, topic: br.topic, level: story.level, story: story.id, src: "bank" });
+              addItem({ w: br.w, t: br.t, ef: br.ef, ea: br.ea, lang: lang, topic: br.topic, level: story.level, story: story.id, src: pass === 2 ? "review" : "bank" });
             }
           }
         }
-        out = out.slice(0, 25);
+        out = out.slice(0, target);
         _plan100Cache[ck] = out;
         return out;
       }
@@ -5172,8 +5184,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         return out;
       }
       function plan100DayDone(lang, day){
-        var story = plan100Story(lang, day);
-        if (!story || !doneSet[story.id]) return false;
+        var stories = plan100StoriesForDay(lang, day);
+        if (!stories.length) return false;
+        for (var i = 0; i < stories.length; i++) { if (!doneSet[stories[i].id]) return false; }
         if (planDictGet(lang, day)) return true;
         var legacy = plan100LegacyDayWords(lang, day);
         if (!legacy.length) return false;
@@ -5326,13 +5339,13 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (!planViewDay || planViewDay < 1) planViewDay = Math.min(cur, 100);
         if (planViewDay > maxDay) planViewDay = maxDay;
         var day = planViewDay;
-        var story = plan100Story(lang, day);
+        var dayStories = plan100StoriesForDay(lang, day);
+        var story = dayStories[0] || null;
         var ws = plan100DayWords(lang, day);
         var known = 0;
         ws.forEach(function(x){ if (wordMark(lang, x.w) === "known") known++; });
         var box = $("planBox");
-        if (!story) { box.innerHTML = '<div class="plan-done">لا توجد قصة لهذا اليوم بعد.</div>'; return; }
-        var storyDone = !!doneSet[story.id];
+        if (!dayStories.length) { box.innerHTML = '<div class="plan-done">لا توجد قصة لهذا اليوم بعد.</div>'; return; }
         var dict = planDictGet(lang, day);
         var rev = plan100ReviewWords(lang, day);
         var gram = plan100Grammar(lang, day);
@@ -5348,13 +5361,16 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           daysHtml += '<button type="button" class="plan-day' + (dDone ? ' done' : '') + (d === day ? ' cur' : '') + '" data-planday="' + d + '"' + (dFuture ? ' disabled' : '') + '>' + arNum(d) + '</button>';
         }
         html += '<div class="plan-days" id="planDays" aria-label="أيام الخطة">' + daysHtml + '</div>';
-        html += '<h3 class="gram-sec">📖 قصة اليوم</h3>' +
-          '<div class="bank-card"><div class="bank-card-top"><span class="bank-word" lang="' + lang + '">' + escapeHtml(story.title) + '</span>' +
-          (storyDone ? '<span class="done-tag">مقروءة ✓</span>' : '') + '</div>' +
-          '<div class="bank-mean">' + escapeHtml(story.titleAr || "") + '</div>' +
-          '<div class="bank-card-foot"><button class="ex-btn" type="button" data-planstory="open">اقرأ القصة ←</button>' +
-          (storyDone ? '' : '<button class="ex-btn ghost" type="button" data-planstory="done">قريتها من قبل ✓</button>') +
-          '<span class="bank-topic-chip">' + escapeHtml(story.topic) + ' · ' + story.level + '</span></div></div>';
+        html += '<h3 class="gram-sec">' + (dayStories.length > 1 ? '📖 قصص اليوم (قصتان)' : '📖 قصة اليوم') + '</h3>';
+        dayStories.forEach(function(st, si){
+          var stDone = !!doneSet[st.id];
+          html += '<div class="bank-card"><div class="bank-card-top"><span class="bank-word" lang="' + lang + '">' + escapeHtml(st.title) + '</span>' +
+            (stDone ? '<span class="done-tag">مقروءة ✓</span>' : '') + '</div>' +
+            '<div class="bank-mean">' + escapeHtml(st.titleAr || "") + '</div>' +
+            '<div class="bank-card-foot"><button class="ex-btn" type="button" data-planstory="open" data-storyidx="' + si + '">اقرأ القصة ←</button>' +
+            (stDone ? '' : '<button class="ex-btn ghost" type="button" data-planstory="done" data-storyidx="' + si + '">قريتها من قبل ✓</button>') +
+            '<span class="bank-topic-chip">' + escapeHtml(st.topic) + ' · ' + st.level + '</span></div></div>';
+        });
         html += '<h3 class="gram-sec">📚 كلمات اليوم</h3><div class="bank-grid">';
         ws.forEach(function(x, i){
           var isKnown = wordMark(lang, x.w) === "known";
@@ -5365,7 +5381,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             (x.ef ? '<div class="bank-ex"><span class="ef" lang="' + lang + '">' + escapeHtml(x.ef) + '</span><span class="ea">' + escapeHtml(x.ea) + '</span>' +
               '<button class="bank-speak" type="button" data-plansay="e:' + i + '" aria-label="استمع للمثال">' + SPK + '</button></div>' : '') +
             '<div class="bank-card-foot"><button class="plan-mark' + (isKnown ? ' known' : '') + '" type="button" data-planmark="' + i + '">' + (isKnown ? '✓ أعرفها' : 'أعرفها') + '</button>' +
-            '<span class="bank-topic-chip">' + escapeHtml(x.topic) + ' · ' + x.level + (x.src === "para" ? ' · من نص القصة' : (x.src === "prev" ? ' · من قصة سابقة' : (x.src === "bank" ? ' · من البنك' : ''))) + '</span></div>' +
+            '<span class="bank-topic-chip">' + escapeHtml(x.topic) + ' · ' + x.level + (x.src === "para" ? ' · من نص القصة' : (x.src === "prev" ? ' · من قصة سابقة' : (x.src === "bank" ? ' · من البنك' : (x.src === "review" ? ' · مراجعة' : '')))) + '</span></div>' +
             '</div>';
         });
         html += '</div>';
@@ -5397,7 +5413,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         box.innerHTML = html;
         box._planWords = ws;
         box._planLang = lang;
-        box._planStory = story;
+        box._planStory = story; box._planStories = dayStories;
         box._planDay = day;
         box._planGram = gram;
         box._planConv = conv;
@@ -5469,7 +5485,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           }
           if (t.hasAttribute("data-planstory")) {
             var kind = t.getAttribute("data-planstory");
-            var story = box._planStory;
+            var sidx = parseInt(t.getAttribute("data-storyidx") || "0", 10);
+            var stories = box._planStories || (box._planStory ? [box._planStory] : []);
+            var story = stories[sidx] || stories[0];
             if (!story) return;
             if (kind === "open") { try { openPrep(story.id); } catch (e) {} return; }
             if (kind === "done") { doneSet[story.id] = Date.now(); saveDoneSet(); try { logActivity("story"); } catch (e) {} renderPlan100(); return; }
