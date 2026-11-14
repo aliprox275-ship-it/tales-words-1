@@ -3210,13 +3210,32 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (fEl && !aEl && fEl.parentElement) aEl = fEl.parentElement.querySelector(".para-a");
         var fTxt = fEl ? String(fEl.textContent || "").replace(/\s+/g, " ").replace(/^\s+|\s+$/g, "") : "";
         var aTxt = aEl ? String(aEl.textContent || "").replace(/^\s+|\s+$/g, "") : "";
-        if (!fTxt) { box.hidden = true; if (popCtx) popCtx.ctxText = ""; return; }
+        /* Remember which paragraph this line belongs to, so the sentence
+           speaker can fall back to that paragraph's recording when the
+           device has no TTS voice for it. */
+        var paraEl = sent ? sent.closest(".para") : null;
+        var ctxPara = null;
+        if (paraEl) {
+          try {
+            if (typeof studyKara !== "undefined" && studyKara && studyKara.curStudy && studyKara.items) {
+              for (var si = 0; si < studyKara.items.length; si++) {
+                if (studyKara.items[si].box === paraEl) { ctxPara = { kind: "study", id: studyKara.curStudy.id, idx: si }; break; }
+              }
+            }
+            if (!ctxPara && typeof currentStory !== "undefined" && currentStory && typeof paraEls !== "undefined" && paraEls) {
+              for (var pi = 0; pi < paraEls.length; pi++) {
+                if (paraEls[pi].box === paraEl) { ctxPara = { kind: "story", story: currentStory, idx: pi }; break; }
+              }
+            }
+          } catch (e) { ctxPara = null; }
+        }
+        if (!fTxt) { box.hidden = true; if (popCtx) { popCtx.ctxText = ""; popCtx.ctxPara = null; } return; }
         box.hidden = false;
         var tEl = $("wpCtxText");
         tEl.textContent = fTxt;
         tEl.setAttribute("lang", story ? story.lang : "en");
         $("wpCtxAr").textContent = aTxt;
-        if (popCtx) popCtx.ctxText = fTxt;
+        if (popCtx) { popCtx.ctxText = fTxt; popCtx.ctxPara = ctxPara; }
       }
       function openWordPop(word, story, el){
         /* Tap-to-replay (2026-11-14): while story autoplay is running, a tap
@@ -3294,12 +3313,25 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
            bankSpeak, which defers speak() past the cancel() race. */
         bankSpeak(popCtx.w, popCtx.lang);
       });
-      /* Read the tapped sentence aloud (device TTS, same voice the story
-         paragraphs use when no recording exists for them). */
+      /* Read the tapped sentence aloud: device TTS for the exact line
+         when the phone has a voice for it; otherwise the recorded
+         paragraph that contains the line (every paragraph has an
+         Obelisk recording), so the line is always audible. */
       $("wpCtxSpeak").addEventListener("click", function(){
         if (!popCtx || !popCtx.ctxText) return;
         stopVocab();
-        bankSpeak(popCtx.ctxText, popCtx.lang);
+        var para = popCtx.ctxPara || null;
+        function playRecordedPara(){
+          var seg = null;
+          try {
+            if (para && para.kind === "study") seg = studyParaSeg(para.id, para.idx);
+            else if (para && para.kind === "story") seg = storyParaSeg(para.story, "p" + ("0" + (para.idx + 1)).slice(-2));
+          } catch (e) { seg = null; }
+          if (seg) playBundle(seg, popCtx.ctxText, popCtx.lang, function(){ bankSpeak(popCtx.ctxText, popCtx.lang); });
+          else bankSpeak(popCtx.ctxText, popCtx.lang);
+        }
+        if (!para) { bankSpeak(popCtx.ctxText, popCtx.lang); return; }
+        bankSpeak(popCtx.ctxText, popCtx.lang, playRecordedPara);
       });
 
       /* ---------- My words view ---------- */
@@ -16214,7 +16246,7 @@ var BANK_CHUNK_MAP_A2 = {"en":{"travel":{"journey":"en-fix2-a2-chunk03v2.mp3","j
         a.src = seg.url;
       }
 var _ttsNoVoiceWarned = false;
-      function bankSpeak(text, lang){
+      function bankSpeak(text, lang, onFail){
         if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
           showToast("النطق الصوتي غير متاح في هذا المتصفح");
           return;
@@ -16235,20 +16267,26 @@ var _ttsNoVoiceWarned = false;
           /* Audit fix: on a phone with no TTS voices at all, speak() is
              silent with no error. Warn once per session so a silent word
              is explained instead of looking broken. */
-          if (!found && voices.length === 0 && !_ttsNoVoiceWarned) {
-            _ttsNoVoiceWarned = true;
-            showToast("صوت الجهاز غير متاح على هذا الهاتف — فعّل النطق من إعدادات النظام");
+          /* No usable voice for this language: let the caller fall back
+             (e.g. the sentence speaker plays the recorded paragraph).
+             Without a fallback, warn once per session as before. */
+          if (!found) {
+            if (onFail) { onFail(); return; }
+            if (voices.length === 0 && !_ttsNoVoiceWarned) {
+              _ttsNoVoiceWarned = true;
+              showToast("صوت الجهاز غير متاح على هذا الهاتف — فعّل النطق من إعدادات النظام");
+            }
           }
           var myGen = ++_ttsGen;
-          u.onerror = function(){ if (myGen === _ttsGen) showToast("تعذّر تشغيل النطق"); };
+          u.onerror = function(){ if (myGen !== _ttsGen) return; if (onFail) onFail(); else showToast("تعذّر تشغيل النطق"); };
           /* Android: speak() right after cancel() can error the new
              utterance. Defer it so the cancel settles (same 150 ms the
              paragraph playback uses). */
           setTimeout(function(){
             if (myGen !== _ttsGen) return;
-            try { synth.speak(u); } catch (e) { showToast("تعذّر تشغيل النطق"); }
+            try { synth.speak(u); } catch (e) { if (onFail) onFail(); else showToast("تعذّر تشغيل النطق"); }
           }, 150);
-        } catch (e) { showToast("تعذّر تشغيل نطق الكلمة"); }
+        } catch (e) { if (onFail) { try { onFail(); } catch (e2) {} } else showToast("تعذّر تشغيل نطق الكلمة"); }
       }
       function bankCard(item){
         var card = document.createElement("article");
