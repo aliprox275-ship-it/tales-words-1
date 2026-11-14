@@ -13193,20 +13193,21 @@ function wrCheck() {
         try { (TOPICS || []).forEach(function(x){ if (x.slug === slug) found = x; }); } catch (e) {}
         return found ? found.ar : capSlug(slug);
       }
-      var _bankKeys = null;
+      var _bankKeys = null, _bankKeysReady = false;
       function bankKeySet(){
-        if (_bankKeys) return _bankKeys;
-        _bankKeys = {};
+        if (_bankKeysReady) return _bankKeys;
+        var keys = {};
         deckBankSets().forEach(function(s){
           ["en", "de"].forEach(function(lg){
             Object.keys(s.d[lg] || {}).forEach(function(tp){
               (s.d[lg][tp] || []).forEach(function(r){
-                _bankKeys[lg + ":" + String(r[0]).toLowerCase() + ":" + s.level] = true;
+                keys[lg + ":" + String(r[0]).toLowerCase() + ":" + s.level] = true;
               });
             });
           });
         });
-        return _bankKeys;
+        if (Object.keys(keys).length) { _bankKeys = keys; _bankKeysReady = true; }
+        return keys;
       }
       function bankHas(lang, w, level){ return !!bankKeySet()[lang + ":" + String(w).toLowerCase() + ":" + level]; }
       function deckBankSets(){
