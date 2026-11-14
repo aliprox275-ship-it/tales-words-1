@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#070a12" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -520,6 +520,7 @@
       .ex-sentence mark{background:rgba(47,93,88,.20); border-radius:4px; padding:0 4px}
       .ex-input-row{display:flex; gap:10px; flex-wrap:wrap; align-items:stretch}
       .ex-input{flex:1; min-width:200px; border:1.5px solid var(--line); border-radius:12px; padding:12px 14px; font-size:1.1rem; font-family:var(--font-serif); background:var(--surface); color:var(--ink)}
+input,textarea,select{font-size:16px}
       textarea.ex-input{width:100%; min-height:74px; resize:vertical; line-height:1.6}
       .ex-btn{border:0; border-radius:12px; padding:12px 22px; font-weight:800; font-size:1rem; background:var(--ink); color:var(--surface)}
       .ex-btn.ghost{background:transparent; color:var(--ink); border:1.5px solid var(--line)}
@@ -761,7 +762,8 @@
           .due-card .start-btn{width:100%}
           .plan-head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:10px}
           .plan-head b{font-size:1.2rem}
-          .plan-nav{display:flex; gap:8px; margin:12px 0 14px}
+          .plan-nav{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 14px}
+#planJump{min-width:0; flex:0 0 76px}
           .plan-nav .ex-btn{flex:1}
           .plan-done{background:var(--accent-tint); border:1px solid var(--line); border-radius:var(--r-card); padding:14px 16px; margin-bottom:14px; font-weight:800}
           .plan-mark{border:1px solid var(--line); background:var(--surface); border-radius:99px; padding:6px 12px; font-weight:800; cursor:pointer; font-family:inherit}
