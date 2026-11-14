@@ -234,9 +234,6 @@
       .deck-rate:active{transform:scale(.94)}
       .deck-miss{border:1.5px solid #e5484d; background:transparent; color:#e5484d}
       .deck-got{border:1.5px solid var(--ok); background:transparent; color:var(--ok)}
-      .deck-like{display:flex; gap:26px; justify-content:center; margin-top:18px}
-      .deck-like button{border:0; background:transparent; font-size:1.45rem; cursor:pointer; opacity:.45; padding:6px 10px}
-      .deck-like button.on{opacity:1; transform:scale(1.15)}
       .deck-empty{color:var(--muted); text-align:center; padding:20px 0}
 
       /* ---------- Phrases ---------- */
@@ -1370,7 +1367,7 @@ input,textarea,select{font-size:16px}
         <section id="view-words" hidden>
           <div class="deck-top">
             <button class="deck-ico" type="button" data-goto="home" aria-label="Back">&#8592;</button>
-            <div class="deck-title"><b id="deckName">Deutsch &middot; A1</b><span id="deckCount" dir="ltr">1 / 1</span></div>
+            <div class="deck-title"><b id="deckName">Deutsch &middot; A1</b><span id="deckCount">1 / 1</span></div>
             <button class="deck-ico" id="deckAutoBtn" type="button" aria-label="Autoplay sound">&#128266;</button>
             <button class="deck-ico" id="deckPickBtn" type="button" aria-label="Choose deck">&#9783;</button>
           </div>
@@ -1386,7 +1383,6 @@ input,textarea,select{font-size:16px}
               <button type="button" data-dlvl="A2">A2</button>
             </div>
             <div class="deck-pick-row" id="deckPickMark">
-              <button type="button" data-dmark="all">All words</button>
               <button type="button" data-dmark="known">Known</button>
               <button type="button" data-dmark="mistake">Need work</button>
             </div>
@@ -1420,14 +1416,10 @@ input,textarea,select{font-size:16px}
             </div>
           </div>
           <div class="deck-controls">
-            <button class="deck-nav" id="deckPrev" type="button" aria-label="Previous card">&#8592;</button>
+            <button class="deck-nav" id="deckNext" type="button" aria-label="Next card">&#8594;</button>
             <button class="deck-rate deck-miss" id="deckMiss" type="button" aria-label="Missed">&#10005; <b id="deckMissCount">0</b></button>
             <button class="deck-rate deck-got" id="deckGot" type="button" aria-label="Got it">&#10003; <b id="deckGotCount">0</b></button>
-            <button class="deck-nav" id="deckNext" type="button" aria-label="Next card">&#8594;</button>
-          </div>
-          <div class="deck-like">
-            <button id="deckLike" type="button" aria-label="Like this card">&#128077;</button>
-            <button id="deckDislike" type="button" aria-label="Dislike this card">&#128078;</button>
+            <button class="deck-nav" id="deckPrev" type="button" aria-label="Previous card">&#8592;</button>
           </div>
           <p class="deck-empty" id="deckEmpty" hidden>No cards in this deck. Choose another deck.</p>
         </section>
@@ -13145,10 +13137,14 @@ function wrCheck() {
          One deck at a time from the full bank (BANK_DATA A1 + BANK_DATA2 A2),
          story vocab not in the bank appended, conversation words when a topic
          is picked. Front shows the foreign word only; the back shows the
-         Arabic meaning + example + its Arabic translation. No Arabic anywhere
-         else in this view. Tap the card (or swipe) to flip / move; rate with
-         Got it / Missed after flipping. Ratings set the word mark (known /
-         mistake) so they feed the 100-day plan and writing review.
+         Arabic meaning + example + its Arabic translation. Arabic appears
+         only on the card back and in topic names. Tap the card (or swipe)
+         to flip / move; rate with Got it / Missed after flipping. Ratings
+         set the word mark (known / mistake) so they feed the 100-day plan
+         and writing review. Topic decks hold the topic's bank words only;
+         story/conversation words that are NOT in the bank live in their own
+         «كلمات إضافية» topic. Progress (position + ratings) is saved per
+         deck, so switching topics resumes each one where it stopped.
          Audio: Obelisk recording first, device TTS fallback — never silence. */
       var ALL_WORDS = [];
       STORIES.forEach(function(s){
@@ -13190,6 +13186,29 @@ function wrCheck() {
         slug = String(slug || "");
         return slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : slug;
       }
+      var TOPIC_AR_EXTRA = { general: "كلمات عامة", everyday: "كلمات يومية للتعبير", extra: "كلمات إضافية" };
+      function topicArName(slug){
+        if (TOPIC_AR_EXTRA[slug]) return TOPIC_AR_EXTRA[slug];
+        var found = null;
+        try { (TOPICS || []).forEach(function(x){ if (x.slug === slug) found = x; }); } catch (e) {}
+        return found ? found.ar : capSlug(slug);
+      }
+      var _bankKeys = null;
+      function bankKeySet(){
+        if (_bankKeys) return _bankKeys;
+        _bankKeys = {};
+        deckBankSets().forEach(function(s){
+          ["en", "de"].forEach(function(lg){
+            Object.keys(s.d[lg] || {}).forEach(function(tp){
+              (s.d[lg][tp] || []).forEach(function(r){
+                _bankKeys[lg + ":" + String(r[0]).toLowerCase() + ":" + s.level] = true;
+              });
+            });
+          });
+        });
+        return _bankKeys;
+      }
+      function bankHas(lang, w, level){ return !!bankKeySet()[lang + ":" + String(w).toLowerCase() + ":" + level]; }
       function deckBankSets(){
         var sets = [];
         if (typeof BANK_DATA !== "undefined" && BANK_DATA) sets.push({ d: BANK_DATA, order: (typeof BANK_TOPIC_ORDER !== "undefined" ? BANK_TOPIC_ORDER : []), level: "A1" });
@@ -13222,17 +13241,24 @@ function wrCheck() {
             });
           });
         });
-        (ALL_WORDS || []).forEach(function(x){ add(x); });
-        if (topic !== "all") {
-          var levels = level === "all" ? ["A1", "A2"] : [level];
+        (ALL_WORDS || []).forEach(function(x){
+          if (bankHas(x.lang, x.w, x.level)) { add(x); return; }
+          add({ w: x.w, t: x.t, ef: x.ef, ea: x.ea, lang: x.lang, level: x.level, topic: "extra", story: x.story, src: "story" });
+        });
+        var convTopics = (topic === "all" || topic === "extra") ? (function(){ var ts = []; try { (TOPICS || []).forEach(function(t){ ts.push(t.slug); }); } catch (e) {} return ts; })() : [topic];
+        var levels = level === "all" ? ["A1", "A2"] : [level];
+        convTopics.forEach(function(tp){
           langs.forEach(function(lg){
             levels.forEach(function(lv){
               try {
-                convWords(lg, lv, topic).forEach(function(x){ add(x); });
+                convWords(lg, lv, tp).forEach(function(x){
+                  if (bankHas(x.lang, x.w, x.level)) add(x);
+                  else add({ w: x.w, t: x.t, ef: x.ef, ea: x.ea, lang: x.lang, level: x.level, topic: "extra", story: x.story, src: "conv" });
+                });
               } catch (e) { /* conversation data unavailable: bank deck stands */ }
             });
           });
-        }
+        });
         return list;
       }
       function buildFlashDeck(keepIdx){
@@ -13247,7 +13273,7 @@ function wrCheck() {
           if (ok && reordered.length === list.length) list = reordered;
         }
         flashList = list;
-        flashIdx = (keepIdx && prog && typeof prog.idx === "number") ? Math.max(0, Math.min(prog.idx, Math.max(0, list.length - 1))) : 0;
+        flashIdx = (prog && typeof prog.idx === "number") ? Math.max(0, Math.min(prog.idx, Math.max(0, list.length - 1))) : 0;
         flashShown = false;
         renderFlash();
         renderDeckPicker();
@@ -13277,7 +13303,7 @@ function wrCheck() {
         card.style.visibility = "";
         if (empty) empty.hidden = true;
         var langName = item.lang === "de" ? "Deutsch" : "English";
-        $("deckName").textContent = langName + " · " + (flashLevel === "all" ? "A1+A2" : flashLevel) + (flashTopic !== "all" ? " · " + capSlug(flashTopic) : "");
+        $("deckName").textContent = langName + " · " + (flashLevel === "all" ? "A1+A2" : flashLevel) + (flashTopic !== "all" ? " · " + topicArName(flashTopic) : "");
         $("deckChip").textContent = langName + " · " + item.level;
         var wEl = $("deckWord");
         wEl.classList.remove("w-known", "w-mistake");
@@ -13291,9 +13317,6 @@ function wrCheck() {
         $("deckExA").textContent = flashShown ? (item.ea || "") : "";
         $("deckHint").style.visibility = flashShown ? "hidden" : "";
         card.classList.toggle("flipped", !!flashShown);
-        var key = item.lang + ":" + String(item.w).toLowerCase();
-        $("deckLike").classList.toggle("on", !!(prog.liked && prog.liked[key]));
-        $("deckDislike").classList.toggle("on", !!(prog.disliked && prog.disliked[key]));
         if (deckInteracted && deckAutoOn() && !flashShown) deckPlayWord();
       }
       function renderDeckPicker(){
@@ -13313,14 +13336,14 @@ function wrCheck() {
           var counts = {};
           var total = deckListFor(flashLang, flashLevel, "all", flashMark).length;
           var order = [];
-          ["intro", "food", "home", "clothes", "routine", "weather", "social", "travel", "health", "hobbies", "jobs", "services", "culture", "technology", "environment", "media", "education", "general", "everyday"].forEach(function(tp){
+          ["intro", "food", "home", "clothes", "routine", "weather", "social", "travel", "health", "hobbies", "jobs", "services", "culture", "technology", "environment", "media", "education", "general", "everyday", "extra"].forEach(function(tp){
             var n = deckListFor(flashLang, flashLevel, tp, flashMark).length;
             if (n) { counts[tp] = n; order.push(tp); }
           });
           Object.keys(counts).forEach(function(tp){ if (order.indexOf(tp) === -1) order.push(tp); });
-          var html = '<button type="button" data-dtopic="all"' + (flashTopic === "all" ? ' class="sel"' : "") + '>All topics &middot; ' + total + '</button>';
+          var html = '<button type="button" data-dtopic="all"' + (flashTopic === "all" ? ' class="sel"' : "") + '>كل المواضيع &middot; ' + total + '</button>';
           order.forEach(function(tp){
-            html += '<button type="button" data-dtopic="' + tp + '"' + (flashTopic === tp ? ' class="sel"' : "") + '>' + capSlug(tp) + ' &middot; ' + counts[tp] + '</button>';
+            html += '<button type="button" data-dtopic="' + tp + '"' + (flashTopic === tp ? ' class="sel"' : "") + '>' + topicArName(tp) + ' &middot; ' + counts[tp] + '</button>';
           });
           box.innerHTML = html;
         }
@@ -13410,24 +13433,6 @@ function wrCheck() {
           deckAnimating = false;
           deckGo(1);
         }, 480);
-      }
-      function deckReact(kind){
-        var item = flashList[flashIdx];
-        if (!item) return;
-        deckInteracted = true;
-        var key = item.lang + ":" + String(item.w).toLowerCase();
-        var prog = deckProgGet(deckCacheKey());
-        prog.liked = prog.liked || {};
-        prog.disliked = prog.disliked || {};
-        if (kind === "like") {
-          if (prog.liked[key]) delete prog.liked[key];
-          else { prog.liked[key] = 1; delete prog.disliked[key]; }
-        } else {
-          if (prog.disliked[key]) delete prog.disliked[key];
-          else { prog.disliked[key] = 1; delete prog.liked[key]; }
-        }
-        deckProgSave(deckCacheKey(), prog);
-        renderFlash();
       }
       function deckShuffle(){
         if (flashList.length < 2) return;
@@ -13521,8 +13526,6 @@ function wrCheck() {
       $("deckPrev").addEventListener("click", function(){ deckGo(-1); });
       $("deckGot").addEventListener("click", function(){ deckRate("got"); });
       $("deckMiss").addEventListener("click", function(){ deckRate("miss"); });
-      $("deckLike").addEventListener("click", function(){ deckReact("like"); });
-      $("deckDislike").addEventListener("click", function(){ deckReact("dislike"); });
       $("deckSpeakWord").addEventListener("click", function(e){ e.stopPropagation(); deckInteracted = true; deckPlayWord(); });
       $("deckSpeakWordBack").addEventListener("click", function(e){ e.stopPropagation(); deckInteracted = true; deckPlayWord(); });
       $("deckSpeakEx").addEventListener("click", function(e){ e.stopPropagation(); deckInteracted = true; deckPlayEx(); });
@@ -13552,7 +13555,9 @@ function wrCheck() {
       });
       $("deckPickMark").addEventListener("click", function(e){
         var b = e.target.closest ? e.target.closest("[data-dmark]") : null;
-        if (b) setFlashMark(b.getAttribute("data-dmark"));
+        if (!b) return;
+        var m = b.getAttribute("data-dmark");
+        setFlashMark(m === flashMark ? "all" : m);
       });
       $("deckPickTopics").addEventListener("click", function(e){
         var b = e.target.closest ? e.target.closest("[data-dtopic]") : null;
