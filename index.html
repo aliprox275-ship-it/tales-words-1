@@ -5185,6 +5185,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         while (day <= 100) { if (!plan100DayDone(lang, day)) break; day++; }
         return day;
       }
+      function plan100BatchEnd(lang){ var cur = plan100CurrentDay(lang); return Math.min(100, Math.ceil(cur / 5) * 5); }
       function plan100Grammar(lang, day){
         var story = plan100Story(lang, day);
         if (!story) return null;
@@ -5321,8 +5322,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         plan100SyncLang();
         var lang = curLang;
         var cur = plan100CurrentDay(lang);
-        var maxDay = cur > 100 ? 100 : cur;
-        if (!planViewDay || planViewDay < 1 || planViewDay > maxDay) planViewDay = maxDay;
+        var maxDay = plan100BatchEnd(lang);
+        if (!planViewDay || planViewDay < 1) planViewDay = Math.min(cur, 100);
+        if (planViewDay > maxDay) planViewDay = maxDay;
         var day = planViewDay;
         var story = plan100Story(lang, day);
         var ws = plan100DayWords(lang, day);
@@ -5461,7 +5463,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           var day = box._planDay || planViewDay || 1;
           if (t.hasAttribute("data-planday")) {
             var nd = parseInt(t.getAttribute("data-planday"), 10);
-            var maxD2 = Math.min(plan100CurrentDay(lang), 100);
+            var maxD2 = plan100BatchEnd(lang);
             if (!isNaN(nd) && nd >= 1 && nd <= maxD2) { planViewDay = nd; renderPlan100(); }
             return;
           }
