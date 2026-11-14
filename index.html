@@ -472,6 +472,14 @@
       }
       .wp-ctx-speak .spk{width:18px; height:18px}
       .wp-ctx-speak:active{transform:scale(.94)}
+      /* Word tooltip: Arabic meaning bubble above a tapped word (2 s) */
+      .word-tip{
+        position:fixed; z-index:130; pointer-events:none;
+        max-width:min(78vw, 320px); padding:7px 13px; border-radius:99px;
+        background:var(--accent); color:#fff; font-size:.98rem; font-weight:700;
+        text-align:center; line-height:1.45; box-shadow:0 6px 18px rgba(0,0,0,.35);
+      }
+      .word-tip[hidden]{display:none}
       .wp-ctx-ar{margin-top:6px; color:var(--muted); text-align:right}
       .wp-ex{margin-top:8px; color:var(--muted)}
       .wp-ex .ef{display:block; font-family:var(--font-serif); direction:ltr; text-align:left; unicode-bidi:isolate; font-size:1.05rem}
@@ -2037,6 +2045,9 @@ input,textarea,select{font-size:16px}
       </div>
     </div>
 
+    <!-- Word tooltip: Arabic meaning bubble above a tapped word -->
+    <div id="wordTip" class="word-tip" dir="rtl" hidden></div>
+
     <!-- ======== Exit confirmation ======== -->
     <div class="exit-pop" id="exitPop" hidden>
       <div class="exit-sheet" role="alertdialog" aria-modal="true" aria-labelledby="exitTitle" aria-describedby="exitDesc">
@@ -3117,7 +3128,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         }
         buildTappableWords(el, text, story);
       }
-      function buildTappableWords(el, text, story){
+      function buildTappableWords(el, text, story, mode){
         var last = 0, m;
         WORD_RE.lastIndex = 0;
         while ((m = WORD_RE.exec(text)) !== null) {
@@ -3133,9 +3144,24 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           sp.setAttribute("tabindex", "0");
           sp.setAttribute("role", "button");
           (function(word, span){
-            span.addEventListener("click", function(){ openWordPop(word, story, span); });
+            function isReplay(){
+              return (typeof kara !== "undefined" && kara.playing) ||
+                     (typeof studyKara !== "undefined" && studyKara.playing);
+            }
+            span.addEventListener("click", function(){
+              if (mode === "tip") { showWordTip(word, span, story); return; }
+              var replay = isReplay();
+              openWordPop(word, story, span);
+              if (!replay) showWordTip(word, span, story);
+            });
             span.addEventListener("keydown", function(e){
-              if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openWordPop(word, story, span); }
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                if (mode === "tip") { showWordTip(word, span, story); return; }
+                var replay = isReplay();
+                openWordPop(word, story, span);
+                if (!replay) showWordTip(word, span, story);
+              }
             });
           })(m[0], sp);
           el.appendChild(sp);
@@ -3143,6 +3169,50 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         }
         if (last < text.length) el.appendChild(document.createTextNode(text.slice(last)));
       }
+
+      /* ---------- Word tooltip: tap a word in an example sentence and
+         its Arabic meaning appears in a small bubble above that word
+         for 2 s, then hides. Works everywhere words are tappable:
+         reader paragraphs (alongside the popup), popup context clause
+         and vocab example, bank card examples, grammar examples. */
+      var wordTipTimer = null;
+      function hideWordTip(){
+        var tip = $("wordTip");
+        if (tip) tip.hidden = true;
+        if (wordTipTimer) { clearTimeout(wordTipTimer); wordTipTimer = null; }
+      }
+      function showWordTip(word, span, story){
+        var tip = $("wordTip");
+        if (!tip || !span || !story) return;
+        var res = null;
+        try { res = lookupWord(word, story); } catch (e) { res = null; }
+        tip.textContent = (res && res.found && res.t) ? res.t : "مو موجودة بالقاموس";
+        tip.hidden = false;
+        /* Measure after unhiding, then centre above the word (or below
+           it when there is no room above), clamped to the viewport. */
+        var r = span.getBoundingClientRect();
+        var tw = tip.offsetWidth, th = tip.offsetHeight;
+        var left = r.left + r.width / 2 - tw / 2;
+        if (left < 8) left = 8;
+        if (left + tw > window.innerWidth - 8) left = window.innerWidth - tw - 8;
+        if (left < 8) left = 8;
+        var gap = 6;
+        var top = r.top - th - gap;
+        if (top < 8) top = r.bottom + gap;
+        tip.style.left = left + "px";
+        tip.style.top = top + "px";
+        if (wordTipTimer) clearTimeout(wordTipTimer);
+        wordTipTimer = setTimeout(hideWordTip, 2000);
+      }
+      /* Hide the bubble when the page moves, or the user taps anywhere
+         that is not a tappable word (a word tap shows it first, then
+         this handler sees the .w-tap target and leaves it alone). */
+      document.addEventListener("scroll", hideWordTip, true);
+      window.addEventListener("resize", hideWordTip);
+      document.addEventListener("click", function(e){
+        if (e.target && e.target.closest && e.target.closest(".w-tap")) return;
+        hideWordTip();
+      });
 
       /* ---------- Word popup ---------- */
       var popCtx = null, activeTap = null;
@@ -3152,7 +3222,8 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (res.ef) {
           ex.hidden = false;
           var ef = document.createElement("span");
-          ef.className = "ef"; ef.setAttribute("lang", story.lang); ef.textContent = res.ef;
+          ef.className = "ef"; ef.setAttribute("lang", story.lang);
+          buildTappableWords(ef, res.ef, story, "tip");
           var ea = document.createElement("span");
           ea.textContent = res.ea || "";
           ex.appendChild(ef); ex.appendChild(ea);
@@ -3299,7 +3370,8 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (!fTxt) { box.hidden = true; if (popCtx) { popCtx.ctxText = ""; popCtx.ctxPara = null; } return; }
         box.hidden = false;
         var tEl = $("wpCtxText");
-        tEl.textContent = fTxt;
+        tEl.innerHTML = "";
+        buildTappableWords(tEl, fTxt, story || { vocab: [], lang: "en" }, "tip");
         tEl.setAttribute("lang", story ? story.lang : "en");
         $("wpCtxAr").textContent = aTxt;
         if (popCtx) { popCtx.ctxText = fTxt; popCtx.ctxPara = ctxPara; }
@@ -3361,6 +3433,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       if ($("wpKnown")) $("wpKnown").addEventListener("click", function(){ if (!popCtx) return; var c0 = wordMark(popCtx.lang, popCtx.w); setWordMark(popCtx.lang, popCtx.w, c0 === "known" ? "" : "known"); updateMarkBtns(); refreshWordMarkSpans(popCtx.lang, popCtx.w); });
       if ($("wpMistake")) $("wpMistake").addEventListener("click", function(){ if (!popCtx) return; var c0 = wordMark(popCtx.lang, popCtx.w); setWordMark(popCtx.lang, popCtx.w, c0 === "mistake" ? "" : "mistake"); updateMarkBtns(); refreshWordMarkSpans(popCtx.lang, popCtx.w); });
       function closeWordPop(){
+        hideWordTip();
         $("wordPop").hidden = true;
         if ("speechSynthesis" in window) { try { window.speechSynthesis.cancel(); } catch (e) {} }
         if (activeTap) { activeTap.classList.remove("active"); activeTap = null; }
@@ -15652,7 +15725,7 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
             var fp = document.createElement("p");
             fp.className = "gram-f";
             fp.setAttribute("dir", "ltr"); fp.setAttribute("lang", gramLang);
-            fp.textContent = ex.f;
+            buildTappableWords(fp, ex.f, { vocab: [], lang: gramLang }, "tip");
             txt.appendChild(fp);
             var ap = document.createElement("p");
             ap.className = "gram-a";
@@ -16400,7 +16473,8 @@ var _ttsNoVoiceWarned = false;
         var ex = document.createElement("div");
         ex.className = "bank-ex";
         var ef = document.createElement("span");
-        ef.className = "ef"; ef.setAttribute("lang", bankLang); ef.textContent = item.ef;
+        ef.className = "ef"; ef.setAttribute("lang", bankLang);
+        buildTappableWords(ef, item.ef, { vocab: [], lang: bankLang }, "tip");
         var ea = document.createElement("span");
         ea.textContent = item.ea;
         ex.appendChild(ef); ex.appendChild(ea); var exSp = document.createElement("button"); exSp.type = "button"; exSp.className = "bank-speak"; exSp.setAttribute("aria-label", "استمع إلى المثال"); exSp.innerHTML = SPK; exSp.addEventListener("click", function(){ stopVocab(); var u = (item.level === "A1") ? (bankBundleExample(item.w, item.ef, bankLang) || socialExampleBundle(item.w, item.ef, bankLang)) : (item.level === "A2") ? (bankBundleExampleA2(item.w, item.ef, bankLang) || bankBundleExample(item.w, item.ef, bankLang)) : null; if (u) playBundle(u, item.ef, bankLang); else bankSpeak(item.ef, bankLang); }); ex.appendChild(exSp);
