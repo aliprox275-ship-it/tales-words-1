@@ -183,6 +183,62 @@
       .flash-count{color:var(--muted); font-weight:700; min-width:74px; text-align:center}
       .flash-emoji{font-size:2.2rem; line-height:1.2}
 
+      /* ---------- Deck (Anki-style flashcards) ---------- */
+      .deck-top{display:flex; align-items:center; gap:10px; margin:2px 0 10px}
+      .deck-ico{border:1px solid var(--line); background:var(--surface); color:var(--ink); width:42px; height:42px; border-radius:50%; font-size:1.15rem; font-weight:800; flex-shrink:0; cursor:pointer}
+      .deck-ico:active{transform:scale(.94)}
+      .deck-title{flex:1; min-width:0; text-align:center; display:flex; flex-direction:column; gap:1px}
+      .deck-title b{font-size:1.05rem; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+      .deck-title span{color:var(--muted); font-weight:700; font-size:.92rem}
+      .deck-progress{height:4px; border-radius:99px; background:var(--surface2); overflow:hidden; margin-bottom:14px}
+      .deck-progress-fill{height:100%; width:0%; border-radius:99px; background:var(--accent); transition:width .3s ease}
+      .deck-picker{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:14px; margin-bottom:14px; display:flex; flex-direction:column; gap:10px}
+      .deck-pick-row{display:flex; gap:8px; flex-wrap:wrap}
+      .deck-pick-row button{border:1px solid var(--line); background:var(--surface2); color:var(--ink); border-radius:99px; padding:8px 16px; font:inherit; font-weight:700; cursor:pointer}
+      .deck-pick-row button.sel{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+      .deck-pick-topics{display:flex; gap:8px; flex-wrap:wrap}
+      .deck-pick-topics button{border:1px solid var(--line); background:var(--surface2); color:var(--ink); border-radius:99px; padding:8px 14px; font:inherit; font-weight:700; cursor:pointer}
+      .deck-pick-topics button.sel{background:var(--accent); color:#fff; border-color:var(--accent)}
+      .deck-pick-foot{display:flex; gap:8px; flex-wrap:wrap}
+      .deck-pick-foot button{border:1px solid var(--line); background:var(--surface); color:var(--ink); padding:10px 18px; border-radius:12px; font:inherit; font-weight:800; cursor:pointer}
+      .deck-pick-foot .primary{background:var(--ink); color:var(--surface); border-color:var(--ink)}
+      .deck-stage{perspective:1200px; margin-bottom:16px}
+      .deck-card{position:relative; cursor:pointer; transition:transform .24s ease, opacity .24s ease; -webkit-tap-highlight-color:transparent; outline:none}
+      .deck-card:focus-visible{outline:2px solid var(--accent); outline-offset:4px; border-radius:var(--r-card)}
+      .deck-inner{display:grid; transform-style:preserve-3d; transition:transform .45s cubic-bezier(.4,0,.2,1)}
+      .deck-card.flipped .deck-inner{transform:rotateY(180deg)}
+      .deck-face{grid-area:1/1; backface-visibility:hidden; -webkit-backface-visibility:hidden; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); box-shadow:var(--shadow-card); min-height:400px; padding:36px 22px 28px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center}
+      .deck-back{transform:rotateY(180deg)}
+      .deck-chip{font-weight:800; font-size:.9rem; letter-spacing:.02em; color:var(--accent)}
+      .deck-word{font-family:var(--font-serif); direction:ltr; unicode-bidi:isolate; font-size:clamp(2rem,8vw,3rem); font-weight:700; line-height:1.2; overflow-wrap:anywhere}
+      .deck-spk{border:1px solid var(--line); border-radius:99px; background:var(--surface2); color:var(--ink); font-size:1.15rem; line-height:1; padding:10px 16px; cursor:pointer}
+      .deck-spk:active{transform:scale(.94)}
+      .deck-spk-ex{font-size:.95rem; font-weight:800}
+      .deck-hint{color:var(--muted); font-weight:700; font-size:.95rem}
+      .deck-mean{font-size:1.7rem; font-weight:800; line-height:1.4}
+      .deck-ex{font-family:var(--font-serif); direction:ltr; unicode-bidi:isolate; font-size:1.15rem; font-weight:600; line-height:1.5}
+      .deck-ex-ar{color:var(--muted); font-size:1.05rem; line-height:1.7}
+      .deck-back-spk{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+      .deck-feedback{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:1.9rem; font-weight:800; opacity:0; pointer-events:none; transition:opacity .18s ease; text-align:center; padding:0 20px; z-index:2}
+      .deck-feedback.show{opacity:1}
+      .deck-feedback.fb-got{color:var(--ok)}
+      .deck-feedback.fb-miss{color:#e5484d}
+      .deck-out-l{transform:translateX(-70px) rotate(-3deg); opacity:0}
+      .deck-out-r{transform:translateX(70px) rotate(3deg); opacity:0}
+      .deck-in-l{transform:translateX(-70px); opacity:0}
+      .deck-in-r{transform:translateX(70px); opacity:0}
+      .deck-controls{display:flex; gap:12px; justify-content:center; align-items:center}
+      .deck-nav{border:1px solid var(--line); background:var(--surface); color:var(--ink); width:52px; height:52px; border-radius:50%; font-size:1.25rem; font-weight:800; cursor:pointer}
+      .deck-nav:active{transform:scale(.94)}
+      .deck-rate{width:76px; height:52px; border-radius:99px; font-size:1.15rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px}
+      .deck-rate:active{transform:scale(.94)}
+      .deck-miss{border:1.5px solid #e5484d; background:transparent; color:#e5484d}
+      .deck-got{border:1.5px solid var(--ok); background:transparent; color:var(--ok)}
+      .deck-like{display:flex; gap:26px; justify-content:center; margin-top:18px}
+      .deck-like button{border:0; background:transparent; font-size:1.45rem; cursor:pointer; opacity:.45; padding:6px 10px}
+      .deck-like button.on{opacity:1; transform:scale(1.15)}
+      .deck-empty{color:var(--muted); text-align:center; padding:20px 0}
+
       /* ---------- Phrases ---------- */
       .phrase-group{margin-bottom:30px}
       .phrase-group h2{font-family:var(--font-serif); font-size:1.35rem; margin:0 0 12px}
@@ -1310,41 +1366,70 @@ input,textarea,select{font-size:16px}
           <p class="empty-msg" id="topicEmpty" hidden>لا توجد قصص في هذا الموضوع.</p>
         </section>
 
-        <!-- ======== Flashcards ======== -->
+        <!-- ======== Flashcards: deck (Anki-style) ======== -->
         <section id="view-words" hidden>
-          <h1 class="view-title">بطاقات الكلمات</h1>
-          <button class="focus-exit" type="button" data-goto="home">✕ خروج من البطاقات</button>
-          <div class="filters">
-            <div class="switch" role="group" aria-label="لغة البطاقات">
-              <button data-flang="all" class="active-all" id="fAll">الكل</button>
-              <button data-flang="en" id="fEn">English</button>
-              <button data-flang="de" id="fDe">Deutsch</button>
-            </div>
-            <div class="switch" role="group" aria-label="مستوى البطاقات">
-              <button data-flevel="all" class="active-all" id="fLvlAll">كل المستويات</button>
-              <button data-flevel="A1" id="fLvlA1">A1</button>
-              <button data-flevel="A2" id="fLvlA2">A2</button>
-            </div>
-            <div class="switch" role="group" aria-label="علامة البطاقات">
-              <button data-fmark="all" class="active-all" id="fMarkAll">كل الكلمات</button>
-              <button data-fmark="known" id="fMarkKnown">أعرفها</button>
-              <button data-fmark="mistake" id="fMarkMistake">أخطأت في كتابته</button>
-            </div>
-            <button id="flashTopicBtn" class="topic-pick-btn" type="button" aria-label="اختر الموضوع"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span class="tp-label" id="flashTopicLabel">كل المواضيع</span><span class="tp-chev">⌄</span></button>
+          <div class="deck-top">
+            <button class="deck-ico" type="button" data-goto="home" aria-label="Back">&#8592;</button>
+            <div class="deck-title"><b id="deckName">Deutsch &middot; A1</b><span id="deckCount">1 / 1</span></div>
+            <button class="deck-ico" id="deckAutoBtn" type="button" aria-label="Autoplay sound">&#128266;</button>
+            <button class="deck-ico" id="deckPickBtn" type="button" aria-label="Choose deck">&#9783;</button>
           </div>
-          <div class="flash" id="flashCard">
-            <div class="flash-lang" id="flashLang"></div>
-            <div class="flash-word" id="flashWord" lang="en"></div>
-            <div class="flash-ar" id="flashAr"></div>
-            <div class="flash-ex" id="flashEx"></div>
-            <div class="flash-speak"><button id="flashSpeakWord" class="flash-spk" type="button">🔊 نطق الكلمة</button><button id="flashSpeakEx" class="flash-spk" type="button">🔊 نطق المثال</button></div>
+          <div class="deck-progress" aria-hidden="true"><div class="deck-progress-fill" id="deckProgFill"></div></div>
+          <div class="deck-picker" id="deckPicker" hidden>
+            <div class="deck-pick-row" id="deckPickLang">
+              <button type="button" data-dlang="en">English</button>
+              <button type="button" data-dlang="de">Deutsch</button>
+            </div>
+            <div class="deck-pick-row" id="deckPickLvl">
+              <button type="button" data-dlvl="all">All levels</button>
+              <button type="button" data-dlvl="A1">A1</button>
+              <button type="button" data-dlvl="A2">A2</button>
+            </div>
+            <div class="deck-pick-row" id="deckPickMark">
+              <button type="button" data-dmark="all">All words</button>
+              <button type="button" data-dmark="known">Known</button>
+              <button type="button" data-dmark="mistake">Need work</button>
+            </div>
+            <div class="deck-pick-topics" id="deckPickTopics"></div>
+            <div class="deck-pick-foot">
+              <button type="button" id="deckShuffleBtn">&#8646; Shuffle</button>
+              <button type="button" id="deckRestartBtn">&#8635; Restart</button>
+              <button type="button" class="primary" id="deckStartBtn">Start</button>
+            </div>
           </div>
-          <div class="flash-controls">
-            <button id="flashPrev">→ السابق</button>
-            <span class="flash-count" id="flashCount"></span>
-            <button id="flashNext">التالي ←</button>
-            <button class="primary" id="flashFlip">إظهار المعنى</button>
+          <div class="deck-stage" id="deckStage">
+            <div class="deck-card" id="deckCard" role="button" tabindex="0" aria-label="Flashcard. Activate to flip.">
+              <div class="deck-inner" id="deckInner">
+                <div class="deck-face deck-front">
+                  <div class="deck-chip" id="deckChip">Deutsch &middot; A1</div>
+                  <div class="deck-word" id="deckWord" lang="de">&mdash;</div>
+                  <button class="deck-spk" id="deckSpeakWord" type="button" aria-label="Listen to the word">&#128266;</button>
+                  <div class="deck-hint" id="deckHint">See answer</div>
+                </div>
+                <div class="deck-face deck-back">
+                  <div class="deck-mean" id="deckMean" dir="rtl"></div>
+                  <div class="deck-ex" id="deckExF" lang="de"></div>
+                  <div class="deck-ex-ar" id="deckExA" dir="rtl"></div>
+                  <div class="deck-back-spk">
+                    <button class="deck-spk" id="deckSpeakWordBack" type="button" aria-label="Listen to the word">&#128266;</button>
+                    <button class="deck-spk deck-spk-ex" id="deckSpeakEx" type="button" aria-label="Listen to the example">&#9654; Example</button>
+                  </div>
+                </div>
+              </div>
+              <div class="deck-feedback" id="deckFeedback" aria-hidden="true"></div>
+            </div>
           </div>
+          <div class="deck-controls">
+            <button class="deck-nav" id="deckPrev" type="button" aria-label="Previous card">&#8592;</button>
+            <button class="deck-rate deck-miss" id="deckMiss" type="button" aria-label="Missed">&#10005; <b id="deckMissCount">0</b></button>
+            <button class="deck-rate deck-got" id="deckGot" type="button" aria-label="Got it">&#10003; <b id="deckGotCount">0</b></button>
+            <button class="deck-nav" id="deckNext" type="button" aria-label="Next card">&#8594;</button>
+          </div>
+          <div class="deck-like">
+            <button id="deckLike" type="button" aria-label="Like this card">&#128077;</button>
+            <button id="deckDislike" type="button" aria-label="Dislike this card">&#128078;</button>
+          </div>
+          <p class="deck-empty" id="deckEmpty" hidden>No cards in this deck. Choose another deck.</p>
         </section>
 
         <!-- ======== Phrases ======== -->
@@ -4967,7 +5052,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
          the app first. At the root a guard entry turns a Back press into the
          exit-confirmation dialog instead of leaving immediately. */
       var VIEW_TITLES = {
-        home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
+        home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "Cards", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "القواعد",
         exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", study: "الدراسات", wordlogic: "منطق الكلمات", writing: "الكتابة", plan100: "خطة الـ 100 يوم", privacy: "سياسة الخصوصية"
@@ -5143,6 +5228,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           else if (curReviewSub === "mywords") renderMyWords();
         }
         if (name === "bank") { bankCollapseBoxes(); renderBankBoxes(); renderBank(); }
+        if (name === "words") { try { buildFlashDeck(true); } catch (e) {} }
         if (name === "stories") { renderTopicFilters(); renderGrid(); }
         if (name === "review") { renderTodayWords(); startReview(); }
         if (name === "reviewweek") renderWeekReview();
@@ -13055,7 +13141,15 @@ function wrCheck() {
         });
       });
 
-      /* ---------- Flashcards ---------- */
+      /* ---------- Flashcards: deck (Anki-style) ----------
+         One deck at a time from the full bank (BANK_DATA A1 + BANK_DATA2 A2),
+         story vocab not in the bank appended, conversation words when a topic
+         is picked. Front shows the foreign word only; the back shows the
+         Arabic meaning + example + its Arabic translation. No Arabic anywhere
+         else in this view. Tap the card (or swipe) to flip / move; rate with
+         Got it / Missed after flipping. Ratings set the word mark (known /
+         mistake) so they feed the 100-day plan and writing review.
+         Audio: Obelisk recording first, device TTS fallback — never silence. */
       var ALL_WORDS = [];
       STORIES.forEach(function(s){
         s.vocab.forEach(function(v){
@@ -13063,39 +13157,293 @@ function wrCheck() {
         });
       });
       var flashList = [], flashIdx = 0, flashShown = false;
-
+      var flashLang = "de", flashLevel = "A1", flashTopic = "all", flashMark = "all";
+      var deckInteracted = false, deckAnimating = false, deckSwiped = false;
+      var DECK_PROG_KEY = "readerApp.deckProg.v1";
+      var DECK_AUTO_KEY = "readerApp.deckAuto.v1";
+      var _deckProgCache = null;
+      function deckProgAll(){
+        if (_deckProgCache) return _deckProgCache;
+        try { var p = JSON.parse(localStorage.getItem(DECK_PROG_KEY) || "null"); _deckProgCache = (p && typeof p === "object") ? p : {}; }
+        catch (e) { _deckProgCache = {}; }
+        return _deckProgCache;
+      }
+      function deckCacheKey(){ return flashLang + "|" + flashLevel + "|" + flashTopic + "|" + flashMark; }
+      function deckProgGet(key){
+        var all = deckProgAll();
+        if (!all[key]) all[key] = { idx: 0, rated: {}, liked: {}, disliked: {}, order: null };
+        return all[key];
+      }
+      function deckProgSave(key, prog){
+        deckProgAll()[key] = prog;
+        try { localStorage.setItem(DECK_PROG_KEY, JSON.stringify(_deckProgCache)); } catch (e) {}
+      }
+      function deckProgDrop(key){
+        var all = deckProgAll();
+        delete all[key];
+        try { localStorage.setItem(DECK_PROG_KEY, JSON.stringify(all)); } catch (e) {}
+      }
+      function deckAutoOn(){
+        try { return localStorage.getItem(DECK_AUTO_KEY) !== "0"; } catch (e) { return true; }
+      }
+      function capSlug(slug){
+        slug = String(slug || "");
+        return slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : slug;
+      }
+      function deckBankSets(){
+        var sets = [];
+        if (typeof BANK_DATA !== "undefined" && BANK_DATA) sets.push({ d: BANK_DATA, order: (typeof BANK_TOPIC_ORDER !== "undefined" ? BANK_TOPIC_ORDER : []), level: "A1" });
+        if (typeof BANK_DATA2 !== "undefined" && BANK_DATA2) sets.push({ d: BANK_DATA2, order: (typeof BANK2_TOPIC_ORDER !== "undefined" ? BANK2_TOPIC_ORDER : []), level: "A2" });
+        return sets;
+      }
+      function deckListFor(lang, level, topic, mark){
+        var list = [], seen = {};
+        var langs = lang === "all" ? ["en", "de"] : [lang];
+        function okMark(x){ return mark === "all" || wordMark(x.lang, x.w) === mark; }
+        function add(x){
+          if (!x || !x.w) return;
+          if (lang !== "all" && x.lang !== lang) return;
+          if (level !== "all" && x.level && x.level !== level) return;
+          if (topic !== "all" && x.topic !== topic) return;
+          if (!okMark(x)) return;
+          var k = x.lang + ":" + String(x.w).toLowerCase();
+          if (seen[k]) return;
+          seen[k] = true;
+          list.push(x);
+        }
+        deckBankSets().forEach(function(s){
+          if (level !== "all" && level !== s.level) return;
+          var topics = s.order.length ? s.order : Object.keys(s.d[langs[0]] || {});
+          langs.forEach(function(lg){
+            topics.forEach(function(tp){
+              ((s.d[lg] || {})[tp] || []).forEach(function(r){
+                add({ w: r[0], t: r[1], ef: r[2], ea: r[3], lang: lg, level: s.level, topic: tp, src: "bank" });
+              });
+            });
+          });
+        });
+        (ALL_WORDS || []).forEach(function(x){ add(x); });
+        if (topic !== "all") {
+          var levels = level === "all" ? ["A1", "A2"] : [level];
+          langs.forEach(function(lg){
+            levels.forEach(function(lv){
+              try {
+                convWords(lg, lv, topic).forEach(function(x){ add(x); });
+              } catch (e) { /* conversation data unavailable: bank deck stands */ }
+            });
+          });
+        }
+        return list;
+      }
+      function buildFlashDeck(keepIdx){
+        var list = deckListFor(flashLang, flashLevel, flashTopic, flashMark);
+        var key = deckCacheKey();
+        var prog = deckProgGet(key);
+        if (prog.order && prog.order.length === list.length && list.length) {
+          var byKey = {};
+          list.forEach(function(x){ byKey[x.lang + ":" + String(x.w).toLowerCase()] = x; });
+          var reordered = [], ok = true;
+          prog.order.forEach(function(k){ if (byKey[k]) reordered.push(byKey[k]); else ok = false; });
+          if (ok && reordered.length === list.length) list = reordered;
+        }
+        flashList = list;
+        flashIdx = (keepIdx && prog && typeof prog.idx === "number") ? Math.max(0, Math.min(prog.idx, Math.max(0, list.length - 1))) : 0;
+        flashShown = false;
+        renderFlash();
+        renderDeckPicker();
+      }
+      function deckSaveIdx(){
+        var prog = deckProgGet(deckCacheKey());
+        prog.idx = flashIdx;
+        deckProgSave(deckCacheKey(), prog);
+      }
       function renderFlash(){
+        var card = $("deckCard");
+        if (!card) return;
         var item = flashList[flashIdx];
+        var empty = $("deckEmpty");
+        $("deckCount").textContent = flashList.length ? ((flashIdx + 1) + " / " + flashList.length) : "0 / 0";
+        $("deckProgFill").style.width = flashList.length ? Math.round(((flashIdx + 1) / flashList.length) * 100) + "%" : "0%";
+        var prog = deckProgGet(deckCacheKey());
+        var got = 0, miss = 0;
+        if (prog.rated) Object.keys(prog.rated).forEach(function(k){ if (prog.rated[k] === "got") got++; else miss++; });
+        $("deckGotCount").textContent = got;
+        $("deckMissCount").textContent = miss;
         if (!item) {
-          $("flashWord").textContent = "—";
-          $("flashAr").textContent = "؟";
-          $("flashEx").innerHTML = "";
-          $("flashLang").textContent = flashMark === "mistake" ? "لا توجد كلمات بعلامة «أخطأت في كتابته» بعد — علّم كلمات من القصص" : (flashMark === "known" ? "لا توجد كلمات بعلامة «أعرفها» بعد" : "لا توجد كلمات مطابقة للفلتر");
-          $("flashCount").textContent = "0 / 0";
+          card.style.visibility = "hidden";
+          if (empty) empty.hidden = false;
           return;
         }
-        var langEl = $("flashLang");
-        langEl.textContent = (item.lang === "en" ? "English" : "Deutsch") + " · " + (item.src === "conv" ? "من محادثة «" + item.story + "»" : "من قصة «" + item.story + "»");
-        langEl.className = "flash-lang " + item.lang;
-        var wEl = $("flashWord"); wEl.classList.remove("w-known", "w-mistake"); var fmc = wordMarkClass(item.lang, item.w); if (fmc) wEl.classList.add(fmc);
+        card.style.visibility = "";
+        if (empty) empty.hidden = true;
+        var langName = item.lang === "de" ? "Deutsch" : "English";
+        $("deckName").textContent = langName + " · " + (flashLevel === "all" ? "A1+A2" : flashLevel) + (flashTopic !== "all" ? " · " + capSlug(flashTopic) : "");
+        $("deckChip").textContent = langName + " · " + item.level;
+        var wEl = $("deckWord");
+        wEl.classList.remove("w-known", "w-mistake");
+        var fmc = wordMarkClass(item.lang, item.w);
+        if (fmc) wEl.classList.add(fmc);
         wEl.textContent = item.w;
         wEl.setAttribute("lang", item.lang);
-        $("flashAr").textContent = flashShown ? item.t : "؟";
-        var ex = $("flashEx");
-        ex.innerHTML = "";
-        if (flashShown) {
-          var ef = document.createElement("span");
-          ef.className = "ex-f"; ef.setAttribute("lang", item.lang); ef.textContent = item.ef;
-          var ea = document.createElement("span");
-          ea.textContent = item.ea;
-          ex.appendChild(ef); ex.appendChild(ea);
-        }
-        var fsEx = $("flashSpeakEx");
-        if (fsEx) fsEx.style.display = flashShown ? "" : "none";
-        $("flashFlip").textContent = flashShown ? "إخفاء المعنى" : "إظهار المعنى";
-        $("flashCount").textContent = arNum(flashIdx + 1) + " / " + arNum(flashList.length);
+        $("deckMean").textContent = flashShown ? (item.t || "") : "";
+        $("deckExF").textContent = flashShown ? (item.ef || "") : "";
+        $("deckExF").setAttribute("lang", item.lang);
+        $("deckExA").textContent = flashShown ? (item.ea || "") : "";
+        $("deckHint").style.visibility = flashShown ? "hidden" : "";
+        card.classList.toggle("flipped", !!flashShown);
+        var key = item.lang + ":" + String(item.w).toLowerCase();
+        $("deckLike").classList.toggle("on", !!(prog.liked && prog.liked[key]));
+        $("deckDislike").classList.toggle("on", !!(prog.disliked && prog.disliked[key]));
+        if (deckInteracted && deckAutoOn() && !flashShown) deckPlayWord();
       }
-      var flashLang = "all", flashLevel = "all", flashTopic = "all", flashMark = "all";
+      function renderDeckPicker(){
+        var pick = $("deckPicker");
+        if (!pick) return;
+        function sel(rowId, attr, val){
+          var row = $(rowId);
+          if (!row) return;
+          var btns = row.querySelectorAll("button");
+          for (var i = 0; i < btns.length; i++) btns[i].classList.toggle("sel", btns[i].getAttribute(attr) === val);
+        }
+        sel("deckPickLang", "data-dlang", flashLang === "all" ? "en" : flashLang);
+        sel("deckPickLvl", "data-dlvl", flashLevel);
+        sel("deckPickMark", "data-dmark", flashMark);
+        var box = $("deckPickTopics");
+        if (box) {
+          var counts = {};
+          var total = deckListFor(flashLang, flashLevel, "all", flashMark).length;
+          var order = [];
+          ["intro", "food", "home", "clothes", "routine", "weather", "social", "travel", "health", "hobbies", "jobs", "services", "culture", "technology", "environment", "media", "education", "general", "everyday"].forEach(function(tp){
+            var n = deckListFor(flashLang, flashLevel, tp, flashMark).length;
+            if (n) { counts[tp] = n; order.push(tp); }
+          });
+          Object.keys(counts).forEach(function(tp){ if (order.indexOf(tp) === -1) order.push(tp); });
+          var html = '<button type="button" data-dtopic="all"' + (flashTopic === "all" ? ' class="sel"' : "") + '>All topics &middot; ' + total + '</button>';
+          order.forEach(function(tp){
+            html += '<button type="button" data-dtopic="' + tp + '"' + (flashTopic === tp ? ' class="sel"' : "") + '>' + capSlug(tp) + ' &middot; ' + counts[tp] + '</button>';
+          });
+          box.innerHTML = html;
+        }
+        var ab = $("deckAutoBtn");
+        if (ab) ab.textContent = deckAutoOn() ? "🔊" : "🔇";
+      }
+      function setFlashLang(f){
+        flashLang = (f === "all") ? ((typeof curLang !== "undefined" && curLang) ? curLang : "en") : f;
+        buildFlashDeck();
+      }
+      function setFlashLevel(lv){
+        flashLevel = lv;
+        buildFlashDeck();
+      }
+      function setFlashMark(m){
+        flashMark = m;
+        buildFlashDeck();
+      }
+      function deckPlayWord(){
+        var item = flashList[flashIdx];
+        if (!item) return;
+        try { stopVocab(); } catch (e) {}
+        var seg = null;
+        try { seg = vocabWordSeg(item.w, item.lang); } catch (e) { seg = null; }
+        if (seg) playBundle(seg, item.w, item.lang, null, null, null, 1);
+        else bankSpeak(item.w, item.lang);
+      }
+      function deckPlayEx(){
+        var item = flashList[flashIdx];
+        if (!item || !item.ef) return;
+        try { stopVocab(); } catch (e) {}
+        var seg = null;
+        try { seg = vocabExampleSeg(item.w, item.ef, item.lang); } catch (e) { seg = null; }
+        if (seg) playBundle(seg, item.ef, item.lang);
+        else bankSpeak(item.ef, item.lang);
+      }
+      function deckFlip(){
+        if (!flashList.length || deckAnimating) return;
+        deckInteracted = true;
+        flashShown = !flashShown;
+        renderFlash();
+        if (flashShown && deckAutoOn()) deckPlayEx();
+      }
+      function deckGo(dir){
+        if (!flashList.length || deckAnimating) return;
+        deckInteracted = true;
+        var card = $("deckCard");
+        function step(){
+          flashIdx = (flashIdx + dir + flashList.length) % flashList.length;
+          flashShown = false;
+          deckSaveIdx();
+          renderFlash();
+          if (!REDUCED_MOTION && card) {
+            card.classList.add(dir > 0 ? "deck-in-r" : "deck-in-l");
+            void card.offsetWidth;
+            card.classList.remove("deck-in-l", "deck-in-r");
+          }
+          deckAnimating = false;
+        }
+        if (REDUCED_MOTION || !card) { step(); return; }
+        deckAnimating = true;
+        card.classList.add(dir > 0 ? "deck-out-l" : "deck-out-r");
+        setTimeout(function(){
+          if (card) card.classList.remove("deck-out-l", "deck-out-r");
+          step();
+        }, 240);
+      }
+      function deckRate(kind){
+        var item = flashList[flashIdx];
+        if (!item || deckAnimating) return;
+        if (!flashShown) { deckFlip(); return; }
+        deckInteracted = true;
+        var key = item.lang + ":" + String(item.w).toLowerCase();
+        setWordMark(item.lang, item.w, kind === "got" ? "known" : "mistake");
+        var prog = deckProgGet(deckCacheKey());
+        prog.rated = prog.rated || {};
+        prog.rated[key] = kind;
+        deckProgSave(deckCacheKey(), prog);
+        try { logActivity("review"); } catch (e) {}
+        var fb = $("deckFeedback");
+        fb.textContent = kind === "got" ? "Got it" : "You'll get it next time";
+        fb.className = "deck-feedback show " + (kind === "got" ? "fb-got" : "fb-miss");
+        renderFlash();
+        deckAnimating = true;
+        setTimeout(function(){
+          fb.className = "deck-feedback";
+          deckAnimating = false;
+          deckGo(1);
+        }, 480);
+      }
+      function deckReact(kind){
+        var item = flashList[flashIdx];
+        if (!item) return;
+        deckInteracted = true;
+        var key = item.lang + ":" + String(item.w).toLowerCase();
+        var prog = deckProgGet(deckCacheKey());
+        prog.liked = prog.liked || {};
+        prog.disliked = prog.disliked || {};
+        if (kind === "like") {
+          if (prog.liked[key]) delete prog.liked[key];
+          else { prog.liked[key] = 1; delete prog.disliked[key]; }
+        } else {
+          if (prog.disliked[key]) delete prog.disliked[key];
+          else { prog.disliked[key] = 1; delete prog.liked[key]; }
+        }
+        deckProgSave(deckCacheKey(), prog);
+        renderFlash();
+      }
+      function deckShuffle(){
+        if (flashList.length < 2) return;
+        deckInteracted = true;
+        for (var i = flashList.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = flashList[i]; flashList[i] = flashList[j]; flashList[j] = t;
+        }
+        var prog = deckProgGet(deckCacheKey());
+        prog.order = flashList.map(function(x){ return x.lang + ":" + String(x.w).toLowerCase(); });
+        prog.idx = 0;
+        deckProgSave(deckCacheKey(), prog);
+        flashIdx = 0;
+        flashShown = false;
+        renderFlash();
+      }
       var WORD_LOOKUP = {};
       function buildWordLookup(){
         ALL_WORDS.forEach(function(x){
@@ -13132,175 +13480,85 @@ function wrCheck() {
         });
         return out;
       }
-      function buildFlashDeck(){
-        var list = [], seen = {};
-        ALL_WORDS.forEach(function(x){
-          if (flashLang !== "all" && x.lang !== flashLang) return;
-          if (flashLevel !== "all" && x.level !== flashLevel) return;
-          if (flashTopic !== "all" && x.topic !== flashTopic) return;
-          if (flashMark !== "all" && wordMark(x.lang, x.w) !== flashMark) return;
-          var k = x.lang + ":" + (x.w || "").toLowerCase();
-          if (seen[k]) return;
-          seen[k] = true;
-          list.push(x);
-        });
-        if (flashTopic !== "all") {
-          var langs = flashLang === "all" ? ["en", "de"] : [flashLang];
-          var levels = flashLevel === "all" ? ["A1", "A2"] : [flashLevel];
-          langs.forEach(function(lg){
-            levels.forEach(function(lv){
-              convWords(lg, lv, flashTopic).forEach(function(x){
-                if (flashMark !== "all" && wordMark(x.lang, x.w) !== flashMark) return;
-                var k = x.lang + ":" + (x.w || "").toLowerCase();
-                if (seen[k]) return;
-                seen[k] = true;
-                list.push(x);
-              });
-            });
-          });
-        }
-        flashList = list;
-        flashIdx = 0; flashShown = false;
-        renderFlash();
-      }
-      function setFlashLang(f){
-        flashLang = f;
-        $("fAll").className = f === "all" ? "active-all" : "";
-        $("fEn").className = f === "en" ? "active-en" : "";
-        $("fDe").className = f === "de" ? "active-de" : "";
-        buildFlashDeck();
-      }
-      function setFlashLevel(lv){
-        flashLevel = lv;
-        $("fLvlAll").className = lv === "all" ? "active-all" : "";
-        $("fLvlA1").className = lv === "A1" ? "active-lvl" : "";
-        $("fLvlA2").className = lv === "A2" ? "active-lvl" : "";
-        buildFlashDeck();
-      }
-      $("fAll").addEventListener("click", function(){ setFlashLang("all"); });
-      $("fEn").addEventListener("click", function(){ setFlashLang("en"); });
-      $("fDe").addEventListener("click", function(){ setFlashLang("de"); });
-      $("fLvlAll").addEventListener("click", function(){ setFlashLevel("all"); });
-      $("fLvlA1").addEventListener("click", function(){ setFlashLevel("A1"); });
-      $("fLvlA2").addEventListener("click", function(){ setFlashLevel("A2"); });
-      function setFlashMark(m){
-        flashMark = m;
-        $("fMarkAll").className = m === "all" ? "active-all" : "";
-        $("fMarkKnown").className = m === "known" ? "active-lvl" : "";
-        $("fMarkMistake").className = m === "mistake" ? "active-lvl" : "";
-        buildFlashDeck();
-      }
-      $("fMarkAll").addEventListener("click", function(){ setFlashMark("all"); });
-      $("fMarkKnown").addEventListener("click", function(){ setFlashMark("known"); });
-      $("fMarkMistake").addEventListener("click", function(){ setFlashMark("mistake"); });
-      (function initFlashTopics(){
-        var grid = $("topicSheetGrid");
-        var backdrop = $("topicSheetBackdrop");
-        var btn = $("flashTopicBtn");
-        var label = $("flashTopicLabel");
-        var search = $("topicSheetSearch");
-        var emptyMsg = $("topicSheetEmpty");
-        var topicSheetHist = false;
-        if (!grid || !backdrop || !btn) return;
-        var GRID_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>';
-        function topicIcon(slug){
-          var p = TOPIC_ICONS[slug] || TOPIC_ICONS.intro || "";
-          return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
-        }
-        function topicName(slug){
-          if (slug === "all") return "كل المواضيع";
-          var found = null;
-          TOPICS.forEach(function(x){ if (x.slug === slug) found = x; });
-          return found ? found.ar : "كل المواضيع";
-        }
-        function markSelected(){
-          var items = grid.querySelectorAll("[data-tslug]");
-          for (var i = 0; i < items.length; i++){
-            if (items[i].getAttribute("data-tslug") === flashTopic) items[i].classList.add("sel");
-            else items[i].classList.remove("sel");
-          }
-          if (label) label.textContent = topicName(flashTopic);
-        }
-        function buildGrid(){
-          var html = '<button class="tsheet-hero" type="button" data-tslug="all">' + GRID_ICON + '<span class="th-tx"><b>كل المواضيع</b><small>' + arNum(TOPICS.length) + ' موضوع · A1 و A2</small></span><span class="th-check">✓</span></button>';
-          TOPICS.forEach(function(t){
-            html += '<button class="tsheet-card" type="button" data-tslug="' + t.slug + '" data-tname="' + t.ar + '">' + topicIcon(t.slug) + '<b>' + t.ar + '</b><span class="th-check">✓</span></button>';
-          });
-          grid.innerHTML = html;
-          markSelected();
-        }
-        function closeSheetNow(){
-          topicSheetHist = false;
-          backdrop.hidden = true;
-          document.body.style.overflow = "";
-        }
-        function openSheet(){
-          buildGrid();
-          if (search) search.value = "";
-          filterGrid("");
-          backdrop.hidden = false;
-          document.body.style.overflow = "hidden";
-          topicSheetHist = true;
-          hPush({ app: 1, view: "words", sheet: 1 }, "#words");
-        }
-        function closeSheet(){
-          if (topicSheetHist) { try { history.back(); return; } catch (e) { /* fall through */ } }
-          closeSheetNow();
-        }
-        function filterGrid(q){
-          q = (q || "").trim();
-          var cards = grid.querySelectorAll(".tsheet-card");
-          var visible = 0;
-          for (var i = 0; i < cards.length; i++){
-            var name = cards[i].getAttribute("data-tname") || "";
-            var show = !q || name.indexOf(q) !== -1;
-            cards[i].style.display = show ? "" : "none";
-            if (show) visible++;
-          }
-          var hero = grid.querySelector(".tsheet-hero");
-          var heroShow = !q || "كل المواضيع".indexOf(q) !== -1;
-          if (hero) hero.style.display = heroShow ? "" : "none";
-          if (emptyMsg) emptyMsg.hidden = visible > 0 || heroShow;
-        }
-        function setTopic(slug){
-          flashTopic = slug;
-          markSelected();
-          buildFlashDeck();
-          closeSheet();
-        }
-        grid.addEventListener("click", function(e){
-          var b = e.target.closest ? e.target.closest("[data-tslug]") : null;
-          if (b) setTopic(b.getAttribute("data-tslug"));
-        });
-        btn.addEventListener("click", openSheet);
-        $("topicSheetX").addEventListener("click", closeSheet);
-        backdrop.addEventListener("click", function(e){ if (e.target === backdrop) closeSheet(); });
-        if (search) search.addEventListener("input", function(){ filterGrid(search.value); });
-        window.closeTopicSheetNow = closeSheetNow;
-        window.closeTopicSheet = closeSheet;
-        buildGrid();
-      })();
       buildFlashDeck();
-      $("flashNext").addEventListener("click", function(){
-        flashIdx = (flashIdx + 1) % flashList.length; flashShown = false; renderFlash();
+      $("deckCard").addEventListener("click", function(e){
+        if (deckSwiped) { deckSwiped = false; return; }
+        if (e.target.closest && e.target.closest("button")) return;
+        deckFlip();
       });
-      $("flashPrev").addEventListener("click", function(){
-        flashIdx = (flashIdx - 1 + flashList.length) % flashList.length; flashShown = false; renderFlash();
+      $("deckCard").addEventListener("keydown", function(e){
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); deckFlip(); }
       });
-      $("flashFlip").addEventListener("click", function(){
-        flashShown = !flashShown; renderFlash();
+      (function deckSwipe(){
+        var stage = $("deckStage");
+        if (!stage) return;
+        var x0 = 0, y0 = 0, t0 = 0, tracking = false;
+        stage.addEventListener("touchstart", function(e){
+          if (!e.touches || !e.touches.length) return;
+          x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now(); tracking = true;
+        }, { passive: true });
+        stage.addEventListener("touchend", function(e){
+          if (!tracking) return;
+          tracking = false;
+          var t = e.changedTouches && e.changedTouches[0];
+          if (!t) return;
+          var dx = t.clientX - x0, dy = t.clientY - y0;
+          if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
+            deckSwiped = true;
+            deckGo(dx < 0 ? 1 : -1);
+            setTimeout(function(){ deckSwiped = false; }, 50);
+          }
+        }, { passive: true });
+      })();
+      document.addEventListener("keydown", function(e){
+        if (typeof curView === "undefined" || curView !== "words") return;
+        if (e.key === "ArrowRight") { e.preventDefault(); deckGo(1); }
+        else if (e.key === "ArrowLeft") { e.preventDefault(); deckGo(-1); }
+        else if (e.key === "g" || e.key === "G") deckRate("got");
+        else if (e.key === "x" || e.key === "X") deckRate("miss");
       });
-      $("flashSpeakWord").addEventListener("click", function(){
-        var item = flashList[flashIdx]; if (!item) return;
-        stopVocab();
-        var seg = null; try { seg = vocabWordSeg(item.w, item.lang); } catch (e) { seg = null; }
-        if (seg) playBundle(seg, item.w, item.lang, null, null, null, 1); else bankSpeak(item.w, item.lang);
+      $("deckNext").addEventListener("click", function(){ deckGo(1); });
+      $("deckPrev").addEventListener("click", function(){ deckGo(-1); });
+      $("deckGot").addEventListener("click", function(){ deckRate("got"); });
+      $("deckMiss").addEventListener("click", function(){ deckRate("miss"); });
+      $("deckLike").addEventListener("click", function(){ deckReact("like"); });
+      $("deckDislike").addEventListener("click", function(){ deckReact("dislike"); });
+      $("deckSpeakWord").addEventListener("click", function(e){ e.stopPropagation(); deckInteracted = true; deckPlayWord(); });
+      $("deckSpeakWordBack").addEventListener("click", function(e){ e.stopPropagation(); deckInteracted = true; deckPlayWord(); });
+      $("deckSpeakEx").addEventListener("click", function(e){ e.stopPropagation(); deckInteracted = true; deckPlayEx(); });
+      $("deckAutoBtn").addEventListener("click", function(){
+        try { localStorage.setItem(DECK_AUTO_KEY, deckAutoOn() ? "0" : "1"); } catch (e) {}
+        renderDeckPicker();
       });
-      $("flashSpeakEx").addEventListener("click", function(){
-        var item = flashList[flashIdx]; if (!item) return;
-        stopVocab();
-        var seg = null; try { seg = vocabExampleSeg(item.w, item.ef, item.lang); } catch (e) { seg = null; }
-        if (seg) playBundle(seg, item.ef, item.lang); else bankSpeak(item.ef, item.lang);
+      $("deckPickBtn").addEventListener("click", function(){
+        var p = $("deckPicker");
+        p.hidden = !p.hidden;
+        if (!p.hidden) renderDeckPicker();
+      });
+      $("deckStartBtn").addEventListener("click", function(){ $("deckPicker").hidden = true; });
+      $("deckShuffleBtn").addEventListener("click", function(){ deckShuffle(); $("deckPicker").hidden = true; });
+      $("deckRestartBtn").addEventListener("click", function(){
+        deckProgDrop(deckCacheKey());
+        buildFlashDeck();
+        $("deckPicker").hidden = true;
+      });
+      $("deckPickLang").addEventListener("click", function(e){
+        var b = e.target.closest ? e.target.closest("[data-dlang]") : null;
+        if (b) setFlashLang(b.getAttribute("data-dlang"));
+      });
+      $("deckPickLvl").addEventListener("click", function(e){
+        var b = e.target.closest ? e.target.closest("[data-dlvl]") : null;
+        if (b) setFlashLevel(b.getAttribute("data-dlvl"));
+      });
+      $("deckPickMark").addEventListener("click", function(e){
+        var b = e.target.closest ? e.target.closest("[data-dmark]") : null;
+        if (b) setFlashMark(b.getAttribute("data-dmark"));
+      });
+      $("deckPickTopics").addEventListener("click", function(e){
+        var b = e.target.closest ? e.target.closest("[data-dtopic]") : null;
+        if (!b) return;
+        flashTopic = b.getAttribute("data-dtopic");
+        buildFlashDeck();
       });
 
       /* ---------- Phrases ---------- */
@@ -16385,7 +16643,7 @@ var AUDIO_FILES = ["audio-obelisk/examples-de-00.aad81f35.opus", "audio-obelisk/
       applyZen();
       buildWordLookup();
       audioOfflineInit();
-      renderFlash();
+      buildFlashDeck(true);
       updateProgress();
       renderExScore();
       renderHome();
