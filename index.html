@@ -4096,6 +4096,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         });
         box.appendChild(all);
         TOPICS.forEach(function(t){
+          if (curTopic === "extra" && t.slug !== "extra") return;
           var n = 0, done = 0;
           var lvls = [];
           STORIES.forEach(function(s){
@@ -4119,7 +4120,10 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           c.textContent = arNum(n);
           b.appendChild(c);
           b.addEventListener("click", function(){
-            if (curTopic === t.slug) { curTopic = "all"; renderTopicFilters(); renderGrid(); }
+            if (curTopic === t.slug) {
+              if (t.slug === "extra") return;
+              curTopic = "all"; renderTopicFilters(); renderGrid();
+            }
             else { openTopic(t.slug); }
           });
           box.appendChild(b);
@@ -4811,7 +4815,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         function ok(v, list) { return list.indexOf(v) !== -1 ? v : null; }
         var v;
         if ((v = ok(st.curLang, ["en", "de"]))) curLang = v;
-        if ((v = ok(st.curLevel, ["all", "A1", "A2"]))) curLevel = v;
+        if ((v = ok(st.curLevel, ["all", "A1", "A2", "extra"]))) curLevel = v;
         if (typeof st.curTopic === "string" && st.curTopic) curTopic = st.curTopic;
         if ((v = ok(st.bankLang, ["en", "de"]))) bankLang = v;
         if (typeof st.bankTopic === "string" && st.bankTopic) bankTopic = st.bankTopic;
