@@ -1146,7 +1146,7 @@ input,textarea,select{font-size:16px}
       .menu-drawer{width:min(320px,86vw);height:100%;overflow-y:auto;background:var(--surface);border-inline-end:1px solid var(--line);box-shadow:12px 0 40px rgba(0,0,0,.35);padding:18px 16px 24px;animation:menuIn .22s ease}
       @keyframes menuIn{from{transform:translateX(24px);opacity:.4}to{transform:none;opacity:1}}
       .menu-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-      .menu-title{margin:0;font-size:1.25rem;font-weight:800}
+      .menu-title{margin:0;font-size:1.25rem;font-weight:800}       .menu-sec{font-size:.82rem;font-weight:800;color:var(--muted);margin:14px 0 8px}       .privacy-body{max-width:65ch;line-height:1.9}       .privacy-body h3{margin:20px 0 6px;font-size:1.1rem}
       .menu-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
       .menu-ic{flex:0 0 auto;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center}
       .menu-ic svg{width:22px;height:22px}
@@ -1194,13 +1194,13 @@ input,textarea,select{font-size:16px}
     <div class="menu-backdrop" id="menuDrawerBackdrop" hidden>
       <div class="menu-drawer" role="dialog" aria-label="القائمة">
         <div class="menu-head"><h3 class="menu-title">القائمة</h3><button class="tsheet-x" id="menuDrawerX" type="button" aria-label="إغلاق">✕</button></div>
-        <div class="menu-row"><span class="menu-ic menu-ic-share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span><button class="more-link" type="button" id="shareAppBtn">شارك التطبيق</button></div>
+        <div class="menu-sec">حسابي</div>
         <div class="menu-row"><span class="menu-ic menu-ic-google"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><button class="more-link" type="button" id="googleSyncBtn">تسجيل دخول كوكل</button></div>
-        <div class="menu-row"><span class="menu-ic menu-ic-audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span><button class="more-link" type="button" id="audioOfflineBtn">تحميل الصوت للاستخدام بدون نت</button></div>
-        <div class="menu-row"><span class="menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span><button class="more-link" type="button" id="exportBtn">تصدير نسخة احتياطية</button></div>
-        <div class="menu-row"><span class="menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span><button class="more-link" type="button" id="importBtn">استيراد نسخة احتياطية</button></div>
+        <div class="menu-sec">التطبيق</div>
+        <div class="menu-row"><span class="menu-ic menu-ic-audio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span><button class="more-link" type="button" id="audioOfflineBtn">تحميل كل شي للاستخدام بدون نت</button></div>
         <div class="menu-row" id="installRow"><span class="menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v12"/><polyline points="6 8 12 14 18 8"/><path d="M4 20h16"/></svg></span><button class="more-link" type="button" id="installAppBtn">تثبيت التطبيق على الهاتف</button></div>
-        <input type="file" id="importFile" accept="application/json,.json" hidden />
+        <div class="menu-row"><span class="menu-ic menu-ic-share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span><button class="more-link" type="button" id="shareAppBtn">شارك التطبيق</button></div>
+        <div class="menu-row"><span class="menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><button class="more-link" type="button" data-goto="privacy">سياسة الخصوصية</button></div>
         <div class="audio-offline-prog" id="audioOfflineProg" hidden></div>
       </div>
     </div>
@@ -1210,7 +1210,7 @@ input,textarea,select{font-size:16px}
       <main>
         <!-- ======== Home: level stats dashboard ======== -->
         <section id="view-home">
-          <h2 class="view-title">الرئيسية</h2>
+          <h1 class="view-title">الرئيسية</h1>
           <div class="streak-box" id="streakBox"></div>
           <div class="home-summary" id="homeSummary"></div>
           <div class="home-grid" id="homeLevels"></div>
@@ -1238,7 +1238,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== 100-day plan: خطة الـ 100 يوم ======== -->
         <section id="view-plan100" hidden>
-          <h2 class="view-title">خطة الـ 100 يوم</h2>
+          <h1 class="view-title">خطة الـ 100 يوم</h1>
           <p class="gram-hint">25 كلمة كل يوم × 100 يوم = كل بنك الكلمات (2500). الترتيب: اقرأ القصة، بعدين الكلمات والبطاقات، بعدين اكتب الكلمات وتأكد من إملائك، بعدين المحادثة، بعدين القاعدة. الكلمات من القصة الحالية والقصص السابقة بدون تكرار. اليوم ينحسب بس من تخلّص كل كلماته، والغياب ما يأخرها — ماكو تواريخ. لكل لغة خطتها الخاصة.</p>
           <div class="filters">
             <div class="switch" role="group" aria-label="لغة الخطة">
@@ -1251,7 +1251,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Grammar A1 + A2 ======== -->
         <section id="view-grammar" hidden>
-          <h2 class="view-title">قواعد</h2>
+          <h1 class="view-title">القواعد</h1>
           <div class="filters">
             <div class="switch" role="group" aria-label="لغة القواعد">
               <button data-gramlang="en" class="active-en" id="gramLangEn">English · الإنجليزية</button>
@@ -1268,7 +1268,7 @@ input,textarea,select{font-size:16px}
 
 <!-- ======== Stories ======== -->
         <section id="view-stories" hidden>
-          <h2 class="view-title">القصص</h2>
+          <h1 class="view-title">القصص</h1>
           <div class="filters">
             <div class="switch" role="group" aria-label="اختيار اللغة">
               <button data-lang="en" class="active-en" id="langEn">English · الإنجليزية</button>
@@ -1291,7 +1291,7 @@ input,textarea,select{font-size:16px}
         <!-- ======== Topic page ======== -->
         <section id="view-topic" hidden>
           <button class="topic-back" id="topicBack" type="button">→ رجوع للقصص</button>
-          <h2 class="view-title" id="topicTitle">الموضوع</h2>
+          <h1 class="view-title" id="topicTitle">الموضوع</h1>
           <p class="topic-count" id="topicCount"></p>
           <div class="grid" id="topicGrid"></div>
           <p class="empty-msg" id="topicEmpty" hidden>لا توجد قصص في هذا الموضوع.</p>
@@ -1299,7 +1299,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Flashcards ======== -->
         <section id="view-words" hidden>
-          <h2 class="view-title">بطاقات الكلمات</h2>
+          <h1 class="view-title">بطاقات الكلمات</h1>
           <button class="focus-exit" type="button" data-goto="home">✕ خروج من البطاقات</button>
           <div class="filters">
             <div class="switch" role="group" aria-label="لغة البطاقات">
@@ -1336,7 +1336,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Phrases ======== -->
         <section id="view-phrases" hidden>
-          <h2 class="view-title">عبارات مفيدة</h2>
+          <h1 class="view-title">عبارات مفيدة</h1>
           <div class="filters">
             <div class="switch" role="group" aria-label="لغة العبارات">
               <button class="active-en" id="phraseLangEn">English · الإنجليزية</button>
@@ -1353,7 +1353,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Review hub chrome: sub-tabs + extra tools ======== -->
         <div id="reviewChrome" hidden>
-          <h2 class="view-title">المراجعة</h2>
+          <h1 class="view-title">المراجعة</h1>
           <div class="subnav" role="tablist" aria-label="أقسام المراجعة">
             <button class="subnav-btn" role="tab" aria-selected="false" type="button" data-sub="mywords">كلماتي</button>
             <button class="subnav-btn active" role="tab" aria-selected="true" type="button" data-sub="review">اليوم</button>
@@ -1365,7 +1365,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== My words ======== -->
         <section id="view-mywords" hidden>
-          <h2 class="view-title">كلماتي</h2>
+          <h1 class="view-title">كلماتي</h1>
           <div class="mw-head">
             <span class="mw-count">كلمات محفوظة: <b id="mwCount">0</b></span>
             <button class="copy-btn" id="mwCopy">انسخ القائمة</button>
@@ -1378,7 +1378,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Daily review (SRS) ======== -->
         <section id="view-review" hidden>
-          <h2 class="view-title">مراجعة اليوم</h2>
+          <h1 class="view-title">مراجعة اليوم</h1>
           <div class="tdy-box">
             <div class="tdy-head">
               <h3>كلمات اليوم</h3>
@@ -1430,7 +1430,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Week review (saved words, last 7 days, grouped by day) ======== -->
         <section id="view-reviewweek" hidden>
-          <h2 class="view-title">مراجعة الأسبوع</h2>
+          <h1 class="view-title">مراجعة الأسبوع</h1>
           <div class="rev-prog-box">
             <div class="rev-prog-line" id="wkProgText">راجعت 0 من 0 كلمة</div>
             <div class="progress-track" role="progressbar" aria-label="تقدّم مراجعة الأسبوع"><div class="progress-fill" id="wkProgFill"></div></div>
@@ -1444,7 +1444,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Month review (saved words, last 30 days by week + legacy) ======== -->
         <section id="view-reviewmonth" hidden>
-          <h2 class="view-title">مراجعة الشهر</h2>
+          <h1 class="view-title">مراجعة الشهر</h1>
           <div class="rev-prog-box">
             <div class="rev-prog-line" id="moProgText">راجعت 0 من 0 كلمة</div>
             <div class="progress-track" role="progressbar" aria-label="تقدّم مراجعة الشهر"><div class="progress-fill" id="moProgFill"></div></div>
@@ -1458,7 +1458,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Exercises ======== -->
         <section id="view-exercises" hidden>
-          <h2 class="view-title">تمارين</h2>
+          <h1 class="view-title">تمارين</h1>
           <button class="focus-exit" type="button" data-goto="home">✕ خروج من التمارين</button>
           <div class="ex-types" role="group" aria-label="اختيار نوع التمرين">
             <button class="ex-type active" data-ex="fill" type="button">إكمال الفراغ</button>
@@ -1484,7 +1484,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Exams hub ======== -->
         <section id="view-exams" hidden>
-          <h2 class="view-title">الامتحانات</h2>
+          <h1 class="view-title">الامتحانات</h1>
           <p class="hint" style="margin-bottom:18px">اختر الامتحان — كل امتحان يفتح في مكان مخصص بدون أي شيء يشتتك، وترجع منه بزر الخروج.</p>
           <div class="tool-box" style="margin-bottom:16px">
             <h3 style="margin:0 0 6px">اختبار المستوى A1</h3>
@@ -1501,7 +1501,7 @@ input,textarea,select{font-size:16px}
         </section>
         <!-- ======== A1 Level Test ======== -->
         <section id="view-a1test" hidden>
-          <h2 class="view-title">اختبار المستوى A1</h2>
+          <h1 class="view-title">اختبار المستوى A1</h1>
           <button class="focus-exit" type="button" data-goto="exams">✕ خروج من الاختبار</button>
           <div id="a1StartScreen">
             <div class="exam-hero">
@@ -1555,7 +1555,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Word logic (Bank) ======== -->
         <section id="view-wordlogic" hidden>
-          <h2 class="view-title">منطق الكلمات</h2>
+          <h1 class="view-title">منطق الكلمات</h1>
           <button class="focus-exit" type="button" data-goto="bank">✕ خروج من منطق الكلمات</button>
           <p class="hint" style="margin-bottom:14px">الفهم أفضل من الحفظ: الأفعال الشاذة مجموعات لها نمط، وكل لاحقة لها وظيفة، وكل جملة لها هيكل ثابت، والكلام الطبيعي له اختصاراته. افهم المنطق وستعرف الكلمات والجمل الجديدة وحدك.</p>
           <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
@@ -1569,7 +1569,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Final Exam (A1+A2) ======== -->
         <section id="view-finalexam" hidden>
-          <h2 class="view-title">الامتحان النهائي</h2>
+          <h1 class="view-title">الامتحان النهائي</h1>
           <button class="focus-exit" type="button" data-goto="exams">✕ خروج من الامتحان</button>
           <div id="finStartScreen">
             <div class="exam-hero">
@@ -1621,7 +1621,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Stats / mastery dashboard ======== -->
         <section id="view-writing" hidden>
-          <h2 class="view-title">الكتابة</h2>
+          <h1 class="view-title">الكتابة</h1>
           <button class="focus-exit" type="button" data-goto="conversation">✕ خروج من الكتابة</button>
           <div id="wrHome">
             <p class="hint">الكتابة على مستويين: A1 جمل قصيرة بسيطة (حاضر)، وA2 ماضٍ ورأي ومقارنة وروابط. الأفضل: أكمل A1 أولًا ثم A2. إذا استخدمت «أظهر الكلمة» لا يُحسب التمرين مكتملًا — لازم تعيده بدون تلميح.</p>
@@ -1653,7 +1653,7 @@ input,textarea,select{font-size:16px}
           </div>
         </section>
       <section id="view-stats" hidden>
-          <h2 class="view-title">إحصائياتي</h2>
+          <h1 class="view-title">إحصائياتي</h1>
           <div id="statsSkills"></div>
           <div class="ltm-box">
             <div class="big" id="ltmCount">0</div>
@@ -1676,7 +1676,7 @@ input,textarea,select{font-size:16px}
 
         <!-- ======== Vocabulary bank A1 ======== -->
         <section id="view-bank" hidden>
-          <h2 class="view-title">بنك الكلمات</h2>
+          <h1 class="view-title">بنك الكلمات</h1>
           <button class="home-hero" type="button" data-goto="wordlogic" style="margin-bottom:16px"><span class="home-hero-ic">🧠</span><span class="home-hero-tx"><b>منطق الكلمات</b><small>الأفعال الشاذة وقواعد تكوين الكلمات — افهم، لا تحفظ</small></span><span class="home-hero-ar">‹</span></button>
           <div class="bank-progress">
             <div class="bank-prog-card">
@@ -1726,14 +1726,14 @@ input,textarea,select{font-size:16px}
         <!-- ======== Bank topic page ======== -->
         <section id="view-banktopic" hidden>
           <button class="topic-back" id="bankTopicBack" type="button">→ رجوع للبنك</button>
-          <h2 class="view-title" id="bankTopicTitle">البنك</h2>
+          <h1 class="view-title" id="bankTopicTitle">البنك</h1>
           <p class="topic-count" id="bankTopicCount"></p>
           <div class="grid" id="bankTopicGrid"></div>
           <p class="empty-msg" id="bankTopicEmpty" hidden>لا توجد كلمات في هذا الموضوع.</p>
           <button class="bank-more" id="bankTopicMore" type="button" hidden>عرض المزيد</button>
         </section>
         <section id="view-conversation" hidden>
-          <h2 class="view-title">محادثة</h2>
+          <h1 class="view-title">محادثة</h1>
           <p class="conv-intro">محادثات قصيرة بين شخصين، بدون سرد — اسمع كل دور بصوت مختلف.</p>
           <div class="filters">
             <div class="switch" role="group" aria-label="لغة المحادثة">
@@ -1751,7 +1751,26 @@ input,textarea,select{font-size:16px}
               <div id="convWriteList"></div>
             </details>
         </section>
-      </main>
+      
+        <!-- ======== Privacy policy ======== -->
+        <section id="view-privacy" hidden>
+          <button class="topic-back" type="button" data-goto="home">→ رجوع للرئيسية</button>
+          <h1 class="view-title">سياسة الخصوصية</h1>
+          <div class="privacy-body">
+            <p>تطبيق Tales &amp; Words مجاني، ولا نبيع بياناتك ولا نعرض إعلانات.</p>
+            <h3>ما الذي يُحفظ على جهازك؟</h3>
+            <p>تقدّمك (القصص المقروءة، الكلمات المحفوظة، نتائج الامتحانات، الإعدادات) يُحفظ محليًا في متصفح هاتفك فقط. لا يُرسل لأي خادم إلا إذا سجّلت دخولك بكوكل (انظر أدناه).</p>
+            <h3>تسجيل الدخول بكوكل (اختياري)</h3>
+            <p>إذا سجّلت دخولك، يُزامَن تقدّمك إلى مجلد خاص في حسابك على Google Drive حتى لا يضيع عند تغيير الهاتف. التطبيق لا يطّلع على كلمة مرورك ولا على ملفاتك الأخرى في Drive، ولا يشارك بياناتك مع أي طرف ثالث.</p>
+            <h3>الصوت بدون نت</h3>
+            <p>زر «تحميل كل شي» ينزّل ملفات الصوت وهيكل التطبيق إلى ذاكرة هاتفك ليعمل التطبيق بدون إنترنت. يمكنك مسحها من إعدادات المتصفح (بيانات الموقع) في أي وقت.</p>
+            <h3>لا تتبّع ولا إعلانات</h3>
+            <p>لا نستخدم أدوات تتبّع ولا إعلانات ولا نبيع أي بيانات. التطبيق لا يطلب منك أي معلومات شخصية غير ما تختاره بنفسك عند تسجيل الدخول.</p>
+            <h3>حذف بياناتك</h3>
+            <p>يمكنك مسح كل بياناتك من هاتفك بحذف بيانات الموقع من إعدادات المتصفح، وحذف نسخة Drive بإلغاء الوصول من إعدادات حساب كوكل.</p>
+          </div>
+        </section>
+</main>
 
     </div>
 
@@ -1761,7 +1780,7 @@ input,textarea,select{font-size:16px}
       <button class="bnav-btn" type="button" data-main="stories"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span>القصص</span></button>
       
       <button class="bnav-btn" type="button" data-main="bank"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span>بنك الكلمات</span></button>
-      <button class="bnav-btn" type="button" data-main="grammar"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span><span>قواعد</span></button>
+      <button class="bnav-btn" type="button" data-main="grammar"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span><span>القواعد</span></button>
       <button class="bnav-btn" type="button" data-main="conversation"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span><span>محادثة</span></button>
     <button class="bnav-btn" type="button" data-main="exams"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span>الامتحانات</span></button>      </nav>
 
@@ -1801,9 +1820,9 @@ input,textarea,select{font-size:16px}
         <div class="rs-row">
           <span class="rs-label" id="speedLabel">سرعة الصوت</span>
           <div class="speed-group" role="group" aria-labelledby="speedLabel">
-            <button type="button" data-speed="0.75" aria-pressed="false">0.75x</button>
+            <button type="button" data-speed="0.5" aria-pressed="false">0.5x</button>             <button type="button" data-speed="0.75" aria-pressed="false">0.75x</button>
             <button type="button" data-speed="1" aria-pressed="true" class="active">1x</button>
-            <button type="button" data-speed="1.25" aria-pressed="false">1.25x</button>
+            <button type="button" data-speed="1.25" aria-pressed="false">1.25x</button>             <button type="button" data-speed="1.5" aria-pressed="false">1.5x</button>
           </div>
         </div>
       </section>
@@ -2588,37 +2607,8 @@ var NEW_STORIES_3 = [{"about":"سارة لا تستطيع الدخول إلى ح
 
       /* ---------- Toast (small confirmation messages) ---------- */
       var toastTimer = null;
-      function exportProgress(){
-        try {
-          var data = { app: "tales-words", version: 1, exportedAt: new Date().toISOString(), store: {} };
-          for (var i = 0; i < localStorage.length; i++) {
-            var k = localStorage.key(i);
-            if (k && k.indexOf("readerApp.") === 0) data.store[k] = localStorage.getItem(k);
-          }
-          var blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-          var a = document.createElement("a");
-          a.href = URL.createObjectURL(blob);
-          a.download = "tales-words-backup.json";
-          document.body.appendChild(a); a.click(); a.remove();
-          setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
-          showToast("تم تصدير نسخة احتياطية");
-        } catch (e) { showToast("تعذّر التصدير"); }
-      }
-      function importProgress(file){
-        if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function(){
-          try {
-            var data = JSON.parse(reader.result);
-            if (!data || data.app !== "tales-words" || !data.store) throw new Error("bad file");
-            var n = 0;
-            Object.keys(data.store).forEach(function(k){ localStorage.setItem(k, data.store[k]); n++; });
-            showToast("تم الاستيراد (" + arNum(n) + " عنصر) — جارٍ إعادة التحميل…");
-            setTimeout(function(){ location.reload(); }, 1200);
-          } catch (e) { showToast("ملف غير صالح — لم يتم الاستيراد"); }
-        };
-        reader.readAsText(file);
-      }
+      
+      
       function showToast(msg){
         var t = $("toast");
         t.textContent = msg;
@@ -4747,7 +4737,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "plan100"];
+        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "plan100", "privacy"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var FOCUS_VIEWS = ["a1test", "finalexam", "writing", "exercises", "words"];
       var curView = "home", curReviewSub = "review";
@@ -4760,8 +4750,8 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       var VIEW_TITLES = {
         home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "بطاقات الكلمات", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
-        reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "قواعد",
-        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", wordlogic: "منطق الكلمات", writing: "الكتابة", plan100: "خطة الـ 100 يوم"
+        reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "القواعد",
+        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", wordlogic: "منطق الكلمات", writing: "الكتابة", plan100: "خطة الـ 100 يوم", privacy: "سياسة الخصوصية"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
       var startView = "home";
@@ -15973,9 +15963,7 @@ var _ttsNoVoiceWarned = false;
           showToast("من قائمة كروم ⋮ اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية»");
         }
       });
-      $("exportBtn").addEventListener("click", function(){ exportProgress(); });
-      $("importBtn").addEventListener("click", function(){ $("importFile").click(); });
-      $("importFile").addEventListener("change", function(){ importProgress(this.files && this.files[0]); this.value = ""; });
+      
       /* Share the app (native share sheet, clipboard fallback) */
       if ($("shareAppBtn")) $("shareAppBtn").addEventListener("click", function(){
         var url = location.origin + location.pathname.replace(/index\.html$/, "");
@@ -16053,11 +16041,15 @@ var _ttsNoVoiceWarned = false;
         window.closeMenuDrawer = closeMenu;
       })();
 
-      /* ---------- الصوت أوفلاين: تحميل كل الحزم مرة واحدة (واي فاي) ----------
-         923 ملف صوت (572 ميغا). الزر ينزّل الناقص فقط (يتخطى المحفوظ)،
-         فيُستأنف التحميل من حيث توقف. والتخزين الفعلي يتم في كاش الصوت
-         (reading-audio-v1) الذي يخدمه الـ Service Worker (v18) لطلبات Range. */
-      var AUDIO_CACHE_NAME = "reading-audio-v1";
+      /* ---------- أوفلاين: تحميل كل شي مرة واحدة (واي فاي) ----------
+         الزر ينزّل الناقص فقط (يتخطى المحفوظ)، فيُستأنف التحميل من حيث
+         توقف. يحفظ: هيكل التطبيق + قوائم الصوت + كل حزم الصوت (125 ملف،
+         ~258 ميغا) — في نفس كاشات الـ Service Worker (v19)، حتى يشتغل
+         التطبيق كاملًا بدون نت. ملاحظة: الاسم القديم reading-audio-v1
+         كان كاشًا لا يقرأه الـ SW v19 أبدًا — فالزر كان يحمّل ولا يشتغل
+         أوفلاين. تم تصحيحه إلى tw-audio-v19. */
+      var AUDIO_CACHE_NAME = "tw-audio-v19";
+      var SHELL_CACHE_NAME = "reading-shell-v19";
 var AUDIO_FILES = [
 "audio-obelisk/examples-de-00.aad81f35.opus",
 "audio-obelisk/examples-de-01.294254ef.opus",
@@ -16191,7 +16183,7 @@ var AUDIO_FILES = [
         if (!btn) return;
         try {
           if (localStorage.getItem("readerApp.audioOffline") === "1") {
-            btn.textContent = "الصوت محفوظ للاستخدام بدون نت \u2713";
+            btn.textContent = "كل شي محفوظ للاستخدام بدون نت \u2713";
           }
         } catch (e) {}
         btn.addEventListener("click", function () { downloadAudioOffline(); });
@@ -16201,10 +16193,21 @@ var AUDIO_FILES = [
         if (!btn || btn.disabled) return;
         if (!("caches" in window)) { showToast("المتصفح لا يدعم التخزين أوفلاين"); return; }
         btn.disabled = true;
-        btn.textContent = "جارٍ فحص الصوت المحفوظ\u2026";
+        btn.textContent = "جارٍ فحص المحفوظ\u2026";
         audioOfflineSetProg("جارٍ الفحص\u2026", true);
         var BATCH = 4;
-        caches.open(AUDIO_CACHE_NAME).then(function (cache) {
+        // 1) هيكل التطبيق + قوائم الصوت (صغيرة) — حتى يشتغل كل شي بدون نت
+        var SHELL_DL = ["/", "/index.html", "/manifest.webmanifest", "/assets/manifest.webmanifest",
+          "/assets/icons/icon-192.png", "/assets/icons/icon-512.png", "/assets/icons/icon-maskable-512.png",
+          "/assets/icons/apple-touch-icon.png",
+          "/audio-obelisk/manifest-en.json", "/audio-obelisk/manifest-de.json"];
+        caches.open(SHELL_CACHE_NAME).then(function (sc) {
+          return Promise.all(SHELL_DL.map(function (u) {
+            return fetch(u).then(function (res) { if (res && res.ok) return sc.put(u, res); }).catch(function () {});
+          }));
+        }).catch(function () {}).then(function () {
+          return caches.open(AUDIO_CACHE_NAME);
+        }).then(function (cache) {
           var checks = AUDIO_FILES.map(function (path) {
             var u = "/" + path;
             return cache.match(u, { ignoreSearch: true }).then(function (hit) { return hit ? null : path; }).catch(function () { return path; });
@@ -16216,12 +16219,12 @@ var AUDIO_FILES = [
             if (missing.length === 0) {
               try { localStorage.setItem("readerApp.audioOffline", "1"); } catch (e) {}
               btn.disabled = false;
-              btn.textContent = "الصوت محفوظ للاستخدام بدون نت \u2713";
-              audioOfflineSetProg("كل الصوت محفوظ (" + total + " ملف) \u2014 يشتغل بدون نت \u2713", true);
+              btn.textContent = "كل شي محفوظ للاستخدام بدون نت \u2713";
+              audioOfflineSetProg("كل شي محفوظ (" + total + " ملف صوت) \u2014 يشتغل بدون نت \u2713", true);
               return;
             }
-            btn.textContent = "جارٍ تحميل الصوت\u2026";
-            audioOfflineSetProg(done + " / " + total + " \u2014 526 ميغا", true);
+            btn.textContent = "جارٍ تحميل كل شي\u2026";
+            audioOfflineSetProg(done + " / " + total + " \u2014 258 ميغا", true);
             var idx = 0;
             function nextBatch() {
               if (idx >= missing.length) return finish();
@@ -16234,7 +16237,7 @@ var AUDIO_FILES = [
                   return cache.put(u, res);
                 }).then(function () { done++; }).catch(function () { failed.push(path); });
               })).then(function () {
-                audioOfflineSetProg(done + " / " + total + " \u2014 526 ميغا", true);
+                audioOfflineSetProg(done + " / " + total + " \u2014 258 ميغا", true);
                 nextBatch();
               });
             }
@@ -16255,11 +16258,11 @@ var AUDIO_FILES = [
               btn.disabled = false;
               if (failed.length === 0) {
                 try { localStorage.setItem("readerApp.audioOffline", "1"); } catch (e) {}
-                btn.textContent = "الصوت محفوظ للاستخدام بدون نت \u2713";
-                audioOfflineSetProg("تم تحميل كل الصوت (" + done + " ملف) \u2014 يشتغل بدون نت \u2713", true);
-                showToast("تم تحميل الصوت للاستخدام بدون نت \u2713");
+                btn.textContent = "كل شي محفوظ للاستخدام بدون نت \u2713";
+                audioOfflineSetProg("تم تحميل كل شي (" + done + " ملف صوت) \u2014 يشتغل بدون نت \u2713", true);
+                showToast("تم تحميل كل شي للاستخدام بدون نت \u2713");
               } else {
-                btn.textContent = "تحميل الصوت للاستخدام بدون نت";
+                btn.textContent = "تحميل كل شي للاستخدام بدون نت";
                 audioOfflineSetProg("تعذّر تحميل " + failed.length + " ملف \u2014 أعد المحاولة على واي فاي", true);
                 showToast("تعذّر تحميل بعض الملفات \u2014 أعد المحاولة");
               }
@@ -16268,7 +16271,7 @@ var AUDIO_FILES = [
           });
         }).catch(function () {
           btn.disabled = false;
-          btn.textContent = "تحميل الصوت للاستخدام بدون نت";
+          btn.textContent = "تحميل كل شي للاستخدام بدون نت";
           audioOfflineSetProg("تعذّر الوصول للتخزين \u2014 أعد المحاولة", true);
         });
       }
