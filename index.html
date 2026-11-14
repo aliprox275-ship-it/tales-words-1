@@ -452,21 +452,31 @@
         background:var(--surface); color:var(--ink); width:100%; max-width:560px; margin:0 10px 10px;
         border:1px solid var(--line); border-radius:var(--r-card); box-shadow:var(--shadow); padding:20px 22px;
       }
-      .wp-word{font-family:var(--font-serif); direction:ltr; text-align:left; font-size:1.7rem; font-weight:700; line-height:1.25}
+      .wp-head{display:flex; align-items:center; justify-content:space-between; gap:12px; direction:ltr}
+      .wp-word{font-family:var(--font-serif); direction:ltr; text-align:left; font-size:1.7rem; font-weight:700; line-height:1.25; flex:1; min-width:0; overflow-wrap:anywhere}
       .wp-word.en{color:var(--accent)} .wp-word.de{color:var(--accent)}
-      .wp-mean{font-size:1.2rem; font-weight:700}
-      .wp-mean-row{display:flex; align-items:center; gap:14px; margin-top:8px; flex-wrap:wrap}
-      .wp-speak{
-        border:0; border-radius:99px; padding:11px 20px; font-weight:800; font-size:1.02rem;
-        background:var(--accent); color:#fff; box-shadow:var(--shadow-card);
+      .wp-speak-icon{
+        flex:none; width:42px; height:42px; border:0; border-radius:50%;
+        background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center;
+        cursor:pointer; box-shadow:var(--shadow-card);
       }
-      .wp-speak:active{transform:scale(.96)}
+      .wp-speak-icon .spk{width:22px; height:22px}
+      .wp-speak-icon:active{transform:scale(.94)}
+      .wp-mean{font-size:1.2rem; font-weight:700; margin-top:8px}
+      .wp-ctx{margin-top:12px; background:var(--surface2); border:1px solid var(--line); border-radius:12px; padding:12px 14px}
+      .wp-ctx-row{display:flex; align-items:flex-start; gap:10px; direction:ltr}
+      .wp-ctx-text{flex:1; min-width:0; font-family:var(--font-serif); direction:ltr; text-align:left; unicode-bidi:isolate; font-size:1.05rem; line-height:1.5}
+      .wp-ctx-speak{
+        flex:none; width:34px; height:34px; border:0; border-radius:50%;
+        background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer;
+      }
+      .wp-ctx-speak .spk{width:18px; height:18px}
+      .wp-ctx-speak:active{transform:scale(.94)}
+      .wp-ctx-ar{margin-top:6px; color:var(--muted); text-align:right}
       .wp-ex{margin-top:8px; color:var(--muted)}
       .wp-ex .ef{display:block; font-family:var(--font-serif); direction:ltr; text-align:left; unicode-bidi:isolate; font-size:1.05rem}
-      .wp-actions{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap}
-      .wp-save{border:0; border-radius:12px; padding:11px 20px; font-weight:800; font-size:1rem; background:var(--ink); color:var(--surface)}
-      .wp-save.saved{background:var(--ok); color:#fff}
-      .wp-close{border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:12px; padding:11px 20px; font-weight:700; font-size:1rem}
+      .wp-actions{display:flex; gap:10px; margin-top:16px}
+      .wp-actions .wp-mark{flex:1; text-align:center}
       .wp-kind{
         display:inline-block; margin-top:6px; font-size:.85rem; font-weight:800;
         background:rgba(138,74,99,.12); color:#7a4257; border-radius:99px; padding:2px 12px;
@@ -2005,19 +2015,24 @@ input,textarea,select{font-size:16px}
     <!-- ======== Word popup ======== -->
     <div class="word-pop" id="wordPop" hidden>
       <div class="word-sheet" role="dialog" aria-modal="true" aria-labelledby="wpWord">
-        <div class="wp-word" id="wpWord"></div>
+        <div class="wp-head">
+          <div class="wp-word" id="wpWord"></div>
+          <button class="wp-speak-icon" id="wpSpeak" type="button" aria-label="استمع إلى نطق الكلمة"><svg class="spk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+        </div>
         <div class="wp-kind" id="wpKind" hidden></div>
-        <div class="wp-mean-row">
-          <div class="wp-mean" id="wpMean"></div>
-          <button class="wp-speak" id="wpSpeak" aria-label="استمع إلى نطق الكلمة"><svg class="spk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg> نطق الكلمة</button>
+        <div class="wp-mean" id="wpMean"></div>
+        <div class="wp-ctx" id="wpCtx" hidden>
+          <div class="wp-ctx-row">
+            <div class="wp-ctx-text" id="wpCtxText"></div>
+            <button class="wp-ctx-speak" id="wpCtxSpeak" type="button" aria-label="استمع إلى الجملة"><svg class="spk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></button>
+          </div>
+          <div class="wp-ctx-ar" id="wpCtxAr"></div>
         </div>
         <div class="wp-compound" id="wpCompound" hidden></div>
         <div class="wp-ex" id="wpEx" hidden></div>
         <div class="wp-actions">
-          <button class="wp-save" id="wpSave">احفظ في كلماتي</button>
           <button class="wp-mark wp-known-btn" id="wpKnown" type="button">أعرفها ✓</button>
           <button class="wp-mark wp-mistake-btn" id="wpMistake" type="button">أخطأت في كتابته</button>
-          <button class="wp-close" id="wpClose">إغلاق</button>
         </div>
       </div>
     </div>
@@ -3181,6 +3196,28 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (note.textContent) box.appendChild(note);
         box.hidden = false;
       }
+      function fillPopCtx(el, story){
+        /* The tapped line: the .sent box holding the tapped word carries
+           both the foreign sentence (.para-f) and its Arabic (.para-a).
+           Works for stories, branch stories and studies -- all three
+           render sentences that way. Falls back to the .para-f itself. */
+        var box = $("wpCtx");
+        if (!box) return;
+        var sent = (el && el.closest) ? el.closest(".sent") : null;
+        var fEl = sent ? sent.querySelector(".para-f")
+                       : ((el && el.closest) ? el.closest(".para-f") : null);
+        var aEl = sent ? sent.querySelector(".para-a") : null;
+        if (fEl && !aEl && fEl.parentElement) aEl = fEl.parentElement.querySelector(".para-a");
+        var fTxt = fEl ? String(fEl.textContent || "").replace(/\s+/g, " ").replace(/^\s+|\s+$/g, "") : "";
+        var aTxt = aEl ? String(aEl.textContent || "").replace(/^\s+|\s+$/g, "") : "";
+        if (!fTxt) { box.hidden = true; if (popCtx) popCtx.ctxText = ""; return; }
+        box.hidden = false;
+        var tEl = $("wpCtxText");
+        tEl.textContent = fTxt;
+        tEl.setAttribute("lang", story ? story.lang : "en");
+        $("wpCtxAr").textContent = aTxt;
+        if (popCtx) popCtx.ctxText = fTxt;
+      }
       function openWordPop(word, story, el){
         /* Tap-to-replay (2026-11-14): while story autoplay is running, a tap
            on a word does NOT open the popup -- the tap bubbles to the .sent
@@ -3201,9 +3238,10 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         $("wpMean").textContent = res.found ? res.t : "هذه الكلمة مو موجودة بالقاموس المصغّر بعد";
         renderCompoundBox(word, story);
         fillPopExample(res, story);
-        updateSaveBtn(); updateMarkBtns();
+        fillPopCtx(el, story);
+        updateMarkBtns();
         $("wordPop").hidden = false;
-        $("wpClose").focus();
+        $("wpSpeak").focus();
       }
       function openPhrasePop(entry, el){
         if (!entry) return;
@@ -3222,17 +3260,10 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         $("wpMean").textContent = entry.t;
         $("wpCompound").hidden = true;
         fillPopExample({ ef: entry.ef, ea: entry.ea }, currentStory);
-        updateSaveBtn(); updateMarkBtns();
+        fillPopCtx(el, currentStory);
+        updateMarkBtns();
         $("wordPop").hidden = false;
-        $("wpClose").focus();
-      }
-      function updateSaveBtn(){
-        var b = $("wpSave");
-        if (popCtx && findSaved(popCtx.lang, popCtx.w) !== -1) {
-          b.textContent = "محفوظة ✓"; b.classList.add("saved"); b.disabled = true;
-        } else {
-          b.textContent = "احفظ في كلماتي"; b.classList.remove("saved"); b.disabled = false;
-        }
+        $("wpSpeak").focus();
       }
       function updateMarkBtns(){
         var k = $("wpKnown"), mm2 = $("wpMistake");
@@ -3249,7 +3280,6 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (activeTap) { activeTap.classList.remove("active"); activeTap = null; }
         popCtx = null;
       }
-      $("wpClose").addEventListener("click", closeWordPop);
       $("wordPop").addEventListener("click", function(e){ if (e.target === this) closeWordPop(); });
       document.addEventListener("keydown", function(e){
         if (e.key === "Escape" && !$("wordPop").hidden) closeWordPop();
@@ -3281,19 +3311,12 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           showToast("تعذّر تشغيل نطق الكلمة");
         }
       });
-      $("wpSave").addEventListener("click", function(){
-        if (!popCtx) return;
-        if (findSaved(popCtx.lang, popCtx.w) === -1) {
-          var nw = { w: popCtx.w, t: popCtx.t, lang: popCtx.lang, src: popCtx.src, ts: Date.now(), savedAt: Date.now() };
-          var d = srsDefaults();
-          nw.reps = d.reps; nw.interval = d.interval; nw.due = d.due; nw.ease = d.ease;
-          myWords.push(nw);
-          saveMyWords();
-          logActivity("word");
-          renderMyWords();
-          showToast("حُفظت الكلمة في «كلماتي» ✓ — مستحقة في مراجعة اليوم");
-        }
-        updateSaveBtn();
+      /* Read the tapped sentence aloud (device TTS, same voice the story
+         paragraphs use when no recording exists for them). */
+      $("wpCtxSpeak").addEventListener("click", function(){
+        if (!popCtx || !popCtx.ctxText) return;
+        stopVocab();
+        bankSpeak(popCtx.ctxText, popCtx.lang);
       });
 
       /* ---------- My words view ---------- */
@@ -3966,9 +3989,26 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             if (kara.idx < kara.queue.length) karaSpeakCurrent(); else karaFinish(true);
           }
         }
+        function onTtsError(){
+          /* TTS failed — do NOT jump ahead. Fall back to the recorded
+             paragraph audio (whole paragraph), then continue normally. */
+          if (done) return; done = true;
+          if (!kara.playing) return;
+          if ((kara.suppressGen || 0) > gen) return;
+          kara.ttsForced = false;
+          kara.queue[kara.idx] = karaBuildItem(para, currentStory.lang, pIdx, 0);
+          karaSpeakCurrent();
+        }
         u.onend = afterSent;
-        u.onerror = afterSent;
-        try { window.speechSynthesis.speak(u); } catch (e) { afterSent(); }
+        u.onerror = onTtsError;
+        /* Android: speak() right after cancel() can error the new utterance.
+           Defer it so the cancel settles. */
+        setTimeout(function(){
+          if (done) return;
+          if (!kara.playing) return;
+          if ((kara.suppressGen || 0) > gen) return;
+          try { window.speechSynthesis.speak(u); } catch (e) { onTtsError(); }
+        }, 150);
       }
       function karaRepeatSentence(){
         var cur = (kara.idx >= 0 && kara.queue[kara.idx]) ? kara.queue[kara.idx] : null;
@@ -4747,8 +4787,25 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             if (onDone) onDone();
           }, true);
         } else {
-          speakText(text, "en");
-          if (onDone) onDone();
+          /* No recorded segment — TTS the paragraph, but only advance
+             when the speech actually ends (not immediately). */
+          var u2 = new SpeechSynthesisUtterance(text);
+          u2.lang = "en-US";
+          u2.rate = audioSpeed;
+          try { pickVoice(u2, "en"); } catch (e) {}
+          var done2 = false;
+          function fin2(){
+            if (done2) return; done2 = true;
+            if (!studyKara.playing) return;
+            if (onDone) onDone();
+          }
+          u2.onend = fin2;
+          u2.onerror = fin2;
+          setTimeout(function(){
+            if (done2) return;
+            if (!studyKara.playing) return;
+            try { window.speechSynthesis.speak(u2); } catch (e) { fin2(); }
+          }, 150);
         }
       }
       function studyPlayNext(){
@@ -4784,9 +4841,24 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           if ((studyKara.gen || 0) > gen) return;
           studySpeakSents(paraIdx, sentIdx + 1);
         }
+        function onTtsError(){
+          /* TTS failed (no voice / cancel race) — do NOT jump ahead.
+             Fall back to the recorded paragraph audio, then continue. */
+          if (done) return; done = true;
+          if (!studyKara.playing) return;
+          if ((studyKara.gen || 0) > gen) return;
+          studyPlayPara(paraIdx, studyPlayNext);
+        }
         u.onend = next;
-        u.onerror = next;
-        try { window.speechSynthesis.speak(u); } catch (e) { next(); }
+        u.onerror = onTtsError;
+        /* Android: speak() right after cancel() can error the new utterance.
+           Defer it so the cancel settles. */
+        setTimeout(function(){
+          if (done) return;
+          if (!studyKara.playing) return;
+          if ((studyKara.gen || 0) > gen) return;
+          try { window.speechSynthesis.speak(u); } catch (e) { onTtsError(); }
+        }, 150);
       }
       function studyReplaySent(sentDiv){
         /* Tap a line: replay ONLY that line (device TTS — the recording is
