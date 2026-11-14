@@ -1239,7 +1239,7 @@ input,textarea,select{font-size:16px}
         <!-- ======== 100-day plan: خطة الـ 100 يوم ======== -->
         <section id="view-plan100" hidden>
           <h1 class="view-title">خطة الـ 100 يوم</h1>
-          <p class="gram-hint">25 كلمة كل يوم × 100 يوم = كل بنك الكلمات (2500). الترتيب: اقرأ القصة، بعدين الكلمات والبطاقات، بعدين اكتب الكلمات وتأكد من إملائك، بعدين المحادثة، بعدين القاعدة. الكلمات من القصة الحالية والقصص السابقة بدون تكرار. اليوم ينحسب بس من تخلّص كل كلماته، والغياب ما يأخرها — ماكو تواريخ. لكل لغة خطتها الخاصة.</p>
+          
           <div class="filters">
             <div class="switch" role="group" aria-label="لغة الخطة">
               <button class="active-en" id="planLangEn">English · الإنجليزية</button>
@@ -1485,7 +1485,7 @@ input,textarea,select{font-size:16px}
         <!-- ======== Exams hub ======== -->
         <section id="view-exams" hidden>
           <h1 class="view-title">الامتحانات</h1>
-          <p class="hint" style="margin-bottom:18px">اختر الامتحان — كل امتحان يفتح في مكان مخصص بدون أي شيء يشتتك، وترجع منه بزر الخروج.</p>
+          
           <div class="tool-box" style="margin-bottom:16px">
             <h3 style="margin:0 0 6px">اختبار المستوى A1</h3>
             <p class="tool-note" style="margin:0 0 10px">اختبار رسمي المستوى A1 وفق معايير CEFR (كامبريدج / جوته). الأجزاء: الاستماع (25) · القراءة (25) · القواعد والمفردات (25) · الكتابة (25). النجاح من <b>60%</b>.</p>
@@ -1557,7 +1557,7 @@ input,textarea,select{font-size:16px}
         <section id="view-wordlogic" hidden>
           <h1 class="view-title">منطق الكلمات</h1>
           <button class="focus-exit" type="button" data-goto="bank">✕ خروج من منطق الكلمات</button>
-          <p class="hint" style="margin-bottom:14px">الفهم أفضل من الحفظ: الأفعال الشاذة مجموعات لها نمط، وكل لاحقة لها وظيفة، وكل جملة لها هيكل ثابت، والكلام الطبيعي له اختصاراته. افهم المنطق وستعرف الكلمات والجمل الجديدة وحدك.</p>
+          
           <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:20px">
             <button type="button" id="wlLangEn" class="active-en">English · الإنجليزية</button>
             <button type="button" id="wlLangDe">Deutsch · الألمانية</button>
@@ -1624,7 +1624,7 @@ input,textarea,select{font-size:16px}
           <h1 class="view-title">الكتابة</h1>
           <button class="focus-exit" type="button" data-goto="conversation">✕ خروج من الكتابة</button>
           <div id="wrHome">
-            <p class="hint">الكتابة على مستويين: A1 جمل قصيرة بسيطة (حاضر)، وA2 ماضٍ ورأي ومقارنة وروابط. الأفضل: أكمل A1 أولًا ثم A2. إذا استخدمت «أظهر الكلمة» لا يُحسب التمرين مكتملًا — لازم تعيده بدون تلميح.</p>
+            
             <div class="switch" role="group" aria-label="اللغة" style="margin:14px 0">
               <button type="button" id="wrLangEn" class="active-en">English</button>
               <button type="button" id="wrLangDe">Deutsch</button>
@@ -1734,7 +1734,7 @@ input,textarea,select{font-size:16px}
         </section>
         <section id="view-conversation" hidden>
           <h1 class="view-title">محادثة</h1>
-          <p class="conv-intro">محادثات قصيرة بين شخصين، بدون سرد — اسمع كل دور بصوت مختلف.</p>
+          
           <div class="filters">
             <div class="switch" role="group" aria-label="لغة المحادثة">
               <button data-convlang="en" class="active-en" id="convLangEn">English · الإنجليزية</button>
@@ -4859,10 +4859,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         else if ($("topicSheetBackdrop") && !$("topicSheetBackdrop").hidden) { if (window.closeTopicSheetNow) window.closeTopicSheetNow(); closedOverlay = true; }
         else if ($("menuDrawerBackdrop") && !$("menuDrawerBackdrop").hidden) { if (window.closeMenuDrawerNow) window.closeMenuDrawerNow(); closedOverlay = true; }
         if (closedOverlay) return;
-        if (st.view && st.view !== fullViewName()) { showView(st.view, true); return; }
-        var mainBack = mainOf(fullViewName());
-        if (mainBack && mainBack !== fullViewName()) { showView(mainBack, true); return; }
-        if (fullViewName() !== "home") { showView("home", true); return; }
+        // Back from any view exits directly: no stepping through the
+        // previous view, the main tab, or Home. Only overlays step back
+        // (story reader, prep, conversation reader, sheets, drawer).
         showExitDialog();
         hPush({ app: 1, view: curView, guard: true }, "#" + curView);
       });
