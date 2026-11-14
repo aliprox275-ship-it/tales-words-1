@@ -1387,6 +1387,7 @@ input,textarea,select{font-size:16px}
               <button type="button" data-dmark="mistake">Need work</button>
             </div>
             <div class="deck-pick-topics" id="deckPickTopics"></div>
+            <div class="deck-pick-row" id="deckPickParts"></div>
             <div class="deck-pick-foot">
               <button type="button" id="deckShuffleBtn">&#8646; Shuffle</button>
               <button type="button" id="deckRestartBtn">&#8635; Restart</button>
@@ -3912,6 +3913,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
          sentence onward; recorded A1/A2 stories replay the whole paragraph
          (audio is per-paragraph). Autoplay then continues normally. */
       function karaReplaySent(sentDiv){
+        /* Tap a line: replay ONLY that line (device TTS — the recording is
+           per-paragraph), then continue from the next line. TTS stories
+           already start from the tapped sentence, so they keep their path. */
         if (typeof kara === "undefined" || !kara.playing || !currentStory) return;
         if (!sentDiv || !sentDiv.classList || !sentDiv.classList.contains("sent")) return;
         var para = sentDiv.closest ? sentDiv.closest(".para") : null;
@@ -3927,9 +3931,44 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         try { window.speechSynthesis.cancel(); } catch (e) {}
         try { karaTimerStop(); } catch (e) {}
         kara.idx = pIdx;
-        kara.queue[kara.idx] = karaBuildItem(para, currentStory.lang, pIdx, sIdx);
         kara.paused = false;
-        karaSpeakCurrent();
+        var isRecorded = (currentStory.level === "A1" || currentStory.level === "A2") && !currentStory.branching;
+        if (!isRecorded) {
+          kara.queue[kara.idx] = karaBuildItem(para, currentStory.lang, pIdx, sIdx);
+          karaSpeakCurrent();
+          return;
+        }
+        var sentText = karaSentText(sentDiv);
+        if (!sentText) return;
+        var u = new SpeechSynthesisUtterance(sentText);
+        u.lang = currentStory.lang === "de" ? "de-DE" : "en-US";
+        u.rate = audioSpeed;
+        try {
+          var vs = window.speechSynthesis.getVoices();
+          for (var vi = 0; vi < vs.length; vi++) {
+            if (vs[vi].lang && vs[vi].lang.toLowerCase().indexOf(currentStory.lang) === 0) { u.voice = vs[vi]; break; }
+          }
+        } catch (e) { /* default voice */ }
+        var gen = kara.suppressGen || 0;
+        var done = false;
+        function afterSent(){
+          if (done) return; done = true;
+          if (!kara.playing) return;
+          if ((kara.suppressGen || 0) > gen) return;
+          var total = para.querySelectorAll(".sent").length;
+          if (sIdx + 1 < total) {
+            kara.ttsForced = true;
+            kara.queue[kara.idx] = karaBuildItem(para, currentStory.lang, pIdx, sIdx + 1);
+            karaSpeakCurrent();
+          } else {
+            kara.ttsForced = false;
+            kara.idx = pIdx + 1;
+            if (kara.idx < kara.queue.length) karaSpeakCurrent(); else karaFinish(true);
+          }
+        }
+        u.onend = afterSent;
+        u.onerror = afterSent;
+        try { window.speechSynthesis.speak(u); } catch (e) { afterSent(); }
       }
       function karaRepeatSentence(){
         var cur = (kara.idx >= 0 && kara.queue[kara.idx]) ? kara.queue[kara.idx] : null;
@@ -4666,7 +4705,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
          Mirrors the story reader: tappable words (word popup -> save to
          myWords), per-paragraph recorded audio, autoplay, and tap-to-replay
          a line while autoplay is on. Audio keys: st|<studyId>|<paraIndex>. */
-      var studyKara = { playing: false, paused: false, idx: -1, items: [], curStudy: null, curPara: -1 };
+      var studyKara = { playing: false, paused: false, idx: -1, items: [], curStudy: null, curPara: -1, gen: 0 };
       var studyParaEls = [];
       function studyParaSeg(studyId, paraIdx){
         return obSeg("st|" + studyId + "|" + paraIdx);
@@ -4718,18 +4757,56 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (next >= studyKara.items.length) { studyStop(); return; }
         studyPlayPara(next, studyPlayNext);
       }
-      function studyReplayPara(sentDiv){
+      function studySpeakSents(paraIdx, sentIdx){
+        /* TTS sentences from (paraIdx, sentIdx) to the end of that paragraph,
+           then resume recorded autoplay at the next paragraph. */
+        if (!studyKara.playing) return;
+        var item = studyKara.items[paraIdx];
+        if (!item) { studyStop(); return; }
+        if (sentIdx >= item.sents.length) {
+          studyKara.idx = paraIdx;
+          studyPlayNext();
+          return;
+        }
+        var sent = item.sents[sentIdx];
+        studyKara.idx = paraIdx; studyKara.curPara = paraIdx;
+        document.querySelectorAll("#studyBody .para.playing").forEach(function(x){ x.classList.remove("playing"); });
+        if (item.box) item.box.classList.add("playing");
+        var u = new SpeechSynthesisUtterance(sent.text);
+        u.lang = "en-US";
+        u.rate = audioSpeed;
+        try { pickVoice(u, "en"); } catch (e) {}
+        var gen = studyKara.gen || 0;
+        var done = false;
+        function next(){
+          if (done) return; done = true;
+          if (!studyKara.playing) return;
+          if ((studyKara.gen || 0) > gen) return;
+          studySpeakSents(paraIdx, sentIdx + 1);
+        }
+        u.onend = next;
+        u.onerror = next;
+        try { window.speechSynthesis.speak(u); } catch (e) { next(); }
+      }
+      function studyReplaySent(sentDiv){
+        /* Tap a line: replay ONLY that line (device TTS — the recording is
+           per-paragraph), then continue from the next line. */
         if (!studyKara.playing || !studyKara.curStudy) return;
         if (!sentDiv || !sentDiv.classList || !sentDiv.classList.contains("sent")) return;
         var para = sentDiv.closest ? sentDiv.closest(".para") : null;
         if (!para) return;
         var pIdx = -1;
-        for (var i = 0; i < studyParaEls.length; i++) { if (studyParaEls[i].box === para) { pIdx = i; break; } }
+        for (var i = 0; i < studyKara.items.length; i++) { if (studyKara.items[i].box === para) { pIdx = i; break; } }
         if (pIdx < 0) return;
+        var sents = studyKara.items[pIdx].sents;
+        var sIdx = -1;
+        for (var j = 0; j < sents.length; j++) { if (sents[j].box === sentDiv) { sIdx = j; break; } }
+        if (sIdx < 0) return;
         try { stopRecorded(); } catch (e) {}
         try { window.speechSynthesis.cancel(); } catch (e) {}
         studyKara.paused = false;
-        studyPlayPara(pIdx, studyPlayNext);
+        studyKara.gen = (studyKara.gen || 0) + 1;
+        studySpeakSents(pIdx, sIdx);
       }
       function openStudy(id){
         var st = null;
@@ -4773,24 +4850,29 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
               });
               head.appendChild(pb);
               div.appendChild(head);
-              var sd = document.createElement("div");
-              sd.className = "sent";
-              var fp = document.createElement("p");
-              fp.className = "para-f";
-              fp.setAttribute("lang", "en");
-              fp.setAttribute("dir", "ltr");
-              buildTappable(fp, para.f, { lang: "en", id: st.id });
-              var ap = document.createElement("p");
-              ap.className = "para-a";
-              ap.textContent = para.a;
-              sd.appendChild(fp);
-              sd.appendChild(ap);
-              sd.addEventListener("click", function(){
-                if (studyKara.playing) studyReplayPara(sd);
+              var sents = [];
+              var groups = splitParaGroups(para);
+              groups.forEach(function(g){
+                var sd = document.createElement("div");
+                sd.className = "sent";
+                var fp = document.createElement("p");
+                fp.className = "para-f";
+                fp.setAttribute("lang", "en");
+                fp.setAttribute("dir", "ltr");
+                buildTappable(fp, g.f, { lang: "en", id: st.id, vocab: [], titleAr: st.titleAr });
+                var ap = document.createElement("p");
+                ap.className = "para-a";
+                ap.textContent = g.a;
+                sd.appendChild(fp);
+                sd.appendChild(ap);
+                sd.addEventListener("click", function(){
+                  if (studyKara.playing) studyReplaySent(sd);
+                });
+                div.appendChild(sd);
+                sents.push({ text: g.f, box: sd });
               });
-              div.appendChild(sd);
               body.appendChild(div);
-              studyKara.items.push({ box: div, text: para.f });
+              studyKara.items.push({ box: div, text: para.f, sents: sents });
               studyParaEls.push({ box: div });
             })(p, flatIdx);
             flatIdx++;
@@ -13153,7 +13235,7 @@ function wrCheck() {
         });
       });
       var flashList = [], flashIdx = 0, flashShown = false;
-      var flashLang = "de", flashLevel = "A1", flashTopic = "all", flashMark = "all";
+      var flashLang = "de", flashLevel = "A1", flashTopic = "all", flashMark = "all", flashPart = 1;
       var deckInteracted = false, deckAnimating = false, deckSwiped = false;
       var DECK_PROG_KEY = "readerApp.deckProg.v1";
       var DECK_AUTO_KEY = "readerApp.deckAuto.v1";
@@ -13164,7 +13246,12 @@ function wrCheck() {
         catch (e) { _deckProgCache = {}; }
         return _deckProgCache;
       }
-      function deckCacheKey(){ return flashLang + "|" + flashLevel + "|" + flashTopic + "|" + flashMark; }
+      function deckPartInfo(n){
+        if (!n || n <= 0) return { chunk: 1, parts: 1 };
+        var chunk = Math.max(1, Math.ceil(n / 5));
+        return { chunk: chunk, parts: Math.ceil(n / chunk) };
+      }
+      function deckCacheKey(){ return flashLang + "|" + flashLevel + "|" + flashTopic + "|" + flashMark + "|" + flashPart; }
       function deckProgGet(key){
         var all = deckProgAll();
         if (!all[key]) all[key] = { idx: 0, rated: {}, liked: {}, disliked: {}, order: null };
@@ -13264,6 +13351,10 @@ function wrCheck() {
       }
       function buildFlashDeck(keepIdx){
         var list = deckListFor(flashLang, flashLevel, flashTopic, flashMark);
+        var pi = deckPartInfo(list.length);
+        if (flashPart > pi.parts) flashPart = pi.parts;
+        if (flashPart < 1) flashPart = 1;
+        list = list.slice((flashPart - 1) * pi.chunk, flashPart * pi.chunk);
         var key = deckCacheKey();
         var prog = deckProgGet(key);
         if (prog.order && prog.order.length === list.length && list.length) {
@@ -13348,19 +13439,34 @@ function wrCheck() {
           });
           box.innerHTML = html;
         }
+        var partsBox = $("deckPickParts");
+        if (partsBox) {
+          var full = deckListFor(flashLang, flashLevel, flashTopic, flashMark);
+          var pi2 = deckPartInfo(full.length);
+          var phtml = "";
+          for (var p2 = 1; p2 <= pi2.parts; p2++) {
+            var cnt = Math.min(pi2.chunk, full.length - (p2 - 1) * pi2.chunk);
+            phtml += '<button type="button" data-dpart="' + p2 + '"' + (flashPart === p2 ? ' class="sel"' : "") + '>الجزء ' + p2 + ' &middot; ' + cnt + '</button>';
+          }
+          partsBox.innerHTML = phtml;
+          partsBox.style.display = pi2.parts > 1 ? "" : "none";
+        }
         var ab = $("deckAutoBtn");
         if (ab) ab.textContent = deckAutoOn() ? "🔊" : "🔇";
       }
       function setFlashLang(f){
         flashLang = (f === "all") ? ((typeof curLang !== "undefined" && curLang) ? curLang : "en") : f;
+        flashPart = 1;
         buildFlashDeck();
       }
       function setFlashLevel(lv){
         flashLevel = lv;
+        flashPart = 1;
         buildFlashDeck();
       }
       function setFlashMark(m){
         flashMark = m;
+        flashPart = 1;
         buildFlashDeck();
       }
       function deckPlayWord(){
@@ -13564,6 +13670,13 @@ function wrCheck() {
         var b = e.target.closest ? e.target.closest("[data-dtopic]") : null;
         if (!b) return;
         flashTopic = b.getAttribute("data-dtopic");
+        flashPart = 1;
+        buildFlashDeck();
+      });
+      $("deckPickParts").addEventListener("click", function(e){
+        var b = e.target.closest ? e.target.closest("[data-dpart]") : null;
+        if (!b) return;
+        flashPart = parseInt(b.getAttribute("data-dpart"), 10) || 1;
         buildFlashDeck();
       });
 
