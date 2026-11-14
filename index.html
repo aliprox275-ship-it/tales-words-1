@@ -287,8 +287,9 @@
         border:1.5px solid rgba(47,93,88,.5); background:transparent; color:inherit;
         border-radius:99px; padding:10px 18px; font-weight:800; font-size:1rem;
       }
-      .para{margin:0 0 36px; padding:14px 16px; border-radius:16px; border:1px solid transparent}
-      .para.playing{background:rgba(47,93,88,.10); border-color:rgba(47,93,88,.45)}
+      .para{margin:0 0 36px; padding:14px 16px; border-radius:16px; border:1px solid transparent; transition:background .25s ease, border-color .25s ease}
+      .para.playing, .para.last-read{background:rgba(47,93,88,.18); border-color:rgba(47,93,88,.55)}
+      [data-theme="dark"] .para.playing, [data-theme="dark"] .para.last-read{background:rgba(158,168,255,.22); border-color:rgba(158,168,255,.65)}
       .para-head{display:flex; align-items:center; gap:10px; margin:0 0 10px}
       .para-play{
         border:0; background:rgba(47,93,88,.10); color:inherit;
@@ -3667,6 +3668,10 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           }
         }
       }
+      function karaMarkLastRead(box){
+        document.querySelectorAll("#paras .para.last-read, #branchArea .para.last-read").forEach(function(b){ b.classList.remove("last-read"); });
+        if (box) box.classList.add("last-read");
+      }
       function karaSpeakCurrent(){
         var item = kara.queue[kara.idx];
         if (!item) { karaFinish(); return; }
@@ -3674,6 +3679,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         karaClearSpan();
         kara.queue.forEach(function(q){ q.box.classList.remove("playing"); });
         item.box.classList.add("playing");
+        karaMarkLastRead(item.box);
         followBox(item.box);
         /* Recorded autoplay: an A1/A2 non-branching story plays its recorded
            paragraphs in order (Gong voice), advancing on each segment's
@@ -3852,7 +3858,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             try { window.speechSynthesis.cancel(); } catch (e) {}
             karaTimerStop();
             kara.playing = true; kara.paused = false;
-            cur.box.classList.add("playing"); followBox(cur.box); karaSyncUI();
+            cur.box.classList.add("playing"); karaMarkLastRead(cur.box); followBox(cur.box); karaSyncUI();
             playBundle(rseg, cur.text, cur.lang, function(){ if (!kara.playing) return; kara.ttsForced = true; karaSpeakCurrent(); }, function(){ if (!kara.playing || tokR !== karaRepeatToken) return; cur.box.classList.remove("playing"); kara.idx++; if (kara.idx < kara.queue.length) karaSpeakCurrent(); else karaFinish(true); }, true);
             return;
           }
@@ -4519,6 +4525,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         stopPlayback();
         stopBranch();
         karaStop();
+        document.querySelectorAll("#paras .para.last-read, #branchArea .para.last-read").forEach(function(b){ b.classList.remove("last-read"); });
         stopVocab();
         $("reader").hidden = true;
         document.body.style.overflow = "";
