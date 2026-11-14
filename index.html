@@ -13001,6 +13001,7 @@ function wrCheck() {
           b.classList.add("active");
           curLevel = b.getAttribute("data-level");
           if (curLevel === "extra") curTopic = "extra";
+          else if (curTopic === "extra") curTopic = "all";
           if (curTopic !== "all") {
             var t = null;
             TOPICS.forEach(function(x){ if (x.slug === curTopic) t = x; });
