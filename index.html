@@ -5191,6 +5191,18 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             out.push({ w: x.w, t: x.t || "", ef: x.ef || "", ea: x.ea || "", lang: lang, src: "review" });
           });
         }
+        /* Words the user marked as misspelled (أخطأت في كتابته) also go to
+           the writing review, so they come back for written practice. */
+        for (var d2 = 1; d2 <= day; d2++) {
+          var ws2 = plan100DayWords(lang, d2) || [];
+          ws2.forEach(function(x){
+            var k2 = lang + ":" + String(x.w || "").toLowerCase();
+            if (seen[k2]) return;
+            if (wordMark(lang, x.w) !== "mistake") return;
+            seen[k2] = true;
+            out.push({ w: x.w, t: x.t || "", ef: x.ef || "", ea: x.ea || "", lang: lang, src: "review" });
+          });
+        }
         return out;
       }
       function plan100DayDone(lang, day){
@@ -5384,6 +5396,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         html += '<h3 class="gram-sec">📚 كلمات اليوم</h3><div class="bank-grid">';
         ws.forEach(function(x, i){
           var isKnown = wordMark(lang, x.w) === "known";
+          var isMistake = wordMark(lang, x.w) === "mistake";
           html += '<div class="bank-card">' +
             '<div class="bank-card-top"><span class="bank-word" lang="' + lang + '">' + escapeHtml(x.w) + '</span>' +
             '<button class="bank-speak" type="button" data-plansay="w:' + i + '" aria-label="استمع للكلمة">' + SPK + '</button></div>' +
@@ -5391,6 +5404,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             (x.ef ? '<div class="bank-ex"><span class="ef" lang="' + lang + '">' + escapeHtml(x.ef) + '</span><span class="ea">' + escapeHtml(x.ea) + '</span>' +
               '<button class="bank-speak" type="button" data-plansay="e:' + i + '" aria-label="استمع للمثال">' + SPK + '</button></div>' : '') +
             '<div class="bank-card-foot"><button class="plan-mark' + (isKnown ? ' known' : '') + '" type="button" data-planmark="' + i + '">' + (isKnown ? '✓ أعرفها' : 'أعرفها') + '</button>' +
+            '<button class="plan-mark mistake' + (isMistake ? ' on' : '') + '" type="button" data-planmistake="' + i + '">' + (isMistake ? '✓ أخطأت' : 'أخطأت في كتابته') + '</button>' +
             '<span class="bank-topic-chip">' + escapeHtml(x.topic) + ' · ' + x.level + (x.src === "para" ? ' · من نص القصة' : (x.src === "prev" ? ' · من قصة سابقة' : (x.src === "bank" ? ' · من البنك' : (x.src === "review" ? ' · مراجعة' : '')))) + '</span></div>' +
             '</div>';
         });
@@ -5421,6 +5435,17 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             '<div class="bank-card-foot"><button class="ex-btn" type="button" data-plangram="open">افتح القاعدة كاملة ←</button></div></div>';
         }
         box.innerHTML = html;
+        /* Plan examples: every word tappable — tap any word in an example to open
+           the word popup and mark it known / misspelled, like in the reader. */
+        try {
+          var planStoryCtx = story || { lang: lang, vocab: [] };
+          box.querySelectorAll('.bank-ex .ef').forEach(function(efEl){
+            var txt = efEl.textContent || '';
+            if (!txt) return;
+            efEl.textContent = '';
+            buildTappableWords(efEl, txt, planStoryCtx);
+          });
+        } catch (e) {}
         box._planWords = ws;
         box._planLang = lang;
         box._planStory = story; box._planStories = dayStories;
@@ -5483,7 +5508,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var box = document.getElementById("planBox");
         if (!box) return;
         box.addEventListener("click", function(ev){
-          var t = ev.target.closest("[data-planmark], [data-plansay], [data-planstory], [data-plangram], [data-planconv], [data-dictstart], [data-dictplay], [data-dictcheck], [data-dictnext], [data-dictsay], [data-flashflip], [data-flashprev], [data-flashnext], [data-flashmark], [data-flashmistake], [data-flashsay], [data-planday]");
+          var t = ev.target.closest("[data-planmark], [data-planmistake], [data-plansay], [data-planstory], [data-plangram], [data-planconv], [data-dictstart], [data-dictplay], [data-dictcheck], [data-dictnext], [data-dictsay], [data-flashflip], [data-flashprev], [data-flashnext], [data-flashmark], [data-flashmistake], [data-flashsay], [data-planday]");
           if (!t) return;
           var ws = box._planWords || [], lang = box._planLang || curLang;
           var day = box._planDay || planViewDay || 1;
@@ -5558,7 +5583,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             if (fi2) planPlayWord(fi2, lang);
             return;
           }
-          var attr = t.getAttribute("data-planmark") || t.getAttribute("data-plansay") || "0";
+          var attr = t.getAttribute("data-planmark") || t.getAttribute("data-planmistake") || t.getAttribute("data-plansay") || "0";
           var idx = parseInt(attr.split(":").pop(), 10);
           var x = ws[idx];
           if (!x) return;
@@ -5567,6 +5592,14 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             var isKnown = wordMark(lang, x.w) === "known";
             setWordMark(lang, x.w, isKnown ? "" : "known");
             if (wasViewingCurrent) planViewDay = 0;
+            renderPlan100();
+            return;
+          }
+          if (t.hasAttribute("data-planmistake")) {
+            var wasViewingCurrent2 = planViewDay >= plan100CurrentDay(lang);
+            var isMist = wordMark(lang, x.w) === "mistake";
+            setWordMark(lang, x.w, isMist ? "" : "mistake");
+            if (wasViewingCurrent2) planViewDay = 0;
             renderPlan100();
             return;
           }
