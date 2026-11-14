@@ -3149,18 +3149,18 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
                      (typeof studyKara !== "undefined" && studyKara.playing);
             }
             span.addEventListener("click", function(){
-              if (mode === "tip") { showWordTip(word, span, story); return; }
+              if (mode === "tip") { showWordTip(word, span, story); speakTipWord(word, story); return; }
               var replay = isReplay();
               openWordPop(word, story, span);
-              if (!replay) showWordTip(word, span, story);
+              if (!replay) { showWordTip(word, span, story); speakTipWord(word, story); }
             });
             span.addEventListener("keydown", function(e){
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
-                if (mode === "tip") { showWordTip(word, span, story); return; }
+                if (mode === "tip") { showWordTip(word, span, story); speakTipWord(word, story); return; }
                 var replay = isReplay();
                 openWordPop(word, story, span);
-                if (!replay) showWordTip(word, span, story);
+                if (!replay) { showWordTip(word, span, story); speakTipWord(word, story); }
               }
             });
           })(m[0], sp);
@@ -3180,6 +3180,15 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var tip = $("wordTip");
         if (tip) tip.hidden = true;
         if (wordTipTimer) { clearTimeout(wordTipTimer); wordTipTimer = null; }
+      }
+      /* Pronounce a tapped word exactly like the popup's word speaker:
+         its Obelisk recording first, device TTS (bankSpeak) as fallback. */
+      function speakTipWord(word, story){
+        if (!word || !story) return;
+        var wseg = null;
+        try { wseg = vocabWordSeg(word, story.lang); } catch (e) { wseg = null; }
+        if (wseg) { playBundle(wseg, word, story.lang, null, null, null, 1); return; }
+        bankSpeak(word, story.lang);
       }
       function showWordTip(word, span, story){
         var tip = $("wordTip");
