@@ -4418,8 +4418,8 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           shown++;
           grid.appendChild(buildStoryCard(s));
         });
-        $("storyGrid").hidden = (curTopic === "all");
-        $("emptyMsg").hidden = (curTopic === "all") || shown > 0;
+        $("storyGrid").hidden = shown === 0;
+        $("emptyMsg").hidden = shown > 0;
         $("emptyMsg").textContent = "لا توجد قصص مطابقة لهذا الاختيار.";
       }
 
@@ -17058,7 +17058,11 @@ var AUDIO_FILES = ["audio-obelisk/examples-de-00.aad81f35.opus", "audio-obelisk/
       updateProgress();
       renderExScore();
       renderHome();
-      if (startView !== "home") showView(startView, true);
+      /* Always route boot through showView: showView("home") is the
+         only place that unhides #reviewChrome + the current review
+         sub-view under Home. Skipping it when startView is "home"
+         left those sections hidden after every reload. */
+      showView(startView, true);
 
       /* Splash: brief brand screen on open, then a smooth fade out */
       var splashEl = $("splash");
