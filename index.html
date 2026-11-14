@@ -1010,9 +1010,20 @@ input,textarea,select{font-size:16px}
       .goal.done .progress-fill{background:var(--ok)}
       .week-dots{display:flex; gap:5px}
       .week-dots i{
-        width:22px; height:22px; border-radius:50%; background:var(--surface2); border:1px solid var(--line);
-        display:flex; align-items:center; justify-content:center; font-style:normal; font-size:.66rem; color:var(--muted)
+        width:24px; height:24px; border-radius:50%; background:var(--surface2); border:1px solid var(--line);
+        display:flex; align-items:center; justify-content:center; font-style:normal; font-size:.78rem; font-weight:800; color:var(--muted)
       }
+      /* ---------- Study timer + reminder ---------- */
+      .study-timer-box{display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); box-shadow:var(--shadow-card); padding:12px var(--pad-card); margin-bottom:12px}
+      .study-timer-box .st-ic{font-size:1.4rem; line-height:1}
+      .study-timer-box .st-tx{flex:1; min-width:110px; font-weight:800}
+      .study-timer-box .st-tx span{display:block; color:var(--muted); font-weight:500; font-size:.85rem}
+      .study-timer-txt{font-size:1.3rem; font-weight:800; font-variant-numeric:tabular-nums; direction:ltr}
+      .st-btn{flex:0 0 auto; min-width:64px; padding:9px 16px; border-radius:99px; border:1px solid var(--accent); background:var(--accent); color:#fff; font-weight:800; font-size:.95rem; cursor:pointer}
+      .st-btn.stop{background:transparent; color:var(--accent)}
+      .wbar-fill.minutes{background:#c77b2d}
+      .menu-reminder{flex:1; min-width:0; display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:700}
+      .menu-reminder input[type="time"]{font-size:1rem; padding:6px 10px; border:1px solid var(--line); border-radius:10px; background:var(--surface2); color:var(--text)}
       .week-dots i.on{background:var(--accent); border-color:var(--accent); color:#fff}
       .week-dots i.today{outline:2px solid var(--accent); outline-offset:1px}
 
@@ -1201,6 +1212,7 @@ input,textarea,select{font-size:16px}
         <div class="menu-row" id="installRow"><span class="menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v12"/><polyline points="6 8 12 14 18 8"/><path d="M4 20h16"/></svg></span><button class="more-link" type="button" id="installAppBtn">تثبيت التطبيق على الهاتف</button></div>
         <div class="menu-row"><span class="menu-ic menu-ic-share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></span><button class="more-link" type="button" id="shareAppBtn">شارك التطبيق</button></div>
         <div class="menu-row"><span class="menu-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><button class="more-link" type="button" data-goto="privacy">سياسة الخصوصية</button></div>
+        <div class="menu-row"><span class="menu-ic">🔔</span><span class="menu-reminder"><span>تذكير يومي</span><input type="time" id="reminderTime" aria-label="وقت التذكير اليومي"></span></div>
         <div class="audio-offline-prog" id="audioOfflineProg" hidden></div>
       </div>
     </div>
@@ -1212,6 +1224,7 @@ input,textarea,select{font-size:16px}
         <section id="view-home">
           <h1 class="view-title">الرئيسية</h1>
           <div class="streak-box" id="streakBox"></div>
+          <div class="study-timer-box" id="studyTimerBox"></div>
           <div class="home-summary" id="homeSummary"></div>
           <div class="home-grid" id="homeLevels"></div>
           <div class="due-card" id="dueCard">
@@ -1661,6 +1674,7 @@ input,textarea,select{font-size:16px}
           </div>
           <h3 style="font-size:1.2rem; margin:0 0 4px">نشاط آخر 7 أيام</h3>
           <div class="week-chart" id="weekChart"></div>
+            <p class="tool-note" id="studyWeekTotal" style="margin:8px 0 0"></p>
 
           <div class="tool-box">
             <h3>هدفي اليومي</h3>
@@ -12899,6 +12913,7 @@ function wrCheck() {
       }
       function renderHome(){
         renderStreak();
+        renderStudyTimer();
         var doneAll = STORIES.filter(function(s){ return !!doneSet[s.id]; }).length;
         var masteredAll = myWords.filter(function(w){ return w.interval > 14; }).length;
         $("homeSummary").innerHTML =
@@ -14817,13 +14832,21 @@ function wrCheck() {
             oT ? (arNum(oC) + " صحيحة من " + arNum(oT) + " محاولة") : "لا محاولات بعد — جرّب التمارين");
         $("ltmCount").textContent = arNum(ltm);
         /* Weekly activity: last 7 days including today */
-        var days = [], maxN = 1;
+        var days = [], maxN = 1, maxMin = 1, weekMins = 0;
         for (var i = 6; i >= 0; i--) {
           var dt = new Date(); dt.setDate(dt.getDate() - i);
           var key = dstr(dt);
           var a = activity[key] || { stories: 0, words: 0, reviews: 0 };
-          days.push({ dt: dt, a: a });
+          var mins = studyMinFor(key);
+          days.push({ dt: dt, a: a, mins: mins });
+          weekMins += mins;
           maxN = Math.max(maxN, a.stories || 0, a.words || 0, a.reviews || 0);
+          maxMin = Math.max(maxMin, mins || 0);
+        }
+        function minRow(n){
+          return '<div class="wbar-row"><span class="k">دقائق</span>' +
+            '<span class="wbar-track"><span class="wbar-fill minutes" style="display:block;width:' +
+            Math.round(n / maxMin * 100) + '%"></span></span><span class="n">' + arNum(n) + '</span></div>';
         }
         var dayNames = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
         function barRow(k, label, n){
@@ -14837,8 +14860,11 @@ function wrCheck() {
             barRow("stories", "قصص", d.a.stories || 0) +
             barRow("words", "كلمات", d.a.words || 0) +
             barRow("reviews", "مراجعات", d.a.reviews || 0) +
+            minRow(d.mins || 0) +
             '</div></div>';
         }).join("");
+        var wt = $("studyWeekTotal");
+        if (wt) wt.textContent = "دقائق الدراسة هذا الأسبوع: " + arNum(weekMins) + " دقيقة";
       }
 
       /* ---------- Vocabulary bank A1 data: 908 EN + 935 DE words, 7 A1 topics ---------- */
@@ -15864,10 +15890,16 @@ var _ttsNoVoiceWarned = false;
         var gSaved = parseInt(localStorage.getItem(GOAL_KEY), 10);
         if (GOAL_OPTIONS.indexOf(gSaved) !== -1) dailyGoal = gSaved;
       } catch (e) { /* default goal */ }
+      var STUDY_MIN_KEY = "readerApp.studyMin.v1";
+      var studyMin = (function(){ try { var p = JSON.parse(localStorage.getItem(STUDY_MIN_KEY) || "null"); if (p && typeof p === "object" && !Array.isArray(p)) return p; } catch (e) {} return {}; })();
+      function saveStudyMin(){ try { localStorage.setItem(STUDY_MIN_KEY, JSON.stringify(studyMin)); } catch (e) {} }
+      function studyMinFor(k){ return studyMin[k] || 0; }
+      /* Study time counts toward the day: 5 min = 1 point, max 10 points/day. */
+      function studyPtsFor(k){ return Math.min(10, Math.floor(studyMinFor(k) / 5)); }
       function dayPoints(k){
         var a = activity[k];
-        if (!a) return 0;
-        return (a.stories || 0) * 5 + (a.words || 0) + (a.reviews || 0);
+        var base = !a ? 0 : (a.stories || 0) * 5 + (a.words || 0) + (a.reviews || 0);
+        return base + studyPtsFor(k);
       }
       function streakInfo(){
         var today = todayStr();
@@ -15883,6 +15915,79 @@ var _ttsNoVoiceWarned = false;
         });
         return { cur: cur, best: Math.max(best, cur), todayOn: dayPoints(today) > 0 };
       }
+
+      /* ---------- Study timer + daily reminder ---------- */
+      var STUDY_TIMER_KEY = "readerApp.studyTimer.v1";
+      var studyTimer = (function(){ try { var p = JSON.parse(localStorage.getItem(STUDY_TIMER_KEY) || "null"); if (p && typeof p === "object") return p; } catch (e) {} return { running: false, startTs: 0, baseSec: 0 }; })();
+      function saveStudyTimer(){ try { localStorage.setItem(STUDY_TIMER_KEY, JSON.stringify(studyTimer)); } catch (e) {} }
+      function studyTimerElapsed(){ return studyTimer.running ? studyTimer.baseSec + Math.floor((Date.now() - studyTimer.startTs) / 1000) : studyTimer.baseSec; }
+      function fmtTimerSec(sec){ var m = Math.floor(sec / 60), s = sec % 60; return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s; }
+      function renderStudyTimer(){
+        var box = $("studyTimerBox"); if (!box) return;
+        var minsToday = studyMinFor(todayStr());
+        box.innerHTML =
+          '<span class="st-ic" aria-hidden="true">⏱</span>' +
+          '<div class="st-tx">موقت الدراسة<span>اليوم: ' + arNum(minsToday) + ' دقيقة</span></div>' +
+          '<span class="study-timer-txt" id="studyTimerTxt">' + fmtTimerSec(studyTimerElapsed()) + '</span>' +
+          '<button class="st-btn' + (studyTimer.running ? " stop" : "") + '" type="button" id="studyTimerBtn">' + (studyTimer.running ? "إيقاف" : "ابدأ") + '</button>';
+        $("studyTimerBtn").addEventListener("click", function(){
+          if (studyTimer.running) stopStudyTimer(); else startStudyTimer();
+        });
+      }
+      function startStudyTimer(){ studyTimer.running = true; studyTimer.startTs = Date.now(); saveStudyTimer(); renderStudyTimer(); }
+      function stopStudyTimer(){
+        var sec = studyTimerElapsed();
+        var mins = Math.floor(sec / 60);
+        studyTimer.running = false; studyTimer.baseSec = sec % 60; studyTimer.startTs = 0; saveStudyTimer();
+        if (mins > 0) {
+          var k = todayStr();
+          studyMin[k] = (studyMin[k] || 0) + mins; saveStudyMin();
+          renderStreak();
+          if (typeof curView !== "undefined" && curView === "stats") renderStats();
+        }
+        renderStudyTimer();
+      }
+      setInterval(function(){
+        var el = $("studyTimerTxt");
+        if (el && studyTimer.running) el.textContent = fmtTimerSec(studyTimerElapsed());
+      }, 1000);
+      /* Daily reminder: set the time in the drawer. Fires once a day, only if
+         nothing was studied yet. Works while the app is open, or on open. */
+      var REMINDER_KEY = "readerApp.reminder.v1";
+      var reminder = (function(){ try { var p = JSON.parse(localStorage.getItem(REMINDER_KEY) || "null"); if (p && typeof p === "object") return p; } catch (e) {} return { time: "", lastFired: "" }; })();
+      function saveReminder(){ try { localStorage.setItem(REMINDER_KEY, JSON.stringify(reminder)); } catch (e) {} }
+      function checkReminder(){
+        if (!reminder.time) return;
+        var today = todayStr();
+        if (reminder.lastFired === today) return;
+        var now = new Date();
+        var parts = reminder.time.split(":");
+        var rt = new Date(now.getFullYear(), now.getMonth(), now.getDate(), +parts[0], +parts[1], 0, 0);
+        if (now < rt) return;
+        if (dayPoints(today) > 0) return;
+        if (studyTimer.running) return;
+        reminder.lastFired = today; saveReminder();
+        if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+          try { new Notification("وقت الدراسة 📚", { body: "لسّه ما درست اليوم — افتح التطبيق وابدأ." }); } catch (e) {}
+        }
+        showToast("⏰ وقت الدراسة — لسّه ما درست اليوم");
+      }
+      setInterval(checkReminder, 60000);
+      (function(){
+        var inp = $("reminderTime"); if (!inp) return;
+        inp.value = reminder.time || "";
+        inp.addEventListener("change", function(){
+          reminder.time = inp.value || "";
+          reminder.lastFired = "";
+          saveReminder();
+          if (reminder.time && typeof Notification !== "undefined" && Notification.permission === "default") {
+            try { Notification.requestPermission(); } catch (e) {}
+          }
+          if (reminder.time) showToast("تم ضبط التذكير اليومي على " + reminder.time);
+        });
+      })();
+      checkReminder();
+
       function renderStreak(){
         var box = $("streakBox");
         if (!box) return;
@@ -15893,12 +15998,13 @@ var _ttsNoVoiceWarned = false;
           st.cur === 1 ? "يوم واحد متتالي" : arNum(st.cur) + " أيام متتالية";
         var sub = !st.todayOn && st.cur > 0 ? "تعلّم شيئًا اليوم حتى لا تنقطع السلسلة" :
           "أطول سلسلة: " + arNum(st.best) + " يوم";
-        var letters = ["ح", "ن", "ث", "ر", "خ", "ج", "س"];
+        var minsToday = studyMinFor(todayStr());
+        if (minsToday > 0) sub += " · ⏱ " + arNum(minsToday) + " دقيقة دراسة اليوم";
         var dots = "";
         for (var i = 6; i >= 0; i--) {
           var dt = new Date(); dt.setDate(dt.getDate() - i);
           var k = dstr(dt);
-          dots += '<i class="' + (dayPoints(k) > 0 ? "on" : "") + (i === 0 ? " today" : "") + '">' + letters[dt.getDay()] + '</i>';
+          dots += '<i class="' + (dayPoints(k) > 0 ? "on" : "") + (i === 0 ? " today" : "") + '">' + (7 - i) + '</i>';
         }
         box.classList.toggle("alive", st.todayOn);
         box.innerHTML =
