@@ -1559,7 +1559,6 @@ input,textarea,select{font-size:16px}
               <div id="a1PassFail" style="font-size:1.3rem;font-weight:800;margin-bottom:12px"></div>
               <div id="a1Breakdown" style="text-align:right;margin:16px 0"></div>
               <button type="button" id="a1RetryBtn" class="start-btn" style="margin-top:12px">إعادة الاختبار</button>
-              <button type="button" id="a1BackBtn" class="end-btn" style="margin-top:8px">العودة للمراجعة</button>
             </div>
           </div>
         </section>
@@ -1581,7 +1580,6 @@ input,textarea,select{font-size:16px}
           </div>
           <div id="wlNav" style="margin-bottom:14px"></div>
           <div id="wlBody"></div>
-          <button type="button" id="wlBackBtn" class="end-btn" style="margin-top:12px">العودة إلى بنك الكلمات</button>
         </section>
 
         <!-- ======== Final Exam (A1+A2) ======== -->
@@ -1631,7 +1629,6 @@ input,textarea,select{font-size:16px}
               <div id="finPassFail" style="font-size:1.3rem;font-weight:800;margin-bottom:12px"></div>
               <div id="finBreakdown" style="text-align:right;margin:16px 0"></div>
               <button type="button" id="finRetryBtn" class="start-btn" style="margin-top:12px">إعادة الامتحان</button>
-              <button type="button" id="finBackBtn" class="end-btn" style="margin-top:8px">العودة للمراجعة</button>
             </div>
           </div>
         </section>
@@ -4888,8 +4885,10 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         hPush({ app: 1, view: cur, guard: true }, "#" + cur);
       });
       function mainOf(name){ if (name === "topic") return "stories"; if (name === "banktopic") return "bank";
-        if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation" || name === "wordlogic" || name === "exams") return name;
+        if (name === "wordlogic") return "bank";
+        if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation" || name === "exams") return name;
         if (name === "a1test" || name === "finalexam") return "exams";
+        if (name === "review") return "home";
         if (REVIEW_SUBS.indexOf(name) !== -1 || name === "writing") return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
       }
@@ -12180,7 +12179,7 @@ function wrCheck() {
       if ($("a1PrevBtn")) $("a1PrevBtn").addEventListener("click", a1Prev);
       if ($("a1FinishBtn")) $("a1FinishBtn").addEventListener("click", a1Finish);
       if ($("a1RetryBtn")) $("a1RetryBtn").addEventListener("click", function(){ a1Reset(); });
-      if ($("a1BackBtn")) $("a1BackBtn").addEventListener("click", function(){ showView("review"); });
+      
 
       // When entering a1test view
       var _oldShowView = showView;
@@ -12332,12 +12331,14 @@ function wrCheck() {
           navHtml += "<button type='button' data-wl='open' data-sec='" + sec.key + "' style='flex:1 1 40%;padding:12px 8px;border-radius:12px;border:1px solid " + (on ? "var(--accent)" : "var(--line)") + ";background:" + (on ? "var(--accent)" : "var(--surface)") + ";color:" + (on ? "var(--on-accent)" : "inherit") + ";font-weight:800;cursor:pointer'>" + arNum(si + 1) + " · " + sec.title + "</button>";
         });
         navHtml += "</div>";
-        var pats = D.formation || [];
-        if (pats.length) {
+        var openKey = wlOpenSec;
+        var chipList = null, chipPrefix = "", chipLabel = null;
+        if (openKey === "verbs") { chipList = D.verbs || []; chipPrefix = "wl-vg-"; chipLabel = function(g){ return (g.g || "").split(" — ")[0]; }; }
+        else { chipList = D[openKey] || []; chipPrefix = { formation: "wl-pat-", sentence: "wl-sent-", speech: "wl-sp-", family: "wl-fam-", confused: "wl-cnf-" }[openKey] || ""; chipLabel = function(p){ return ((p.t || "").split(" — ")[0]); }; }
+        if (chipList && chipList.length) {
           navHtml += "<div style='display:flex;flex-wrap:wrap;gap:6px'>";
-          pats.forEach(function(pat, i) {
-            var label = (pat.t || "").split(" — ")[0];
-            navHtml += "<button type='button' data-wl='jump' data-id='wl-pat-" + i + "' data-sec='formation' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + wlEsc(label) + "</button>";
+          chipList.forEach(function(item, i) {
+            navHtml += "<button type='button' data-wl='jump' data-id='" + chipPrefix + i + "' data-sec='" + openKey + "' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + wlEsc(chipLabel(item)) + "</button>";
           });
           navHtml += "</div>";
         }
@@ -12350,11 +12351,6 @@ function wrCheck() {
             html += "<p class='hint'>" + HINTS[key] + "</p>";
             if (key === "verbs") {
               var grps = D.verbs || [];
-              html += "<div style='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px'>";
-              grps.forEach(function(grp, i) {
-                html += "<button type='button' data-wl='jump' data-id='wl-vg-" + i + "' data-sec='verbs' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + wlEsc(grp.g.split(" — ")[0]) + "</button>";
-              });
-              html += "</div>";
               grps.forEach(function(grp, gi) {
                 html += "<div class='wl-group' id='wl-vg-" + gi + "'><h3>" + wlEsc(grp.g) + "</h3><div class='bank-idiom-note'>" + wlEsc(grp.note) + "</div><div class='bank-grid'>";
                 grp.verbs.forEach(function(v) { html += wlVerbCard(v); });
@@ -12363,11 +12359,6 @@ function wrCheck() {
             } else {
               var list = D[key] || [];
               var prefix = { formation: "wl-pat-", sentence: "wl-sent-", speech: "wl-sp-", family: "wl-fam-", confused: "wl-cnf-" }[key];
-              html += "<div style='display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px'>";
-              list.forEach(function(pat, i) {
-                html += "<button type='button' data-wl='jump' data-id='" + prefix + i + "' data-sec='" + key + "' style='padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--surface2);font-weight:700;cursor:pointer'>" + wlEsc((pat.t || "").split(" — ")[0]) + "</button>";
-              });
-              html += "</div>";
               html += "<div class='bank-grid'>";
               list.forEach(function(pat, i) { html += wlPatternCard(pat, prefix + i, "انتبه:", "firm"); });
               html += "</div>";
@@ -12382,7 +12373,6 @@ function wrCheck() {
       if ($("wlLangDe")) $("wlLangDe").addEventListener("click", function(){ wlLang = "de"; $("wlLangDe").classList.add("active-de"); $("wlLangEn").classList.remove("active-en"); renderWordLogic(); });
       if ($("wlLvlA1")) $("wlLvlA1").addEventListener("click", function(){ wlLevel = "A1"; $("wlLvlA1").classList.add("active-en"); $("wlLvlA2").classList.remove("active-en"); renderWordLogic(); });
       if ($("wlLvlA2")) $("wlLvlA2").addEventListener("click", function(){ wlLevel = "A2"; $("wlLvlA2").classList.add("active-en"); $("wlLvlA1").classList.remove("active-en"); renderWordLogic(); });
-      if ($("wlBackBtn")) $("wlBackBtn").addEventListener("click", function(){ showView("bank"); });
       if ($("view-wordlogic")) $("view-wordlogic").addEventListener("click", function(e){
         var t = e.target && e.target.closest ? e.target.closest("[data-wl]") : null;
         if (!t) return;
@@ -12729,7 +12719,7 @@ function wrCheck() {
       if ($("finPrevBtn")) $("finPrevBtn").addEventListener("click", finPrev);
       if ($("finFinishBtn")) $("finFinishBtn").addEventListener("click", finFinish);
       if ($("finRetryBtn")) $("finRetryBtn").addEventListener("click", function(){ finReset(); });
-      if ($("finBackBtn")) $("finBackBtn").addEventListener("click", function(){ showView("review"); });
+      
 
       /* ---------- Home dashboard: per language × level, all from real data ---------- */
       function bankLevelTotal(lang, level){
