@@ -1020,6 +1020,7 @@ input,textarea,select{font-size:16px}
       .study-timer-box .st-tx span{display:block; color:var(--muted); font-weight:500; font-size:.85rem}
       .study-timer-txt{font-size:1.3rem; font-weight:800; font-variant-numeric:tabular-nums; direction:ltr}
       .st-btn{flex:0 0 auto; min-width:64px; padding:9px 16px; border-radius:99px; border:1px solid var(--accent); background:var(--accent); color:#fff; font-weight:800; font-size:.95rem; cursor:pointer}
+      .study-timer-box select{font-size:.95rem; font-weight:700; padding:7px 8px; border:1px solid var(--line); border-radius:10px; background:var(--surface2); color:var(--text)}
       .st-btn.stop{background:transparent; color:var(--accent)}
       .wbar-fill.minutes{background:#c77b2d}
       .menu-reminder{flex:1; min-width:0; display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:700}
@@ -1501,13 +1502,13 @@ input,textarea,select{font-size:16px}
           
           <div class="tool-box" style="margin-bottom:16px">
             <h3 style="margin:0 0 6px">اختبار المستوى A1</h3>
-            <p class="tool-note" style="margin:0 0 10px">اختبار رسمي المستوى A1 وفق معايير CEFR (كامبريدج / جوته). الأجزاء: الاستماع (25) · القراءة (25) · القواعد والمفردات (25) · الكتابة (25). النجاح من <b>60%</b>.</p>
+            
             <p class="hint" id="examsA1Last" role="status" style="margin:0 0 12px"></p>
             <button class="start-btn" type="button" data-goto="a1test" style="width:100%;padding:14px;font-size:1.1rem">ابدأ اختبار A1</button>
           </div>
           <div class="tool-box" style="margin-bottom:16px">
             <h3 style="margin:0 0 6px">الامتحان النهائي (A1 + A2)</h3>
-            <p class="tool-note" style="margin:0 0 10px">الامتحان الشامل — يغطي كل ما درسته: القصص، بنك الكلمات، القواعد، المحادثة، والكتابة. الأجزاء: الاستماع (25) · القراءة (25) · القواعد والمفردات (25) · الكتابة (25). النجاح من <b>70%</b> يعني أنك جاهز لـ B1.</p>
+            
             <p class="hint" id="examsFinLast" role="status" style="margin:0 0 12px"></p>
             <button class="start-btn" type="button" data-goto="finalexam" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الامتحان النهائي</button>
           </div>
@@ -1520,7 +1521,7 @@ input,textarea,select{font-size:16px}
             <div class="exam-hero">
               <span class="exam-hero-badge">المستوى A1</span>
               <h2 class="exam-hero-title">اختبار رسمي</h2>
-              <p class="exam-hero-sub">وفق معايير CEFR (كامبريدج / جوته). نسبة النجاح 60%.</p>
+              <p class="exam-hero-sub">نسبة النجاح 60%.</p>
             </div>
             <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:14px">
               <button type="button" id="a1LangEn" class="active-en">English · الإنجليزية</button>
@@ -1530,7 +1531,7 @@ input,textarea,select{font-size:16px}
               <div class="exam-passbar-top"><b>المجموع 100 نقطة</b><span>النجاح من 60</span></div>
               <div class="exam-passbar-track"><div class="exam-passbar-fill" style="width:60%"></div><i class="exam-passbar-tick" style="inset-inline-start:calc(60% - 1px)"></i></div>
               <p class="exam-passbar-rule">ويجب 15/25 على الأقل في كل جزء</p>
-              <p class="exam-passbar-note">كل محاولة نسخة جديدة: الأسئلة تُسحب عشوائيًا من بنك أكبر — فلا تحفظ الأسئلة، افهمها.</p>
+              
             </div>
             <p id="a1LastResultLine" class="tool-note" style="margin:0 0 12px"></p>
             <p class="exam-parts-cap">أو اختبر جزءًا واحدًا (25 نقطة):</p>
@@ -1588,7 +1589,7 @@ input,textarea,select{font-size:16px}
             <div class="exam-hero">
               <span class="exam-hero-badge">A1 + A2</span>
               <h2 class="exam-hero-title">الامتحان النهائي</h2>
-              <p class="exam-hero-sub">شامل: القصص، بنك الكلمات، القواعد، المحادثة، والكتابة. النجاح من 70% يعني أنك أنهيت A2 وأصبحت جاهزًا لـ B1.</p>
+              <p class="exam-hero-sub">النجاح من 70%.</p>
             </div>
             <div class="switch" role="group" aria-label="اختر اللغة" style="margin-bottom:14px">
               <button type="button" id="finLangEn" class="active-en">English · الإنجليزية</button>
@@ -1598,7 +1599,7 @@ input,textarea,select{font-size:16px}
               <div class="exam-passbar-top"><b>المجموع 100 نقطة</b><span>النجاح من 70</span></div>
               <div class="exam-passbar-track"><div class="exam-passbar-fill" style="width:70%"></div><i class="exam-passbar-tick" style="inset-inline-start:calc(70% - 1px)"></i></div>
               <p class="exam-passbar-rule">ويجب 15/25 على الأقل في كل جزء · 70–84 جاهز لـ B1 · 85+ جاهز بقوة لـ B1</p>
-              <p class="exam-passbar-note">كل محاولة نسخة جديدة: الأسئلة تُسحب عشوائيًا من بنك أكبر — فلا تحفظ الأسئلة، افهمها. الاستماع بصوت مسجل (مثل اختبار A1).</p>
+              
             </div>
             <p id="finLastResultLine" class="tool-note" style="margin:0 0 12px"></p>
             <p class="exam-parts-cap">أو اختبر جزءًا واحدًا (25 نقطة):</p>
@@ -1678,7 +1679,7 @@ input,textarea,select{font-size:16px}
 
           <div class="tool-box">
             <h3>هدفي اليومي</h3>
-            <p class="tool-note">نقاط اليوم: القصة المُنجزة = ٥ نقاط، وكل كلمة تحفظها أو تراجعها = نقطة.</p>
+            
             <div class="switch goal-switch" role="group" aria-label="اختيار الهدف اليومي">
               <button type="button" data-goal="10">خفيف · 10</button>
               <button type="button" data-goal="20">متوسط · 20</button>
@@ -4873,11 +4874,14 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         else if ($("topicSheetBackdrop") && !$("topicSheetBackdrop").hidden) { if (window.closeTopicSheetNow) window.closeTopicSheetNow(); closedOverlay = true; }
         else if ($("menuDrawerBackdrop") && !$("menuDrawerBackdrop").hidden) { if (window.closeMenuDrawerNow) window.closeMenuDrawerNow(); closedOverlay = true; }
         if (closedOverlay) return;
-        // Back from any view exits directly: no stepping through the
-        // previous view, the main tab, or Home. Only overlays step back
+        // Branch (sub-view): step back to its parent main tab.
+        // Main tab: exit directly. Only overlays step back first
         // (story reader, prep, conversation reader, sheets, drawer).
+        var cur = fullViewName();
+        var main = mainOf(cur);
+        if (main && main !== cur) { showView(main, true); return; }
         showExitDialog();
-        hPush({ app: 1, view: curView, guard: true }, "#" + curView);
+        hPush({ app: 1, view: cur, guard: true }, "#" + cur);
       });
       function mainOf(name){ if (name === "topic") return "stories"; if (name === "banktopic") return "bank";
         if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation" || name === "wordlogic" || name === "exams") return name;
@@ -15916,29 +15920,74 @@ var _ttsNoVoiceWarned = false;
         return { cur: cur, best: Math.max(best, cur), todayOn: dayPoints(today) > 0 };
       }
 
-      /* ---------- Study timer + daily reminder ---------- */
+      /* ---------- Study timer (countdown) + daily reminder ---------- */
       var STUDY_TIMER_KEY = "readerApp.studyTimer.v1";
-      var studyTimer = (function(){ try { var p = JSON.parse(localStorage.getItem(STUDY_TIMER_KEY) || "null"); if (p && typeof p === "object") return p; } catch (e) {} return { running: false, startTs: 0, baseSec: 0 }; })();
+      var studyTimer = (function(){ try { var p = JSON.parse(localStorage.getItem(STUDY_TIMER_KEY) || "null"); if (p && typeof p === "object") return p; } catch (e) {} return { running: false, endTs: 0, durationSec: 1500 }; })();
+      if (!studyTimer.durationSec) studyTimer.durationSec = 1500;
+      if (studyTimer.running && !studyTimer.endTs) { studyTimer.running = false; studyTimer.endTs = 0; }
       function saveStudyTimer(){ try { localStorage.setItem(STUDY_TIMER_KEY, JSON.stringify(studyTimer)); } catch (e) {} }
-      function studyTimerElapsed(){ return studyTimer.running ? studyTimer.baseSec + Math.floor((Date.now() - studyTimer.startTs) / 1000) : studyTimer.baseSec; }
+      function studyTimerRemaining(){ return studyTimer.running ? Math.max(0, Math.ceil((studyTimer.endTs - Date.now()) / 1000)) : studyTimer.durationSec; }
       function fmtTimerSec(sec){ var m = Math.floor(sec / 60), s = sec % 60; return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s; }
       function renderStudyTimer(){
         var box = $("studyTimerBox"); if (!box) return;
         var minsToday = studyMinFor(todayStr());
+        var durs = [10, 15, 25, 30, 45, 60];
+        var sel = '<select id="studyDurSel" aria-label="مدة الدراسة بالدقائق"' + (studyTimer.running ? ' disabled' : '') + '>' +
+          durs.map(function(d){ return '<option value="' + (d * 60) + '"' + (studyTimer.durationSec === d * 60 ? ' selected' : '') + '>' + arNum(d) + ' دقيقة</option>'; }).join("") + '</select>';
         box.innerHTML =
           '<span class="st-ic" aria-hidden="true">⏱</span>' +
           '<div class="st-tx">موقت الدراسة<span>اليوم: ' + arNum(minsToday) + ' دقيقة</span></div>' +
-          '<span class="study-timer-txt" id="studyTimerTxt">' + fmtTimerSec(studyTimerElapsed()) + '</span>' +
+          sel +
+          '<span class="study-timer-txt" id="studyTimerTxt">' + fmtTimerSec(studyTimerRemaining()) + '</span>' +
           '<button class="st-btn' + (studyTimer.running ? " stop" : "") + '" type="button" id="studyTimerBtn">' + (studyTimer.running ? "إيقاف" : "ابدأ") + '</button>';
+        var ds = $("studyDurSel");
+        if (ds) ds.addEventListener("change", function(){
+          studyTimer.durationSec = +ds.value || 1500; saveStudyTimer(); renderStudyTimer();
+        });
         $("studyTimerBtn").addEventListener("click", function(){
           if (studyTimer.running) stopStudyTimer(); else startStudyTimer();
         });
       }
-      function startStudyTimer(){ studyTimer.running = true; studyTimer.startTs = Date.now(); saveStudyTimer(); renderStudyTimer(); }
+      var alarmCtx = null;
+      function ensureAlarmCtx(){
+        try {
+          if (!alarmCtx) alarmCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (alarmCtx.state === "suspended") alarmCtx.resume();
+        } catch (e) {}
+      }
+      function playAlarm(){
+        ensureAlarmCtx();
+        if (alarmCtx) {
+          try {
+            var now = alarmCtx.currentTime;
+            for (var i = 0; i < 3; i++) {
+              var o = alarmCtx.createOscillator(), g = alarmCtx.createGain();
+              o.type = "sine"; o.frequency.value = 880;
+              g.gain.setValueAtTime(0.0001, now + i * 0.5);
+              g.gain.exponentialRampToValueAtTime(0.4, now + i * 0.5 + 0.05);
+              g.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.5 + 0.4);
+              o.connect(g); g.connect(alarmCtx.destination);
+              o.start(now + i * 0.5); o.stop(now + i * 0.5 + 0.45);
+            }
+          } catch (e) {}
+        }
+        try { if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]); } catch (e) {}
+        if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+          try { new Notification("انتهى وقت الدراسة ✓", { body: "خلصت " + arNum(Math.round(studyTimer.durationSec / 60)) + " دقيقة دراسة — أحسنت!" }); } catch (e) {}
+        }
+        showToast("⏰ انتهى وقت الدراسة ✓");
+      }
+      function startStudyTimer(){
+        ensureAlarmCtx();
+        studyTimer.running = true;
+        studyTimer.endTs = Date.now() + studyTimer.durationSec * 1000;
+        saveStudyTimer(); renderStudyTimer();
+      }
       function stopStudyTimer(){
-        var sec = studyTimerElapsed();
-        var mins = Math.floor(sec / 60);
-        studyTimer.running = false; studyTimer.baseSec = sec % 60; studyTimer.startTs = 0; saveStudyTimer();
+        var remaining = studyTimerRemaining();
+        var elapsed = studyTimer.durationSec - remaining;
+        var mins = Math.floor(elapsed / 60);
+        studyTimer.running = false; studyTimer.endTs = 0; saveStudyTimer();
         if (mins > 0) {
           var k = todayStr();
           studyMin[k] = (studyMin[k] || 0) + mins; saveStudyMin();
@@ -15947,9 +15996,25 @@ var _ttsNoVoiceWarned = false;
         }
         renderStudyTimer();
       }
+      function finishStudyTimer(){
+        var mins = Math.round(studyTimer.durationSec / 60);
+        studyTimer.running = false; studyTimer.endTs = 0; saveStudyTimer();
+        if (mins > 0) {
+          var k = todayStr();
+          studyMin[k] = (studyMin[k] || 0) + mins; saveStudyMin();
+        }
+        renderStreak();
+        renderStudyTimer();
+        if (typeof curView !== "undefined" && curView === "stats") renderStats();
+        if (typeof curView !== "undefined" && curView !== "home" && (typeof FOCUS_VIEWS === "undefined" || FOCUS_VIEWS.indexOf(curView) === -1)) showView("home");
+        playAlarm();
+      }
       setInterval(function(){
+        if (!studyTimer.running) return;
+        var rem = studyTimerRemaining();
+        if (rem <= 0) { finishStudyTimer(); return; }
         var el = $("studyTimerTxt");
-        if (el && studyTimer.running) el.textContent = fmtTimerSec(studyTimerElapsed());
+        if (el) el.textContent = fmtTimerSec(rem);
       }, 1000);
       /* Daily reminder: set the time in the drawer. Fires once a day, only if
          nothing was studied yet. Works while the app is open, or on open. */
