@@ -3290,26 +3290,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var wseg = null;
           try { wseg = vocabWordSeg(popCtx.w, popCtx.lang); } catch (e) { wseg = null; }
           if (wseg) { playBundle(wseg, popCtx.w, popCtx.lang, null, null, null, 1); return; }
-        if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
-          showToast("النطق الصوتي غير متاح في هذا المتصفح");
-          return;
-        }
-        if (typeof pausePlayback === "function") pausePlayback();
-        karaStop();
-        try {
-          var synth = window.speechSynthesis;
-          synth.cancel();
-          var u = new SpeechSynthesisUtterance(popCtx.w);
-          u.lang = popCtx.lang === "de" ? "de-DE" : "en-US";
-          u.rate = audioSpeed;
-          var voices = synth.getVoices();
-          for (var i = 0; i < voices.length; i++) {
-            if (voices[i].lang && voices[i].lang.toLowerCase().indexOf(popCtx.lang) === 0) { u.voice = voices[i]; break; }
-          }
-          synth.speak(u);
-        } catch (e) {
-          showToast("تعذّر تشغيل نطق الكلمة");
-        }
+        /* No recording for this word (study words mostly): device TTS via
+           bankSpeak, which defers speak() past the cancel() race. */
+        bankSpeak(popCtx.w, popCtx.lang);
       });
       /* Read the tapped sentence aloud (device TTS, same voice the story
          paragraphs use when no recording exists for them). */
@@ -3585,6 +3568,11 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           }));
         } catch (e) { /* storage unavailable: keep the learned rates in memory */ }
       }
+      /* One-shot TTS generation: every deferred speak() below captures the
+         generation at call time and only speaks if nothing newer stopped or
+         replaced it -- same 150 ms cancel-settle defer the paragraph
+         playback uses (Android: speak() right after cancel() errors). */
+      var _ttsGen = 0;
       var kara = { queue: [], idx: -1, playing: false, paused: false, curSpan: null, curKey: null, lastWasRecorded: false, everStarted: false,
                    timer: null, anchorT: 0, anchorClock: 0, anchorScale: 1, clockStart: 0, pausedAccum: 0, pauseBegan: 0,
                    startedFlag: false, rateFactor: karaLoadRates() };
@@ -4144,6 +4132,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         karaSyncUI();
       }
       function karaStop(){
+        ++_ttsGen;
         stopRecorded();
         if (!kara.everStarted) { karaClearSpan(); return; }
         karaSaveRates();
@@ -4522,6 +4511,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         } catch (e) { /* default voice */ }
       }
       function stopVocab(){
+        ++_ttsGen;
         try { window.speechSynthesis.cancel(); try { stopRecorded(); } catch (e) {} } catch (e) { /* ignore */ }
       }
       /* One-shot TTS for a single text (dictation exercise). */
@@ -4536,10 +4526,19 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           u.lang = lang === "de" ? "de-DE" : "en-US";
           u.rate = audioSpeed;
           pickVoice(u, lang);
-          synth.speak(u);
+          var myGen = ++_ttsGen;
+          u.onerror = function(){ if (myGen === _ttsGen) showToast("تعذّر تشغيل النطق"); };
+          /* Android: speak() right after cancel() can error the new
+             utterance. Defer it so the cancel settles (same 150 ms the
+             paragraph playback uses). */
+          setTimeout(function(){
+            if (myGen !== _ttsGen) return;
+            try { synth.speak(u); } catch (e) { showToast("تعذّر تشغيل النطق"); }
+          }, 150);
         } catch (e) { showToast("تعذّر تشغيل النطق"); }
       }
       function stopSpeakText(){
+        ++_ttsGen;
         try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
       }
 
@@ -15862,6 +15861,7 @@ var BANK_CHUNK_MAP_A2 = {"en":{"travel":{"journey":"en-fix2-a2-chunk03v2.mp3","j
       var recAudio = null;
       var recTimer = null;
       function stopRecorded(){
+        ++_ttsGen;
         /* Stops any recorded-bundle playback and fully detaches it: clears
            the segment-stop timer, runs the audio element's cleanup (which
            removes every event listener), pauses, and unloads the source, so
@@ -16239,7 +16239,15 @@ var _ttsNoVoiceWarned = false;
             _ttsNoVoiceWarned = true;
             showToast("صوت الجهاز غير متاح على هذا الهاتف — فعّل النطق من إعدادات النظام");
           }
-          synth.speak(u);
+          var myGen = ++_ttsGen;
+          u.onerror = function(){ if (myGen === _ttsGen) showToast("تعذّر تشغيل النطق"); };
+          /* Android: speak() right after cancel() can error the new
+             utterance. Defer it so the cancel settles (same 150 ms the
+             paragraph playback uses). */
+          setTimeout(function(){
+            if (myGen !== _ttsGen) return;
+            try { synth.speak(u); } catch (e) { showToast("تعذّر تشغيل النطق"); }
+          }, 150);
         } catch (e) { showToast("تعذّر تشغيل نطق الكلمة"); }
       }
       function bankCard(item){
