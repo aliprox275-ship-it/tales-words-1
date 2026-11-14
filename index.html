@@ -4293,6 +4293,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         stopBranch();
         stopVocab();
         try { window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+        soloStopAll(); /* karaoke takes over: clear any solo-paragraph state */
         kara.queue = items;
         kara.idx = 0;
         kara.playing = false;
@@ -4329,6 +4330,42 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           }
         } catch (e) { /* pause unsupported: keep playing */ }
         karaSyncUI();
+      }
+      /* Single-paragraph play/stop toggle (2026-11-14): tapping a
+         paragraph's «استمع للفقرة» button while THAT paragraph is
+         playing stops it instead of replaying it — there is no other
+         stop button for a single paragraph. Tracks the paragraph whose
+         solo playback is active (recorded segment or TTS). */
+      var soloPara = null; /* {kind:"story"|"study", box, btn, idx, at} */
+      function soloIsPlaying(box){
+        if (!soloPara || soloPara.box !== box) return false;
+        if (typeof recAudio !== "undefined" && recAudio) return true;
+        try { if (window.speechSynthesis && window.speechSynthesis.speaking) return true; } catch (e) {}
+        /* TTS starts 150 ms after the tap (cancel/speak race defer) — a
+           second tap inside that window still counts as playing. */
+        if (Date.now() - (soloPara.at || 0) < 600) return true;
+        return false;
+      }
+      function soloClearIf(box){
+        if (soloPara && soloPara.box === box) {
+          if (soloPara.btn) { soloPara.btn.classList.remove("playing"); soloPara.btn.innerHTML = SPK + " استمع للفقرة"; }
+          soloPara.box.classList.remove("playing");
+          soloPara = null;
+        }
+      }
+      function soloStopAll(){
+        try { stopRecorded(); } catch (e) {}
+        try { window.speechSynthesis.cancel(); } catch (e) {}
+        if (soloPara) {
+          if (soloPara.btn) { soloPara.btn.classList.remove("playing"); soloPara.btn.innerHTML = SPK + " استمع للفقرة"; }
+          if (soloPara.box) soloPara.box.classList.remove("playing");
+          soloPara = null;
+        }
+      }
+      function soloMark(kind, box, btn, idx){
+        soloPara = { kind: kind, box: box, btn: btn, idx: idx, at: Date.now() };
+        box.classList.add("playing");
+        if (btn) { btn.classList.add("playing"); btn.innerHTML = SPK + " إيقاف"; }
       }
       function karaStop(){
         ++_ttsGen;
@@ -4838,6 +4875,12 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           var btn = div.querySelector(".para-play");
           (function(idx, b){
             b.addEventListener("click", function(){
+              /* Toggle: tapping the paragraph that is currently playing
+                 stops it (there is no other stop button for a single
+                 paragraph); tapping any other paragraph plays that one. */
+              if (soloIsPlaying(div)) { soloStopAll(); return; }
+              if (kara.playing && kara.queue[kara.idx] && kara.queue[kara.idx].box === div) { karaStop(); return; }
+              soloStopAll(); /* stop any other paragraph first (resets its button) */
               /* A1/A2 non-branching: plays ONLY this paragraph's recorded
                  mp3 and stops at its end (on error, or when the paragraph
                  has no recording -- e.g. a failed A2 para -- falls back to
@@ -4845,9 +4888,13 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
                  sequence and never a neighbouring segment; fallback-fix
                  2026-11-02). Other levels / branching stories:
                  (re)start TTS at this paragraph and continue to the end
-                 of the story, as before. Stopping is the floating dock's
-                 single button's job. */
-              if ((s.level === "A1" || s.level === "A2") && !s.branching) { var seg = storyParaSeg(s, "p" + ("0" + (idx + 1)).slice(-2)); if (seg) playBundle(seg, p.f, s.lang, function(){ speakText(p.f, s.lang); }); else speakText(p.f, s.lang); }
+                 of the story, as before. */
+              if ((s.level === "A1" || s.level === "A2") && !s.branching) {
+                var seg = storyParaSeg(s, "p" + ("0" + (idx + 1)).slice(-2));
+                if (seg) { playBundle(seg, p.f, s.lang, function(){ speakText(p.f, s.lang); }, function(){ soloClearIf(div); }); }
+                else speakText(p.f, s.lang);
+                soloMark("story", div, b, idx);
+              }
               else startPara(idx);
             });
           })(i, btn);
@@ -4970,6 +5017,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       }
       function studyStop(){
         studyKara.playing = false; studyKara.paused = false; studyKara.idx = -1; studyKara.curPara = -1;
+        soloStopAll(); /* clear any solo-paragraph state */
         try { stopRecorded(); } catch (e) {}
         try { window.speechSynthesis.cancel(); } catch (e) {}
         var b = $("studyPlayBtn"); if (b) b.textContent = "▶ تشغيل";
@@ -5117,12 +5165,18 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
               pb.setAttribute("aria-label", "استمع إلى هذه الفقرة");
               pb.innerHTML = SPK + " استمع للفقرة";
               pb.addEventListener("click", function(){
+                /* Toggle: tapping the paragraph that is currently playing
+                   stops it; tapping any other paragraph plays that one. */
+                if (soloIsPlaying(div)) { soloStopAll(); return; }
+                if (studyKara.playing && studyKara.curPara === idx) { studyStop(); return; }
+                soloStopAll(); /* stop any other paragraph first (resets its button) */
                 studyKara.playing = false; studyKara.paused = false;
                 try { stopRecorded(); } catch (e) {}
                 try { window.speechSynthesis.cancel(); } catch (e) {}
                 var seg = studyParaSeg(st.id, idx);
-                if (seg) playBundle(seg, para.f, "en", function(){ speakText(para.f, "en"); });
+                if (seg) playBundle(seg, para.f, "en", function(){ speakText(para.f, "en"); }, function(){ soloClearIf(div); });
                 else speakText(para.f, "en");
+                soloMark("study", div, pb, idx);
               });
               head.appendChild(pb);
               div.appendChild(head);
@@ -6432,6 +6486,16 @@ function convVoice(lang, idx){
         var ab = $("convReaderAutoplay");
         if (ab) ab.onclick = function(){ convStopAll(); convPlay = { on: true, di: di, ti: 0 }; convPlayNext(); };
         $("convReaderBody").innerHTML = convReaderHTML(d, di);
+        /* Conversation words tappable (2026-11-14): "tip" mode — Arabic
+           bubble above the tapped word for 2 s + its pronunciation, no
+           popup. buildTappableWords appends to the element, so clear the
+           plain text first (text saved in txt). */
+        var convStory = { vocab: [], lang: convLang };
+        Array.prototype.forEach.call($("convReaderBody").querySelectorAll(".conv-f"), function(p){
+          var txt = p.textContent;
+          p.innerHTML = "";
+          buildTappableWords(p, txt, convStory, "tip");
+        });
         $("convReader").hidden = false;
         $("convReader").scrollTop = 0;
         document.body.style.overflow = "hidden";
@@ -6454,6 +6518,19 @@ function convVoice(lang, idx){
         var rb = $("convReaderBody");
         if (rb && !rb.dataset.convBound) {
           rb.dataset.convBound = "1";
+          /* A word tap stops any conversation playback first (autoplay
+             or a single turn), so the word's own sound never overlaps
+             the dialogue. Capture phase: runs before the word's own tap
+             handler, which then shows the bubble + plays the word. */
+          rb.addEventListener("click", function(e){
+            var w = e.target && e.target.closest ? e.target.closest(".w-tap") : null;
+            if (w) convStopAll();
+          }, true);
+          rb.addEventListener("keydown", function(e){
+            if (e.key !== "Enter" && e.key !== " ") return;
+            var w = e.target && e.target.closest ? e.target.closest(".w-tap") : null;
+            if (w) convStopAll();
+          }, true);
           rb.addEventListener("click", function(e){
             var t = e.target;
             var gram = t.getAttribute ? t.getAttribute("data-convgram") : null;
