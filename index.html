@@ -1173,6 +1173,30 @@ input,textarea,select{font-size:16px}
       .wp-mark{border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:12px; padding:11px 16px; font-weight:700; font-size:1rem}
       .wp-known-btn.on{background:rgba(74,222,128,.22); border-color:var(--ok); color:var(--ok)}
       .wp-mistake-btn.on{background:rgba(250,204,21,.22); border-color:var(--warn); color:var(--warn)}
+      .wp-learn-btn.on{background:rgba(158,168,255,.22); border-color:var(--accent); color:var(--accent)}
+      .deck-learn-row{display:flex; gap:10px; margin-top:10px}
+      .deck-learn-btn{flex:1; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:12px; padding:11px 16px; font-family:inherit; font-size:1rem; font-weight:700; cursor:pointer}
+      .deck-learn-btn.on{background:rgba(158,168,255,.22); border-color:var(--accent); color:var(--accent)}
+      #deckMistake.on{background:rgba(250,204,21,.22); border-color:var(--warn); color:var(--warn)}
+      /* Learn review page (2026-11-15): 3 stages — guessing, flashcards, writing */
+      .learn-stages{display:flex; gap:8px; margin:2px 0 12px}
+      .learn-stage{flex:1; text-align:center; padding:8px 4px; border:1px solid var(--line); border-radius:99px; font-weight:800; font-size:.9rem; color:var(--muted); background:var(--surface)}
+      .learn-stage.on{background:var(--accent); border-color:var(--accent); color:#fff}
+      .learn-stage.done{background:rgba(74,222,128,.18); border-color:var(--ok); color:var(--ok)}
+      .learn-q{font-size:1.6rem; font-weight:800; text-align:center; margin:12px 0 4px}
+      .learn-q-sub{text-align:center; color:var(--muted); font-weight:700; margin-bottom:12px}
+      .learn-opts{display:grid; gap:10px; margin-top:14px}
+      .learn-opt{border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:14px; padding:14px 16px; font-family:inherit; font-size:1.05rem; font-weight:700; cursor:pointer; text-align:right}
+      .learn-opt.ok{background:rgba(74,222,128,.22); border-color:var(--ok); color:var(--ok)}
+      .learn-opt.bad{background:rgba(239,68,68,.18); border-color:#ef4444; color:#ef4444}
+      .learn-opt:disabled{cursor:default}
+      .learn-write-in{width:100%; box-sizing:border-box; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:14px; padding:14px 16px; font-family:inherit; font-size:1.2rem; margin:12px 0; direction:ltr; text-align:left}
+      .learn-fb{margin-top:12px; padding:12px 14px; border-radius:12px; font-weight:700; text-align:center}
+      .learn-fb.ok{background:rgba(74,222,128,.18); color:var(--ok)}
+      .learn-fb.bad{background:rgba(239,68,68,.14); color:#ef4444}
+      .learn-sum{text-align:center; padding:20px 8px}
+      .learn-sum h2{margin:0 0 12px}
+      .learn-sum p{font-size:1.05rem; margin:6px 0}
       /* dark reader: black, blue accent */
       [data-theme="dark"] .appbar-title{color:var(--accent)}
       [data-theme="dark"] .reader{background:#0f1428; color:#f2f3ff}
@@ -1305,6 +1329,11 @@ input,textarea,select{font-size:16px}
             <p class="due-sub" id="dueSub"></p>
             <button class="start-btn" id="dueStart" type="button" data-goto="review">ابدأ المراجعة ←</button>
           </div>
+          <div class="due-card" id="learnCard" hidden>
+            <div class="due-card-main"><b id="learnCount">0</b><span>كلمات تبي تتعلّمها</span></div>
+            <p class="due-sub" id="learnSub"></p>
+            <button class="start-btn" type="button" data-goto="learn">ابدأ التعلّم ←</button>
+          </div>
           <div class="home-actions">
 <div class="home-pair">
               <button class="home-card" type="button" data-goto="words"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><b>بطاقات الكلمات</b><small>راجع بسرعة</small></button>
@@ -1403,6 +1432,7 @@ input,textarea,select{font-size:16px}
             <div class="deck-pick-row" id="deckPickMark">
               <button type="button" data-dmark="known">Known</button>
               <button type="button" data-dmark="mistake">Need work</button>
+              <button type="button" data-dmark="learn">تعلّم</button>
             </div>
             <div class="deck-pick-topics" id="deckPickTopics"></div>
             <div class="deck-pick-row" id="deckPickParts"></div>
@@ -1439,6 +1469,10 @@ input,textarea,select{font-size:16px}
             <button class="deck-rate deck-got" id="deckGot" type="button" aria-label="Got it">&#10003; <b id="deckGotCount">0</b></button>
             <button class="deck-rate deck-miss" id="deckMiss" type="button" aria-label="Missed">&#10005; <b id="deckMissCount">0</b></button>
             <button class="deck-nav" id="deckPrev" type="button" aria-label="Previous card">&#8592;</button>
+          </div>
+          <div class="deck-learn-row">
+            <button class="deck-learn-btn" id="deckLearn" type="button">تعلّم</button>
+            <button class="deck-learn-btn" id="deckMistake" type="button">أخطأت في كتابته</button>
           </div>
           <p class="deck-empty" id="deckEmpty" hidden>No cards in this deck. Choose another deck.</p>
         </section>
@@ -1777,6 +1811,19 @@ input,textarea,select{font-size:16px}
             <div id="wrFeedback" class="tool-box" hidden style="margin-top:14px"></div>
           </div>
         </section>
+        <!-- ======== Learn review: تعلّم الكلمات (2026-11-15) ======== -->
+        <section id="view-learn" hidden>
+          <h1 class="view-title">تعلّم الكلمات</h1>
+          <button class="focus-exit" type="button" data-goto="home">✕ خروج</button>
+          <div class="learn-stages" id="learnStages">
+            <span class="learn-stage" data-lstage="1">١ · تخمين</span>
+            <span class="learn-stage" data-lstage="2">٢ · بطاقات</span>
+            <span class="learn-stage" data-lstage="3">٣ · كتابة</span>
+          </div>
+          <div class="deck-progress" aria-hidden="true"><div class="deck-progress-fill" id="learnProgFill"></div></div>
+          <div id="learnBody"></div>
+          <p class="deck-empty" id="learnEmpty" hidden>ما عندك كلمات للتعلّم بعد — اضغط «تعلّمها» على أي كلمة وبتجي هنا.</p>
+        </section>
       <section id="view-stats" hidden>
           <h1 class="view-title">إحصائياتي</h1>
           <div id="statsSkills"></div>
@@ -2041,6 +2088,7 @@ input,textarea,select{font-size:16px}
         <div class="wp-actions">
           <button class="wp-mark wp-known-btn" id="wpKnown" type="button">أعرفها ✓</button>
           <button class="wp-mark wp-mistake-btn" id="wpMistake" type="button">أخطأت في كتابته</button>
+          <button class="wp-mark wp-learn-btn" id="wpLearn" type="button">تعلّمها</button>
         </div>
       </div>
     </div>
@@ -3438,9 +3486,24 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var cur0 = popCtx ? wordMark(popCtx.lang, popCtx.w) : "";
         k.classList.toggle("on", cur0 === "known");
         mm2.classList.toggle("on", cur0 === "mistake");
+        var ln = $("wpLearn");
+        if (ln && popCtx) { try { ln.classList.toggle("on", learnHas(popCtx.w, popCtx.lang)); } catch (e) {} }
       }
-      if ($("wpKnown")) $("wpKnown").addEventListener("click", function(){ if (!popCtx) return; var c0 = wordMark(popCtx.lang, popCtx.w); setWordMark(popCtx.lang, popCtx.w, c0 === "known" ? "" : "known"); updateMarkBtns(); refreshWordMarkSpans(popCtx.lang, popCtx.w); });
+      if ($("wpKnown")) $("wpKnown").addEventListener("click", function(){ if (!popCtx) return; var c0 = wordMark(popCtx.lang, popCtx.w); var nm = c0 === "known" ? "" : "known"; setWordMark(popCtx.lang, popCtx.w, nm); if (nm === "known") { try { learnRemove(popCtx.w, popCtx.lang); } catch (e) {} } updateMarkBtns(); refreshWordMarkSpans(popCtx.lang, popCtx.w); });
       if ($("wpMistake")) $("wpMistake").addEventListener("click", function(){ if (!popCtx) return; var c0 = wordMark(popCtx.lang, popCtx.w); setWordMark(popCtx.lang, popCtx.w, c0 === "mistake" ? "" : "mistake"); updateMarkBtns(); refreshWordMarkSpans(popCtx.lang, popCtx.w); });
+      /* «تعلّمها»: send the word to the Learn review queue and open its
+         dedicated page. Words without a translation cannot be learned
+         (the guessing stage needs the Arabic meaning). */
+      if ($("wpLearn")) $("wpLearn").addEventListener("click", function(){
+        if (!popCtx) return;
+        if (!popCtx.t || popCtx.t === "—") { showToast("هاي الكلمة ما عندها ترجمة بعد"); return; }
+        var ef = popCtx.ctxText || "";
+        var ea = "";
+        try { ea = ($("wpCtxAr") && !$("wpCtx").hidden) ? ($("wpCtxAr").textContent || "") : ""; } catch (e) {}
+        learnAdd({ w: popCtx.w, t: popCtx.t, lang: popCtx.lang, ef: ef, ea: ea });
+        closeWordPop();
+        showView("learn");
+      });
       function closeWordPop(){
         hideWordTip();
         $("wordPop").hidden = true;
@@ -4331,6 +4394,338 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         } catch (e) { /* pause unsupported: keep playing */ }
         karaSyncUI();
       }
+      /* ========== Learn review (2026-11-15): «تعلّمها» sends a word to a
+         dedicated page — 3 stages: 1 guessing, 2 flashcards, 3 writing.
+         Words misspelled are re-written at once (one retry); words wrong in
+         meaning are re-guessed at the end of the session. At the end only
+         the words that still need practice remain in the queue; the learned
+         ones are removed. Flashcard stage mirrors the Bank deck (same 3D
+         flip, same Got/Missed). Queue persists in localStorage. ========== */
+      var LEARN_KEY = "readerApp.learnWords.v1";
+      var learnWords = null;
+      var learnSess = null;
+      function learnEnsure(){
+        if (learnWords !== null) return;
+        try { learnWords = JSON.parse(localStorage.getItem(LEARN_KEY) || "[]"); } catch (e) { learnWords = []; }
+        if (!Array.isArray(learnWords)) learnWords = [];
+      }
+      function learnSave(){ try { localStorage.setItem(LEARN_KEY, JSON.stringify(learnWords)); } catch (e) {} }
+      function learnKeyOf(w, lang){ return (lang || "") + ":" + String(w || "").toLowerCase(); }
+      function learnHas(w, lang){ learnEnsure(); var k = learnKeyOf(w, lang); return learnWords.some(function(x){ return learnKeyOf(x.w, x.lang) === k; }); }
+      function learnAdd(item){
+        learnEnsure();
+        if (!item || !item.w || !item.t || item.t === "—") return false;
+        if (learnHas(item.w, item.lang)) return false;
+        learnWords.push({ w: item.w, t: item.t, lang: item.lang, ef: item.ef || "", ea: item.ea || "" });
+        learnSave(); renderLearnHome();
+        return true;
+      }
+      function learnRemove(w, lang){
+        learnEnsure();
+        var k = learnKeyOf(w, lang);
+        learnWords = learnWords.filter(function(x){ return learnKeyOf(x.w, x.lang) !== k; });
+        learnSave(); renderLearnHome();
+      }
+      /* Deck «تعلّم» / «أخطأت في كتابته» button states for the current card. */
+      function updateDeckLearnBtns(){
+        var item = null;
+        try { item = (typeof flashList !== "undefined" && flashList) ? flashList[flashIdx] : null; } catch (e) {}
+        var lb = $("deckLearn"), mb = $("deckMistake");
+        if (lb) { try { lb.classList.toggle("on", !!(item && learnHas(item.w, item.lang))); } catch (e) {} }
+        if (mb) mb.classList.toggle("on", !!(item && wordMark(item.lang, item.w) === "mistake"));
+      }
+      function learnEsc(s){ return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+      function learnPlayWord(w, lang){
+        var seg = null;
+        try { seg = vocabWordSeg(w, lang); } catch (e) { seg = null; }
+        if (seg) playBundle(seg, w, lang, null, null, null, 1);
+        else bankSpeak(w, lang);
+      }
+      /* 3 random Arabic meanings from the bank (same language) as guessing
+         distractors; falls back to other queued words' meanings. */
+      function learnDistractors(lang, correctAr, n){
+        var pool = [];
+        try {
+          [BANK_DATA, BANK_DATA2].forEach(function(bd){
+            var d = bd && bd[lang]; if (!d) return;
+            Object.keys(d).forEach(function(tp){ (d[tp] || []).forEach(function(e){ if (e && e[1]) pool.push(e[1]); }); });
+          });
+        } catch (e) {}
+        var out = [], seen = {};
+        seen[correctAr] = 1;
+        var guard = 0;
+        while (out.length < n && pool.length && guard++ < 300) {
+          var c = pool[Math.floor(Math.random() * pool.length)];
+          if (!seen[c]) { seen[c] = 1; out.push(c); }
+        }
+        if (out.length < n) {
+          learnEnsure();
+          learnWords.forEach(function(x){ if (x.lang === lang && x.t && !seen[x.t]) { seen[x.t] = 1; out.push(x.t); } });
+        }
+        return out.slice(0, n);
+      }
+      function learnShuffle(a){ for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+      function learnStart(){
+        learnEnsure();
+        if (!learnWords.length) { learnSess = null; return; }
+        if (learnSess && !learnSess.done) return; /* an active session keeps going */
+        learnSess = {
+          words: learnShuffle(learnWords.slice()),
+          stage: 1, idx: 0, wTries: 0,
+          failedMeaning: {}, failedWriting: {}, failedCard: {},
+          repeatTasks: null, repeatIdx: 0,
+          done: false, learnedCount: 0, remainingCount: 0
+        };
+      }
+      function learnNext(){
+        if (!learnSess || learnSess.done) return;
+        learnSess.idx++;
+        if (learnSess.idx >= learnSess.words.length) {
+          if (learnSess.stage === 1) { learnSess.stage = 2; learnSess.idx = 0; }
+          else if (learnSess.stage === 2) { learnSess.stage = 3; learnSess.idx = 0; learnSess.wTries = 0; }
+          else if (learnSess.stage === 3) { learnBuildRepeat(); return; }
+        }
+        renderLearn();
+      }
+      function learnRepeatNext(){
+        if (!learnSess || learnSess.done) return;
+        learnSess.repeatIdx++;
+        if (learnSess.repeatIdx >= learnSess.repeatTasks.length) learnFinish();
+        else renderLearn();
+      }
+      function learnBuildRepeat(){
+        var tasks = [];
+        learnSess.words.forEach(function(w){
+          var k = learnKeyOf(w.w, w.lang);
+          if (learnSess.failedMeaning[k] || learnSess.failedCard[k]) tasks.push({ w: w, kind: "guess" });
+          if (learnSess.failedWriting[k]) tasks.push({ w: w, kind: "write" });
+        });
+        if (!tasks.length) { learnFinish(); return; }
+        learnSess.stage = 4;
+        learnSess.repeatTasks = tasks;
+        learnSess.repeatIdx = 0;
+        learnSess.wTries = 0;
+        renderLearn();
+      }
+      function learnFinish(){
+        learnEnsure();
+        var still = {};
+        [learnSess.failedMeaning, learnSess.failedWriting, learnSess.failedCard].forEach(function(set){
+          Object.keys(set).forEach(function(k){ still[k] = 1; });
+        });
+        var before = learnWords.length;
+        learnWords = learnWords.filter(function(x){ return still[learnKeyOf(x.w, x.lang)]; });
+        learnSave();
+        learnSess.done = true;
+        learnSess.learnedCount = before - learnWords.length;
+        learnSess.remainingCount = learnWords.length;
+        renderLearnHome();
+        renderLearn();
+      }
+      function renderLearnHome(){
+        var card = $("learnCard");
+        if (!card) return;
+        learnEnsure();
+        var n = learnWords.length;
+        card.hidden = n === 0;
+        var c = $("learnCount"); if (c) c.textContent = n;
+        var s = $("learnSub");
+        if (s) s.textContent = n === 1 ? "كلمة وحدة تبي تتعلّمها" : "كلمات تبي تتعلّمها — تخمين، بطاقات، كتابة";
+      }
+      function renderLearn(){
+        var body = $("learnBody"), empty = $("learnEmpty");
+        if (!body) return;
+        if (!learnSess) learnStart();
+        var stEls = document.querySelectorAll("#learnStages .learn-stage");
+        if (!learnSess || !learnSess.words.length) {
+          body.innerHTML = "";
+          if (empty) empty.hidden = false;
+          stEls.forEach(function(el){ el.classList.remove("on"); el.classList.remove("done"); });
+          var pf0 = $("learnProgFill"); if (pf0) pf0.style.width = "0%";
+          return;
+        }
+        if (empty) empty.hidden = true;
+        if (learnSess.done) { renderLearnSummary(); return; }
+        stEls.forEach(function(el){
+          var s = parseInt(el.getAttribute("data-lstage"), 10);
+          el.classList.toggle("on", learnSess.stage === s);
+          el.classList.toggle("done", learnSess.stage > s);
+        });
+        var totalSteps = learnSess.words.length * 3 + (learnSess.repeatTasks ? learnSess.repeatTasks.length : 0);
+        var doneSteps = 0;
+        if (learnSess.stage === 1) doneSteps = learnSess.idx;
+        else if (learnSess.stage === 2) doneSteps = learnSess.words.length + learnSess.idx;
+        else if (learnSess.stage === 3) doneSteps = 2 * learnSess.words.length + learnSess.idx;
+        else if (learnSess.stage === 4) doneSteps = 3 * learnSess.words.length + learnSess.repeatIdx;
+        var pf = $("learnProgFill");
+        if (pf) pf.style.width = (totalSteps ? Math.round(doneSteps / totalSteps * 100) : 0) + "%";
+        if (learnSess.stage === 1) {
+          var w1 = learnSess.words[learnSess.idx];
+          renderLearnGuessTask(w1, function(ok){
+            var k = learnKeyOf(w1.w, w1.lang);
+            if (ok) delete learnSess.failedMeaning[k]; else learnSess.failedMeaning[k] = 1;
+            learnNext();
+          });
+        } else if (learnSess.stage === 2) {
+          renderLearnCard(learnSess.words[learnSess.idx]);
+        } else if (learnSess.stage === 3) {
+          var w3 = learnSess.words[learnSess.idx];
+          renderLearnWriteTask(w3, function(ok){
+            var k = learnKeyOf(w3.w, w3.lang);
+            if (ok) delete learnSess.failedWriting[k]; else learnSess.failedWriting[k] = 1;
+            learnSess.wTries = 0;
+            learnNext();
+          });
+        } else if (learnSess.stage === 4) {
+          var t = learnSess.repeatTasks[learnSess.repeatIdx];
+          if (!t) { learnFinish(); return; }
+          if (t.kind === "guess") {
+            renderLearnGuessTask(t.w, function(ok){
+              var k = learnKeyOf(t.w.w, t.w.lang);
+              if (ok) { delete learnSess.failedMeaning[k]; delete learnSess.failedCard[k]; }
+              learnRepeatNext();
+            });
+          } else {
+            renderLearnWriteTask(t.w, function(ok){
+              var k = learnKeyOf(t.w.w, t.w.lang);
+              if (ok) delete learnSess.failedWriting[k];
+              learnSess.wTries = 0;
+              learnRepeatNext();
+            });
+          }
+        }
+      }
+      /* Stage 1 + repeat guessing: show the foreign word, pick its Arabic. */
+      function renderLearnGuessTask(w, onDone){
+        var body = $("learnBody");
+        var opts = learnShuffle([w.t].concat(learnDistractors(w.lang, w.t, 3)));
+        body.innerHTML =
+          '<div class="learn-q" lang="' + learnEsc(w.lang) + '">' + learnEsc(w.w) + '</div>' +
+          '<div class="learn-q-sub">شنو معناها بالعربي؟</div>' +
+          '<div style="text-align:center"><button class="deck-spk" id="learnGuessSpk" type="button" aria-label="استمع">🔊 اسمعها</button></div>' +
+          '<div class="learn-opts">' + opts.map(function(o){
+            return '<button type="button" class="learn-opt">' + learnEsc(o) + '</button>';
+          }).join("") + '</div>' +
+          '<div class="learn-fb" id="learnGuessFb" hidden></div>';
+        $("learnGuessSpk").addEventListener("click", function(){ learnPlayWord(w.w, w.lang); });
+        var btns = body.querySelectorAll(".learn-opt");
+        btns.forEach(function(b){
+          b.addEventListener("click", function(){
+            if (b.disabled) return;
+            var picked = b.textContent;
+            var ok = picked === w.t;
+            btns.forEach(function(x){ x.disabled = true; if (x.textContent === w.t) x.classList.add("ok"); });
+            var fb = $("learnGuessFb");
+            if (ok) {
+              fb.hidden = false; fb.className = "learn-fb ok"; fb.textContent = "صح ✓";
+            } else {
+              b.classList.add("bad");
+              fb.hidden = false; fb.className = "learn-fb bad"; fb.textContent = "غلط — الصح: " + w.t;
+            }
+            setTimeout(function(){ onDone(ok); }, ok ? 600 : 1500);
+          });
+        });
+      }
+      /* Stage 2: flashcard — same 3D flip + Got/Missed as the Bank deck. */
+      function renderLearnCard(w){
+        var body = $("learnBody");
+        body.innerHTML =
+          '<div class="deck-card" id="learnCardEl" role="button" tabindex="0">' +
+            '<div class="deck-inner">' +
+              '<div class="deck-face deck-front">' +
+                '<div class="deck-chip">' + (w.lang === "de" ? "Deutsch" : "English") + '</div>' +
+                '<div class="deck-word" lang="' + learnEsc(w.lang) + '">' + learnEsc(w.w) + '</div>' +
+                '<button class="deck-spk" id="learnCardSpk" type="button" aria-label="استمع">🔊</button>' +
+                '<div class="deck-hint">اضغط لعرض المعنى</div>' +
+              '</div>' +
+              '<div class="deck-face deck-back">' +
+                '<div class="deck-mean" dir="rtl">' + learnEsc(w.t) + '</div>' +
+                (w.ef ? '<div class="deck-ex" lang="' + learnEsc(w.lang) + '">' + learnEsc(w.ef) + '</div>' : "") +
+                (w.ea ? '<div class="deck-ex-ar" dir="rtl">' + learnEsc(w.ea) + '</div>' : "") +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="deck-controls">' +
+            '<button class="deck-rate deck-got" id="learnGot" type="button">✓ أعرفها</button>' +
+            '<button class="deck-rate deck-miss" id="learnMiss" type="button">✕ ما أعرفها</button>' +
+          '</div>';
+        var flipped = false;
+        var card = $("learnCardEl");
+        function flip(){ flipped = !flipped; card.classList.toggle("flipped", flipped); }
+        card.addEventListener("click", function(e){ if (e.target && e.target.closest && e.target.closest("button")) return; flip(); });
+        $("learnCardSpk").addEventListener("click", function(e){ e.stopPropagation(); learnPlayWord(w.w, w.lang); });
+        function rate(kind){
+          if (!flipped) { flip(); return; }
+          var k = learnKeyOf(w.w, w.lang);
+          setWordMark(w.lang, w.w, kind === "got" ? "known" : "mistake");
+          if (kind === "got") delete learnSess.failedCard[k];
+          else learnSess.failedCard[k] = 1;
+          learnNext();
+        }
+        $("learnGot").addEventListener("click", function(){ rate("got"); });
+        $("learnMiss").addEventListener("click", function(){ rate("miss"); });
+      }
+      /* Stage 3 + repeat writing: Arabic + word audio, type the foreign word.
+         A miss gets ONE immediate re-write; a second miss moves on (the word
+         comes back in the repeat round). */
+      function renderLearnWriteTask(w, onDone){
+        var body = $("learnBody");
+        body.innerHTML =
+          '<div class="learn-q-sub">اكتب الكلمة اللي تسمعها</div>' +
+          '<div class="learn-q" dir="rtl">' + learnEsc(w.t) + '</div>' +
+          '<div style="text-align:center"><button class="deck-spk" id="learnWriteSpk" type="button" aria-label="استمع">🔊 اسمع الكلمة</button></div>' +
+          '<input class="learn-write-in" id="learnWriteIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" lang="' + learnEsc(w.lang) + '" placeholder="اكتب الكلمة هنا…">' +
+          '<div style="display:flex;gap:10px"><button type="button" class="start-btn" id="learnWriteCheck" style="flex:1">تحقق</button></div>' +
+          '<div class="learn-fb" id="learnWriteFb" hidden></div>';
+        learnPlayWord(w.w, w.lang);
+        $("learnWriteSpk").addEventListener("click", function(){ learnPlayWord(w.w, w.lang); });
+        var inp = $("learnWriteIn");
+        try { inp.focus(); } catch (e) {}
+        var tries = 0;
+        function check(){
+          var val = inp.value;
+          var ok = examNorm(val) === examNorm(w.w);
+          var fb = $("learnWriteFb");
+          if (ok) {
+            fb.hidden = false; fb.className = "learn-fb ok"; fb.textContent = "صح ✓ — " + w.w;
+            $("learnWriteCheck").disabled = true; inp.disabled = true;
+            setTimeout(function(){ onDone(true); }, 700);
+          } else {
+            tries++;
+            if (tries === 1) {
+              fb.hidden = false; fb.className = "learn-fb bad"; fb.textContent = "غلط — الصح: " + w.w + " — اكتبها مرة ثانية";
+              inp.value = "";
+              try { inp.focus(); } catch (e) {}
+              learnPlayWord(w.w, w.lang);
+            } else {
+              fb.hidden = false; fb.className = "learn-fb bad"; fb.textContent = "الصح: " + w.w;
+              $("learnWriteCheck").disabled = true; inp.disabled = true;
+              setTimeout(function(){ onDone(false); }, 1300);
+            }
+          }
+        }
+        $("learnWriteCheck").addEventListener("click", check);
+        inp.addEventListener("keydown", function(e){ if (e.key === "Enter") { e.preventDefault(); check(); } });
+      }
+      function renderLearnSummary(){
+        var body = $("learnBody");
+        var learned = learnSess.learnedCount, remaining = learnSess.remainingCount;
+        body.innerHTML =
+          '<div class="learn-sum">' +
+          '<h2>خلصت الجلسة ✅</h2>' +
+          '<p>تعلّمت: <b>' + learned + '</b> كلمة</p>' +
+          (remaining > 0
+            ? '<p>باقي: <b>' + remaining + '</b> كلمة تحتاج تعيدها — انحفظت بقائمة التعلّم</p>'
+            : '<p>كل الكلمات صارت عندك 🎉</p>') +
+          '<div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">' +
+          (remaining > 0 ? '<button type="button" class="start-btn" id="learnAgainBtn" style="flex:1">راجع الباقي</button>' : "") +
+          '<button type="button" class="end-btn" id="learnExitBtn" style="flex:1">خروج</button>' +
+          '</div></div>';
+        var ag = $("learnAgainBtn");
+        if (ag) ag.addEventListener("click", function(){ learnSess = null; renderLearn(); });
+        $("learnExitBtn").addEventListener("click", function(){ showView("home"); });
+      }
+
       /* Single-paragraph play/stop toggle (2026-11-14): tapping a
          paragraph's «استمع للفقرة» button while THAT paragraph is
          playing stops it instead of replaying it — there is no other
@@ -5445,9 +5840,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "plan100", "privacy", "study"];
+        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "learn", "plan100", "privacy", "study"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
-      var FOCUS_VIEWS = ["a1test", "finalexam", "writing", "exercises", "words"];
+      var FOCUS_VIEWS = ["a1test", "finalexam", "writing", "exercises", "words", "learn"];
       var curView = "home", curReviewSub = "review";
 
       /* ---------- Batch 5: unified shell — last tab, back behavior, exit confirm ----------
@@ -5459,7 +5854,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "Cards", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "القواعد",
-        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", study: "الدراسات", wordlogic: "منطق الكلمات", writing: "الكتابة", plan100: "خطة الـ 100 يوم", privacy: "سياسة الخصوصية"
+        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", study: "الدراسات", wordlogic: "منطق الكلمات", writing: "الكتابة", learn: "تعلّم الكلمات", plan100: "خطة الـ 100 يوم", privacy: "سياسة الخصوصية"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
       var startView = "home";
@@ -5578,6 +5973,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       });
       function mainOf(name){ if (name === "topic") return "stories"; if (name === "banktopic") return "bank";
         if (name === "wordlogic") return "bank";
+        if (name === "learn") return "home";
         if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation" || name === "exams") return name;
         if (name === "a1test" || name === "finalexam" || name === "study") return "exams";
         if (name === "review") return "home";
@@ -5602,6 +5998,11 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (name === "writing") {
           var wrEx = document.querySelector('#view-writing .focus-exit');
           if (wrEx) wrEx.setAttribute("data-goto", (prevView && prevView !== "writing") ? prevView : "home");
+        }
+        if (name === "learn") {
+          var lnEx = document.querySelector('#view-learn .focus-exit');
+          if (lnEx) lnEx.setAttribute("data-goto", (prevView && prevView !== "learn") ? prevView : "home");
+          renderLearn();
         }
         if (prevView === "a1test" && name !== "a1test") { try { a1StopAudio(); } catch (e) {} }
         if (prevView === "study" && name !== "study") { try { studyStop(); } catch (e) {} }
@@ -5629,6 +6030,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           b.setAttribute("aria-selected", on ? "true" : "false");
         });
         if (name === "home") renderHome();
+        if (name === "home") renderLearnHome();
         if (name === "home") {
           if (curReviewSub === "review") { renderTodayWords(); startReview(); }
           else if (curReviewSub === "reviewweek") renderWeekReview();
@@ -13674,7 +14076,11 @@ function wrCheck() {
       function deckListFor(lang, level, topic, mark){
         var list = [], seen = {};
         var langs = lang === "all" ? ["en", "de"] : [lang];
-        function okMark(x){ return mark === "all" || wordMark(x.lang, x.w) === mark; }
+        function okMark(x){
+          if (mark === "all") return true;
+          if (mark === "learn") return learnHas(x.w, x.lang);
+          return wordMark(x.lang, x.w) === mark;
+        }
         function add(x){
           if (!x || !x.w) return;
           if (lang !== "all" && x.lang !== lang) return;
@@ -13701,6 +14107,17 @@ function wrCheck() {
           if (bankHas(x.lang, x.w, x.level)) { add(x); return; }
           add({ w: x.w, t: x.t, ef: x.ef, ea: x.ea, lang: x.lang, level: x.level, topic: "extra", story: x.story, src: "story" });
         });
+        /* Learn-queue words (e.g. study words) that no other source
+           provides — only for the «تعلّم» filter; add() dedupes, so words
+           already in the list are not repeated. */
+        if (mark === "learn") {
+          try {
+            learnEnsure();
+            learnWords.forEach(function(x){
+              add({ w: x.w, t: x.t, ef: x.ef, ea: x.ea, lang: x.lang, level: null, topic: "extra", src: "learn" });
+            });
+          } catch (e) {}
+        }
         var convTopics = (topic === "all" || topic === "extra") ? (function(){ var ts = []; try { (TOPICS || []).forEach(function(t){ ts.push(t.slug); }); } catch (e) {} return ts; })() : [topic];
         var levels = level === "all" ? ["A1", "A2"] : [level];
         convTopics.forEach(function(tp){
@@ -13758,6 +14175,7 @@ function wrCheck() {
         if (!item) {
           card.style.visibility = "hidden";
           if (empty) empty.hidden = false;
+          updateDeckLearnBtns();
           return;
         }
         card.style.visibility = "";
@@ -13778,6 +14196,7 @@ function wrCheck() {
         $("deckHint").style.visibility = flashShown ? "hidden" : "";
         card.classList.toggle("flipped", !!flashShown);
         if (deckInteracted && deckAutoOn() && !flashShown) deckPlayWord();
+        updateDeckLearnBtns();
       }
       function renderDeckPicker(){
         var pick = $("deckPicker");
@@ -14001,6 +14420,24 @@ function wrCheck() {
       $("deckPrev").addEventListener("click", function(){ deckGo(-1); });
       $("deckGot").addEventListener("click", function(){ deckRate("got"); });
       $("deckMiss").addEventListener("click", function(){ deckRate("miss"); });
+      /* Deck «تعلّم» / «أخطأت في كتابته» (2026-11-15): send the current
+         card to the Learn review. «تعلّم» only queues it (no rating, no
+         advance — he can still rate it Got/Missed after); «أخطأت في
+         كتابته» queues it AND rates it Missed (marks it «mistake»). */
+      $("deckLearn").addEventListener("click", function(){
+        var item = flashList[flashIdx];
+        if (!item) return;
+        var added = learnAdd({ w: item.w, t: item.t, lang: item.lang, ef: item.ef || "", ea: item.ea || "" });
+        showToast(added ? "انضافت لقائمة التعلّم" : "هي بالقائمة أصلاً");
+        updateDeckLearnBtns();
+      });
+      $("deckMistake").addEventListener("click", function(){
+        var item = flashList[flashIdx];
+        if (!item) return;
+        learnAdd({ w: item.w, t: item.t, lang: item.lang, ef: item.ef || "", ea: item.ea || "" });
+        deckRate("miss");
+        updateDeckLearnBtns();
+      });
       $("deckSpeakWord").addEventListener("click", function(e){ e.stopPropagation(); deckInteracted = true; deckPlayWord(); });
       $("deckSpeakWordBack").addEventListener("click", function(e){ e.stopPropagation(); deckInteracted = true; deckPlayWord(); });
       $("deckSpeakEx").addEventListener("click", function(e){ e.stopPropagation(); deckInteracted = true; deckPlayEx(); });
