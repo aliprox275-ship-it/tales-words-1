@@ -3165,8 +3165,141 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       function normWord(w){
         return w.toLowerCase().replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
       }
-      function lookupWord(raw, story){
-        var n = normWord(raw);
+      /* Inflection fallback (2026-11-16): an inflected word (wanted,
+         playing, children, geht, Kinder) has no own dictionary entry —
+         try its base form so the tip and popup show the base word's
+         meaning instead of «مو موجودة بالقاموس». Candidates are tried in
+         order; only a form actually in the story vocab or the dictionary
+         is returned, so a wrong guess is harmless. Order matters: for
+         -ed/-ing/-er the "stem+e" form is tried before the bare stem
+         (hoped -> hope, not hop; hated -> hate, not hat). */
+      var INFLECT_IRREG = {
+        en: { went:"go", gone:"go", children:"child", men:"man", women:"woman",
+          feet:"foot", teeth:"tooth", mice:"mouse", people:"person",
+          better:"good", best:"good", worse:"bad", worst:"bad",
+          ate:"eat", eaten:"eat", saw:"see", seen:"see", took:"take", taken:"take",
+          gave:"give", given:"give", came:"come", became:"become", began:"begin", begun:"begin",
+          broke:"break", broken:"break", chose:"choose", chosen:"choose",
+          did:"do", done:"do", drew:"draw", drawn:"draw", drank:"drink", drunk:"drink",
+          drove:"drive", driven:"drive", fell:"fall", fallen:"fall", felt:"feel",
+          found:"find", flew:"fly", flown:"fly", forgot:"forget", forgotten:"forget",
+          got:"get", gotten:"get", grew:"grow", grown:"grow", heard:"hear",
+          held:"hold", hid:"hide", hidden:"hide", kept:"keep", knew:"know", known:"know",
+          left:"leave", lent:"lend", lost:"lose", made:"make", meant:"mean",
+          met:"meet", paid:"pay", read:"read", rode:"ride", ridden:"ride",
+          rang:"ring", rung:"ring", rose:"rise", risen:"rise", ran:"run", said:"say",
+          sold:"sell", sent:"send", shook:"shake", shaken:"shake", sang:"sing", sung:"sing",
+          sat:"sit", slept:"sleep", spoke:"speak", spoken:"speak", spent:"spend",
+          stood:"stand", stole:"steal", stolen:"steal", swam:"swim", swum:"swim",
+          taught:"teach", told:"tell", thought:"think", threw:"throw", thrown:"throw",
+          understood:"understand", woke:"wake", woken:"wake", wore:"wear", worn:"wear",
+          won:"win", wrote:"write", written:"write", brought:"bring", bought:"buy",
+          caught:"catch", is:"be", am:"be", are:"be", was:"be", were:"be",
+          been:"be", has:"have", had:"have", does:"do" },
+        de: { kinder:"kind", männer:"mann", frauen:"frau", häuser:"haus", städte:"stadt",
+          gingen:"gehen", ging:"gehen", kam:"kommen", gekommen:"kommen",
+          sah:"sehen", gesehen:"sehen", nahm:"nehmen", genommen:"nehmen",
+          gab:"geben", gegeben:"geben", war:"sein", waren:"sein", gewesen:"sein",
+          hatte:"haben", gehabt:"haben", wurde:"werden", geworden:"werden",
+          konnte:"können", gekonnt:"können", musste:"müssen", gemusst:"müssen",
+          wollte:"wollen", gewollt:"wollen", sollte:"sollen", gesollt:"sollen",
+          durfte:"dürfen", gedurft:"dürfen", mochte:"mögen", gemocht:"mögen",
+          wusste:"wissen", gewusst:"wissen", brachte:"bringen", gebracht:"bringen",
+          dachte:"denken", gedacht:"denken", fand:"finden", gefunden:"finden",
+          half:"helfen", geholfen:"helfen", sprach:"sprechen", gesprochen:"sprechen",
+          las:"lesen", gelesen:"lesen", schrieb:"schreiben", geschrieben:"schreiben",
+          fuhr:"fahren", gefahren:"fahren", aß:"essen", gegessen:"essen",
+          trank:"trinken", getrunken:"trinken", schlief:"schlafen", geschlafen:"schlafen" }
+      };
+      function inflectCandidates(n, lang){
+        var out = [];
+        function add(x){ if (x && x !== n && out.indexOf(x) === -1) out.push(x); }
+        function undouble(x){ return (x.length > 1 && x[x.length-1] === x[x.length-2]) ? x.slice(0, -1) : null; }
+        var irr = (INFLECT_IRREG[lang] || {})[n];
+        if (irr) add(irr);
+        if (lang === "en") {
+          if (n.length > 4 && n.slice(-3) === "ies") add(n.slice(0, -3) + "y");
+          if (n.length > 4 && n.slice(-3) === "ied") add(n.slice(0, -3) + "y");
+          if (n.length > 5 && n.slice(-3) === "ing") {
+            var si = n.slice(0, -3);
+            add(si + "e"); add(undouble(si)); add(si);
+          }
+          if (n.length > 3 && n.slice(-2) === "ed") {
+            var se = n.slice(0, -2);
+            add(se + "e"); add(undouble(se)); add(se);
+          }
+          if (n.length > 3 && n.slice(-2) === "es") {
+            add(n.slice(0, -2)); add(n.slice(0, -2) + "e");
+          }
+          if (n.length > 2 && n.slice(-1) === "s") add(n.slice(0, -1));
+          if (n.length > 4 && n.slice(-2) === "er") {
+            var sr = n.slice(0, -2);
+            add(sr + "e"); add(undouble(sr)); add(sr);
+          }
+          if (n.length > 5 && n.slice(-3) === "est") {
+            var st = n.slice(0, -3);
+            add(st + "e"); add(undouble(st)); add(st);
+          }
+          if (n.length > 5 && n.slice(-4) === "iest") add(n.slice(0, -4) + "y");
+          if (n.length > 4 && n.slice(-3) === "ier") add(n.slice(0, -3) + "y");
+          if (n.length > 4 && n.slice(-2) === "ly") add(n.slice(0, -2));
+        } else if (lang === "de") {
+          /* Verb endings (-t, -st): base is the infinitive stem+"en"
+             (spielt -> spielen, NOT Spiel). Noun/adjective endings
+             (-er, -en, -em, -es): base is the bare stem
+             (Kinder -> Kind, guten -> gut). */
+          var vStems = [], nStems = [];
+          function deStems(ends, arr){
+            for (var k = 0; k < ends.length; k++) {
+              var e = ends[k];
+              if (n.length > e.length + 2 && n.slice(-e.length) === e) {
+                var st2 = n.slice(0, -e.length);
+                var uu = st2.replace(/ä/g, "a").replace(/ö/g, "o").replace(/ü/g, "u");
+                if (arr.indexOf(st2) === -1) arr.push(st2);
+                if (uu !== st2 && arr.indexOf(uu) === -1) arr.push(uu);
+              }
+            }
+          }
+          deStems(["st", "t"], vStems);
+          deStems(["en", "er", "em", "es"], nStems);
+          for (var vi = 0; vi < vStems.length; vi++) add(vStems[vi] + "en");
+          for (var vj = 0; vj < vStems.length; vj++) add(vStems[vj]);
+          for (var ni = 0; ni < nStems.length; ni++) add(nStems[ni]);
+          for (var nj = 0; nj < nStems.length; nj++) add(nStems[nj] + "en");
+        }
+        return out;
+      }
+      /* Bank lookup index (2026-11-16): the mini-dictionary lacks many
+         bank words (nice, cute, hate, hat, pretty, funny...), so inflected
+         forms fell through to a wrong stem (cuter -> cut) or nothing.
+         Built lazily from BANK_DATA + BANK_DATA2 (official A1/A2 lists)
+         on first use and cached; by then the whole script has loaded. */
+      var BANK_IDX = null;
+      function bankIdx(lang){
+        if (BANK_IDX && BANK_IDX[lang]) return BANK_IDX[lang];
+        if (!BANK_IDX) BANK_IDX = {};
+        var idx = {};
+        [BANK_DATA, BANK_DATA2].forEach(function(bank){
+          var byLang = bank[lang];
+          if (!byLang) return;
+          Object.keys(byLang).forEach(function(tp){
+            (byLang[tp] || []).forEach(function(e){
+              var w = e && e[0], t = e && e[1];
+              if (!w || !t) return;
+              var nw = normWord(String(w));
+              if (nw && !(nw in idx)) idx[nw] = t;
+              var parts = nw.split(" ");
+              if (parts.length >= 2 && typeof ARTICLES !== "undefined" && ARTICLES[parts[0]]) {
+                var last = parts[parts.length - 1];
+                if (!(last in idx)) idx[last] = t;
+              }
+            });
+          });
+        });
+        BANK_IDX[lang] = idx;
+        return idx;
+      }
+      function lookupExact(n, story){
         var i, v, vn;
         for (i = 0; i < story.vocab.length; i++) {
           v = story.vocab[i];
@@ -3181,6 +3314,22 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         }
         if (story.lang === "de" && COMPOUNDS[n]) {
           return { found: true, t: COMPOUNDS[n].sum + " (كلمة مركّبة — تفكيكها تحت)", src: "قاموس المركّبات" };
+        }
+        var bidx = null;
+        try { bidx = bankIdx(story.lang); } catch (e) { bidx = null; }
+        if (bidx && Object.prototype.hasOwnProperty.call(bidx, n)) {
+          return { found: true, t: bidx[n], src: "البنك" };
+        }
+        return { found: false, t: null, src: story.titleAr };
+      }
+      function lookupWord(raw, story){
+        var n = normWord(raw);
+        var res = lookupExact(n, story);
+        if (res.found) return res;
+        var cands = inflectCandidates(n, story.lang);
+        for (var ci = 0; ci < cands.length; ci++) {
+          var r = lookupExact(cands[ci], story);
+          if (r.found) return r;
         }
         return { found: false, t: null, src: story.titleAr };
       }
