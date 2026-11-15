@@ -1412,8 +1412,8 @@ input,textarea,select{font-size:16px}
           <div class="topic-filters" id="topicFilters" role="group" aria-label="تصفية حسب الموضوع"></div>
           <div class="cont-row" id="contRow">
             <button class="cont-btn" id="contStartBtn" type="button">🎧 استماع متواصل</button>
-            <label class="cont-sleep">مؤقت النوم
-              <select id="contSleepSel" aria-label="مؤقت النوم">
+            <label class="cont-sleep">وقت الاستماع
+              <select id="contSleepSel" aria-label="وقت الاستماع">
                 <option value="0">بدون</option>
                 <option value="15">١٥ دقيقة</option>
                 <option value="30">٣٠ دقيقة</option>
@@ -1849,6 +1849,51 @@ input,textarea,select{font-size:16px}
           <div id="learnBody"></div>
           <p class="deck-empty" id="learnEmpty" hidden>ما عندك كلمات للتعلّم بعد — اضغط «تعلّمها» على أي كلمة وبتجي هنا.</p>
         </section>
+        <section id="view-sys-numbers" hidden>
+          <h1 class="view-title">الأرقام</h1>
+          <button class="focus-exit" type="button" data-goto="bank">✕ خروج</button>
+          <div id="sysBody-numbers"></div>
+        </section>
+        <section id="view-sys-time" hidden>
+          <h1 class="view-title">الوقت</h1>
+          <button class="focus-exit" type="button" data-goto="bank">✕ خروج</button>
+          <div id="sysBody-time"></div>
+        </section>
+        <section id="view-sys-dates" hidden>
+          <h1 class="view-title">التاريخ</h1>
+          <button class="focus-exit" type="button" data-goto="bank">✕ خروج</button>
+          <div id="sysBody-dates"></div>
+        </section>
+        <section id="view-sys-colors" hidden>
+          <h1 class="view-title">الألوان</h1>
+          <button class="focus-exit" type="button" data-goto="bank">✕ خروج</button>
+          <div id="sysBody-colors"></div>
+        </section>
+        <section id="view-sys-directions" hidden>
+          <h1 class="view-title">الاتجاهات والمواقع</h1>
+          <button class="focus-exit" type="button" data-goto="bank">✕ خروج</button>
+          <div id="sysBody-directions"></div>
+        </section>
+        <section id="view-sys-measurements-money" hidden>
+          <h1 class="view-title">القياسات والفلوس</h1>
+          <button class="focus-exit" type="button" data-goto="bank">✕ خروج</button>
+          <div id="sysBody-measurements-money"></div>
+        </section>
+        <section id="view-sys-family" hidden>
+          <h1 class="view-title">العائلة</h1>
+          <button class="focus-exit" type="button" data-goto="bank">✕ خروج</button>
+          <div id="sysBody-family"></div>
+        </section>
+        <section id="view-sys-body" hidden>
+          <h1 class="view-title">أجزاء الجسم</h1>
+          <button class="focus-exit" type="button" data-goto="bank">✕ خروج</button>
+          <div id="sysBody-body"></div>
+        </section>
+        <section id="view-sys-weather" hidden>
+          <h1 class="view-title">الطقس</h1>
+          <button class="focus-exit" type="button" data-goto="bank">✕ خروج</button>
+          <div id="sysBody-weather"></div>
+        </section>
       <section id="view-stats" hidden>
           <h1 class="view-title">إحصائياتي</h1>
           <div id="statsSkills"></div>
@@ -1875,6 +1920,10 @@ input,textarea,select{font-size:16px}
         <!-- ======== Vocabulary bank A1 ======== -->
         <section id="view-bank" hidden>
           <h1 class="view-title">بنك الكلمات</h1>
+          <div class="bank-box" style="margin-bottom:16px">
+            <div class="bank-box-head">الأنظمة<span class="bank-box-sel">تدرّب على الأرقام والوقت والتاريخ وغيرها</span></div>
+            <div class="bank-box-body"><div class="topic-filters" style="margin:0"><button type="button" class="topic-chip" data-goto="sys-numbers">الأرقام<span class="cnt">Numbers</span></button><button type="button" class="topic-chip" data-goto="sys-time">الوقت<span class="cnt">Time</span></button><button type="button" class="topic-chip" data-goto="sys-dates">التاريخ<span class="cnt">Dates</span></button><button type="button" class="topic-chip" data-goto="sys-colors">الألوان<span class="cnt">Colors</span></button><button type="button" class="topic-chip" data-goto="sys-directions">الاتجاهات والمواقع<span class="cnt">Directions and Positions</span></button><button type="button" class="topic-chip" data-goto="sys-measurements-money">القياسات والفلوس<span class="cnt">Measurements and Money</span></button><button type="button" class="topic-chip" data-goto="sys-family">العائلة<span class="cnt">Family</span></button><button type="button" class="topic-chip" data-goto="sys-body">أجزاء الجسم<span class="cnt">Body Parts</span></button><button type="button" class="topic-chip" data-goto="sys-weather">الطقس<span class="cnt">Weather</span></button></div></div>
+          </div>
           <button class="home-hero" type="button" data-goto="wordlogic" style="margin-bottom:16px"><span class="home-hero-ic">🧠</span><span class="home-hero-tx"><b>منطق الكلمات</b><small>الأفعال الشاذة وقواعد تكوين الكلمات — افهم، لا تحفظ</small></span><span class="home-hero-ar">‹</span></button>
           <div class="bank-progress">
             <div class="bank-prog-card">
@@ -4834,6 +4883,473 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         $("learnExitBtn").addEventListener("click", function(){ showView("home"); });
       }
 
+/* ---------- Systems trainers («الأنظمة») ----------
+   9 practice pages (numbers, time, dates, colors, directions,
+   measurements-money, family, body, weather). Pattern: LEARN —
+   plain views, history handled by showView; audio via obWord /
+   playBundle with bankSpeak fallback; composed items (numbers,
+   times, dates, prices) are spoken token-by-token, chained through
+   playBundle's onDone with a watchdog timer (playBundle's internal
+   TTS fallback does not call onDone, so the watchdog advances the
+   chain). Never depends on bundle filenames. */
+var SYSTEMS_DATA = {"systems":[{"blocks":[{"ar":"واحد","de":"eins","en":"one"},{"ar":"اثنان","de":"zwei","en":"two"},{"ar":"ثلاثة","de":"drei","en":"three"},{"ar":"أربعة","de":"vier","en":"four"},{"ar":"خمسة","de":"fünf","en":"five"},{"ar":"ستة","de":"sechs","en":"six"},{"ar":"سبعة","de":"sieben","en":"seven"},{"ar":"ثمانية","de":"acht","en":"eight"},{"ar":"تسعة","de":"neun","en":"nine"},{"ar":"عشرة","de":"zehn","en":"ten"},{"ar":"أحد عشر","de":"elf","en":"eleven"},{"ar":"اثنا عشر","de":"zwölf","en":"twelve"},{"ar":"ثلاثة عشر","de":"dreizehn","en":"thirteen"},{"ar":"أربعة عشر","de":"vierzehn","en":"fourteen"},{"ar":"خمسة عشر","de":"fünfzehn","en":"fifteen"},{"ar":"ستة عشر","de":"sechzehn","en":"sixteen"},{"ar":"سبعة عشر","de":"siebzehn","en":"seventeen"},{"ar":"ثمانية عشر","de":"achtzehn","en":"eighteen"},{"ar":"تسعة عشر","de":"neunzehn","en":"nineteen"},{"ar":"عشرون","de":"zwanzig","en":"twenty"},{"ar":"ثلاثون","de":"dreißig","en":"thirty"},{"ar":"أربعون","de":"vierzig","en":"forty"},{"ar":"خمسون","de":"fünfzig","en":"fifty"},{"ar":"ستون","de":"sechzig","en":"sixty"},{"ar":"سبعون","de":"siebzig","en":"seventy"},{"ar":"ثمانون","de":"achtzig","en":"eighty"},{"ar":"تسعون","de":"neunzig","en":"ninety"},{"ar":"مئة","de":"hundert","en":"hundred"},{"ar":"ألف","de":"tausend","en":"thousand"},{"ar":"مليون","de":"Million","en":"million"},{"ar":"الأول","de":"erste","en":"first"},{"ar":"الثاني","de":"zweite","en":"second"},{"ar":"الثالث","de":"dritte","en":"third"},{"ar":"الرابع","de":"vierte","en":"fourth"},{"ar":"الخامس","de":"fünfte","en":"fifth"},{"ar":"السادس","de":"sechste","en":"sixth"},{"ar":"السابع","de":"siebte","en":"seventh"},{"ar":"الثامن","de":"achte","en":"eighth"},{"ar":"التاسع","de":"neunte","en":"ninth"},{"ar":"العاشر","de":"zehnte","en":"tenth"},{"ar":"نصف","de":"halb","en":"half"},{"ar":"ربع","de":"Viertel","en":"quarter"},{"ar":"نقطة","de":"Punkt","en":"point"}],"drills":[{"desc_ar":"يظهر رقم عشوائي، قله بصوت عالٍ ثم اكشف الإجابة.","example":"47 = forty-seven / siebenundvierzig","type":"say-it"},{"desc_ar":"اسمع الرقم واكتب الأرقام.","example":"تسمع three hundred and twenty-five، اكتب 325","type":"hear-write"},{"desc_ar":"استعمال حقيقي: قل السعر أو السنة أو رقم الهاتف.","example":"2026 = twenty twenty-six / zweitausendsechsundzwanzig","type":"say-it"}],"id":"numbers","rule_ar":"ركّب أي رقم من الكتل: عشرات + آحاد، ثم مئة وألف ومليون.","title_ar":"الأرقام","title_en":"Numbers"},{"blocks":[{"ar":"تماماً","de":"Uhr","en":"o'clock"},{"ar":"والنصف","de":"halb","en":"half past"},{"ar":"والربع","de":"Viertel nach","en":"quarter past"},{"ar":"إلا ربعاً","de":"Viertel vor","en":"quarter to"},{"ar":"دقيقة","de":"Minute","en":"minute"},{"ar":"صباح","de":"Morgen","en":"morning"},{"ar":"بعد الظهر","de":"Nachmittag","en":"afternoon"},{"ar":"مساء","de":"Abend","en":"evening"},{"ar":"ليل","de":"Nacht","en":"night"},{"ar":"صباحاً","de":"vormittags","en":"a.m."},{"ar":"مساءً","de":"nachmittags","en":"p.m."},{"ar":"كم الساعة؟","de":"Wie spät ist es?","en":"What time is it?"}],"drills":[{"desc_ar":"تظهر ساعة عشوائية، قل الوقت بصوت عالٍ ثم اكشف الإجابة.","example":"7:30 = It is half past seven / Es ist halb acht","type":"say-it"},{"desc_ar":"اسمع الوقت واكتبه أرقاماً.","example":"تسمع It is quarter past three، اكتب 3:15","type":"hear-write"},{"desc_ar":"اختر الوقت الصحيح للساعة المعروضة.","example":"الساعة 9:45 — a) quarter to ten b) half past nine","type":"pick"}],"id":"time","rule_ar":"«It is» + الوقت: الساعة ثم الدقائق، والنصف «half past» والربع «quarter».","title_ar":"الوقت","title_en":"Time"},{"blocks":[{"ar":"الاثنين","de":"Montag","en":"Monday"},{"ar":"الثلاثاء","de":"Dienstag","en":"Tuesday"},{"ar":"الأربعاء","de":"Mittwoch","en":"Wednesday"},{"ar":"الخميس","de":"Donnerstag","en":"Thursday"},{"ar":"الجمعة","de":"Freitag","en":"Friday"},{"ar":"السبت","de":"Samstag","en":"Saturday"},{"ar":"الأحد","de":"Sonntag","en":"Sunday"},{"ar":"يناير","de":"Januar","en":"January"},{"ar":"فبراير","de":"Februar","en":"February"},{"ar":"مارس","de":"März","en":"March"},{"ar":"أبريل","de":"April","en":"April"},{"ar":"مايو","de":"Mai","en":"May"},{"ar":"يونيو","de":"Juni","en":"June"},{"ar":"يوليو","de":"Juli","en":"July"},{"ar":"أغسطس","de":"August","en":"August"},{"ar":"سبتمبر","de":"September","en":"September"},{"ar":"أكتوبر","de":"Oktober","en":"October"},{"ar":"نوفمبر","de":"November","en":"November"},{"ar":"ديسمبر","de":"Dezember","en":"December"},{"ar":"الربيع","de":"Frühling","en":"spring"},{"ar":"الصيف","de":"Sommer","en":"summer"},{"ar":"الخريف","de":"Herbst","en":"autumn"},{"ar":"الشتاء","de":"Winter","en":"winter"},{"ar":"سنة","de":"Jahr","en":"year"},{"ar":"اليوم","de":"heute","en":"today"},{"ar":"غداً","de":"morgen","en":"tomorrow"},{"ar":"أمس","de":"gestern","en":"yesterday"},{"ar":"يوم الاثنين","de":"am Montag","en":"on Monday"},{"ar":"في يونيو","de":"im Juni","en":"in June"}],"drills":[{"desc_ar":"يظهر تاريخ عشوائي، قله كاملاً بصوت عالٍ.","example":"15 June 2026 = the fifteenth of June, twenty twenty-six","type":"say-it"},{"desc_ar":"اختر حرف الجر الصحيح: on أم in.","example":"___ Monday — a) on b) in","type":"pick"},{"desc_ar":"قل ما هو اليوم، وما هو الغد، وما كان الأمس.","example":"Today is Monday. / Heute ist Montag.","type":"say-it"}],"id":"dates","rule_ar":"«on» + اليوم، و«in» + الشهر أو السنة أو الفصل.","title_ar":"التاريخ","title_en":"Dates"},{"blocks":[{"ar":"أحمر","de":"rot","en":"red"},{"ar":"أزرق","de":"blau","en":"blue"},{"ar":"أخضر","de":"grün","en":"green"},{"ar":"أصفر","de":"gelb","en":"yellow"},{"ar":"برتقالي","de":"orange","en":"orange"},{"ar":"بنفسجي","de":"lila","en":"purple"},{"ar":"وردي","de":"rosa","en":"pink"},{"ar":"بني","de":"braun","en":"brown"},{"ar":"أسود","de":"schwarz","en":"black"},{"ar":"أبيض","de":"weiß","en":"white"},{"ar":"رمادي","de":"grau","en":"grey"},{"ar":"فاتح","de":"hell","en":"light"},{"ar":"غامق","de":"dunkel","en":"dark"},{"ar":"ساطع","de":"leuchtend","en":"bright"}],"drills":[{"desc_ar":"صف لون شيء تراه بالكتل.","example":"a dark blue car / ein dunkelblaues Auto","type":"describe"},{"desc_ar":"اختر اللون الصحيح للشيء المعروض.","example":"الشمس لونها؟ a) yellow b) blue","type":"pick"},{"desc_ar":"قُل لون 3 أشياء حولك الآن.","example":"My bag is black. / Meine Tasche ist schwarz.","type":"say-it"}],"id":"colors","rule_ar":"اللون قبل الشيء: «light / dark» قبل اللون، ثم اللون ثم الشيء.","title_ar":"الألوان","title_en":"Colors"},{"blocks":[{"ar":"يسار","de":"links","en":"left"},{"ar":"يمين","de":"rechts","en":"right"},{"ar":"لأعلى","de":"nach oben","en":"up"},{"ar":"لأسفل","de":"nach unten","en":"down"},{"ar":"أمام","de":"vor","en":"in front of"},{"ar":"خلف","de":"hinter","en":"behind"},{"ar":"بجانب","de":"neben","en":"next to"},{"ar":"بين","de":"zwischen","en":"between"},{"ar":"فوق","de":"über","en":"above"},{"ar":"تحت","de":"unter","en":"below"},{"ar":"قريب","de":"nah","en":"near"},{"ar":"بعيد","de":"weit","en":"far"},{"ar":"هنا","de":"hier","en":"here"},{"ar":"هناك","de":"dort","en":"there"},{"ar":"شمال","de":"Norden","en":"north"},{"ar":"جنوب","de":"Süden","en":"south"},{"ar":"شرق","de":"Osten","en":"east"},{"ar":"غرب","de":"Westen","en":"west"}],"drills":[{"desc_ar":"صف مكان شيء بالنسبة لشيء آخر.","example":"The bag is next to the door. / Die Tasche ist neben der Tür.","type":"describe"},{"desc_ar":"اختر حرف المكان الصحيح للصورة.","example":"الكتاب ___ الطاولة — a) on b) under","type":"pick"},{"desc_ar":"أعطِ اتجاهاً بسيطاً: يمين، يسار، للأمام.","example":"Turn left. / Biegen Sie links ab.","type":"say-it"}],"id":"directions","rule_ar":"حرف المكان + المكان: «next to» و«behind» وغيرها قبل المكان.","title_ar":"الاتجاهات والمواقع","title_en":"Directions and Positions"},{"blocks":[{"ar":"متر","de":"Meter","en":"meter"},{"ar":"كيلو","de":"Kilo","en":"kilo"},{"ar":"لتر","de":"Liter","en":"liter"},{"ar":"طويل","de":"groß","en":"tall"},{"ar":"طويل","de":"lang","en":"long"},{"ar":"عريض","de":"breit","en":"wide"},{"ar":"ثقيل","de":"schwer","en":"heavy"},{"ar":"سعر","de":"Preis","en":"price"},{"ar":"رخيص","de":"billig","en":"cheap"},{"ar":"غالي","de":"teuer","en":"expensive"},{"ar":"كم سعره؟","de":"Wie viel kostet es?","en":"How much is it?"},{"ar":"الباقي","de":"Wechselgeld","en":"change"},{"ar":"يدفع","de":"bezahlen","en":"pay"},{"ar":"عملة معدنية","de":"Münze","en":"coin"},{"ar":"ورقة نقدية","de":"Banknote","en":"banknote"}],"drills":[{"desc_ar":"يظهر سعر عشوائي، قله بصوت عالٍ.","example":"5.50 = five fifty / fünf Euro fünfzig","type":"say-it"},{"desc_ar":"صف حجم شيء أو وزنه بالكتل.","example":"It is 2 meters long. / Es ist 2 Meter lang.","type":"describe"},{"desc_ar":"اختر الكلمة الصحيحة: رخيص أم غالي.","example":"هذا الشيء سعره 1، هو ___ — a) cheap b) expensive","type":"pick"}],"id":"measurements-money","rule_ar":"رقم + وحدة، ولسؤال السعر قل: «How much is it؟»","title_ar":"القياسات والفلوس","title_en":"Measurements and Money"},{"blocks":[{"ar":"أم","de":"Mutter","en":"mother"},{"ar":"أب","de":"Vater","en":"father"},{"ar":"أخ","de":"Bruder","en":"brother"},{"ar":"أخت","de":"Schwester","en":"sister"},{"ar":"ابن","de":"Sohn","en":"son"},{"ar":"ابنة","de":"Tochter","en":"daughter"},{"ar":"جدة","de":"Großmutter","en":"grandmother"},{"ar":"جد","de":"Großvater","en":"grandfather"},{"ar":"عم / خال","de":"Onkel","en":"uncle"},{"ar":"عمة / خالة","de":"Tante","en":"aunt"},{"en":"cousin","de":"Cousin","ar":"ابن عم"},{"en":"cousin","de":"Cousine","ar":"ابنة عم"},{"ar":"زوج","de":"Ehemann","en":"husband"},{"ar":"زوجة","de":"Ehefrau","en":"wife"},{"ar":"طفل رضيع","de":"Baby","en":"baby"},{"ar":"عائلة","de":"Familie","en":"family"}],"drills":[{"desc_ar":"صف علاقة قريب لك بالكتل.","example":"She is my sister. / Sie ist meine Schwester.","type":"describe"},{"desc_ar":"اختر الكلمة الصحيحة للعلاقة.","example":"أم أمي هي ___ — a) grandmother b) aunt","type":"pick"},{"desc_ar":"قل أفراد عائلتك واحداً واحداً.","example":"My father, my mother, my brother. / Mein Vater, meine Mutter, mein Bruder.","type":"say-it"}],"id":"family","rule_ar":"«my» + فرد العائلة: «my mother» تعني أمي.","title_ar":"العائلة","title_en":"Family"},{"blocks":[{"ar":"رأس","de":"Kopf","en":"head"},{"ar":"شعر","de":"Haar","en":"hair"},{"ar":"عين","de":"Auge","en":"eye"},{"ar":"أذن","de":"Ohr","en":"ear"},{"ar":"أنف","de":"Nase","en":"nose"},{"ar":"فم","de":"Mund","en":"mouth"},{"ar":"سن","de":"Zahn","en":"tooth"},{"ar":"رقبة","de":"Hals","en":"neck"},{"ar":"كتف","de":"Schulter","en":"shoulder"},{"ar":"ذراع","de":"Arm","en":"arm"},{"ar":"يد","de":"Hand","en":"hand"},{"ar":"إصبع","de":"Finger","en":"finger"},{"ar":"ساق","de":"Bein","en":"leg"},{"ar":"ركبة","de":"Knie","en":"knee"},{"ar":"قدم","de":"Fuß","en":"foot"},{"ar":"إصبع قدم","de":"Zeh","en":"toe"},{"ar":"صدر","de":"Brust","en":"chest"},{"ar":"ظهر","de":"Rücken","en":"back"},{"ar":"بطن","de":"Bauch","en":"stomach"},{"ar":"قلب","de":"Herz","en":"heart"},{"ar":"دماغ","de":"Gehirn","en":"brain"},{"ar":"جلد","de":"Haut","en":"skin"},{"ar":"عظم","de":"Knochen","en":"bone"}],"drills":[{"desc_ar":"أشر إلى جزء من جسمك وقله بصوت عالٍ.","example":"This is my hand. / Das ist meine Hand.","type":"say-it"},{"desc_ar":"اختر الجزء الصحيح للوصف.","example":"به أسمع — a) ear b) eye","type":"pick"},{"desc_ar":"صف ألماً أو شيئاً بسيطاً بجزء من الجسم.","example":"My head hurts. / Mein Kopf tut weh.","type":"describe"}],"id":"body","rule_ar":"«my» + جزء الجسم: «my hand» تعني يدي.","title_ar":"أجزاء الجسم","title_en":"Body Parts"},{"blocks":[{"ar":"شمس","de":"Sonne","en":"sun"},{"ar":"مشمس","de":"sonnig","en":"sunny"},{"ar":"مطر","de":"Regen","en":"rain"},{"ar":"ممطر","de":"regnerisch","en":"rainy"},{"ar":"ثلج","de":"Schnee","en":"snow"},{"ar":"مثلج","de":"verschneit","en":"snowy"},{"ar":"غيمة","de":"Wolke","en":"cloud"},{"ar":"غائم","de":"bewölkt","en":"cloudy"},{"ar":"ريح","de":"Wind","en":"wind"},{"ar":"كثير الرياح","de":"windig","en":"windy"},{"ar":"حار","de":"heiß","en":"hot"},{"ar":"بارد","de":"kalt","en":"cold"},{"ar":"دافئ","de":"warm","en":"warm"},{"ar":"بارد قليلاً","de":"kühl","en":"cool"},{"ar":"عاصفة","de":"Sturm","en":"storm"},{"ar":"ضباب","de":"Nebel","en":"fog"},{"ar":"جليد","de":"Eis","en":"ice"},{"ar":"كيف الطقس؟","de":"Wie ist das Wetter?","en":"What is the weather like?"},{"ar":"إنها تمطر.","de":"Es regnet.","en":"It is raining."}],"drills":[{"desc_ar":"صف طقس صورة أو موقف بالكتل.","example":"It is sunny and hot. / Es ist sonnig und heiß.","type":"describe"},{"desc_ar":"اختر وصف الطقس الصحيح للصورة.","example":"السماء فيها غيوم كثيرة — a) cloudy b) sunny","type":"pick"},{"desc_ar":"قل كيف الطقس اليوم عندك.","example":"It is cold today. / Es ist heute kalt.","type":"say-it"}],"id":"weather","rule_ar":"«It is» + صفة، أو «It is» + فعل بـ ing للمطر والثلج.","title_ar":"الطقس","title_en":"Weather"}]};
+var SYS_IDS = ["numbers", "time", "dates", "colors", "directions", "measurements-money", "family", "body", "weather"];
+function sysFind(id){ for (var i = 0; i < SYSTEMS_DATA.systems.length; i++) if (SYSTEMS_DATA.systems[i].id === id) return SYSTEMS_DATA.systems[i]; return null; }
+function sysLang(){ try { return (typeof bankLang !== "undefined" && bankLang) ? bankLang : "en"; } catch (e) { return "en"; } }
+var sysCurLang = "en";
+var sysState = {};
+function sysEsc(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+function sysCap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+function sysRand(n){ return Math.floor(Math.random() * n); }
+function sysPickOne(a){ return a[sysRand(a.length)]; }
+function sysShuffle(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var j = sysRand(i + 1); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function sysPad(n){ return (n < 10 ? "0" : "") + n; }
+function sysPlayWord(w, lang){ var seg = null; try { seg = obWord(w, lang); } catch (e) { seg = null; } if (seg) playBundle(seg, w, lang, null, null, null, 1); else bankSpeak(w, lang); }
+/* Speak a list of tokens in order. Recorded segments chain via onDone;
+   device-TTS tokens advance on a time estimate; a watchdog advances
+   the chain if a segment falls back internally (no onDone). */
+function sysSpeakSeq(words, lang, done){
+  var i = 0, timer = null;
+  function finish(){ if (timer){ try { clearTimeout(timer); } catch (e) {} timer = null; } if (done){ var d = done; done = null; try { d(); } catch (e) {} } }
+  function next(){
+    if (i >= words.length){ finish(); return; }
+    var w = words[i++];
+    var seg = null; try { seg = obWord(w, lang); } catch (e) { seg = null; }
+    var adv = false;
+    function go(){ if (adv) return; adv = true; if (timer){ try { clearTimeout(timer); } catch (e) {} timer = null; } next(); }
+    var dur = 700 + String(w).length * 140;
+    if (seg && seg.end > seg.start) dur = (seg.end - seg.start) * 1000 + 1200;
+    timer = setTimeout(go, dur + 2500);
+    if (seg){ try { playBundle(seg, w, lang, null, go, null, 1); } catch (e) { go(); } }
+    else { try { bankSpeak(w, lang); } catch (e) {} setTimeout(go, Math.min(2600, 500 + String(w).length * 160)); }
+  }
+  if (!words || !words.length){ finish(); return; }
+  next();
+}
+
+/* ---------- number composers: {text, words} ---------- */
+var SYS_EN_ONES = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+var SYS_EN_TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+var SYS_DE_ONES = ["null", "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun", "zehn", "elf", "zwölf", "dreizehn", "vierzehn", "fünfzehn", "sechzehn", "siebzehn", "achtzehn", "neunzehn"];
+var SYS_DE_TENS = ["", "", "zwanzig", "dreißig", "vierzig", "fünfzig", "sechzig", "siebzig", "achtzig", "neunzig"];
+function sysNumEn(n){
+  if (n < 20) return { text: SYS_EN_ONES[n], words: [SYS_EN_ONES[n]] };
+  if (n < 100){ var t = Math.floor(n / 10), o = n % 10; if (!o) return { text: SYS_EN_TENS[t], words: [SYS_EN_TENS[t]] }; return { text: SYS_EN_TENS[t] + "-" + SYS_EN_ONES[o], words: [SYS_EN_TENS[t], SYS_EN_ONES[o]] }; }
+  if (n < 1000){ var h = Math.floor(n / 100), r = n % 100; var base = { text: SYS_EN_ONES[h] + " hundred", words: [SYS_EN_ONES[h], "hundred"] }; if (!r) return base; var sub = sysNumEn(r); return { text: base.text + " and " + sub.text, words: base.words.concat(["and"], sub.words) }; }
+  if (n < 1000000){ var th = Math.floor(n / 1000), r2 = n % 1000; var b2 = sysNumEn(th); var out = { text: b2.text + " thousand", words: b2.words.concat(["thousand"]) }; if (!r2) return out; var s2 = sysNumEn(r2); return { text: out.text + (r2 < 100 ? " and " : " ") + s2.text, words: out.words.concat(r2 < 100 ? ["and"] : [], s2.words) }; }
+  var m = Math.floor(n / 1000000), r3 = n % 1000000; var b3 = sysNumEn(m); var o3 = { text: b3.text + " million", words: b3.words.concat(["million"]) }; if (!r3) return o3; var s3 = sysNumEn(r3); return { text: o3.text + (r3 < 100 ? " and " : " ") + s3.text, words: o3.words.concat(r3 < 100 ? ["and"] : [], s3.words) };
+}
+function sysNumDeU100(n){
+  if (n < 20) return { text: SYS_DE_ONES[n], words: [SYS_DE_ONES[n]] };
+  var t = Math.floor(n / 10), o = n % 10;
+  if (!o) return { text: SYS_DE_TENS[t], words: [SYS_DE_TENS[t]] };
+  var one = (o === 1) ? "ein" : SYS_DE_ONES[o];
+  return { text: one + "und" + SYS_DE_TENS[t], words: [one, "und", SYS_DE_TENS[t]] };
+}
+function sysNumDe(n){
+  if (n < 100) return sysNumDeU100(n);
+  if (n < 1000){ var h = Math.floor(n / 100), r = n % 100; var pre = (h === 1) ? "ein" : SYS_DE_ONES[h]; var base = { text: pre + "hundert", words: [pre, "hundert"] }; if (!r) return base; var sub = sysNumDe(r); return { text: base.text + sub.text, words: base.words.concat(sub.words) }; }
+  if (n < 1000000){ var th = Math.floor(n / 1000), r2 = n % 1000; var thw = th === 1 ? { text: "ein", words: ["ein"] } : sysNumDe(th); var out = { text: thw.text + "tausend", words: thw.words.concat(["tausend"]) }; if (!r2) return out; var s2 = sysNumDe(r2); return { text: out.text + s2.text, words: out.words.concat(s2.words) }; }
+  var m = Math.floor(n / 1000000), r3 = n % 1000000; var mw = m === 1 ? { text: "eine", words: ["eine"] } : sysNumDe(m); var o3 = { text: mw.text + (m === 1 ? " Million" : " Millionen"), words: mw.words.concat([m === 1 ? "Million" : "Millionen"]) }; if (!r3) return o3; var s3 = sysNumDe(r3); return { text: o3.text + " " + s3.text, words: o3.words.concat(s3.words) };
+}
+var SYS_MONTHS_EN = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var SYS_MONTHS_DE = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+var SYS_WEEK_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+var SYS_WEEK_DE = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+var SYS_EN_ORD1 = ["zeroth", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth", "twentieth"];
+function sysOrdEn(d){ if (d <= 20) return SYS_EN_ORD1[d]; var t = Math.floor(d / 10), o = d % 10; if (!o) return SYS_EN_TENS[t].replace(/y$/, "i") + "eth"; return SYS_EN_TENS[t] + "-" + SYS_EN_ORD1[o]; }
+function sysYearEn(y){
+  if (y >= 1000 && y < 2100){
+    var c = Math.floor(y / 100), r = y % 100;
+    if (r === 0){ var cw0 = sysNumEn(c); return { text: cw0.text + " hundred", words: cw0.words.concat(["hundred"]) }; }
+    var first = sysNumEn(c);
+    if (r < 10) return { text: first.text + " oh-" + SYS_EN_ONES[r], words: first.words.concat(["oh", SYS_EN_ONES[r]]) };
+    var second = sysNumEn(r);
+    return { text: first.text + " " + second.text, words: first.words.concat(second.words) };
+  }
+  return sysNumEn(y);
+}
+function sysTimeWords(h, m, lang){
+  var h12 = ((h - 1) % 12) + 1, hNext = h12 % 12 + 1;
+  if (lang === "de"){
+    var hw = function(x){ return x === 1 ? "ein" : SYS_DE_ONES[x]; };
+    if (m === 0) return { text: "Es ist " + hw(h12) + " Uhr", words: ["es", "ist", hw(h12), "Uhr"] };
+    if (m === 30) return { text: "Es ist halb " + SYS_DE_ONES[hNext], words: ["es", "ist", "halb", SYS_DE_ONES[hNext]] };
+    if (m === 15) return { text: "Es ist Viertel nach " + hw(h12), words: ["es", "ist", "Viertel", "nach", hw(h12)] };
+    if (m === 45) return { text: "Es ist Viertel vor " + hw(hNext), words: ["es", "ist", "Viertel", "vor", hw(hNext)] };
+    var mw = sysNumDe(m);
+    return { text: "Es ist " + hw(h12) + " Uhr " + mw.text, words: ["es", "ist", hw(h12), "Uhr"].concat(mw.words) };
+  }
+  var he = SYS_EN_ONES[h12], hn = SYS_EN_ONES[hNext];
+  if (m === 0) return { text: "It is " + he + " o'clock", words: ["it", "is", he, "o'clock"] };
+  if (m === 30) return { text: "It is half past " + he, words: ["it", "is", "half", "past", he] };
+  if (m === 15) return { text: "It is quarter past " + he, words: ["it", "is", "quarter", "past", he] };
+  if (m === 45) return { text: "It is quarter to " + hn, words: ["it", "is", "quarter", "to", hn] };
+  var me = sysNumEn(m);
+  return { text: "It is " + he + " " + me.text, words: ["it", "is", he].concat(me.words) };
+}
+function sysDateWords(d, mo, y, lang){
+  if (lang === "de"){ var yw = sysNumDe(y); var dw = sysNumDe(d); return { text: dw.text + ". " + SYS_MONTHS_DE[mo - 1] + " " + yw.text, words: dw.words.concat([SYS_MONTHS_DE[mo - 1]], yw.words) }; }
+  var yw2 = sysYearEn(y);
+  return { text: "the " + sysOrdEn(d) + " of " + SYS_MONTHS_EN[mo - 1] + ", " + yw2.text, words: ["the", sysOrdEn(d), "of", SYS_MONTHS_EN[mo - 1]].concat(yw2.words) };
+}
+function sysPriceWords(euros, cents, lang){
+  if (lang === "de"){ var ew = sysNumDe(euros); var out = { text: ew.text + " Euro", words: ew.words.concat(["Euro"]) }; if (cents){ var cw = sysNumDe(cents); out.text += " " + cw.text; out.words = out.words.concat(cw.words); } return out; }
+  var ew2 = sysNumEn(euros); var o2 = { text: ew2.text, words: ew2.words }; if (cents){ var cw2 = sysNumEn(cents); o2.text += " " + cw2.text; o2.words = o2.words.concat(cw2.words); } return o2;
+}
+
+/* ---------- drill task generators (one per system) ---------- */
+function sysNumSay(lang, di){
+  if (di === 2){
+    var mode = sysRand(3);
+    if (mode === 0){ var y = 2000 + sysRand(100); var yw = lang === "de" ? sysNumDe(y) : sysYearEn(y); return { kind: "say", prompt: "سنة <b dir=\"ltr\">" + y + "</b>", revealText: yw.text, revealWords: yw.words }; }
+    if (mode === 1){ var e = 1 + sysRand(99); var c = sysPickOne([0, 25, 50, 75, 99]); var pw = sysPriceWords(e, c, lang); return { kind: "say", prompt: "سعر <b dir=\"ltr\">€" + e + "." + sysPad(c) + "</b>", revealText: pw.text, revealWords: pw.words }; }
+    var ph = "", phw = [];
+    for (var i = 0; i < 7; i++){ var dg = sysRand(10); ph += dg; phw.push(lang === "de" ? SYS_DE_ONES[dg] : SYS_EN_ONES[dg]); }
+    return { kind: "say", prompt: "رقم هاتف <b dir=\"ltr\">" + ph + "</b>", revealText: phw.join(" "), revealWords: phw };
+  }
+  var r = Math.random();
+  var n = r < 0.45 ? sysRand(100) : r < 0.8 ? sysRand(1000) : r < 0.95 ? sysRand(100000) : sysRand(1000002);
+  var cw = lang === "de" ? sysNumDe(n) : sysNumEn(n);
+  return { kind: "say", prompt: "<b dir=\"ltr\" style=\"font-size:2rem\">" + n + "</b>", revealText: cw.text, revealWords: cw.words };
+}
+function sysNumHear(lang){
+  var r = Math.random();
+  var n = r < 0.5 ? sysRand(100) : r < 0.85 ? sysRand(1000) : sysRand(100000);
+  var cw = lang === "de" ? sysNumDe(n) : sysNumEn(n);
+  return { kind: "hear", prompt: "اسمع الرقم واكتبه أرقاماً", revealText: cw.text, revealWords: cw.words, answer: String(n), checkKind: "int" };
+}
+function sysTimeGen(lang){ var h = 1 + sysRand(12); var m = sysPickOne([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]); return { h: h, m: m, tw: sysTimeWords(h, m, lang) }; }
+function sysTimeSay(lang){ var g = sysTimeGen(lang); return { kind: "say", prompt: "<b dir=\"ltr\" style=\"font-size:2rem\">" + g.h + ":" + sysPad(g.m) + "</b>", revealText: g.tw.text, revealWords: g.tw.words }; }
+function sysTimeHear(lang){ var g = sysTimeGen(lang); return { kind: "hear", prompt: "اسمع الوقت واكتبه أرقاماً (مثال: 7:30)", revealText: g.tw.text, revealWords: g.tw.words, answer: g.h + ":" + sysPad(g.m), checkKind: "time" }; }
+function sysTimePick(lang){
+  var g = sysTimeGen(lang);
+  var opts = [g.tw.text], guard = 0;
+  while (opts.length < 4 && guard++ < 40){ var g2 = sysTimeGen(lang); if (opts.indexOf(g2.tw.text) === -1) opts.push(g2.tw.text); }
+  var sh = sysShuffle(opts);
+  return { kind: "pick", prompt: "<b dir=\"ltr\" style=\"font-size:2rem\">" + g.h + ":" + sysPad(g.m) + "</b>", options: sh, correct: sh.indexOf(g.tw.text) };
+}
+function sysDateGen(lang){ var d = 1 + sysRand(28); var mo = 1 + sysRand(12); var y = 2024 + sysRand(7); return { d: d, mo: mo, y: y, dw: sysDateWords(d, mo, y, lang) }; }
+function sysDateSay(lang){ var g = sysDateGen(lang); var mn = lang === "de" ? SYS_MONTHS_DE[g.mo - 1] : SYS_MONTHS_EN[g.mo - 1]; return { kind: "say", prompt: "<b dir=\"ltr\" style=\"font-size:1.6rem\">" + g.d + " " + mn + " " + g.y + "</b>", revealText: g.dw.text, revealWords: g.dw.words }; }
+function sysDatePick(lang){
+  var isDay = Math.random() < 0.5, wd = sysRand(7), mo = 1 + sysRand(12), q, correct, pool;
+  if (lang === "de"){ q = isDay ? "___ " + SYS_WEEK_DE[wd] : "___ " + SYS_MONTHS_DE[mo - 1]; correct = isDay ? "am" : "im"; pool = ["am", "im", "an", "um"]; }
+  else { q = isDay ? "___ " + SYS_WEEK_EN[wd] : "___ " + SYS_MONTHS_EN[mo - 1]; correct = isDay ? "on" : "in"; pool = ["on", "in", "at", "by"]; }
+  var opts = sysShuffle(pool);
+  return { kind: "pick", prompt: "<b dir=\"ltr\" style=\"font-size:1.4rem\">" + q + "</b>", options: opts, correct: opts.indexOf(correct) };
+}
+function sysDateToday(lang){
+  var now = new Date(), wd = now.getDay(), tmr = (wd + 1) % 7, yst = (wd + 6) % 7;
+  if (lang === "de") return { kind: "say", prompt: "ما هو اليوم؟ وما هو الغد؟ وما كان الأمس؟", revealText: "Heute ist " + SYS_WEEK_DE[wd] + ". Morgen ist " + SYS_WEEK_DE[tmr] + ". Gestern war " + SYS_WEEK_DE[yst] + ".", revealWords: ["heute", "ist", SYS_WEEK_DE[wd], "morgen", "ist", SYS_WEEK_DE[tmr], "gestern", "war", SYS_WEEK_DE[yst]] };
+  return { kind: "say", prompt: "ما هو اليوم؟ وما هو الغد؟ وما كان الأمس؟", revealText: "Today is " + SYS_WEEK_EN[wd] + ". Tomorrow is " + SYS_WEEK_EN[tmr] + ". Yesterday was " + SYS_WEEK_EN[yst] + ".", revealWords: ["today", "is", SYS_WEEK_EN[wd], "tomorrow", "is", SYS_WEEK_EN[tmr], "yesterday", "was", SYS_WEEK_EN[yst]] };
+}
+var SYS_OBJS = [
+  { en: "car", de: "Auto", ar: "سيارة", art: "das" },
+  { en: "bag", de: "Tasche", ar: "حقيبة", art: "die" },
+  { en: "shirt", de: "Hemd", ar: "قميص", art: "das" },
+  { en: "house", de: "Haus", ar: "بيت", art: "das" },
+  { en: "book", de: "Buch", ar: "كتاب", art: "das" },
+  { en: "door", de: "Tür", ar: "باب", art: "die" }
+];
+var SYS_COLOR_HEX = { red: "#e03131", blue: "#1971c2", green: "#2b8a3e", yellow: "#f59f00", orange: "#e8590c", purple: "#7048e8", pink: "#d6336c", brown: "#8d5a2b", black: "#212529", white: "#f1f3f5", grey: "#868e96" };
+function sysColorBase(sys){ var out = []; for (var i = 0; i < sys.blocks.length; i++){ var b = sys.blocks[i]; if (SYS_COLOR_HEX[b.en]) out.push(b); } return out; }
+function sysColorPick(lang){
+  var sys = sysFind("colors"), base = sysColorBase(sys), b = sysPickOne(base);
+  var opts = [b[lang]], guard = 0;
+  while (opts.length < 4 && guard++ < 40){ var b2 = sysPickOne(base); if (opts.indexOf(b2[lang]) === -1) opts.push(b2[lang]); }
+  var sh = sysShuffle(opts);
+  var sw = '<span style="display:inline-block;width:44px;height:44px;border-radius:12px;border:2px solid var(--line);background:' + SYS_COLOR_HEX[b.en] + ';vertical-align:middle"></span> <span>ما هذا اللون؟</span>';
+  return { kind: "pick", prompt: sw, options: sh, correct: sh.indexOf(b[lang]) };
+}
+function sysColorDescribe(lang){
+  var sys = sysFind("colors"), base = sysColorBase(sys), b = sysPickOne(base), obj = sysPickOne(SYS_OBJS), mod = sysPickOne(["", "light", "dark"]);
+  var suf = mod === "light" ? " (فاتح)" : mod === "dark" ? " (غامق)" : "";
+  if (lang === "de"){
+    var cm = mod === "light" ? "hell" + b.de : mod === "dark" ? "dunkel" + b.de : b.de;
+    return { kind: "say", prompt: "صِف لون " + obj.ar + " — اللون: " + b.ar + suf, revealText: sysCap(obj.art) + " " + obj.de + " ist " + cm + ".", revealWords: [obj.art, obj.de, "ist", cm] };
+  }
+  var ce = mod ? mod + " " + b.en : b.en;
+  return { kind: "say", prompt: "صِف لون " + obj.ar + " — اللون: " + b.ar + suf, revealText: "The " + obj.en + " is " + ce + ".", revealWords: ["the", obj.en, "is"].concat(mod ? [mod, b.en] : [b.en]) };
+}
+function sysColorSay(lang){
+  var sys = sysFind("colors"), base = sysColorBase(sys), three = sysShuffle(base).slice(0, 3);
+  var ar = three.map(function(x){ return x.ar; }).join("، ");
+  var words = three.map(function(x){ return x[lang]; });
+  return { kind: "say", prompt: "قُل هذه الألوان بصوت عالٍ: <b>" + ar + "</b>", revealText: words.join(" · "), revealWords: words };
+}
+var SYS_PREPS = [
+  { en: "next to", de: "neben", ar: "بجانب" },
+  { en: "behind", de: "hinter", ar: "خلف" },
+  { en: "in front of", de: "vor", ar: "أمام" },
+  { en: "above", de: "über", ar: "فوق" },
+  { en: "below", de: "unter", ar: "تحت" },
+  { en: "between", de: "zwischen", ar: "بين" }
+];
+var SYS_PLACES = [
+  { en: "door", de: "Tür", ar: "الباب", dat: "der" },
+  { en: "table", de: "Tisch", ar: "الطاولة", dat: "dem" },
+  { en: "bag", de: "Tasche", ar: "الحقيبة", dat: "der" },
+  { en: "window", de: "Fenster", ar: "النافذة", dat: "dem" },
+  { en: "chair", de: "Stuhl", ar: "الكرسي", dat: "dem" }
+];
+function sysDirDescribe(lang){
+  var prep = sysPickOne(SYS_PREPS), subj = sysPickOne(SYS_OBJS), pl = sysPickOne(SYS_PLACES);
+  if (prep.en === "between"){
+    var pl2 = sysPickOne(SYS_PLACES);
+    if (lang === "de") return { kind: "say", prompt: "صِف مكان " + subj.ar + " — " + prep.ar + " " + pl.ar + " و" + pl2.ar, revealText: sysCap(subj.art) + " " + subj.de + " ist zwischen " + pl.dat + " " + pl.de + " und " + pl2.dat + " " + pl2.de + ".", revealWords: [subj.art, subj.de, "ist", "zwischen", pl.dat, pl.de, "und", pl2.dat, pl2.de] };
+    return { kind: "say", prompt: "صِف مكان " + subj.ar + " — " + prep.ar + " " + pl.ar + " و" + pl2.ar, revealText: "The " + subj.en + " is between the " + pl.en + " and the " + pl2.en + ".", revealWords: ["the", subj.en, "is", "between", "the", pl.en, "and", "the", pl2.en] };
+  }
+  if (lang === "de") return { kind: "say", prompt: "صِف مكان " + subj.ar + " — " + prep.ar + " " + pl.ar, revealText: sysCap(subj.art) + " " + subj.de + " ist " + prep.de + " " + pl.dat + " " + pl.de + ".", revealWords: [subj.art, subj.de, "ist", prep.de, pl.dat, pl.de] };
+  return { kind: "say", prompt: "صِف مكان " + subj.ar + " — " + prep.ar + " " + pl.ar, revealText: "The " + subj.en + " is " + prep.en + " the " + pl.en + ".", revealWords: ["the", subj.en, "is"].concat(prep.en.split(" "), ["the", pl.en]) };
+}
+function sysDirPick(lang){
+  var prep = sysPickOne(SYS_PREPS), pl = sysPickOne(SYS_PLACES);
+  var pool = lang === "de" ? ["über", "unter", "neben", "hinter", "vor", "zwischen"] : ["on", "under", "next to", "behind", "in front of", "between"];
+  var correct = prep[lang], opts = [correct], guard = 0;
+  while (opts.length < 4 && guard++ < 40){ var o = sysPickOne(pool); if (opts.indexOf(o) === -1) opts.push(o); }
+  var sh = sysShuffle(opts);
+  return { kind: "pick", prompt: "الكتاب " + prep.ar + " " + pl.ar + " — اختر حرف المكان:", options: sh, correct: sh.indexOf(correct) };
+}
+var SYS_DIR_CMDS = [
+  { ar: "انعطف يساراً", en: "Turn left.", de: "Biegen Sie links ab.", enw: ["turn", "left"], dew: ["biegen", "Sie", "links", "ab"] },
+  { ar: "انعطف يميناً", en: "Turn right.", de: "Biegen Sie rechts ab.", enw: ["turn", "right"], dew: ["biegen", "Sie", "rechts", "ab"] },
+  { ar: "امشِ للأمام مباشرة", en: "Go straight.", de: "Gehen Sie geradeaus.", enw: ["go", "straight"], dew: ["gehen", "Sie", "geradeaus"] }
+];
+function sysDirSay(lang){ var c = sysPickOne(SYS_DIR_CMDS); if (lang === "de") return { kind: "say", prompt: "قُل هذا الاتجاه: <b>" + c.ar + "</b>", revealText: c.de, revealWords: c.dew }; return { kind: "say", prompt: "قُل هذا الاتجاه: <b>" + c.ar + "</b>", revealText: c.en, revealWords: c.enw }; }
+function sysPriceGen(lang){ var e = 1 + sysRand(99), c = sysPickOne([0, 25, 50, 75, 99]); return { e: e, c: c, pw: sysPriceWords(e, c, lang) }; }
+function sysPriceSay(lang){ var g = sysPriceGen(lang); return { kind: "say", prompt: "سعر <b dir=\"ltr\" style=\"font-size:2rem\">€" + g.e + "." + sysPad(g.c) + "</b>", revealText: g.pw.text, revealWords: g.pw.words }; }
+function sysPricePick(lang){
+  var g = sysPriceGen(lang), label = "€" + g.e + "." + sysPad(g.c), opts = [label], guard = 0;
+  while (opts.length < 4 && guard++ < 40){ var g2 = sysPriceGen(lang); var l2 = "€" + g2.e + "." + sysPad(g2.c); if (opts.indexOf(l2) === -1) opts.push(l2); }
+  var sh = sysShuffle(opts);
+  return { kind: "pick", prompt: "أي سعر هذا؟ <b dir=\"ltr\">«" + g.pw.text + "»</b>", options: sh, correct: sh.indexOf(label) };
+}
+function sysMeasureDescribe(lang){
+  var kind = sysRand(3);
+  if (kind === 0){ var n = 1 + sysRand(10), nw = lang === "de" ? sysNumDe(n) : sysNumEn(n); if (lang === "de") return { kind: "say", prompt: "صِف طول شيء: " + n + " متر", revealText: "Es ist " + nw.text + " Meter lang.", revealWords: ["es", "ist"].concat(nw.words, ["Meter", "lang"]) }; return { kind: "say", prompt: "صِف طول شيء: " + n + " متر", revealText: "It is " + nw.text + " meters long.", revealWords: ["it", "is"].concat(nw.words, ["meters", "long"]) }; }
+  if (kind === 1){ var w = 1 + sysRand(20), ww = lang === "de" ? sysNumDe(w) : sysNumEn(w); if (lang === "de") return { kind: "say", prompt: "صِف وزن شيء: " + w + " كيلو", revealText: "Es wiegt " + ww.text + " Kilo.", revealWords: ["es", "wiegt"].concat(ww.words, ["Kilo"]) }; return { kind: "say", prompt: "صِف وزن شيء: " + w + " كيلو", revealText: "It weighs " + ww.text + " kilos.", revealWords: ["it", "weighs"].concat(ww.words, ["kilos"]) }; }
+  var v = 1 + sysRand(5), vw = lang === "de" ? sysNumDe(v) : sysNumEn(v);
+  if (lang === "de") return { kind: "say", prompt: "صِف حجم سائل: " + v + " لتر", revealText: "Es sind " + vw.text + " Liter.", revealWords: ["es", "sind"].concat(vw.words, ["Liter"]) };
+  return { kind: "say", prompt: "صِف حجم سائل: " + v + " لتر", revealText: "It is " + vw.text + " liters.", revealWords: ["it", "is"].concat(vw.words, ["liters"]) };
+}
+var SYS_FAM_G = { Mutter: "f", Vater: "m", Bruder: "m", Schwester: "f", Sohn: "m", Tochter: "f", "Großmutter": "f", "Großvater": "m", Onkel: "m", Tante: "f", Cousin: "m", Cousine: "f", Ehemann: "m", Ehefrau: "f", Baby: "n", Familie: "f" };
+function sysFamDescribe(lang){
+  var sys = sysFind("family");
+  var cands = sys.blocks.filter(function(b){ return b.en !== "family"; });
+  var b = sysPickOne(cands), g = SYS_FAM_G[b.de] || "m";
+  if (lang === "de"){
+    if (g === "f") return { kind: "say", prompt: "صِف علاقة: " + b.ar, revealText: "Sie ist meine " + b.de + ".", revealWords: ["sie", "ist", "meine", b.de] };
+    if (g === "n") return { kind: "say", prompt: "صِف علاقة: " + b.ar, revealText: "Das ist mein " + b.de + ".", revealWords: ["das", "ist", "mein", b.de] };
+    return { kind: "say", prompt: "صِف علاقة: " + b.ar, revealText: "Er ist mein " + b.de + ".", revealWords: ["er", "ist", "mein", b.de] };
+  }
+  if (g === "f") return { kind: "say", prompt: "صِف علاقة: " + b.ar, revealText: "She is my " + b.en + ".", revealWords: ["she", "is", "my", b.en] };
+  if (g === "n") return { kind: "say", prompt: "صِف علاقة: " + b.ar, revealText: "This is my " + b.en + ".", revealWords: ["this", "is", "my", b.en] };
+  return { kind: "say", prompt: "صِف علاقة: " + b.ar, revealText: "He is my " + b.en + ".", revealWords: ["he", "is", "my", b.en] };
+}
+var SYS_FAM_RIDDLES = [
+  { ar: "أم أمي هي", en: "grandmother", de: "Großmutter" },
+  { ar: "أب أبي هو", en: "grandfather", de: "Großvater" },
+  { ar: "أخ أمي هو", en: "uncle", de: "Onkel" },
+  { ar: "أخت أبي هي", en: "aunt", de: "Tante" }
+];
+function sysFamPick(lang){
+  var sys = sysFind("family"), r = sysPickOne(SYS_FAM_RIDDLES), opts = [r[lang]], guard = 0;
+  while (opts.length < 4 && guard++ < 40){ var b = sysPickOne(sys.blocks); if (opts.indexOf(b[lang]) === -1) opts.push(b[lang]); }
+  var sh = sysShuffle(opts);
+  return { kind: "pick", prompt: r.ar + " ___ ؟", options: sh, correct: sh.indexOf(r[lang]) };
+}
+function sysFamSay(lang){
+  var sys = sysFind("family");
+  var three = sysShuffle(sys.blocks.filter(function(b){ return b.en !== "family"; })).slice(0, 3);
+  var ar = three.map(function(x){ return x.ar; }).join("، ");
+  if (lang === "de"){
+    var parts = three.map(function(x){ var g = SYS_FAM_G[x.de] || "m"; return (g === "f" ? "meine " : "mein ") + x.de; });
+    var words = [];
+    three.forEach(function(x){ var g = SYS_FAM_G[x.de] || "m"; words.push(g === "f" ? "meine" : "mein"); words.push(x.de); });
+    return { kind: "say", prompt: "قُل أفراد عائلتك: <b>" + ar + "</b>", revealText: parts.join(", ") + ".", revealWords: words };
+  }
+  var words2 = [];
+  three.forEach(function(x){ words2.push("my"); words2.push(x.en); });
+  return { kind: "say", prompt: "قُل أفراد عائلتك: <b>" + ar + "</b>", revealText: three.map(function(x){ return "my " + x.en; }).join(", ") + ".", revealWords: words2 };
+}
+var SYS_BODY_G = { Kopf: "m", Haar: "n", Auge: "n", Ohr: "n", Nase: "f", Mund: "m", Zahn: "m", Hals: "m", Schulter: "f", Arm: "m", Hand: "f", Finger: "m", Bein: "n", Knie: "n", "Fuß": "m", Zeh: "m", Brust: "f", "Rücken": "m", Bauch: "m", Herz: "n", Gehirn: "n", Haut: "f", Knochen: "m" };
+function sysBodySay(lang){
+  var sys = sysFind("body"), b = sysPickOne(sys.blocks), g = SYS_BODY_G[b.de] || "m";
+  if (lang === "de") return { kind: "say", prompt: "أشر إلى هذا الجزء وقُله: <b>" + b.ar + "</b>", revealText: "Das ist " + (g === "f" ? "meine " : "mein ") + b.de + ".", revealWords: ["das", "ist", g === "f" ? "meine" : "mein", b.de] };
+  return { kind: "say", prompt: "أشر إلى هذا الجزء وقُله: <b>" + b.ar + "</b>", revealText: "This is my " + b.en + ".", revealWords: ["this", "is", "my", b.en] };
+}
+var SYS_BODY_RIDDLES = [
+  { ar: "به أسمع", en: "ear", de: "Ohr" },
+  { ar: "به أرى", en: "eye", de: "Auge" },
+  { ar: "به أشم", en: "nose", de: "Nase" },
+  { ar: "به أتكلم وآكل", en: "mouth", de: "Mund" },
+  { ar: "به أمشي", en: "leg", de: "Bein" },
+  { ar: "به أمسك الأشياء", en: "hand", de: "Hand" },
+  { ar: "به أفكر", en: "brain", de: "Gehirn" }
+];
+function sysBodyPick(lang){
+  var sys = sysFind("body"), r = sysPickOne(SYS_BODY_RIDDLES), opts = [r[lang]], guard = 0;
+  while (opts.length < 4 && guard++ < 40){ var b = sysPickOne(sys.blocks); if (opts.indexOf(b[lang]) === -1) opts.push(b[lang]); }
+  var sh = sysShuffle(opts);
+  return { kind: "pick", prompt: r.ar + " — أي جزء هذا؟", options: sh, correct: sh.indexOf(r[lang]) };
+}
+function sysBodyDescribe(lang){
+  var sys = sysFind("body"), b = sysPickOne(sys.blocks), g = SYS_BODY_G[b.de] || "m";
+  if (lang === "de") return { kind: "say", prompt: "صِف ألماً في: <b>" + b.ar + "</b>", revealText: (g === "f" ? "Meine " : "Mein ") + b.de + " tut weh.", revealWords: [g === "f" ? "meine" : "mein", b.de, "tut", "weh"] };
+  return { kind: "say", prompt: "صِف ألماً في: <b>" + b.ar + "</b>", revealText: "My " + b.en + " hurts.", revealWords: ["my", b.en, "hurts"] };
+}
+var SYS_WEATHER_ADJ = ["sunny", "rainy", "snowy", "cloudy", "windy", "hot", "cold", "warm", "cool"];
+var SYS_WEATHER_PAIR = { sunny: "hot", rainy: "cold", snowy: "cold", cloudy: "cool", windy: "cold", hot: "sunny", cold: "cloudy", warm: "sunny", cool: "cloudy" };
+function sysWeatherWord(sys, en){ for (var i = 0; i < sys.blocks.length; i++) if (sys.blocks[i].en === en) return sys.blocks[i]; return null; }
+function sysWeatherDescribe(lang){
+  var sys = sysFind("weather"), a1 = sysPickOne(SYS_WEATHER_ADJ), a2 = Math.random() < 0.5 ? SYS_WEATHER_PAIR[a1] : null;
+  var w1 = sysWeatherWord(sys, a1), w2 = a2 ? sysWeatherWord(sys, a2) : null;
+  if (lang === "de"){
+    var ws = ["es", "ist", w1.de]; if (w2) ws.push("und", w2.de);
+    return { kind: "say", prompt: "صِف الطقس بهذه الكلمة: <b>" + w1.ar + "</b>", revealText: "Es ist " + w1.de + (w2 ? " und " + w2.de : "") + ".", revealWords: ws };
+  }
+  var ws2 = ["it", "is", w1.en]; if (w2) ws2.push("and", w2.en);
+  return { kind: "say", prompt: "صِف الطقس بهذه الكلمة: <b>" + w1.ar + "</b>", revealText: "It is " + w1.en + (w2 ? " and " + w2.en : "") + ".", revealWords: ws2 };
+}
+var SYS_WEATHER_RIDDLES = [
+  { ar: "السماء فيها غيوم كثيرة", en: "cloudy", de: "bewölkt" },
+  { ar: "تمطر الآن", en: "rainy", de: "regnerisch" },
+  { ar: "الشمس طالعة والجو حار", en: "sunny", de: "sonnig" },
+  { ar: "ثلج يتساقط", en: "snowy", de: "verschneit" },
+  { ar: "ريح قوية", en: "windy", de: "windig" },
+  { ar: "الجو بارد جداً", en: "cold", de: "kalt" }
+];
+function sysWeatherPick(lang){
+  var sys = sysFind("weather"), r = sysPickOne(SYS_WEATHER_RIDDLES), opts = [r[lang]], guard = 0;
+  while (opts.length < 4 && guard++ < 40){ var b = sysPickOne(sys.blocks); if (b.en === "sun" || b.en === "rain" || b.en === "snow" || b.en === "cloud" || b.en === "wind") continue; if (opts.indexOf(b[lang]) === -1) opts.push(b[lang]); }
+  var sh = sysShuffle(opts);
+  return { kind: "pick", prompt: r.ar + " — أي وصف هذا؟", options: sh, correct: sh.indexOf(r[lang]) };
+}
+function sysWeatherSay(lang){
+  var sys = sysFind("weather"), a = sysPickOne(SYS_WEATHER_ADJ), w = sysWeatherWord(sys, a);
+  if (lang === "de") return { kind: "say", prompt: "كيف الطقس اليوم عندك؟", revealText: "Es ist heute " + w.de + ".", revealWords: ["es", "ist", "heute", w.de] };
+  return { kind: "say", prompt: "كيف الطقس اليوم عندك؟", revealText: "It is " + w.en + " today.", revealWords: ["it", "is", w.en, "today"] };
+}
+
+/* ---------- dispatcher ---------- */
+function sysGenTask(sysId, di, lang){
+  var sys = sysFind(sysId); if (!sys) return { kind: "say", prompt: "؟", revealText: "", revealWords: [] };
+  var type = sys.drills[di] ? sys.drills[di].type : "say-it";
+  if (sysId === "numbers"){ if (di === 1) return sysNumHear(lang); return sysNumSay(lang, di); }
+  if (sysId === "time"){ if (type === "hear-write") return sysTimeHear(lang); if (type === "pick") return sysTimePick(lang); return sysTimeSay(lang); }
+  if (sysId === "dates"){ if (type === "pick") return sysDatePick(lang); if (di === 2) return sysDateToday(lang); return sysDateSay(lang); }
+  if (sysId === "colors"){ if (type === "pick") return sysColorPick(lang); if (type === "describe") return sysColorDescribe(lang); return sysColorSay(lang); }
+  if (sysId === "directions"){ if (type === "pick") return sysDirPick(lang); if (type === "describe") return sysDirDescribe(lang); return sysDirSay(lang); }
+  if (sysId === "measurements-money"){ if (type === "pick") return sysPricePick(lang); if (type === "describe") return sysMeasureDescribe(lang); return sysPriceSay(lang); }
+  if (sysId === "family"){ if (type === "pick") return sysFamPick(lang); if (type === "describe") return sysFamDescribe(lang); return sysFamSay(lang); }
+  if (sysId === "body"){ if (type === "pick") return sysBodyPick(lang); if (type === "describe") return sysBodyDescribe(lang); return sysBodySay(lang); }
+  if (sysId === "weather"){ if (type === "pick") return sysWeatherPick(lang); if (type === "describe") return sysWeatherDescribe(lang); return sysWeatherSay(lang); }
+  return { kind: "say", prompt: "؟", revealText: "", revealWords: [] };
+}
+function sysCheck(t, val){
+  var v = String(val || "").trim().toLowerCase();
+  if (t.checkKind === "int"){ var a = v.replace(/[^0-9]/g, ""); if (!a) return false; return parseInt(a, 10) === parseInt(String(t.answer).replace(/[^0-9]/g, ""), 10); }
+  if (t.checkKind === "time"){ var m = v.replace(".", ":").match(/(\d+)\s*:\s*(\d+)/); if (!m) return false; var p = String(t.answer).split(":"); return parseInt(m[1], 10) === parseInt(p[0], 10) && parseInt(m[2], 10) === parseInt(p[1], 10); }
+  if (t.checkKind === "date"){ var mm = v.match(/(\d+)\D+(\d+)\D+(\d+)/); if (!mm) return false; var q = String(t.answer).split("/"); return parseInt(mm[1], 10) === parseInt(q[0], 10) && parseInt(mm[2], 10) === parseInt(q[1], 10) && parseInt(mm[3], 10) === parseInt(q[2], 10); }
+  if (t.checkKind === "price"){ var f = parseFloat(v.replace(",", ".")); if (isNaN(f)) return false; return Math.abs(f - parseFloat(t.answer)) < 0.005; }
+  return v === String(t.answer).toLowerCase();
+}
+
+/* ---------- drill rendering ---------- */
+function sysRenderDrill(sysId, di){
+  var key = sysId + "-" + di;
+  var task = sysGenTask(sysId, di, sysCurLang);
+  sysState[key] = task;
+  var el = $("sysD-" + sysId + "-" + di);
+  if (!el) return;
+  var sys = sysFind(sysId), dr = sys.drills[di];
+  var h = '<p style="margin:0 0 10px"><b>' + sysEsc(dr.desc_ar) + '</b><br><small style="color:var(--muted)" dir="ltr">' + sysEsc(dr.example) + '</small></p>';
+  if (task.kind === "say"){
+    h += '<div style="font-size:1.15rem;margin:8px 0" dir="auto">' + task.prompt + '</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="start-btn" data-sysact="new">سؤال جديد</button><button type="button" class="end-btn" data-sysact="reveal">اكشف الإجابة</button></div>';
+    h += '<div class="sys-reveal" hidden style="margin-top:10px"><div dir="ltr" style="font-size:1.2rem;font-weight:700">' + sysEsc(task.revealText) + '</div><button type="button" class="bank-speak" data-sysact="play" style="margin-top:8px" aria-label="استمع">🔊</button></div>';
+  } else if (task.kind === "hear"){
+    h += '<div style="margin:8px 0">' + sysEsc(task.prompt) + '</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="start-btn" data-sysact="play">🔊 اسمع</button><button type="button" class="end-btn" data-sysact="new">سؤال جديد</button></div>';
+    h += '<div style="display:flex;gap:8px;margin-top:10px"><input type="text" inputmode="text" class="learn-write-in sys-in" placeholder="اكتب هنا" style="flex:1"><button type="button" class="start-btn" data-sysact="check">تحقق</button></div>';
+    h += '<div class="learn-fb sys-fb" hidden style="margin-top:8px"></div>';
+  } else if (task.kind === "pick"){
+    h += '<div style="font-size:1.15rem;margin:8px 0" dir="auto">' + task.prompt + '</div>';
+    h += '<div class="learn-opts">' + task.options.map(function(o, ix){ return '<button type="button" class="learn-opt" data-opt="' + ix + '" dir="auto">' + sysEsc(o) + '</button>'; }).join("") + '</div>';
+    h += '<div style="display:flex;gap:8px;margin-top:10px"><button type="button" class="end-btn" data-sysact="new">سؤال جديد</button></div>';
+    h += '<div class="learn-fb sys-fb" hidden style="margin-top:8px"></div>';
+  }
+  el.innerHTML = h;
+  sysBindDrill(el, sysId, di);
+}
+function sysBindDrill(el, sysId, di){
+  var key = sysId + "-" + di;
+  function task(){ return sysState[key]; }
+  var btns = el.querySelectorAll("[data-sysact]");
+  for (var i = 0; i < btns.length; i++){
+    btns[i].addEventListener("click", function(){
+      var act = this.getAttribute("data-sysact"), t = task();
+      if (act === "new"){ sysRenderDrill(sysId, di); return; }
+      if (act === "reveal"){ var rv = el.querySelector(".sys-reveal"); if (rv) rv.hidden = false; return; }
+      if (act === "play"){ if (t && t.revealWords) sysSpeakSeq(t.revealWords, sysCurLang, null); return; }
+      if (act === "check"){
+        var inp = el.querySelector(".sys-in"), fb = el.querySelector(".sys-fb");
+        if (!inp || !fb || !t) return;
+        var ok = sysCheck(t, inp.value);
+        fb.hidden = false; fb.className = "learn-fb sys-fb " + (ok ? "ok" : "bad");
+        fb.textContent = ok ? "صح ✅ — " + t.revealText : "غلط — الإجابة: " + t.revealText;
+        return;
+      }
+    });
+  }
+  var opts = el.querySelectorAll("[data-opt]");
+  for (var j = 0; j < opts.length; j++){
+    opts[j].addEventListener("click", function(){
+      var t = task(); if (!t) return;
+      var ix = parseInt(this.getAttribute("data-opt"), 10);
+      var fb = el.querySelector(".sys-fb");
+      var all = el.querySelectorAll("[data-opt]");
+      for (var k = 0; k < all.length; k++){ all[k].disabled = true; if (k === t.correct) all[k].classList.add("ok"); else if (k === ix) all[k].classList.add("bad"); }
+      if (fb){ fb.hidden = false; fb.className = "learn-fb sys-fb " + (ix === t.correct ? "ok" : "bad"); fb.textContent = ix === t.correct ? "صح ✅" : "غلط — الصح: " + t.options[t.correct]; }
+    });
+  }
+}
+
+/* ---------- system page rendering ---------- */
+function renderSys(id){
+  var sys = sysFind(id); if (!sys) return;
+  sysCurLang = sysLang();
+  sysRenderBody(id);
+}
+function sysRenderBody(id){
+  var sys = sysFind(id); if (!sys) return;
+  var body = $("sysBody-" + id); if (!body) return;
+  var lang = sysCurLang;
+  var h = "";
+  h += '<h3 class="sub-title" style="margin-top:0">' + sysEsc(sys.title_ar) + ' · <span dir="ltr">' + sysEsc(sys.title_en) + '</span></h3>';
+  h += '<p style="margin:0 0 12px">' + sysEsc(sys.rule_ar) + '</p>';
+  h += '<div class="switch" style="margin-bottom:14px"><button type="button" id="sysLangEn-' + id + '" class="' + (lang === "en" ? "active-en" : "") + '">English · الإنجليزية</button><button type="button" id="sysLangDe-' + id + '" class="' + (lang === "de" ? "active-de" : "") + '">Deutsch · الألمانية</button></div>';
+  h += '<div class="bank-grid">';
+  for (var i = 0; i < sys.blocks.length; i++){
+    var b = sys.blocks[i], w = b[lang] || b.en;
+    h += '<article class="bank-card"><div class="bank-card-top"><span class="bank-word ' + lang + '" dir="ltr" data-sysword="' + sysEsc(w) + '">' + sysEsc(w) + '</span><button type="button" class="bank-speak" data-sysplay="' + sysEsc(w) + '" aria-label="استمع">🔊</button></div><div class="bank-mean">' + sysEsc(b.ar) + '</div></article>';
+  }
+  h += '</div>';
+  h += '<h3 class="sub-title">تمارين</h3>';
+  for (var d = 0; d < sys.drills.length; d++){
+    h += '<div class="bank-card" style="margin-bottom:12px"><div id="sysD-' + id + '-' + d + '"></div></div>';
+  }
+  body.innerHTML = h;
+  var enB = $("sysLangEn-" + id), deB = $("sysLangDe-" + id);
+  if (enB) enB.addEventListener("click", function(){ sysCurLang = "en"; sysRenderBody(id); });
+  if (deB) deB.addEventListener("click", function(){ sysCurLang = "de"; sysRenderBody(id); });
+  var plays = body.querySelectorAll("[data-sysplay]");
+  for (var p = 0; p < plays.length; p++){ plays[p].addEventListener("click", function(){ sysPlayWord(this.getAttribute("data-sysplay"), sysCurLang); }); }
+  var words = body.querySelectorAll("[data-sysword]");
+  for (var q = 0; q < words.length; q++){ words[q].addEventListener("click", function(){ sysPlayWord(this.getAttribute("data-sysword"), sysCurLang); }); }
+  for (var d2 = 0; d2 < sys.drills.length; d2++) sysRenderDrill(id, d2);
+}
+
       /* Single-paragraph play/stop toggle (2026-11-14): tapping a
          paragraph's «استمع للفقرة» button while THAT paragraph is
          playing stops it instead of replaying it — there is no other
@@ -4946,7 +5462,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         var sb = $("contStartBtn");
         if (sb) sb.addEventListener("click", function(){ if (contListen) { setContListen(false); try { karaStop(); } catch (e) {} showToast("🔁 الاستماع المتواصل طافي"); return; } contStartFromStories(); });
         var sel = $("contSleepSel");
-        if (sel) sel.addEventListener("change", function(){ contSleepMin = parseInt(sel.value, 10) || 0; contSave(); if (contListen) contArmSleep(); showToast(contSleepMin ? ("⏰ مؤقت النوم: " + fmtDurMin(contSleepMin)) : "⏰ مؤقت النوم طافي"); });
+        if (sel) sel.addEventListener("change", function(){ contSleepMin = parseInt(sel.value, 10) || 0; contSave(); if (contListen) contArmSleep(); showToast(contSleepMin ? ("⏰ وقت الاستماع: " + fmtDurMin(contSleepMin)) : "⏰ وقت الاستماع طافي"); });
         syncContBtns();
       })();
       function karaStop(){
@@ -6021,9 +6537,9 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "learn", "plan100", "privacy", "study"];
+        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "learn", "sys-numbers", "sys-time", "sys-dates", "sys-colors", "sys-directions", "sys-measurements-money", "sys-family", "sys-body", "sys-weather", "plan100", "privacy", "study"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
-      var FOCUS_VIEWS = ["a1test", "finalexam", "writing", "exercises", "words", "learn"];
+      var FOCUS_VIEWS = ["a1test", "finalexam", "writing", "exercises", "words", "learn", "sys-numbers", "sys-time", "sys-dates", "sys-colors", "sys-directions", "sys-measurements-money", "sys-family", "sys-body", "sys-weather"];
       var curView = "home", curReviewSub = "review";
 
       /* ---------- Batch 5: unified shell — last tab, back behavior, exit confirm ----------
@@ -6035,7 +6551,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "Cards", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "القواعد",
-        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", study: "الدراسات", wordlogic: "منطق الكلمات", writing: "الكتابة", learn: "تعلّم الكلمات", plan100: "خطة الـ 100 يوم", privacy: "سياسة الخصوصية"
+        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", study: "الدراسات", wordlogic: "منطق الكلمات", writing: "الكتابة", learn: "تعلّم الكلمات", "sys-numbers": "الأرقام", "sys-time": "الوقت", "sys-dates": "التاريخ", "sys-colors": "الألوان", "sys-directions": "الاتجاهات والمواقع", "sys-measurements-money": "القياسات والفلوس", "sys-family": "العائلة", "sys-body": "أجزاء الجسم", "sys-weather": "الطقس", plan100: "خطة الـ 100 يوم", privacy: "سياسة الخصوصية"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
       var startView = "home";
@@ -6154,6 +6670,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
       });
       function mainOf(name){ if (name === "topic") return "stories"; if (name === "banktopic") return "bank";
         if (name === "wordlogic") return "bank";
+        if (name.indexOf("sys-") === 0) return "bank";
         if (name === "learn") return "home";
         if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation" || name === "exams") return name;
         if (name === "a1test" || name === "finalexam" || name === "study") return "exams";
@@ -6185,9 +6702,15 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
           if (lnEx) lnEx.setAttribute("data-goto", (prevView && prevView !== "learn") ? prevView : "home");
           renderLearn();
         }
+        if (name.indexOf("sys-") === 0) {
+          var syEx = document.querySelector('#view-' + name + ' .focus-exit');
+          if (syEx) syEx.setAttribute("data-goto", (prevView && prevView !== name) ? prevView : "bank");
+          renderSys(name.slice(4));
+        }
         if (prevView === "a1test" && name !== "a1test") { try { a1StopAudio(); } catch (e) {} }
         if (prevView === "study" && name !== "study") { try { studyStop(); } catch (e) {} }
         if (prevView === "finalexam" && name !== "finalexam") { try { finStopAudio(); } catch (e) {} }
+        if (prevView && prevView.indexOf("sys-") === 0 && name.indexOf("sys-") !== 0) { try { stopRecorded(); } catch (e) {} try { if (window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) {} }
         if (VIEW_TITLES[origName]) $("appTitle").textContent = VIEW_TITLES[origName];
         try { localStorage.setItem(LAST_VIEW_KEY, name); } catch (e) { /* ignore */ } saveUiState();
         if (!fromPop && prevFull !== origName) hPush({ app: 1, view: origName }, "#" + origName);
