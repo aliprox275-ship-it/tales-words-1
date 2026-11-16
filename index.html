@@ -5221,7 +5221,7 @@ var SYS_WEATHER_RIDDLES = [
 ];
 function sysWeatherPick(lang){
   var sys = sysFind("weather"), r = sysPickOne(SYS_WEATHER_RIDDLES), opts = [r[lang]], guard = 0;
-  while (opts.length < 4 && guard++ < 40){ var b = sysPickOne(sys.blocks); if (b.en === "sun" || b.en === "rain" || b.en === "snow" || b.en === "cloud" || b.en === "wind") continue; if (opts.indexOf(b[lang]) === -1) opts.push(b[lang]); }
+  while (opts.length < 4 && guard++ < 40){ var w = sysWeatherWord(sys, sysPickOne(SYS_WEATHER_ADJ)); if (w && opts.indexOf(w[lang]) === -1) opts.push(w[lang]); }
   var sh = sysShuffle(opts);
   return { kind: "pick", prompt: r.ar + " — أي وصف هذا؟", options: sh, correct: sh.indexOf(r[lang]) };
 }
