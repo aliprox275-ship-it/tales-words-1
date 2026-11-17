@@ -1178,7 +1178,7 @@ input,textarea,select{font-size:16px}
       .splash{
         position:fixed; inset:0; z-index:200; background:var(--bg);
         display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
-        transition:opacity .5s ease;
+        transition:opacity .3s ease;
       }
       .splash.hide{opacity:0; pointer-events:none}
       .splash img{width:104px; height:104px; border-radius:26px; box-shadow:var(--shadow-card)}
@@ -6762,6 +6762,9 @@ function sysRenderBody(id){
         var lvSaved = localStorage.getItem(LAST_VIEW_KEY);
         if (lvSaved && ALL_VIEWS.indexOf(lvSaved) !== -1) startView = lvSaved;
       } catch (e) { /* storage unavailable: start at home */ }
+      /* Cold start must never open an empty detail view: "study" and
+         "book" need a selected item, so fall back to their parent tab. */
+      if (startView === "study" || startView === "book") startView = mainOf(startView);
       var UI_STATE_KEY = "readerApp.uiState.v1";
       /* Save the current UI choices (filters, toggles, word-logic section) so
          exiting the app and coming back restores the same screen AND the same
@@ -16540,7 +16543,10 @@ function wrCheck() {
         renderFlash();
       }
       var WORD_LOOKUP = {};
+      var wordLookupReady = false;
       function buildWordLookup(){
+        if (wordLookupReady) return;
+        wordLookupReady = true;
         ALL_WORDS.forEach(function(x){
           var k = x.lang + ":" + (x.w || "").toLowerCase();
           if (!WORD_LOOKUP[k]) WORD_LOOKUP[k] = x;
@@ -16557,6 +16563,7 @@ function wrCheck() {
         });
       }
       function convWords(lang, level, topic){
+        if (!wordLookupReady) buildWordLookup();
         var out = [], seen = {};
         var data = level === "A2" ? CONV_DATA_A2 : CONV_DATA;
         (data[lang] || []).forEach(function(d){
@@ -16575,7 +16582,9 @@ function wrCheck() {
         });
         return out;
       }
-      buildFlashDeck();
+      /* Deck builds lazily: showView("words") builds it on first open,
+         or the deferred post-paint build at init — never synchronously
+         at load, so opening the app is not blocked by the deck build. */
       $("deckCard").addEventListener("click", function(e){
         if (deckSwiped) { deckSwiped = false; return; }
         if (e.target.closest && e.target.closest("button")) return;
@@ -19779,12 +19788,9 @@ var AUDIO_FILES = ["audio-obelisk/examples-de-00.aad81f35.opus", "audio-obelisk/
       applySpeed();
       saveMyWords();   // persist SRS fields added by migration to older saved words
       applyTheme(); if ($("themeToggle")) $("themeToggle").addEventListener("click", toggleTheme); renderMyWords();
-      if ($("flashTotal")) $("flashTotal").textContent = arNum(flashList.length);
       restoreUiState();
       applyZen();
-      buildWordLookup();
       audioOfflineInit();
-      buildFlashDeck(true);
       updateProgress();
       renderExScore();
       renderHome();
@@ -19794,16 +19800,25 @@ var AUDIO_FILES = ["audio-obelisk/examples-de-00.aad81f35.opus", "audio-obelisk/
          left those sections hidden after every reload. */
       showView(startView, true);
 
-      /* Splash: brief brand screen on open, then a smooth fade out */
+      /* Splash: brief brand screen on open, then a quick fade out as
+         soon as the UI is painted — never waiting on heavy index work. */
       var splashEl = $("splash");
       if (splashEl) {
         setTimeout(function(){
           splashEl.classList.add("hide");
           setTimeout(function(){
             if (splashEl.parentNode) splashEl.parentNode.removeChild(splashEl);
-          }, 600);
-        }, REDUCED_MOTION ? 200 : 900);
+          }, 350);
+        }, REDUCED_MOTION ? 100 : 250);
       }
+      /* Heavy indexes (word lookup + flashcard deck) build AFTER first
+         paint, so they never block the app opening. The deck rebuilds
+         on demand when the words view opens, and convWords builds the
+         lookup if it is still missing — so no view is left broken. */
+      setTimeout(function(){
+        try { buildWordLookup(); } catch (e) {}
+        try { buildFlashDeck(true); } catch (e) {}
+      }, 900);
     </script>
     <script>
 /* DRAFT — Google-only free progress sync for Tales & Words (NOT live yet).
