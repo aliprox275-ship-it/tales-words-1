@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#1A1E21" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -49,22 +49,25 @@
       }
       [data-theme="black"]{
         color-scheme: dark;
-        --bg:#000000; --surface:#0a0a0a; --surface2:#161616; --ink:#f2f3ff; --muted:#9aa0c3;
-        --line:#232323; --accent:#9ea8ff; --accent-dark:#818cf8; --accent-tint:rgba(158,168,255,.14); --on-accent:#000000;
-        --teal:#9ea8ff; --teal-dark:#818cf8; --rust:#e8705f; --rust-dark:#c25a4c; --gold:#d9a62e;
-        --ok:#4ade80; --bad:#f87171; --warn:#facc15;
+        --bg:#1A1E21; --surface:#1E2125; --surface2:#242B30; --ink:#FFFFFF; --muted:#9C9C9E;
+        --line:#2A2F33; --accent:#0EB1F6; --accent-dark:#0A8FCC; --accent-tint:rgba(14,177,246,.14); --on-accent:#FFFFFF;
+        --teal:#0EB1F6; --teal-dark:#0A8FCC; --rust:#e8705f; --rust-dark:#c25a4c; --gold:#FFD60A;
+        --ok:#4ade80; --bad:#f87171; --warn:#FFD60A;
         --grad:none;
         --shadow:0 10px 30px rgba(0,0,0,.6);
         --shadow-card:0 2px 10px rgba(0,0,0,.5);
+        --purple:#9E4AF7; --purple-dark:#864AD0; --purple-tint:rgba(158,74,247,.14);
+        --locked:#77808F; --locked-bg:#3A3A40;
+        --r-card:16px; --r-btn:12px;
       }
-      [data-theme="black"] .para.playing, [data-theme="black"] .para.last-read{background:rgba(158,168,255,.22); border-color:rgba(158,168,255,.65)}
+      [data-theme="black"] .para.playing, [data-theme="black"] .para.last-read{background:rgba(14,177,246,.22); border-color:rgba(14,177,246,.65)}
       [data-theme="black"] .home-hero-ic{background:rgba(0,0,0,.16)}
       [data-theme="black"] .rate-hard{background:var(--warn)}
       [data-theme="black"] .appbar-title{color:var(--accent)}
-      [data-theme="black"] .reader{background:#000000; color:#f2f3ff}
-      [data-theme="black"] .reader-top{background:#000000}
-      [data-theme="black"] .audio-dock{background:rgba(0,0,0,.94); border-color:rgba(255,255,255,.16)}
-      [data-theme="black"] .sent.kara-sent{background:rgba(158,168,255,.16); box-shadow:0 0 0 1px rgba(158,168,255,.40)}
+      [data-theme="black"] .reader{background:#1A1E21; color:#FFFFFF}
+      [data-theme="black"] .reader-top{background:#1A1E21}
+      [data-theme="black"] .audio-dock{background:rgba(26,30,33,.94); border-color:rgba(255,255,255,.16)}
+      [data-theme="black"] .sent.kara-sent{background:rgba(14,177,246,.16); box-shadow:0 0 0 1px rgba(14,177,246,.40)}
 
       *{box-sizing:border-box}
       [hidden]{display:none !important}
@@ -480,12 +483,48 @@
       .wp-ctx-speak .spk{width:18px; height:18px}
       .wp-ctx-speak:active{transform:scale(.94)}
       /* Word tooltip: Arabic meaning bubble above a tapped word (2 s) */
+      /* ---------- EWA reader bubbles ---------- */
       .word-tip{
-        position:fixed; z-index:130; pointer-events:none;
-        max-width:min(78vw, 320px); padding:7px 13px; border-radius:99px;
-        background:var(--accent); color:#fff; font-size:.98rem; font-weight:700;
-        text-align:center; line-height:1.45; box-shadow:0 6px 18px rgba(0,0,0,.35);
+        position:fixed; z-index:130; pointer-events:auto; cursor:pointer;
+        max-width:min(78vw, 320px); padding:10px 14px; border-radius:14px;
+        background:#0EB1F6; color:#fff; font-size:.98rem; font-weight:700;
+        text-align:center; line-height:1.6; box-shadow:0 8px 22px rgba(0,0,0,.35);
       }
+      .word-tip::after{
+        content:""; position:absolute; left:50%; bottom:-6px; width:12px; height:12px;
+        background:#0EB1F6; transform:translateX(-50%) rotate(45deg);
+      }
+      .word-tip.tip-below::after{ bottom:auto; top:-6px; }
+      .sent{ position:relative; }
+      .sent .para-f{ padding-left:42px; }
+      .sent-tr{
+        position:absolute; top:4px; left:2px; z-index:2;
+        background:transparent; border:1.5px solid var(--accent); color:var(--accent);
+        border-radius:8px; padding:3px 7px; font-size:.78rem; font-weight:800;
+        cursor:pointer; line-height:1.2;
+      }
+      .read-page-ind{ flex:none; color:var(--muted); font-weight:700; font-size:.9rem; padding:0 4px; white-space:nowrap; }
+      .study-page-ind{ color:var(--muted); font-weight:700; font-size:.9rem; white-space:nowrap; }
+      /* ---------- EWA Profile ---------- */
+      .pf-head{display:flex; flex-direction:column; align-items:center; gap:6px; padding:18px 0 8px; text-align:center}
+      .pf-avatar{width:76px; height:76px; border-radius:50%; background:linear-gradient(135deg, var(--purple), var(--accent)); display:flex; align-items:center; justify-content:center; font-size:2rem; color:#fff}
+      .pf-name{font-size:1.25rem; font-weight:800}
+      .pf-sub{color:var(--muted); font-weight:600}
+      .pf-stats{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin:14px 0}
+      .pf-stat{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px; text-align:center}
+      .pf-stat b{display:block; font-size:1.3rem}
+      .pf-stat span{display:block; color:var(--muted); font-weight:600; font-size:.9rem; margin-top:2px}
+      .pf-words{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin-bottom:16px; line-height:1.9}
+      .pf-words b{font-size:1.05rem}
+      .pf-sec{margin-bottom:20px}
+      .pf-sec h3{font-size:1.1rem; margin:0 0 10px}
+      .pf-exam{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px 16px; margin-bottom:10px}
+      .pf-exam b{display:block; font-size:1.02rem; margin-bottom:4px}
+      .pf-exam p{margin:0 0 10px; color:var(--muted); font-weight:600; font-size:.9rem}
+      .pf-exam-btn{width:100%; background:var(--accent); color:#fff; border:0; border-radius:12px; padding:12px 0; font-weight:800; font-size:1rem; cursor:pointer}
+      .pf-row{display:flex; align-items:center; gap:10px; width:100%; background:var(--surface); border:1px solid var(--line); color:var(--ink); border-radius:14px; padding:14px 16px; font-weight:700; font-size:1rem; cursor:pointer; margin-bottom:8px; text-align:right}
+      .pf-row input[type="time"]{margin-inline-start:auto; background:var(--surface2); border:1px solid var(--line); color:var(--ink); border-radius:8px; padding:6px 8px; font-family:inherit}
+      .pf-row .pf-row-go{margin-inline-start:auto; color:var(--muted)}
       .word-tip[hidden]{display:none}
       .wp-ctx-ar{margin-top:6px; color:var(--muted); text-align:right}
       .wp-ex{margin-top:8px; color:var(--muted)}
@@ -789,7 +828,7 @@ input,textarea,select{font-size:16px}
       /* ---------- Fixed bottom navigation (4 tabs) ---------- */
       .bottomnav{
         position:fixed; inset-inline:0; bottom:0; z-index:40;
-        direction:ltr;
+        direction:rtl;
         display:flex; background:var(--surface); border-top:1px solid var(--line);
         padding-bottom:env(safe-area-inset-bottom);
         box-shadow:0 -6px 24px rgba(60,50,35,.10);
@@ -801,9 +840,9 @@ input,textarea,select{font-size:16px}
         transition:color .2s ease, background .2s ease;
       }
       .bnav-btn .bnav-ico{font-size:1.35rem; line-height:1.2}
-      .bnav-btn.active{color:var(--accent)}
+      .bnav-btn.active{color:var(--purple)}
       .bnav-btn.active .bnav-ico{
-        background:var(--accent-tint); border:1px solid rgba(47,93,88,.4);
+        background:var(--purple-tint); border:1px solid rgba(158,74,247,.4);
         border-radius:99px; padding:1px 14px;
       }
 
@@ -950,6 +989,130 @@ input,textarea,select{font-size:16px}
       .appbar-stat b{color:var(--ink); font-weight:800}
       .appbar-prog{height:4px; border:0; border-radius:0}
       .appbar-prog .progress-fill{border-radius:0}
+      /* ---------- EWA top stats bar + language sheet ---------- */
+      .topstats{max-width:1060px; margin:0 auto; padding:9px 18px 0; display:flex; align-items:center; justify-content:space-between; gap:10px}
+      .ts-counters{display:flex; align-items:center; gap:14px}
+      .ts-item{display:inline-flex; align-items:center; gap:4px; font-weight:700; font-size:.92rem; color:var(--ink); white-space:nowrap}
+      .ts-item b{font-weight:800}
+      .ts-flag{flex:none; width:34px; height:34px; border-radius:50%; border:2px solid var(--line); background:var(--surface2); font-size:1.15rem; line-height:1; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer}
+      .ts-flag:active{transform:scale(.94)}
+      .langsheet-backdrop{position:fixed; inset:0; z-index:90; background:rgba(0,0,0,.55); display:flex; align-items:flex-end; justify-content:center}
+      .langsheet-backdrop[hidden]{display:none}
+      .langsheet{width:100%; max-width:560px; background:var(--surface); border-radius:18px 18px 0 0; padding:14px 18px calc(18px + env(safe-area-inset-bottom)); box-shadow:0 -8px 30px rgba(0,0,0,.4)}
+      .langsheet-head{display:flex; align-items:center; gap:8px; margin-bottom:6px}
+      .langsheet-close{background:transparent; border:0; color:var(--accent); font-weight:800; font-size:1rem; padding:6px 4px; cursor:pointer}
+      .langsheet-title{margin:0; font-size:1.15rem; font-weight:800; flex:1; text-align:center}
+      .lang-row{display:flex; align-items:center; gap:12px; width:100%; background:transparent; border:0; border-bottom:1px solid var(--line); padding:14px 4px; color:var(--ink); font-size:1.05rem; font-weight:700; cursor:pointer; direction:ltr}
+      .lang-row:last-child{border-bottom:0}
+      .lang-row.sel{background:var(--surface2); border-radius:12px}
+      .lang-flag{font-size:1.5rem; line-height:1}
+      .lang-name{flex:1; text-align:left}
+      .lang-radio{width:22px; height:22px; border-radius:50%; border:2px solid var(--muted); flex:none}
+      .lang-radio.on{background:var(--accent); border-color:var(--accent); box-shadow:inset 0 0 0 3px var(--surface)}
+      /* word-count strip (Learn tab, under the top bar) */
+      .wordstrip{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:10px 14px; margin:0 0 14px; font-size:.92rem; font-weight:700}
+      .wordstrip .ws-lang{color:var(--ink)}
+      .wordstrip .ws-lang b{color:var(--accent)}
+      .wordstrip .ws-lvl{color:var(--muted); font-weight:600}
+      /* ---------- EWA Learn path ---------- */
+      .lp-units{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 10px; scrollbar-width:none}
+      .lp-units::-webkit-scrollbar{display:none}
+      .lp-unit{flex:none; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:99px; padding:8px 14px; font-weight:700; font-size:.92rem; white-space:nowrap; cursor:pointer}
+      .lp-unit span{color:var(--muted); font-weight:600; font-size:.85rem}
+      .lp-unit.on{background:var(--purple); border-color:var(--purple); color:#fff}
+      .lp-unit.on span{color:rgba(255,255,255,.85)}
+      .lp-head{background:linear-gradient(180deg, var(--purple), var(--purple-dark)); border-radius:18px; padding:16px; margin-bottom:8px; color:#fff}
+      .lp-head-tx{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
+      .lp-head-tx b{font-size:1.2rem}
+      .lp-head-tx span{font-weight:700; opacity:.92}
+      .lp-bar{height:8px; background:rgba(255,255,255,.25); border-radius:99px; overflow:hidden; margin-top:10px}
+      .lp-fill{height:100%; background:#fff; border-radius:99px; transition:width .4s ease}
+      .lp-path{position:relative; padding:18px 0 8px}
+      .lp-path::before{content:""; position:absolute; top:0; bottom:0; left:50%; width:0; border-left:3px dotted var(--line); transform:translateX(-50%); z-index:0}
+      .lp-row{position:relative; z-index:1; display:flex; margin-bottom:26px}
+      .lp-row.pos-l{justify-content:flex-start}
+      .lp-row.pos-c{justify-content:center}
+      .lp-row.pos-r{justify-content:flex-end}
+      .lp-node{display:flex; flex-direction:column; align-items:center; gap:4px; background:transparent; border:0; padding:0; width:112px; cursor:pointer}
+      .lp-circle{width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.9rem; background:var(--surface2); border:2px solid var(--line); color:var(--ink)}
+      .lp-node.cur .lp-circle{background:var(--purple-dark); border-color:var(--purple-dark); color:#fff; box-shadow:0 0 0 5px var(--purple-tint)}
+      .lp-node.done .lp-circle{background:var(--purple); border-color:var(--purple); color:#fff}
+      .lp-node.lock .lp-circle{background:var(--locked-bg); border-color:var(--locked-bg); color:var(--locked)}
+      .lp-node.lock .lp-circle svg{width:34px; height:34px}
+      .lp-check{font-size:1.8rem; font-weight:800}
+      .lp-stars{font-size:.85rem; letter-spacing:2px; color:var(--locked)}
+      .lp-stars.gold{color:var(--gold)}
+      .lp-name{font-size:.9rem; font-weight:700; color:var(--ink); text-align:center; line-height:1.35; max-width:112px}
+      .lp-node.gram .lp-circle{width:56px; height:56px; background:transparent; border:2px dashed var(--purple); color:var(--purple); font-size:1rem; font-weight:800}
+      .lp-gramrow{display:flex; align-items:center; gap:12px; width:100%; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px 16px; color:var(--ink); text-align:right; cursor:pointer; margin:6px 0 14px}
+      .lp-gramrow-ic{width:40px; height:40px; border-radius:12px; background:var(--purple-tint); color:var(--purple); display:flex; align-items:center; justify-content:center; font-weight:800; flex:none}
+      .lp-gramrow b{display:block; font-size:1.02rem}
+      .lp-gramrow small{display:block; color:var(--muted); font-weight:600}
+      .lp-gramrow-go{margin-inline-start:auto; color:var(--muted); font-size:1.2rem}
+      .lp-continue{position:fixed; bottom:76px; left:50%; transform:translateX(-50%); z-index:35; background:var(--accent); color:#fff; border:0; border-radius:99px; padding:14px 26px; font-size:1.05rem; font-weight:800; box-shadow:0 8px 22px rgba(0,0,0,.35); max-width:calc(100vw - 32px); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer}
+      .lp-continue:active{transform:translateX(-50%) scale(.97)}
+      /* ---------- EWA Books ---------- */
+      .bk-chips{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 12px; scrollbar-width:none}
+      .bk-chips::-webkit-scrollbar{display:none}
+      .bk-chip{flex:none; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:99px; padding:8px 14px; font-weight:700; font-size:.92rem; cursor:pointer; white-space:nowrap}
+      .bk-chip.on{background:var(--accent); border-color:var(--accent); color:#fff}
+      .bk-row{margin-bottom:22px}
+      .bk-row-h{display:flex; align-items:baseline; justify-content:space-between; margin:0 2px 10px}
+      .bk-row-h h2{font-size:1.15rem; margin:0}
+      .bk-row-h span{color:var(--muted); font-weight:700}
+      .bk-carousel{display:flex; gap:12px; overflow-x:auto; padding:2px 2px 8px; scrollbar-width:none}
+      .bk-carousel::-webkit-scrollbar{display:none}
+      .bk-card{flex:none; width:118px; background:transparent; border:0; padding:0; text-align:right; cursor:pointer}
+      .bk-cover{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; width:118px; height:158px; border-radius:14px; color:#fff; padding:12px; box-sizing:border-box; overflow:hidden}
+      .bk-cover-ic{font-size:2rem}
+      .bk-cover-tx{font-size:.95rem; font-weight:800; line-height:1.4; text-align:center; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden}
+      .bk-card-t{display:block; font-size:.92rem; font-weight:700; color:var(--ink); margin-top:7px; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+      .bk-card-s{display:block; font-size:.82rem; color:var(--muted); font-weight:600; margin-top:2px}
+      .bk-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(118px, 1fr)); gap:14px}
+      .bk-grid .bk-card{width:100%}
+      .bk-grid .bk-cover{width:100%}
+      .bk-continue{display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:12px; margin-bottom:18px}
+      .bk-cont-cover{width:52px; height:70px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:#fff; flex:none}
+      .bk-cont-tx{flex:1; min-width:0}
+      .bk-cont-tx b{display:block; font-size:.85rem; color:var(--muted); font-weight:700}
+      .bk-cont-tx span{display:block; font-size:.95rem; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+      .bk-cont-go{flex:none; background:var(--accent); color:#fff; border:0; border-radius:99px; padding:10px 18px; font-weight:800; cursor:pointer}
+      .bk-allstories{width:100%; background:var(--surface); border:1px solid var(--line); color:var(--ink); border-radius:14px; padding:14px; font-weight:800; font-size:1rem; cursor:pointer; margin-top:4px}
+      .bk-search input{width:100%; box-sizing:border-box; background:var(--surface2); border:1px solid var(--line); color:var(--ink); border-radius:12px; padding:12px 14px; font-size:1rem; font-family:inherit}
+      .bk-seg{display:flex; gap:8px; margin:12px 0}
+      .bk-seg-btn{flex:1; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:99px; padding:9px 0; font-weight:700; cursor:pointer}
+      .bk-seg-btn.on{background:var(--accent); border-color:var(--accent); color:#fff}
+      .bk-detail{padding-bottom:20px}
+      .bk-det-cover{height:230px; border-radius:18px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#fff; padding:18px; box-sizing:border-box; text-align:center}
+      .bk-det-ic{font-size:2.6rem}
+      .bk-det-tx{font-size:1.25rem; font-weight:800; line-height:1.5}
+      .bk-det-title{font-size:1.35rem; margin:16px 0 4px}
+      .bk-det-sub{color:var(--muted); margin:0 0 10px; font-weight:600}
+      .bk-det-badges{display:flex; gap:8px; margin-bottom:12px}
+      .bk-det-actions{display:flex; gap:10px; margin-bottom:16px}
+      .bk-round{width:48px; height:48px; border-radius:50%; border:2px solid var(--accent); background:transparent; color:var(--accent); font-size:1.25rem; cursor:pointer; display:flex; align-items:center; justify-content:center}
+      .bk-round.on{background:var(--accent); color:#fff}
+      .bk-det-h{font-size:1.1rem; margin:0 0 8px}
+      .bk-det-desc{color:var(--ink); line-height:1.8; margin:0 0 16px}
+      .bk-det-info{border-top:1px solid var(--line)}
+      .bk-info-row{display:flex; align-items:center; justify-content:space-between; padding:13px 2px; border-bottom:1px solid var(--line); font-weight:600}
+      .bk-info-row span{color:var(--muted)}
+      .bk-det-cta{display:flex; gap:10px; margin-top:18px}
+      .bk-cta{flex:1; background:var(--accent); color:#fff; border:0; border-radius:12px; padding:15px 0; font-size:1.05rem; font-weight:800; cursor:pointer}
+      .bk-cta-2{background:var(--purple)}
+      /* ---------- EWA AI Trainer ---------- */
+      .tr-chat{display:flex; flex-direction:column; gap:10px; padding:4px 0 12px; min-height:40vh}
+      .tr-msg{max-width:88%; padding:11px 14px; border-radius:16px; line-height:1.75; font-size:1rem; white-space:pre-wrap; word-break:break-word}
+      .tr-msg.ai{background:var(--surface); border:1px solid var(--line); color:var(--ink); align-self:flex-start; border-start-start-radius:4px}
+      .tr-msg.user{background:var(--accent); color:#fff; align-self:flex-end; border-start-end-radius:4px}
+      .tr-msg b{font-weight:800}
+      .tr-chips{display:flex; gap:8px; overflow-x:auto; padding:2px 0 10px; scrollbar-width:none}
+      .tr-chips::-webkit-scrollbar{display:none}
+      .tr-chip{flex:none; border:1px solid var(--accent); background:transparent; color:var(--accent); border-radius:99px; padding:8px 14px; font-weight:700; font-size:.92rem; cursor:pointer; white-space:nowrap}
+      .tr-input{display:flex; gap:8px; position:sticky; bottom:0; padding:10px 0 4px; background:var(--bg)}
+      .tr-input input{flex:1; min-width:0; background:var(--surface2); border:1px solid var(--line); color:var(--ink); border-radius:99px; padding:12px 16px; font-size:1rem; font-family:inherit}
+      .tr-send{flex:none; width:48px; height:48px; border-radius:50%; border:0; background:var(--accent); color:#fff; font-size:1.2rem; cursor:pointer}
+      .tr-clear{background:transparent; border:0; color:var(--muted); font-weight:700; font-size:.85rem; cursor:pointer; padding:0 0 8px; align-self:flex-end}
 
       /* one card radius / padding / shadow and one button shape across every section */
       .card,.flash,.ex-card,.bank-card,.bank-prog-card,.phrase,.mw-row,.per-row,.week-day,
@@ -1304,6 +1467,15 @@ input,textarea,select{font-size:16px}
 
     <!-- ======== Unified app bar (same on every section) ======== -->
     <header class="appbar">
+      <div class="topstats" id="topStats">
+        <button class="ts-flag" id="langFlagBtn" type="button" aria-label="لغة التعلّم"><span id="langFlagIc">🇬🇧</span></button>
+        <span class="ts-counters">
+          <span class="ts-item" title="قصص مقروءة">💎 <b id="tsStories">0</b></span>
+          <span class="ts-item" title="أيام متتالية">🔥 <b id="tsStreak">0</b></span>
+          <span class="ts-item" title="كلمات أعرفها">🪙 <b id="tsWords">0</b></span>
+          <span class="ts-item" title="نقاط اليوم">⚡ <b id="tsPoints">0</b></span>
+        </span>
+      </div>
       <div class="appbar-in">
         <button class="menu-btn" id="menuBtn" type="button" aria-label="القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
         <span class="appbar-title" id="appTitle">Tales &amp; Words</span>
@@ -1328,12 +1500,23 @@ input,textarea,select{font-size:16px}
       </div>
     </div>
 
+    <!-- ======== Language switcher sheet (EWA) ======== -->
+    <div class="langsheet-backdrop" id="langSheetBackdrop" hidden>
+      <div class="langsheet" role="dialog" aria-label="لغة التعلّم">
+        <div class="langsheet-head"><button class="langsheet-close" id="langSheetX" type="button">إغلاق</button><h3 class="langsheet-title">لغة التعلّم</h3></div>
+        <button class="lang-row" type="button" data-setlang="en"><span class="lang-flag">🇬🇧</span><span class="lang-name">الإنجليزية</span><span class="lang-radio" data-radio="en"></span></button>
+        <button class="lang-row" type="button" data-setlang="de"><span class="lang-flag">🇩🇪</span><span class="lang-name">الألمانية</span><span class="lang-radio" data-radio="de"></span></button>
+      </div>
+    </div>
+
     <div class="wrap">
 
       <main>
         <!-- ======== Home: level stats dashboard ======== -->
         <section id="view-home">
-          <h1 class="view-title">الرئيسية</h1>
+          <h1 class="view-title">تعلم</h1>
+          <div class="wordstrip" id="wordStrip" role="status"></div>
+          <div id="learnPath"></div>
           <div class="streak-box" id="streakBox"></div>
           <div class="study-timer-box" id="studyTimerBox"></div>
           <div class="home-summary" id="homeSummary"></div>
@@ -1381,11 +1564,8 @@ input,textarea,select{font-size:16px}
         <!-- ======== Grammar A1 + A2 ======== -->
         <section id="view-grammar" hidden>
           <h1 class="view-title">القواعد</h1>
+          <button class="focus-exit" type="button" data-goto="home">✕ رجوع للتعلّم</button>
           <div class="filters">
-            <div class="switch" role="group" aria-label="لغة القواعد">
-              <button data-gramlang="en" class="active-en" id="gramLangEn">English · الإنجليزية</button>
-              <button data-gramlang="de" id="gramLangDe">Deutsch · الألمانية</button>
-            </div>
             <div class="switch" role="group" aria-label="مستوى القواعد">
               <button data-gramlvl="A1" class="active-lvl" id="gramLvlA1">A1</button>
               <button data-gramlvl="A2" id="gramLvlA2">A2</button>
@@ -1398,11 +1578,8 @@ input,textarea,select{font-size:16px}
 <!-- ======== Stories ======== -->
         <section id="view-stories" hidden>
           <h1 class="view-title">القصص</h1>
+          <button class="focus-exit" type="button" data-goto="books">✕ رجوع للمكتبة</button>
           <div class="filters">
-            <div class="switch" role="group" aria-label="اختيار اللغة">
-              <button data-lang="en" class="active-en" id="langEn">English · الإنجليزية</button>
-              <button data-lang="de" id="langDe">Deutsch · الألمانية</button>
-            </div>
             <div class="lvl" role="group" aria-label="تصفية حسب المستوى">
               <button data-level="all" class="active">كل المستويات</button>
               <button data-level="A1">A1 مبتدئ</button>
@@ -1667,18 +1844,14 @@ input,textarea,select{font-size:16px}
             <p class="hint" id="examsFinLast" role="status" style="margin:0 0 12px"></p>
             <button class="start-btn" type="button" data-goto="finalexam" style="width:100%;padding:14px;font-size:1.1rem">ابدأ الامتحان النهائي</button>
           </div>
-          <div class="tool-box" style="margin-bottom:16px">
-            <h3 style="margin:0 0 6px">الدراسات</h3>
-            <p class="hint" style="margin:0 0 12px">قراءات بحثية في علم النفس — كل موضوع منفصل، بالعربية والإنجليزية.</p>
-            <div id="studyList"></div>
-          </div>
         </section>
         <!-- ======== Study reader ======== -->
         <section id="view-study" hidden>
           <h1 class="view-title" id="studyViewTitle">الدراسات</h1>
-          <button class="focus-exit" type="button" data-goto="exams">✕ خروج من الدراسة</button>
+          <button class="focus-exit" type="button" data-goto="books">✕ خروج من الدراسة</button>
           <div class="audio-dock" id="studyAudioDock">
             <button class="play-btn" id="studyPlayBtn">▶ تشغيل</button>
+            <span class="study-page-ind" id="studyPageInd" aria-hidden="true"></span>
           </div>
           <div id="studyBody"></div>
         </section>
@@ -1937,12 +2110,6 @@ input,textarea,select{font-size:16px}
               <small id="bankProgDeSub"></small>
             </div>
           </div>
-          <div class="filters">
-            <div class="switch" role="group" aria-label="لغة بنك الكلمات">
-              <button data-banklang="en" class="active-en" id="bankLangEn">English · الإنجليزية</button>
-              <button data-banklang="de" id="bankLangDe">Deutsch · الألمانية</button>
-            </div>
-          </div>
           <div class="filters" id="bankLevelRow">
             <div class="switch" role="group" aria-label="مستوى بنك الكلمات">
               <button type="button" id="bankLevelAll" class="active-lvl">كل المستويات</button>
@@ -1981,12 +2148,9 @@ input,textarea,select{font-size:16px}
         </section>
         <section id="view-conversation" hidden>
           <h1 class="view-title">محادثة</h1>
+          <button class="focus-exit" type="button" data-goto="books">✕ رجوع للمكتبة</button>
           
           <div class="filters">
-            <div class="switch" role="group" aria-label="لغة المحادثة">
-              <button data-convlang="en" class="active-en" id="convLangEn">English · الإنجليزية</button>
-              <button data-convlang="de" id="convLangDe">Deutsch · الألمانية</button>
-            </div>
             <div class="switch" role="group" aria-label="مستوى المحادثة">
               <button data-convlvl="A1" class="active-lvl" id="convLvlA1">A1</button>
               <button data-convlvl="A2" id="convLvlA2">A2</button>
@@ -2017,19 +2181,40 @@ input,textarea,select{font-size:16px}
             <p>يمكنك مسح كل بياناتك من هاتفك بحذف بيانات الموقع من إعدادات المتصفح، وحذف نسخة Drive بإلغاء الوصول من إعدادات حساب كوكل.</p>
           </div>
         </section>
+
+        <!-- ======== Books (EWA library) ======== -->
+        <section id="view-books" hidden>
+          <h1 class="view-title">الكتب</h1>
+          <div id="booksBody"></div>
+        </section>
+        <!-- ======== Book detail ======== -->
+        <section id="view-book" hidden>
+          <h1 class="view-title" id="bookViewTitle">الكتاب</h1>
+          <button class="focus-exit" type="button" data-goto="books">✕ رجوع للمكتبة</button>
+          <div id="bookBody"></div>
+        </section>
+        <!-- ======== AI Trainer ======== -->
+        <section id="view-trainer" hidden>
+          <h1 class="view-title">المدرب</h1>
+          <div id="trainerBody"></div>
+        </section>
+        <!-- ======== Profile ======== -->
+        <section id="view-profile" hidden>
+          <h1 class="view-title">الملف الشخصي</h1>
+          <div id="profileBody"></div>
+        </section>
 </main>
 
     </div>
 
     <!-- ======== Fixed bottom navigation ======== -->
     <nav class="bottomnav" aria-label="التنقل الرئيسي">
-      <button class="bnav-btn active" type="button" data-main="home" aria-current="page"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span><span>الرئيسية</span></button>
-      <button class="bnav-btn" type="button" data-main="stories"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span>القصص</span></button>
-      
-      <button class="bnav-btn" type="button" data-main="bank"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span><span>بنك الكلمات</span></button>
-      <button class="bnav-btn" type="button" data-main="grammar"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span><span>القواعد</span></button>
-      <button class="bnav-btn" type="button" data-main="conversation"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span><span>محادثة</span></button>
-    <button class="bnav-btn" type="button" data-main="exams"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><span>الامتحانات</span></button>      </nav>
+      <button class="bnav-btn active" type="button" data-main="home" aria-current="page"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12.5V17c0 1.66 2.69 3 6 3s6-1.34 6-3v-4.5"/><line x1="22" y1="10" x2="22" y2="16"/></svg></span><span>تعلم</span></button>
+      <button class="bnav-btn" type="button" data-main="books"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><span>الكتب</span></button>
+      <button class="bnav-btn" type="button" data-main="bank"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></span><span>البنك</span></button>
+      <button class="bnav-btn" type="button" data-main="trainer"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.2 6.2L20 10l-5.8 1.8L12 18l-2.2-6.2L4 10l5.8-1.8L12 2z"/><path d="M19 15l.9 2.6 2.6.9-2.6.9-.9 2.6-.9-2.6-2.6-.9 2.6-.9.9-2.6z"/></svg></span><span>المدرب</span></button>
+      <button class="bnav-btn" type="button" data-main="profile"><span class="bnav-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>الملف</span></button>
+    </nav>
 
     <!-- ======== Reader ======== -->
     <div class="reader" id="reader" hidden role="dialog" aria-modal="true" aria-labelledby="readerTitle">
@@ -2037,6 +2222,7 @@ input,textarea,select{font-size:16px}
         <button class="rtool" id="readerBack">→ رجوع للقصص</button>
         <span class="rtitle" id="readerTitle"></span>
         <button class="settings-btn" id="readerSettingsBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="rsettings" aria-label="إعدادات القصة">⚙️</button>
+        <span class="read-page-ind" id="readPageInd" aria-hidden="true"></span>
         <div class="read-progress" aria-hidden="true"><div class="read-progress-fill" id="readProgFill"></div></div>
       </div>
       <div class="rsettings-scrim" id="rsettingsScrim" hidden></div>
@@ -3439,17 +3625,19 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             }
             span.addEventListener("click", function(){
               if (mode === "tip") { showWordTip(word, span, story); speakTipWord(word, story); return; }
-              var replay = isReplay();
-              openWordPop(word, story, span);
-              if (!replay) { showWordTip(word, span, story); speakTipWord(word, story); }
+              /* EWA fast path: a word tap shows the blue bubble + sound.
+                 Tapping the bubble opens the full popup. While audio is
+                 playing (tap-to-replay), a word tap does nothing here —
+                 the sentence tap replays the line. */
+              if (isReplay()) return;
+              showWordTip(word, span, story); speakTipWord(word, story);
             });
             span.addEventListener("keydown", function(e){
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 if (mode === "tip") { showWordTip(word, span, story); speakTipWord(word, story); return; }
-                var replay = isReplay();
-                openWordPop(word, story, span);
-                if (!replay) { showWordTip(word, span, story); speakTipWord(word, story); }
+                if (isReplay()) return;
+                showWordTip(word, span, story); speakTipWord(word, story);
               }
             });
           })(m[0], sp);
@@ -3479,6 +3667,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (wseg) { playBundle(wseg, word, story.lang, null, null, null, 1); return; }
         bankSpeak(word, story.lang);
       }
+      var tipWord = null; /* last word tapped (bubble-tap -> full popup) */
       function showWordTip(word, span, story){
         var tip = $("wordTip");
         if (!tip || !span || !story) return;
@@ -3486,6 +3675,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         try { res = lookupWord(word, story); } catch (e) { res = null; }
         tip.textContent = (res && res.found && res.t) ? res.t : "مو موجودة بالقاموس";
         tip.hidden = false;
+        tipWord = { word: word, story: story, span: span };
         /* Measure after unhiding, then centre above the word (or below
            it when there is no room above), clamped to the viewport. */
         var r = span.getBoundingClientRect();
@@ -3496,21 +3686,102 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         if (left < 8) left = 8;
         var gap = 6;
         var top = r.top - th - gap;
-        if (top < 8) top = r.bottom + gap;
+        tip.classList.remove("tip-below");
+        if (top < 8){ top = r.bottom + gap; tip.classList.add("tip-below"); }
         tip.style.left = left + "px";
         tip.style.top = top + "px";
-        if (wordTipTimer) clearTimeout(wordTipTimer);
-        wordTipTimer = setTimeout(hideWordTip, 2000);
+        /* EWA: no auto-hide — the bubble stays until the user taps
+           elsewhere, scrolls, resizes, or taps the bubble itself. */
       }
+      /* Per-sentence translate: show the sentence's Arabic in the blue
+         bubble, anchored to the 文A button. No word is stored, so tapping
+         this bubble just dismisses it. */
+      function showSentTip(arabic, btn){
+        var tip = $("wordTip");
+        if (!tip || !btn) return;
+        tip.textContent = arabic || "";
+        tip.hidden = false;
+        tipWord = null;
+        var r = btn.getBoundingClientRect();
+        var tw = tip.offsetWidth, th = tip.offsetHeight;
+        var left = r.left + r.width / 2 - tw / 2;
+        if (left < 8) left = 8;
+        if (left + tw > window.innerWidth - 8) left = window.innerWidth - tw - 8;
+        if (left < 8) left = 8;
+        var gap = 6;
+        var top = r.top - th - gap;
+        tip.classList.remove("tip-below");
+        if (top < 8){ top = r.bottom + gap; tip.classList.add("tip-below"); }
+        tip.style.left = left + "px";
+        tip.style.top = top + "px";
+      }
+      function addSentTranslateBtn(sd, arabic){
+        var tr = document.createElement("button");
+        tr.type = "button";
+        tr.className = "sent-tr";
+        tr.textContent = "文A";
+        tr.setAttribute("aria-label", "ترجمة الجملة");
+        tr.addEventListener("click", function(e){ e.stopPropagation(); showSentTip(arabic, tr); });
+        sd.appendChild(tr);
+      }
+      /* "X من Y" page indicator: the paragraph at the top of the reader. */
+      function updateReadPageInd(){
+        var ind = $("readPageInd"); if (!ind) return;
+        var paras = document.querySelectorAll("#reader .reader-body .para");
+        if (!paras.length){ ind.textContent = ""; return; }
+        var cur = 1, top = 90;
+        for (var i = 0; i < paras.length; i++){
+          var r = paras[i].getBoundingClientRect();
+          if (r.top <= top) cur = i + 1; else break;
+        }
+        ind.textContent = arNum(cur) + " من " + arNum(paras.length);
+      }
+      function updateStudyPageInd(){
+        var ind = $("studyPageInd"); if (!ind) return;
+        var paras = document.querySelectorAll("#studyBody .para");
+        if (!paras.length){ ind.textContent = ""; return; }
+        var cur = 1, top = 120;
+        for (var i = 0; i < paras.length; i++){
+          var r = paras[i].getBoundingClientRect();
+          if (r.top <= top) cur = i + 1; else break;
+        }
+        ind.textContent = arNum(cur) + " من " + arNum(paras.length);
+      }
+      (function(){
+        var rd = $("reader");
+        if (rd){
+          rd.addEventListener("scroll", function(){ try { updateReadPageInd(); } catch (e) {} }, { passive: true });
+          if (typeof MutationObserver !== "undefined"){
+            new MutationObserver(function(){
+              if (!rd.hidden) setTimeout(updateReadPageInd, 50);
+            }).observe(rd, { attributes: true, attributeFilter: ["hidden"] });
+          }
+        }
+        window.addEventListener("scroll", function(){ try { updateStudyPageInd(); } catch (e) {} }, { passive: true });
+      })();
       /* Hide the bubble when the page moves, or the user taps anywhere
          that is not a tappable word (a word tap shows it first, then
          this handler sees the .w-tap target and leaves it alone). */
       document.addEventListener("scroll", hideWordTip, true);
       window.addEventListener("resize", hideWordTip);
       document.addEventListener("click", function(e){
-        if (e.target && e.target.closest && e.target.closest(".w-tap")) return;
+        if (e.target && e.target.closest && (e.target.closest(".w-tap") || e.target.closest("#wordTip"))) return;
         hideWordTip();
       });
+      /* Tapping the blue bubble opens the full word popup (save / learn /
+         mark). A sentence bubble (no word) just dismisses itself. */
+      (function(){
+        var tip = $("wordTip");
+        if (tip && !tip.dataset.popBound){
+          tip.dataset.popBound = "1";
+          tip.addEventListener("click", function(e){
+            e.stopPropagation();
+            if (!tipWord){ hideWordTip(); return; }
+            var w = tipWord; hideWordTip();
+            openWordPop(w.word, w.story, w.span);
+          });
+        }
+      })();
 
       /* ---------- Word popup ---------- */
       var popCtx = null, activeTap = null;
@@ -3948,6 +4219,7 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
             ap.textContent = g.a;
             sd.appendChild(fp);
             sd.appendChild(ap);
+            addSentTranslateBtn(sd, g.a);
             (function(sentEl){
               sentEl.addEventListener("click", function(){
                 if (typeof kara !== "undefined" && kara.playing) karaReplaySent(sentEl);
@@ -5969,6 +6241,7 @@ function sysRenderBody(id){
             ap.textContent = g.a;
             sd.appendChild(fp);
             sd.appendChild(ap);
+            addSentTranslateBtn(sd, g.a);
             div.appendChild(sd);
           });
           var btn = div.querySelector(".para-play");
@@ -6294,6 +6567,7 @@ function sysRenderBody(id){
                 ap.textContent = g.a;
                 sd.appendChild(fp);
                 sd.appendChild(ap);
+                addSentTranslateBtn(sd, g.a);
                 sd.addEventListener("click", function(){
                   if (studyKara.playing) studyReplaySent(sd);
                 });
@@ -6537,7 +6811,7 @@ function sysRenderBody(id){
          the classic cream theme. */
 
       /* ---------- Navigation: fixed bottom bar (5 tabs) + review sub-tabs ---------- */
-        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "learn", "sys-numbers", "sys-time", "sys-dates", "sys-colors", "sys-directions", "sys-measurements-money", "sys-family", "sys-body", "sys-weather", "plan100", "privacy", "study"];
+        var ALL_VIEWS = ["home", "stories", "topic", "words", "phrases", "mywords", "review", "reviewweek", "reviewmonth", "exercises", "stats", "bank", "banktopic", "grammar", "exams", "a1test", "finalexam", "wordlogic", "conversation", "writing", "learn", "sys-numbers", "sys-time", "sys-dates", "sys-colors", "sys-directions", "sys-measurements-money", "sys-family", "sys-body", "sys-weather", "plan100", "privacy", "study", "books", "book", "trainer", "profile"];
       var REVIEW_SUBS = ["mywords", "review", "reviewweek", "reviewmonth"];
       var FOCUS_VIEWS = ["a1test", "finalexam", "writing", "exercises", "words", "learn", "sys-numbers", "sys-time", "sys-dates", "sys-colors", "sys-directions", "sys-measurements-money", "sys-family", "sys-body", "sys-weather"];
       var curView = "home", curReviewSub = "review";
@@ -6548,10 +6822,10 @@ function sysRenderBody(id){
          the app first. At the root a guard entry turns a Back press into the
          exit-confirmation dialog instead of leaving immediately. */
       var VIEW_TITLES = {
-        home: "Tales & Words", stories: "القصص", topic: "الموضوع", words: "Cards", phrases: "عبارات مفيدة",
+        home: "تعلم", stories: "القصص", topic: "الموضوع", words: "Cards", phrases: "عبارات مفيدة",
         mywords: "كلماتي", review: "مراجعة اليوم", reviewweek: "مراجعة الأسبوع", conversation: "محادثة",
         reviewmonth: "مراجعة الشهر", exercises: "تمارين", stats: "إحصائياتي", bank: "بنك الكلمات", banktopic: "البنك", grammar: "القواعد",
-        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", study: "الدراسات", wordlogic: "منطق الكلمات", writing: "الكتابة", learn: "تعلّم الكلمات", "sys-numbers": "الأرقام", "sys-time": "الوقت", "sys-dates": "التاريخ", "sys-colors": "الألوان", "sys-directions": "الاتجاهات والمواقع", "sys-measurements-money": "القياسات والفلوس", "sys-family": "العائلة", "sys-body": "أجزاء الجسم", "sys-weather": "الطقس", plan100: "خطة الـ 100 يوم", privacy: "سياسة الخصوصية"
+        exams: "الامتحانات", a1test: "اختبار المستوى A1", finalexam: "الامتحان النهائي", study: "الدراسات", wordlogic: "منطق الكلمات", writing: "الكتابة", learn: "تعلّم الكلمات", "sys-numbers": "الأرقام", "sys-time": "الوقت", "sys-dates": "التاريخ", "sys-colors": "الألوان", "sys-directions": "الاتجاهات والمواقع", "sys-measurements-money": "القياسات والفلوس", "sys-family": "العائلة", "sys-body": "أجزاء الجسم", "sys-weather": "الطقس", plan100: "خطة الـ 100 يوم", privacy: "سياسة الخصوصية", books: "الكتب", book: "الكتاب", trainer: "المدرب", profile: "الملف الشخصي"
       };
       var LAST_VIEW_KEY = "readerApp.lastView.v1";
       var startView = "home";
@@ -6668,12 +6942,15 @@ function sysRenderBody(id){
         showExitDialog();
         hPush({ app: 1, view: cur, guard: true }, "#" + cur);
       });
-      function mainOf(name){ if (name === "topic") return "stories"; if (name === "banktopic") return "bank";
+      function mainOf(name){ if (name === "topic") return "home"; if (name === "banktopic") return "bank";
         if (name === "wordlogic") return "bank";
         if (name.indexOf("sys-") === 0) return "bank";
         if (name === "learn") return "home";
-        if (name === "home" || name === "stories" || name === "bank" || name === "grammar" || name === "conversation" || name === "exams") return name;
-        if (name === "a1test" || name === "finalexam" || name === "study") return "exams";
+        if (name === "grammar") return "home";
+        if (name === "stories" || name === "conversation" || name === "study" || name === "book") return "books";
+        if (name === "exams") return "profile";
+        if (name === "home" || name === "books" || name === "bank" || name === "trainer" || name === "profile") return name;
+        if (name === "a1test" || name === "finalexam") return "exams";
         if (name === "review") return "home";
         if (REVIEW_SUBS.indexOf(name) !== -1 || name === "writing") return "review";
         return "home";   // extra tools (words / phrases / exercises / stats) open from home & review
@@ -6717,7 +6994,7 @@ function sysRenderBody(id){
         if (REVIEW_SUBS.indexOf(name) !== -1) curReviewSub = name;
         ALL_VIEWS.forEach(function(v){ $("view-" + v).hidden = v !== name; });
         if (name === "a1test") renderLastResult("a1LastResult", "a1LastResultLine");
-        if (name === "exams") { renderLastResult("a1LastResult", "examsA1Last"); renderLastResult("finalLastResult", "examsFinLast"); try { renderStudyList(); } catch (e) {} }
+        if (name === "exams") { renderLastResult("a1LastResult", "examsA1Last"); renderLastResult("finalLastResult", "examsFinLast"); }
         if (name === "finalexam") renderLastResult("finalLastResult", "finLastResultLine");
         var main = mainOf(name);
         document.querySelectorAll(".bnav-btn").forEach(function(b){
@@ -6734,6 +7011,9 @@ function sysRenderBody(id){
           b.setAttribute("aria-selected", on ? "true" : "false");
         });
         if (name === "home") renderHome();
+        if (name === "home") { try { renderWordStrip(); } catch (e) {} }
+        if (name === "home") { try { renderLearnPath(); } catch (e) {} }
+        try { renderTopStats(); syncLangFlag(); } catch (e) {}
         if (name === "home") renderLearnHome();
         if (name === "home") {
           if (curReviewSub === "review") { renderTodayWords(); startReview(); }
@@ -6741,7 +7021,7 @@ function sysRenderBody(id){
           else if (curReviewSub === "reviewmonth") renderMonthReview();
           else if (curReviewSub === "mywords") renderMyWords();
         }
-        if (name === "bank") { bankCollapseBoxes(); renderBankBoxes(); renderBank(); }
+        if (name === "bank") { bankLang = curLang; bankCollapseBoxes(); renderBankBoxes(); renderBank(); }
         if (name === "words") { try { buildFlashDeck(true); } catch (e) {} }
         if (name === "stories") { renderTopicFilters(); renderGrid(); }
         if (name === "review") { renderTodayWords(); startReview(); }
@@ -6752,10 +7032,71 @@ function sysRenderBody(id){
         if (name === "stats") renderStats();
         if (name === "grammar") { gramLang = curLang; renderGrammarHome(); }
         if (name === "a1test") { a1Reset(); } if (name === "writing") { wrReset(); }
-        if (name === "conversation") renderConvHome();
+        if (name === "conversation") { convLang = curLang; renderConvHome(); }
         if (name === "wordlogic") renderWordLogic();
         if (name === "plan100") { planViewDay = 0; renderPlan100(); }
+        if (name === "books") { try { renderBooks(); } catch (e) {} }
+        if (name === "book") { try { renderBook(); } catch (e) {} }
+        if (name === "trainer") { try { renderTrainer(); } catch (e) {} }
+        if (name === "profile") { try { renderProfile(); } catch (e) {} }
+        if (name === "study") { try { updateStudyPageInd(); } catch (e) {} }
         window.scrollTo(0, 0);
+      }
+      /* ---------- EWA Profile ---------- */
+      function renderProfile(){
+        var box = $("profileBody"); if (!box) return;
+        var st = null; try { st = streakInfo(); } catch (e) { st = { cur: 0 }; }
+        var done = 0; try { done = Object.keys(doneSet).length; } catch (e) {}
+        var saved = 0, mastered = 0;
+        try { saved = myWords.length; mastered = myWords.filter(function(w){ return w.interval > 14; }).length; } catch (e) {}
+        var minsToday = 0; try { minsToday = studyMinFor(todayStr()); } catch (e) {}
+        var en1 = 0, en2 = 0, de1 = 0, de2 = 0;
+        try { en1 = bankOfficialTotal("en", "A1"); en2 = bankOfficialTotal("en", "A2"); de1 = bankOfficialTotal("de", "A1"); de2 = bankOfficialTotal("de", "A2"); } catch (e) {}
+        var theme = "أسود";
+        try { theme = (document.documentElement.getAttribute("data-theme") === "light") ? "فاتح" : "أسود"; } catch (e) {}
+        var rem = "";
+        try { rem = (typeof reminder !== "undefined" && reminder.time) ? reminder.time : ""; } catch (e) {}
+        var html = '<div class="pf-head"><div class="pf-avatar">🎓</div><div class="pf-name">ملفي</div><div class="pf-sub">الإنجليزية · الألمانية</div></div>' +
+          '<div class="pf-stats">' +
+          '<div class="pf-stat"><b>🔥 ' + arNum(st.cur || 0) + '</b><span>يوم متتالي</span></div>' +
+          '<div class="pf-stat"><b>📖 ' + arNum(done) + '</b><span>قصة أكملتها</span></div>' +
+          '<div class="pf-stat"><b>📝 ' + arNum(saved) + '</b><span>كلمة محفوظة</span></div>' +
+          '<div class="pf-stat"><b>⏱ ' + arNum(minsToday) + '</b><span>دقيقة دراسة اليوم</span></div></div>' +
+          '<div class="pf-words"><b>كلمات البنك</b><br>EN <b>' + arNum(en1 + en2) + '</b> <span style="color:var(--muted)">A1 ' + arNum(en1) + ' · A2 ' + arNum(en2) + '</span><br>DE <b>' + arNum(de1 + de2) + '</b> <span style="color:var(--muted)">A1 ' + arNum(de1) + ' · A2 ' + arNum(de2) + '</span><br>كلمات متقنة: <b>' + arNum(mastered) + '</b></div>' +
+          '<div class="pf-sec"><h3>الامتحانات</h3>' +
+          '<div class="pf-exam"><b>اختبار المستوى A1</b><p id="pfA1Last"></p><button type="button" class="pf-exam-btn" data-pfexam="a1test">ابدأ اختبار A1</button></div>' +
+          '<div class="pf-exam"><b>الامتحان النهائي (A1 + A2)</b><p id="pfFinLast"></p><button type="button" class="pf-exam-btn" data-pfexam="finalexam">ابدأ الامتحان النهائي</button></div></div>' +
+          '<div class="pf-sec"><h3>الإعدادات</h3>' +
+          '<button type="button" class="pf-row" id="pfTheme">🎨 المظهر: ' + theme + '<span class="pf-row-go">‹</span></button>' +
+          '<button type="button" class="pf-row" id="pfSync">👤 تسجيل دخول كوكل (مزامنة)<span class="pf-row-go">‹</span></button>' +
+          '<button type="button" class="pf-row" id="pfOffline">⬇ تحميل كل شي للاستخدام بدون نت<span class="pf-row-go">‹</span></button>' +
+          '<button type="button" class="pf-row" id="pfInstall">📱 تثبيت التطبيق على الهاتف<span class="pf-row-go">‹</span></button>' +
+          '<button type="button" class="pf-row" id="pfShare">↗ شارك التطبيق<span class="pf-row-go">‹</span></button>' +
+          '<button type="button" class="pf-row" id="pfPrivacy">🔒 سياسة الخصوصية<span class="pf-row-go">‹</span></button>' +
+          '<div class="pf-row">🔔 تذكير يومي<input type="time" id="pfReminder" value="' + rem + '" aria-label="وقت التذكير اليومي"></div></div>';
+        box.innerHTML = html;
+        try { renderLastResult("a1LastResult", "pfA1Last"); } catch (e) {}
+        try { renderLastResult("finalLastResult", "pfFinLast"); } catch (e) {}
+        box.querySelectorAll("[data-pfexam]").forEach(function(b){
+          b.addEventListener("click", function(){ showView(b.getAttribute("data-pfexam")); });
+        });
+        var th = $("pfTheme");
+        if (th) th.addEventListener("click", function(){ try { toggleTheme(); } catch (e) {} renderProfile(); });
+        var sy = $("pfSync");
+        if (sy) sy.addEventListener("click", function(){ var b = $("googleSyncBtn"); if (b) b.click(); });
+        var of = $("pfOffline");
+        if (of) of.addEventListener("click", function(){ var b = $("audioOfflineBtn"); if (b) b.click(); });
+        var ins = $("pfInstall");
+        if (ins) ins.addEventListener("click", function(){ var b = $("installAppBtn"); if (b) b.click(); });
+        var sh = $("pfShare");
+        if (sh) sh.addEventListener("click", function(){ var b = $("shareAppBtn"); if (b) b.click(); });
+        var pr = $("pfPrivacy");
+        if (pr) pr.addEventListener("click", function(){ showView("privacy"); });
+        var rm = $("pfReminder");
+        if (rm) rm.addEventListener("change", function(){
+          var d = $("reminderTime");
+          if (d){ d.value = rm.value; d.dispatchEvent(new Event("change")); }
+        });
       }
       document.querySelectorAll(".bnav-btn").forEach(function(b){
         b.addEventListener("click", function(){
@@ -6769,6 +7110,769 @@ function sysRenderBody(id){
       document.querySelectorAll("[data-goto]").forEach(function(b){
         b.addEventListener("click", function(){ showView(b.getAttribute("data-goto")); });
       });
+      /* ---------- EWA top bar: free counters + flag language switcher ---------- */
+      function renderTopStats(){
+        try {
+          var pts = 0, st = null, known = 0, done = 0;
+          try { if (typeof dayPoints === "function" && typeof todayStr === "function") pts = dayPoints(todayStr()); } catch (e) {}
+          try { if (typeof streakInfo === "function") st = streakInfo(); } catch (e) {}
+          try { var wm = JSON.parse(localStorage.getItem("readerApp.wordMarks.v1") || "{}"); Object.keys(wm).forEach(function(k){ if (wm[k] === "known") known++; }); } catch (e) {}
+          try { done = Object.keys(doneSet || {}).length; } catch (e) {}
+          var el;
+          if ((el = $("tsPoints"))) el.textContent = arNum(pts || 0);
+          if ((el = $("tsWords"))) el.textContent = arNum(known);
+          if ((el = $("tsStreak"))) el.textContent = arNum(st ? (st.cur || 0) : 0);
+          if ((el = $("tsStories"))) el.textContent = arNum(done);
+        } catch (e) {}
+      }
+      /* Official A1/A2 bank totals: bankLevelTotal(A2) also counts the
+         "everyday" (B1 everyday-words) topic, so subtract it here to show
+         the official 2,624 / 2,596 inventory. */
+      function bankOfficialTotal(lang, level){
+        var n = bankLevelTotal(lang, level);
+        if (level === "A2"){
+          var ev = (BANK_DATA2[lang] && BANK_DATA2[lang]["everyday"]) || [];
+          n -= ev.length;
+        }
+        return n;
+      }
+      function renderWordStrip(){
+        var el = $("wordStrip"); if (!el) return;
+        try {
+          var en1 = bankOfficialTotal("en", "A1"), en2 = bankOfficialTotal("en", "A2");
+          var de1 = bankOfficialTotal("de", "A1"), de2 = bankOfficialTotal("de", "A2");
+          el.innerHTML = '<span class="ws-lang">EN <b>' + arNum(en1 + en2) + '</b></span><span class="ws-lvl">A1 ' + arNum(en1) + ' · A2 ' + arNum(en2) + '</span><span class="ws-lang">DE <b>' + arNum(de1 + de2) + '</b></span><span class="ws-lvl">A1 ' + arNum(de1) + ' · A2 ' + arNum(de2) + '</span>';
+        } catch (e) {}
+      }
+      var LANG_FLAG = { en: "\uD83C\uDDEC\uD83C\uDDE7", de: "\uD83C\uDDE9\uD83C\uDDEA" };
+      function syncLangFlag(){
+        var ic = $("langFlagIc");
+        if (ic) ic.textContent = LANG_FLAG[curLang] || LANG_FLAG.en;
+        document.querySelectorAll(".lang-row").forEach(function(r){
+          var on = r.getAttribute("data-setlang") === curLang;
+          r.classList.toggle("sel", on);
+          var rd = r.querySelector(".lang-radio");
+          if (rd) rd.classList.toggle("on", on);
+        });
+      }
+      function openLangSheet(){ var b = $("langSheetBackdrop"); if (b) { b.hidden = false; syncLangFlag(); } }
+      function closeLangSheet(){ var b = $("langSheetBackdrop"); if (b) b.hidden = true; }
+      function setLearningLang(lang){
+        if (lang !== "en" && lang !== "de") return;
+        curLang = lang; bankLang = lang; convLang = lang; gramLang = lang;
+        try { saveUiState(); } catch (e) {}
+        syncLangFlag();
+        closeLangSheet();
+        try { renderTopStats(); renderWordStrip(); } catch (e) {}
+        try { showView(curView, true); } catch (e) {}
+      }
+      if ($("langFlagBtn")) $("langFlagBtn").addEventListener("click", openLangSheet);
+      if ($("langSheetX")) $("langSheetX").addEventListener("click", closeLangSheet);
+      if ($("langSheetBackdrop")) $("langSheetBackdrop").addEventListener("click", function(e){ if (e.target === this) closeLangSheet(); });
+      document.querySelectorAll(".lang-row").forEach(function(r){
+        r.addEventListener("click", function(){ setLearningLang(r.getAttribute("data-setlang")); });
+      });
+      /* ---------- EWA Learn path ---------- */
+      var learnUnit = null;
+      function topicEmoji(slug){ var t = null; TOPICS.forEach(function(x){ if (x.slug === slug) t = x; }); return t ? t.emoji : "📖"; }
+      function learnNextStory(){
+        for (var i = 0; i < STORIES.length; i++){
+          var s = STORIES[i];
+          if (s.lang === curLang && !doneSet[s.id]) return s;
+        }
+        return null;
+      }
+      function openStoryLike(st){
+        if (!st) return;
+        if (st.topic) openPrep(st.id); else openStory(st.id);
+      }
+      function renderLearnPath(){
+        var box = $("learnPath"); if (!box) return;
+        var next = learnNextStory();
+        if (!learnUnit) learnUnit = next ? next.topic : "intro";
+        var unitStories = STORIES.filter(function(s){ return s.lang === curLang && s.topic === learnUnit; });
+        if (!unitStories.length){
+          var found = null;
+          TOPICS.forEach(function(t){ if (!found && STORIES.some(function(s){ return s.lang === curLang && s.topic === t.slug; })) found = t.slug; });
+          learnUnit = found || "intro";
+          unitStories = STORIES.filter(function(s){ return s.lang === curLang && s.topic === learnUnit; });
+        }
+        var topic = null;
+        TOPICS.forEach(function(t){ if (t.slug === learnUnit) topic = t; });
+        var done = 0;
+        unitStories.forEach(function(s){ if (doneSet[s.id]) done++; });
+        var total = unitStories.length;
+        var nextInUnit = null;
+        unitStories.forEach(function(s){ if (!nextInUnit && !doneSet[s.id]) nextInUnit = s; });
+        var gLevel = topic ? topic.level : "A1";
+        var gRules = (((gLevel === "A2" ? GRAMMAR_A2 : GRAMMAR_A1)[curLang]) || []);
+        var SIL = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6z"/></svg>';
+        var html = "";
+        html += '<div class="lp-units" role="group" aria-label="الوحدات">';
+        TOPICS.forEach(function(t){
+          var n = 0, d = 0;
+          STORIES.forEach(function(s){ if (s.lang === curLang && s.topic === t.slug){ n++; if (doneSet[s.id]) d++; } });
+          if (!n) return;
+          html += '<button type="button" class="lp-unit' + (t.slug === learnUnit ? " on" : "") + '" data-lpunit="' + t.slug + '">' + escapeHtml(t.ar) + ' <span>' + arNum(d) + "/" + arNum(n) + "</span></button>";
+        });
+        html += "</div>";
+        html += '<div class="lp-head"><div class="lp-head-tx"><b>' + escapeHtml(topic ? topic.ar : "") + "</b><span>" + arNum(done) + " من " + arNum(total) + "</span></div>" + '<div class="lp-bar"><div class="lp-fill" style="width:' + (total ? Math.round(done / total * 100) : 0) + '%"></div></div></div>';
+        html += '<div class="lp-path">';
+        var gi = 0;
+        unitStories.forEach(function(s, idx){
+          if (idx > 0 && idx % 5 === 0 && gRules.length){
+            var gr = gRules[gi % gRules.length]; gi++;
+            var gpos = ["l", "c", "r"][idx % 3];
+            html += '<div class="lp-row pos-' + gpos + '"><button type="button" class="lp-node gram" data-lpgram="' + gr.id + '" data-lpgramlvl="' + gLevel + '"><span class="lp-circle">Aa</span><span class="lp-stars">★★★</span><span class="lp-name">قاعدة: ' + escapeHtml(gr.titleAr) + "</span></button></div>";
+          }
+          var isDone = !!doneSet[s.id];
+          var isCur = !isDone && s === nextInUnit;
+          var cls = isDone ? "done" : (isCur ? "cur" : "lock");
+          var pos = ["l", "c", "r"][idx % 3];
+          var icon = isDone ? '<span class="lp-check">✓</span>' : (isCur ? escapeHtml(topicEmoji(s.topic)) : SIL);
+          var stars = isDone ? '<span class="lp-stars gold">★★★</span>' : '<span class="lp-stars">★★★</span>';
+          html += '<div class="lp-row pos-' + pos + '"><button type="button" class="lp-node ' + cls + '" data-lpstory="' + s.id + '"><span class="lp-circle">' + icon + "</span>" + stars + '<span class="lp-name">' + escapeHtml(s.titleAr || s.title) + "</span></button></div>";
+        });
+        html += "</div>";
+        html += '<button type="button" class="lp-gramrow" id="lpGramRow"><span class="lp-gramrow-ic">Aa</span><span><b>القواعد</b><small>قواعد ' + gLevel + " — " + arNum(gRules.length) + " قاعدة</small></span><span class=\"lp-gramrow-go\">‹</span></button>";
+        if (next){
+          html += '<button type="button" class="lp-continue" id="lpContinue">متابعة · ' + escapeHtml(next.titleAr || next.title) + "</button>";
+        }
+        box.innerHTML = html;
+        box.querySelectorAll("[data-lpunit]").forEach(function(b){
+          b.addEventListener("click", function(){ learnUnit = b.getAttribute("data-lpunit"); renderLearnPath(); });
+        });
+        box.querySelectorAll("[data-lpstory]").forEach(function(b){
+          b.addEventListener("click", function(){
+            var id = b.getAttribute("data-lpstory"), st = null;
+            STORIES.forEach(function(x){ if (x.id === id) st = x; });
+            openStoryLike(st);
+          });
+        });
+        box.querySelectorAll("[data-lpgram]").forEach(function(b){
+          b.addEventListener("click", function(){
+            gramLevel = b.getAttribute("data-lpgramlvl"); gramLang = curLang;
+            showView("grammar");
+            renderGrammarRule(b.getAttribute("data-lpgram"));
+          });
+        });
+        var gr2 = $("lpGramRow");
+        if (gr2) gr2.addEventListener("click", function(){ showView("grammar"); });
+        var cont = $("lpContinue");
+        if (cont) cont.addEventListener("click", function(){ openStoryLike(learnNextStory()); });
+      }
+      /* ---------- EWA Books ---------- */
+      var BK_FAV_KEY = "readerApp.bookFavs.v1", BK_HIST_KEY = "readerApp.bookHistory.v1",
+          BK_READ_KEY = "readerApp.bookRead.v1", BK_DL_KEY = "readerApp.bookDl.v1";
+      var BOOK_COLORS = ["#7C4DFF", "#0EB1F6", "#FF6B6B", "#2ECC71", "#FF9F1C", "#E84393", "#00B8A9", "#5C6BC0", "#8D6E63", "#26A69A"];
+      var bkChip = "all", bkSeg = "all", bkQuery = "";
+      var currentBook = null;
+      function bkStore(key, def){
+        try { var v = JSON.parse(localStorage.getItem(key) || "null"); return v == null ? def : v; } catch (e) { return def; }
+      }
+      function bkStoreSave(key, val){ try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+      function bkSetHas(key, k){ return bkStore(key, []).indexOf(k) !== -1; }
+      function bkSetToggle(key, k){
+        var a = bkStore(key, []), i = a.indexOf(k);
+        if (i === -1) a.push(k); else a.splice(i, 1);
+        bkStoreSave(key, a);
+      }
+      function bookFavHas(k){ return bkSetHas(BK_FAV_KEY, k); }
+      function bookFavToggle(k){ bkSetToggle(BK_FAV_KEY, k); }
+      function bookDlHas(k){ return bkSetHas(BK_DL_KEY, k); }
+      function bookDlToggle(k){ bkSetToggle(BK_DL_KEY, k); }
+      function bookReadHas(k){ return bkSetHas(BK_READ_KEY, k); }
+      function bookMarkRead(k){
+        var a = bkStore(BK_READ_KEY, []);
+        if (a.indexOf(k) === -1) { a.push(k); bkStoreSave(BK_READ_KEY, a); }
+      }
+      function bookHistory(){ return bkStore(BK_HIST_KEY, []); }
+      function bookLogOpen(k){
+        var a = bkStore(BK_HIST_KEY, []);
+        a = a.filter(function(x){ return x !== k; });
+        a.unshift(k);
+        bkStoreSave(BK_HIST_KEY, a.slice(0, 20));
+      }
+      function convDataFor(lang, level){ return ((level === "A2" ? CONV_DATA_A2 : CONV_DATA)[lang]) || []; }
+      function bookColor(kind, key){
+        var idx = 0, i;
+        if (kind === "study"){ for (i = 0; i < STUDIES.length; i++) if (STUDIES[i].id === key) idx = i; }
+        else if (kind === "story"){
+          var s = null;
+          for (i = 0; i < STORIES.length; i++) if (STORIES[i].id === key) s = STORIES[i];
+          if (s) for (i = 0; i < TOPICS.length; i++) if (TOPICS[i].slug === s.topic) idx = i;
+        }
+        else if (kind === "conv"){ idx = 2; }
+        return BOOK_COLORS[idx % BOOK_COLORS.length];
+      }
+      function bookFromStudy(st){
+        var paras = 0, total = 0, words = {};
+        st.sections.forEach(function(sec){ sec.paras.forEach(function(p){
+          paras++;
+          p.f.split(/\s+/).forEach(function(w){
+            total++;
+            var k = w.toLowerCase().replace(/[^a-zäöüß']/gi, "");
+            if (k) words[k] = 1;
+          });
+        }); });
+        return { key: "study|" + st.id, kind: "study", id: st.id, titleAr: st.titleAr, title: st.title,
+          sub: "دراسة نفسية · " + arNum(paras) + " فقرة", desc: st.subtitleAr, lang: "en", level: "دراسة",
+          color: bookColor("study", st.id), icon: "🧠",
+          info: { words: Object.keys(words).length, mins: Math.max(1, Math.round(total / 150)), paras: paras, parasLabel: "فقرات" } };
+      }
+      function bookFromStory(s){
+        return { key: "story|" + s.id, kind: "story", id: s.id, titleAr: s.titleAr, title: s.title,
+          sub: (s.topicAr || "") + " · " + s.level, desc: s.about || s.titleAr, lang: s.lang, level: s.level,
+          color: bookColor("story", s.id), icon: topicEmoji(s.topic),
+          info: { words: (s.vocab || []).length, mins: s.mins || 5, paras: (s.paras || []).length, parasLabel: "فقرات" },
+          story: s };
+      }
+      function bookFromConv(lang, level, di){
+        var d = convDataFor(lang, level)[di];
+        if (!d) return null;
+        var total = 0, words = {};
+        d.conv.turns.forEach(function(t){
+          t.t.split(/\s+/).forEach(function(w){
+            total++;
+            var k = w.toLowerCase().replace(/[^a-zäöüß']/gi, "");
+            if (k) words[k] = 1;
+          });
+        });
+        return { key: "conv|" + lang + "|" + level + "|" + di, kind: "conv", id: d.conv.id, titleAr: d.title,
+          title: "المرحلة " + d.stage + " · " + (level === "A2" ? "A2" : "A1"),
+          sub: "موضوع محادثة · " + d.topicAr, desc: "محادثة: " + d.topicAr + " — " + d.conv.speakers.join(" و "),
+          lang: lang, level: level, di: di, color: "#0EB1F6", icon: "💬",
+          info: { words: Object.keys(words).length, mins: Math.max(1, Math.round(total / 150)), paras: d.conv.turns.length, parasLabel: "جولات" } };
+      }
+      function bookByKey(key){
+        if (!key) return null;
+        var p = String(key).split("|");
+        if (p[0] === "study"){
+          var st = null;
+          STUDIES.forEach(function(x){ if (x.id === p[1]) st = x; });
+          return st ? bookFromStudy(st) : null;
+        }
+        if (p[0] === "story"){
+          var s = null;
+          STORIES.forEach(function(x){ if (x.id === p[1]) s = x; });
+          return s ? bookFromStory(s) : null;
+        }
+        if (p[0] === "conv") return bookFromConv(p[1], p[2], parseInt(p[3], 10));
+        return null;
+      }
+      function bkCardHTML(bk){
+        return '<button type="button" class="bk-card" data-bk="' + bk.key + '">' +
+          '<span class="bk-cover" style="background:' + bk.color + '"><span class="bk-cover-ic">' + bk.icon + '</span><span class="bk-cover-tx">' + escapeHtml(bk.titleAr) + '</span></span>' +
+          '<span class="bk-card-t">' + escapeHtml(bk.titleAr) + '</span>' +
+          '<span class="bk-card-s">' + escapeHtml(bk.sub) + '</span></button>';
+      }
+      function bkRowHTML(title, books){
+        if (!books.length) return "";
+        return '<section class="bk-row"><div class="bk-row-h"><h2>' + escapeHtml(title) + '</h2><span>‹</span></div>' +
+          '<div class="bk-carousel">' + books.map(bkCardHTML).join("") + '</div></section>';
+      }
+      function bkStoryBooks(topics, limit){
+        var arr = Array.isArray(topics) ? topics : [topics];
+        var out = [];
+        STORIES.forEach(function(s){
+          if (s.lang === curLang && arr.indexOf(s.topic) !== -1) out.push(bookFromStory(s));
+        });
+        return limit ? out.slice(0, limit) : out;
+      }
+      function bkStoryBooksLevel(level, limit){
+        var out = [];
+        STORIES.forEach(function(s){ if (s.lang === curLang && s.level === level) out.push(bookFromStory(s)); });
+        return limit ? out.slice(0, limit) : out;
+      }
+      function bkConvBooks(){
+        var out = [];
+        ["A1", "A2"].forEach(function(lv){
+          convDataFor(curLang, lv).forEach(function(d, di){
+            var b = bookFromConv(curLang, lv, di);
+            if (b) out.push(b);
+          });
+        });
+        return out;
+      }
+      function bkContinueHTML(){
+        var hist = bookHistory();
+        if (!hist.length) return "";
+        var bk = bookByKey(hist[0]);
+        if (!bk) return "";
+        var prog = (bk.kind === "story" && doneSet[bk.id]) || bookReadHas(bk.key) ? 100 : 0;
+        return '<div class="bk-continue"><span class="bk-cont-cover" style="background:' + bk.color + '">' + bk.icon + '</span>' +
+          '<span class="bk-cont-tx"><b>مواصلة القراءة</b><span>' + escapeHtml(bk.titleAr) + ' · ' + arNum(prog) + '٪</span></span>' +
+          '<button type="button" class="bk-cont-go" data-bk="' + bk.key + '">قراءة</button></div>';
+      }
+      function bkChipList(chip){
+        var out = [];
+        if (chip === "fav"){
+          bkStore(BK_FAV_KEY, []).forEach(function(k){ var b = bookByKey(k); if (b) out.push(b); });
+        } else if (chip === "history"){
+          bookHistory().forEach(function(k){ var b = bookByKey(k); if (b) out.push(b); });
+        } else if (chip === "read"){
+          STORIES.forEach(function(s){ if (s.lang === curLang && doneSet[s.id]) out.push(bookFromStory(s)); });
+          bkStore(BK_READ_KEY, []).forEach(function(k){
+            if (k.indexOf("story|") === 0) return;
+            var b = bookByKey(k);
+            if (b) out.push(b);
+          });
+        }
+        return out;
+      }
+      function bkSearchResultsHTML(){
+        var q = (bkQuery || "").trim().toLowerCase();
+        if (!q) return '<p class="hint">اكتب كلمة للبحث في القصص والدراسات والمحادثات.</p>';
+        var out = [];
+        if (bkSeg === "all" || bkSeg === "story"){
+          STORIES.forEach(function(s){
+            if (s.lang !== curLang) return;
+            var hay = ((s.titleAr || "") + " " + (s.title || "") + " " + (s.topicAr || "")).toLowerCase();
+            if (hay.indexOf(q) !== -1) out.push(bookFromStory(s));
+          });
+        }
+        if (bkSeg === "all" || bkSeg === "study"){
+          STUDIES.forEach(function(st){
+            var hay = ((st.titleAr || "") + " " + (st.title || "")).toLowerCase();
+            if (hay.indexOf(q) !== -1) out.push(bookFromStudy(st));
+          });
+        }
+        if (bkSeg === "all" || bkSeg === "conv"){
+          ["A1", "A2"].forEach(function(lv){
+            convDataFor(curLang, lv).forEach(function(d, di){
+              var hay = ((d.title || "") + " " + (d.topicAr || "")).toLowerCase();
+              if (hay.indexOf(q) !== -1) { var b = bookFromConv(curLang, lv, di); if (b) out.push(b); }
+            });
+          });
+        }
+        if (!out.length) return '<p class="hint">لا نتائج لـ «' + escapeHtml(bkQuery) + '».</p>';
+        return out.map(bkCardHTML).join("");
+      }
+      function renderBooks(){
+        var box = $("booksBody"); if (!box) return;
+        var html = "";
+        html += '<div class="bk-chips" role="group" aria-label="تصفية الكتب">' +
+          '<button type="button" class="bk-chip' + (bkChip === "all" ? " on" : "") + '" data-bkchip="all">📚 الكل</button>' +
+          '<button type="button" class="bk-chip' + (bkChip === "search" ? " on" : "") + '" data-bkchip="search">🔍 بحث</button>' +
+          '<button type="button" class="bk-chip' + (bkChip === "read" ? " on" : "") + '" data-bkchip="read">✓ قرأت</button>' +
+          '<button type="button" class="bk-chip' + (bkChip === "fav" ? " on" : "") + '" data-bkchip="fav">♥ المفضلة</button>' +
+          '<button type="button" class="bk-chip' + (bkChip === "history" ? " on" : "") + '" data-bkchip="history">🕐 التاريخ</button></div>';
+        if (bkChip === "search"){
+          html += '<div class="bk-search"><input id="bkSearchInput" type="search" placeholder="ابحث عن قصة أو دراسة…" value="' + escapeHtml(bkQuery) + '" autocomplete="off">' +
+            '<div class="bk-seg" role="group">' +
+            '<button type="button" class="bk-seg-btn' + (bkSeg === "all" ? " on" : "") + '" data-bkseg="all">الكل</button>' +
+            '<button type="button" class="bk-seg-btn' + (bkSeg === "story" ? " on" : "") + '" data-bkseg="story">القصص</button>' +
+            '<button type="button" class="bk-seg-btn' + (bkSeg === "study" ? " on" : "") + '" data-bkseg="study">الدراسات</button>' +
+            '<button type="button" class="bk-seg-btn' + (bkSeg === "conv" ? " on" : "") + '" data-bkseg="conv">المحادثات</button></div>' +
+            '<div class="bk-grid" id="bkSearchRes">' + bkSearchResultsHTML() + '</div></div>';
+        } else if (bkChip === "read" || bkChip === "fav" || bkChip === "history"){
+          var list = bkChipList(bkChip);
+          html += '<div class="bk-grid">' + (list.length ? list.map(bkCardHTML).join("") : '<p class="hint">لا شيء هنا بعد.</p>') + '</div>';
+        } else {
+          html += bkContinueHTML();
+          html += bkRowHTML("قراءات علم النفس", STUDIES.map(bookFromStudy));
+          html += bkRowHTML("مواضيع المحادثة", bkConvBooks());
+          html += bkRowHTML("قصص عن الحب والعلاقات", bkStoryBooks("social", 12));
+          html += bkRowHTML("قصص يومية", bkStoryBooks(["routine", "intro"], 12));
+          html += bkRowHTML("قصص A1", bkStoryBooksLevel("A1", 12));
+          html += bkRowHTML("قصص A2", bkStoryBooksLevel("A2", 12));
+          html += '<button type="button" class="bk-allstories" id="bkAllStories">عرض كل القصص ←</button>';
+        }
+        box.innerHTML = html;
+        box.querySelectorAll("[data-bkchip]").forEach(function(b){
+          b.addEventListener("click", function(){ bkChip = b.getAttribute("data-bkchip"); renderBooks(); });
+        });
+        box.querySelectorAll("[data-bkseg]").forEach(function(b){
+          b.addEventListener("click", function(){ bkSeg = b.getAttribute("data-bkseg"); renderBooks(); });
+        });
+        var inp = $("bkSearchInput");
+        if (inp){
+          inp.addEventListener("input", function(){
+            bkQuery = inp.value;
+            var res = $("bkSearchRes");
+            if (res) res.innerHTML = bkSearchResultsHTML();
+            bindBookCards(res);
+          });
+          inp.addEventListener("keydown", function(e){ if (e.key === "Enter") e.preventDefault(); });
+        }
+        var all = $("bkAllStories");
+        if (all) all.addEventListener("click", function(){ showView("stories"); });
+        bindBookCards(box);
+      }
+      function bindBookCards(root){
+        if (!root) return;
+        root.querySelectorAll("[data-bk]").forEach(function(b){
+          if (b.dataset.bkBound) return;
+          b.dataset.bkBound = "1";
+          b.addEventListener("click", function(){ openBook(b.getAttribute("data-bk")); });
+        });
+      }
+      function openBook(key){
+        var bk = bookByKey(key);
+        if (!bk) return;
+        currentBook = bk;
+        bookLogOpen(key);
+        showView("book");
+      }
+      function renderBook(){
+        var box = $("bookBody"); if (!box) return;
+        var bk = currentBook;
+        if (!bk){ box.innerHTML = '<p class="hint">اختر كتابًا من المكتبة.</p>'; return; }
+        var t = $("bookViewTitle"); if (t) t.textContent = bk.titleAr;
+        var fav = bookFavHas(bk.key), dl = bookDlHas(bk.key), info = bk.info;
+        var html = '<div class="bk-detail">' +
+          '<div class="bk-det-cover" style="background:' + bk.color + '"><span class="bk-det-ic">' + bk.icon + '</span><span class="bk-det-tx">' + escapeHtml(bk.titleAr) + '</span></div>' +
+          '<h2 class="bk-det-title">' + escapeHtml(bk.titleAr) + '</h2>' +
+          '<p class="bk-det-sub">' + escapeHtml(bk.title) + '</p>' +
+          '<div class="bk-det-badges"><span class="badge ' + (bk.lang || "en") + '">' + (bk.lang === "de" ? "Deutsch" : "English") + '</span><span class="lvl-tag ' + (bk.lang || "en") + '">' + (bk.kind === "study" ? "دراسة" : "مستوى " + bk.level) + '</span></div>' +
+          '<div class="bk-det-actions">' +
+          '<button type="button" class="bk-round' + (fav ? " on" : "") + '" id="bkFavBtn" aria-label="حفظ في المفضلة">♥</button>' +
+          '<button type="button" class="bk-round' + (dl ? " on" : "") + '" id="bkDlBtn" aria-label="تنزيل">⬇</button></div>' +
+          '<h3 class="bk-det-h">عن الكتاب</h3><p class="bk-det-desc">' + escapeHtml(bk.desc) + '</p>' +
+          '<div class="bk-det-info">' +
+          '<div class="bk-info-row"><span>كلمات جديدة</span><b>' + arNum(info.words) + '</b></div>' +
+          '<div class="bk-info-row"><span>وقت القراءة</span><b>' + arNum(info.mins) + ' دقيقة</b></div>' +
+          '<div class="bk-info-row"><span>' + info.parasLabel + '</span><b>' + arNum(info.paras) + '</b></div></div>' +
+          '<div class="bk-det-cta"><button type="button" class="bk-cta" id="bkReadBtn">قراءة</button><button type="button" class="bk-cta bk-cta-2" id="bkListenBtn">🎧 استمع</button></div></div>';
+        box.innerHTML = html;
+        $("bkFavBtn").addEventListener("click", function(){
+          bookFavToggle(bk.key);
+          showToast(bookFavHas(bk.key) ? "انضاف للمفضلة ♥" : "انشال من المفضلة");
+          renderBook();
+        });
+        $("bkDlBtn").addEventListener("click", function(){
+          bookDlToggle(bk.key);
+          showToast(bookDlHas(bk.key) ? "تم التنزيل — متاح بدون نت ✓" : "تمت إزالة التنزيل");
+          renderBook();
+        });
+        $("bkReadBtn").addEventListener("click", function(){ bookRead(bk); });
+        $("bkListenBtn").addEventListener("click", function(){ bookListen(bk); });
+      }
+      function bookRead(bk){
+        bookMarkRead(bk.key);
+        if (bk.kind === "story"){ openStoryLike(bk.story); return; }
+        if (bk.kind === "study"){ openStudy(bk.id); return; }
+        if (bk.kind === "conv"){
+          convLang = bk.lang; convLevel = bk.level;
+          showView("conversation");
+          openConvReader(bk.di);
+        }
+      }
+      function bookListen(bk){
+        bookMarkRead(bk.key);
+        if (bk.kind === "story"){
+          openStory(bk.id);
+          setTimeout(function(){ try { startPara(0); } catch (e) {} }, 400);
+          return;
+        }
+        if (bk.kind === "study"){
+          openStudy(bk.id);
+          setTimeout(function(){ try { studyPlayPara(0); } catch (e) {} }, 400);
+          return;
+        }
+        if (bk.kind === "conv"){
+          convLang = bk.lang; convLevel = bk.level;
+          showView("conversation");
+          openConvReader(bk.di);
+          setTimeout(function(){ try { convStopAll(); convPlay = { on: true, di: bk.di, ti: 0 }; convPlayNext(); } catch (e) {} }, 400);
+        }
+      }
+      /* ---------- EWA AI Trainer (offline, retrieval-first) ---------- */
+      var TR_CHAT_KEY = "readerApp.trainerChat.v1";
+      var trainerMsgs = [];
+      var trainerState = { lastWord: null, lastRule: null, lastLang: null, lastIntent: null };
+      var trainerBankCache = {};
+      function trainerPick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+      function trainerLoad(){
+        try { var v = JSON.parse(localStorage.getItem(TR_CHAT_KEY) || "null"); trainerMsgs = Array.isArray(v) ? v : []; } catch (e) { trainerMsgs = []; }
+      }
+      function trainerSave(){
+        try { localStorage.setItem(TR_CHAT_KEY, JSON.stringify(trainerMsgs.slice(-50))); } catch (e) {}
+      }
+      function trainerBankEntry(word, lang){
+        var nw = normWord(word);
+        if (!nw) return null;
+        if (!trainerBankCache[lang]){
+          var idx = {};
+          [BANK_DATA, BANK_DATA2].forEach(function(bank){
+            var byLang = bank[lang]; if (!byLang) return;
+            Object.keys(byLang).forEach(function(tp){
+              (byLang[tp] || []).forEach(function(e){
+                if (!e || !e[0] || !e[1]) return;
+                var k = normWord(String(e[0]));
+                if (k && !(k in idx)) idx[k] = { w: e[0], t: e[1], ex: e[2] || "", exAr: e[3] || "" };
+              });
+            });
+          });
+          trainerBankCache[lang] = idx;
+        }
+        return trainerBankCache[lang][nw] || null;
+      }
+      function trainerFindWord(word){
+        var en = trainerBankEntry(word, "en");
+        if (en) return { lang: "en", w: en.w, t: en.t, ex: en.ex, exAr: en.exAr };
+        var de = trainerBankEntry(word, "de");
+        if (de) return { lang: "de", w: de.w, t: de.t, ex: de.ex, exAr: de.exAr };
+        return null;
+      }
+      function trainerFindByArabic(arWord, lang){
+        var out = null;
+        [BANK_DATA, BANK_DATA2].forEach(function(bank){
+          var byLang = bank[lang]; if (!byLang) return;
+          Object.keys(byLang).forEach(function(tp){
+            (byLang[tp] || []).forEach(function(e){
+              if (!out && e && e[1] && e[1].indexOf(arWord) !== -1) out = { w: e[0], t: e[1], ex: e[2] || "", exAr: e[3] || "" };
+            });
+          });
+        });
+        return out;
+      }
+      function trainerExtractWord(q){
+        var latin = (q.match(/[A-Za-zÄÖÜäöüß]+(?:['’\-][A-Za-zÄÖÜäöüß]+)*/g) || []);
+        if (!latin.length) return null;
+        var trimmed = q.trim();
+        if (/^[A-Za-zÄÖÜäöüß\s'’\-]+$/.test(trimmed) && latin.length <= 2) return latin.join(" ").toLowerCase();
+        if (/معنى|meaning|شنو|what does|what is the meaning/i.test(q)) return latin.join(" ").toLowerCase();
+        return null;
+      }
+      function trainerGrammarSearch(q){
+        var ql = q.toLowerCase();
+        var qwords = ql.split(/[^a-zäöüß\u0600-\u06FF]+/).filter(function(w){ return w.length > 2; });
+        var best = null, bestScore = 0;
+        ["A1", "A2"].forEach(function(lv){
+          ["en", "de"].forEach(function(lg){
+            var rules = ((lv === "A2" ? GRAMMAR_A2 : GRAMMAR_A1)[lg]) || [];
+            rules.forEach(function(r){
+              var hay = ((r.title || "") + " " + (r.titleAr || "") + " " + (r.explanationAr || "") + " " + ((r.functionWords || []).join(" "))).toLowerCase();
+              var score = 0;
+              qwords.forEach(function(w){ if (hay.indexOf(w) !== -1) score++; });
+              var t = (r.title || "").toLowerCase();
+              if (t.length > 3 && ql.indexOf(t) !== -1) score += 3;
+              var ta = (r.titleAr || "").toLowerCase();
+              if (ta.length > 2 && ql.indexOf(ta) !== -1) score += 3;
+              if (score > bestScore){ bestScore = score; best = { rule: r, level: lv, lang: lg, score: score }; }
+            });
+          });
+        });
+        return bestScore >= 1 ? best : null;
+      }
+      function trainerSystemSearch(q){
+        var ql = q.toLowerCase();
+        var systems = [
+          { key: "sys-numbers", ar: "الأرقام", words: ["رقم", "أرقام", "number", "numbers", "zahlen", "zählen", "عدد"] },
+          { key: "sys-time", ar: "الوقت", words: ["وقت", "ساعة", "time", "uhr", "zeit"] },
+          { key: "sys-dates", ar: "التواريخ", words: ["تاريخ", "تواريخ", "date", "dates", "datum"] },
+          { key: "sys-colors", ar: "الألوان", words: ["لون", "ألوان", "color", "colour", "colors", "farbe", "farben"] },
+          { key: "sys-directions", ar: "الاتجاهات", words: ["اتجاه", "اتجاهات", "direction", "directions", "richtung"] },
+          { key: "sys-measurements-money", ar: "القياسات والمال", words: ["قياس", "قياسات", "مال", "فلوس", "measure", "money", "geld"] },
+          { key: "sys-family", ar: "العائلة", words: ["عائلة", "عائله", "family", "familie"] },
+          { key: "sys-body", ar: "الجسم", words: ["جسم", "جسد", "body", "körper"] },
+          { key: "sys-weather", ar: "الطقس", words: ["طقس", "جو ", "weather", "wetter"] }
+        ];
+        for (var i = 0; i < systems.length; i++){
+          for (var j = 0; j < systems[i].words.length; j++){
+            if (ql.indexOf(systems[i].words[j]) !== -1) return systems[i];
+          }
+        }
+        return null;
+      }
+      function trainerStorySearch(q){
+        var ql = q.toLowerCase();
+        var found = null;
+        TOPICS.forEach(function(t){
+          if (found) return;
+          if (ql.indexOf(t.ar) !== -1 || ql.indexOf(t.slug) !== -1){
+            var list = STORIES.filter(function(s){ return s.lang === curLang && s.topic === t.slug; });
+            if (list.length) found = { topic: t, stories: list.slice(0, 3) };
+          }
+        });
+        return found;
+      }
+      function trainerWordAnswer(wd, lang){
+        var ex = wd.ex ? "\nمثال: " + wd.ex + (wd.exAr ? " — " + wd.exAr : "") : "";
+        var variants = [
+          "«" + wd.w + "» يعني «" + wd.t + "»." + ex + "\nتبغى مثال ثاني؟",
+          wd.w + " = " + wd.t + "." + ex + "\nاسألني عن كلمة ثانية، أو قل «وبالألماني؟» إذا تبيها بالألماني.",
+          "معنى «" + wd.w + "» هو «" + wd.t + "»." + ex + "\nعندي " + (lang === "de" ? "الألمانية" : "الإنجليزية") + " — جرب كلمة ثانية؟"
+        ];
+        return trainerPick(variants);
+      }
+      function trainerGrammarAnswer(g){
+        var r = g.rule;
+        var expl = r.explanationAr || "";
+        if (expl.length > 350) expl = expl.slice(0, 350) + "…";
+        var ex = "";
+        if (r.examples && r.examples[0]) ex = "\nمثال: " + r.examples[0].f + " — " + r.examples[0].a;
+        var variants = [
+          r.titleAr + " (" + r.title + ") — مستوى " + g.level + ":\n" + expl + ex + "\nتبغى مثال ثاني أو شرح أكثر؟",
+          "هاي قاعدة " + r.titleAr + ".\n" + expl + ex + "\nجرّبها بتمارين القواعد من تبويب التعلّم — تبغى قاعدة ثانية؟",
+          r.titleAr + ":\n" + expl + ex + "\nإذا تبيها باللغة الثانية قل «وبالألماني؟»."
+        ];
+        return trainerPick(variants);
+      }
+      function trainerAsk(q){
+        var raw = (q || "").trim();
+        if (!raw) return;
+        trainerMsgs.push({ role: "user", text: raw });
+        var ql = raw.toLowerCase();
+        var answer = "", chips = ["مثال ثاني", "وبالألماني؟", "قاعدة عن الماضي"];
+        /* greeting */
+        if (/^(مرحبا|هلا|السلام|اهلا|hi|hello|hey|شلونك|كيف حالك|صباح|مساء)/.test(ql)){
+          answer = trainerPick([
+            "هلا بيك! أنا مدربك — اسألني عن أي كلمة أو قاعدة من التطبيق، وأجاوبك من محتوى التطبيق نفسه. شنو تبي تتعلم اليوم؟",
+            "مرحبا! جاهز أساعدك. اسأل عن معنى كلمة، أو قاعدة مثل «الماضي البسيط»، أو نظام مثل «الأرقام».",
+            "هلا! اسألني عن كلمة أو قاعدة، أو قل «أريد قصة عن الحب» وأدور لك قصة."
+          ]);
+          chips = ["ما معنى beautiful؟", "الماضي البسيط", "الأرقام", "أريد قصة عن السفر"];
+          trainerState.lastIntent = "greeting";
+        }
+        /* follow-up: in German */
+        else if (/بالألماني|بالالماني|in german|auf deutsch/.test(ql)){
+          if (trainerState.lastWord){
+            var lw = trainerState.lastWord;
+            if (lw.lang === "de"){
+              answer = "هي أصلًا ألمانية: «" + lw.w + "» يعني «" + lw.t + "».";
+            } else {
+              /* English -> German: find a German bank entry with the SAME
+                 Arabic meaning as the English word. */
+              var deW = null;
+              [BANK_DATA, BANK_DATA2].forEach(function(bank){
+                var byLang = bank["de"]; if (!byLang || deW) return;
+                Object.keys(byLang).forEach(function(tp){
+                  (byLang[tp] || []).forEach(function(e){
+                    if (!deW && e && e[1] === lw.t) deW = { w: e[0], t: e[1], ex: e[2] || "", exAr: e[3] || "" };
+                  });
+                });
+              });
+              if (deW){
+                answer = "بالألماني «" + lw.w + "» تصير «" + deW.w + "» — «" + deW.t + "»." + (deW.ex ? "\nمثال: " + deW.ex + " — " + deW.exAr : "");
+              } else {
+                answer = "ما لقيت ترجمة ألمانية مباشرة لـ «" + lw.w + "» في البنك — جرّب كلمة ثانية؟";
+              }
+            }
+          } else if (trainerState.lastRule){
+            var gr = trainerState.lastRule;
+            var other = ((gr.level === "A2" ? GRAMMAR_A2 : GRAMMAR_A1)["de"] || []).filter(function(r){ return r.id === gr.rule.id; })[0];
+            answer = other ? "بالألماني، قاعدة " + other.titleAr + " (" + other.title + "):\n" + (other.explanationAr || "").slice(0, 350) : "هاي القاعدة موجودة بالإنجليزية بس في التطبيق — جرّب قاعدة ثانية؟";
+          } else {
+            answer = "عن شنو تبي بالألماني؟ اسألني عن كلمة أو قاعدة أول.";
+          }
+          chips = ["مثال ثاني", "قاعدة ثانية"];
+        }
+        /* follow-up: another example */
+        else if (/مثال ثاني|مثال آخر|مثال اخر|another example|مثال/.test(ql) && trainerState.lastWord){
+          var w2 = trainerState.lastWord;
+          answer = w2.ex ? "مثال ثاني على «" + w2.w + "»: " + w2.ex + " — " + w2.exAr : "ما عندي مثال ثاني محفوظ لـ «" + w2.w + "» — جرّب كلمة ثانية؟";
+          chips = ["وبالألماني؟", "قاعدة عن الماضي"];
+        }
+        else if (/مثال ثاني|مثال آخر|مثال اخر|another example/.test(ql) && trainerState.lastRule){
+          var r2 = trainerState.lastRule.rule;
+          var ex2 = (r2.examples && r2.examples[1]) || (r2.examples && r2.examples[0]);
+          answer = ex2 ? "مثال ثاني: " + ex2.f + " — " + ex2.a : "ما عندي مثال ثاني لهاي القاعدة — جرّب قاعدة ثانية؟";
+          chips = ["وبالألماني؟", "قاعدة ثانية"];
+        }
+        /* word meaning (single word or معنى X) */
+        else {
+          var cand = trainerExtractWord(raw);
+          var wd = cand ? trainerFindWord(cand) : null;
+          if (wd){
+            trainerState.lastWord = wd; trainerState.lastRule = null; trainerState.lastIntent = "word";
+            answer = trainerWordAnswer(wd, wd.lang);
+            chips = ["مثال ثاني", "وبالألماني؟", "ما معنى happy؟"];
+          } else {
+            /* Arabic -> foreign ("كيف أقول X بالانكليزي") */
+            var arM = raw.match(/[\u0600-\u06FF]+/g) || [];
+            var stop = ["كيف", "اقول", "أقول", "ما", "معنى", "بالانكليزي", "بالإنجليزي", "بالألماني", "بالالماني", "شنو", "يعني", "كلمة", "بالانجليزي"];
+            var arWord = null;
+            arM.forEach(function(w){ if (!arWord && stop.indexOf(w) === -1 && w.length > 1) arWord = w; });
+            var rev = null, revLang = null;
+            if (arWord && /انكليزي|انجليزي|english/i.test(raw)){ rev = trainerFindByArabic(arWord, "en"); revLang = "en"; }
+            else if (arWord && /الماني|ألماني|german|deutsch/i.test(raw)){ rev = trainerFindByArabic(arWord, "de"); revLang = "de"; }
+            if (rev){
+              trainerState.lastWord = { lang: revLang, w: rev.w, t: rev.t, ex: rev.ex, exAr: rev.exAr };
+              trainerState.lastRule = null; trainerState.lastIntent = "word";
+              answer = "«" + arWord + "» " + (revLang === "de" ? "بالألماني" : "بالإنجليزية") + " هي «" + rev.w + "»." + (rev.ex ? "\nمثال: " + rev.ex + " — " + rev.exAr : "");
+              chips = ["مثال ثاني", "وبالألماني؟"];
+            } else {
+              var sys = trainerSystemSearch(raw);
+              if (sys){
+                trainerState.lastIntent = "system";
+                answer = trainerPick([
+                  "نظام " + sys.ar + " موجود في البنك — افتح تبويب البنك ثم «الأنظمة» ثم " + sys.ar + "، فيه شرح + تدريبات. تبغى نظام ثاني؟",
+                  "روح للبنك ← الأنظمة ← " + sys.ar + " — هناك تتعلمها خطوة بخطوة مع تدريب سمعي وكتابي. شنو تبي بعد؟"
+                ]);
+                chips = ["الألوان", "الوقت", "قاعدة عن الماضي"];
+              } else {
+                var g = trainerGrammarSearch(raw);
+                if (g){
+                  trainerState.lastRule = g; trainerState.lastWord = null; trainerState.lastIntent = "grammar";
+                  answer = trainerGrammarAnswer(g);
+                  chips = ["مثال ثاني", "وبالألماني؟", "قاعدة عن الماضي"];
+                } else if (/قصة|قصه|story/.test(ql)){
+                  var st = trainerStorySearch(raw);
+                  if (st){
+                    trainerState.lastIntent = "story";
+                    answer = "لقيت " + arNum(st.stories.length) + " قصص عن «" + st.topic.ar + "»:\n" + st.stories.map(function(s){ return "• " + s.titleAr + " (" + s.level + ")"; }).join("\n") + "\nافتحها من تبويب الكتب ← قصص " + st.topic.ar + ". تبغى موضوع ثاني؟";
+                    chips = ["أريد قصة عن السفر", "أريد قصة عن الحب", "الماضي البسيط"];
+                  } else {
+                    answer = "أي موضوع تبي القصة عنه؟ جرّب «أريد قصة عن السفر» أو «عن الحب» أو «عن الطعام».";
+                    chips = ["أريد قصة عن السفر", "أريد قصة عن الحب"];
+                  }
+                } else {
+                  trainerState.lastIntent = "scope";
+                  answer = trainerPick([
+                    "هاي برّه محتوى التطبيق — أنا أجاوب بس من اللي موجود فيه: كلمات البنك (٥٢٢٠ كلمة)، قواعد (٦٩ قاعدة)، الأنظمة التسعة، والقصص. اسألني عن كلمة أو قاعدة؟",
+                    "ما عندي جواب لهذا من محتوى التطبيق. أقدر أساعدك بكلمة (معناها + مثال)، أو قاعدة، أو نظام مثل الأرقام والألوان. شنو تبي؟"
+                  ]);
+                  chips = ["ما معنى beautiful؟", "الماضي البسيط", "الأرقام"];
+                }
+              }
+            }
+          }
+        }
+        trainerMsgs.push({ role: "ai", text: answer, chips: chips });
+        trainerSave();
+        renderTrainer();
+      }
+      function renderTrainer(){
+        var box = $("trainerBody"); if (!box) return;
+        if (!trainerMsgs.length){
+          trainerLoad();
+        }
+        var html = '<div class="tr-chat" id="trChat">';
+        if (!trainerMsgs.length){
+          html += '<div class="tr-msg ai">هلا بيك! أنا مدربك — أجاوب من محتوى التطبيق نفسه: كلمات البنك، القواعد، الأنظمة، والقصص.\n\nاسألني مثل:\n• ما معنى beautiful؟\n• الماضي البسيط\n• كيف أقول «جميل» بالألماني؟\n• أريد قصة عن السفر</div>';
+        } else {
+          trainerMsgs.forEach(function(m){
+            html += '<div class="tr-msg ' + m.role + '">' + escapeHtml(m.text) + '</div>';
+          });
+        }
+        html += '</div>';
+        var lastChips = null;
+        for (var i = trainerMsgs.length - 1; i >= 0; i--){
+          if (trainerMsgs[i].role === "ai" && trainerMsgs[i].chips){ lastChips = trainerMsgs[i].chips; break; }
+        }
+        if (!lastChips) lastChips = ["ما معنى beautiful؟", "الماضي البسيط", "الأرقام", "أريد قصة عن السفر"];
+        html += '<div class="tr-chips" id="trChips">' + lastChips.map(function(c){
+          return '<button type="button" class="tr-chip" data-trchip="' + escapeHtml(c) + '">' + escapeHtml(c) + '</button>';
+        }).join("") + '</div>';
+        html += '<button type="button" class="tr-clear" id="trClear">🗑 مسح المحادثة</button>';
+        html += '<form class="tr-input" id="trForm"><input id="trInput" type="text" placeholder="اسأل عن كلمة أو قاعدة…" autocomplete="off"><button type="submit" class="tr-send" aria-label="إرسال">➤</button></form>';
+        box.innerHTML = html;
+        var chat = $("trChat");
+        if (chat) chat.scrollTop = chat.scrollHeight;
+        box.querySelectorAll("[data-trchip]").forEach(function(b){
+          b.addEventListener("click", function(){ trainerAsk(b.getAttribute("data-trchip")); });
+        });
+        var clear = $("trClear");
+        if (clear) clear.addEventListener("click", function(){ trainerMsgs = []; trainerSave(); renderTrainer(); });
+        var form = $("trForm");
+        if (form) form.addEventListener("submit", function(e){
+          e.preventDefault();
+          var inp = $("trInput");
+          if (inp && inp.value.trim()){ var v = inp.value; inp.value = ""; trainerAsk(v); }
+        });
+      }
             /* ---------- 100-day plan, story-based (redesign 2026-11-12) ----------
          One story per day (in app order, per language), 25 words taken from
          INSIDE that story: its vocab list first, topped up to 25 with distinct
@@ -7484,8 +8588,6 @@ function convVoice(lang, idx){
           html += '<button class="conv-stage-btn" type="button" data-convopen="' + di + '"><span class="conv-stage-ico">' + topicIconSVG(d.topic) + '</span><span class="conv-stage-txt">المرحلة ' + d.stage + ' · ' + convEsc(d.topicAr) + '</span><span class="conv-stage-badge">' + convLevel + '</span><span class="conv-stage-go">›</span></button>';
         });
         box.innerHTML = html;
-        $("convLangEn").className = convLang === "en" ? "active-en" : "";
-        $("convLangDe").className = convLang === "de" ? "active-de" : "";
         $("convLvlA1").className = convLevel === "A1" ? "active-lvl" : "";
         $("convLvlA2").className = convLevel === "A2" ? "active-lvl" : "";
         renderConvWrite();
@@ -7573,9 +8675,6 @@ function convVoice(lang, idx){
             }
           });
         }
-        var en = $("convLangEn"), de = $("convLangDe");
-        if (en && !en.dataset.convBound) { en.dataset.convBound = "1"; en.addEventListener("click", function(){ convStopAll(); convLang = "en"; renderConvHome(); }); }
-        if (de && !de.dataset.convBound) { de.dataset.convBound = "1"; de.addEventListener("click", function(){ convStopAll(); convLang = "de"; renderConvHome(); }); }
         var l1 = $("convLvlA1"), l2 = $("convLvlA2");
         if (l1 && !l1.dataset.convBound) { l1.dataset.convBound = "1"; l1.addEventListener("click", function(){ convStopAll(); convLevel = "A1"; renderConvHome(); }); }
         if (l2 && !l2.dataset.convBound) { l2.dataset.convBound = "1"; l2.addEventListener("click", function(){ convStopAll(); convLevel = "A2"; renderConvHome(); }); }
@@ -14664,18 +15763,8 @@ function wrCheck() {
       }
 
       /* ---------- Language & level filters ---------- */
-      $("langEn").addEventListener("click", function(){
-        curLang = "en";
-        this.className = "active-en"; $("langDe").className = "";
-        renderTopicFilters();
-        renderGrid();
-      });
-      $("langDe").addEventListener("click", function(){
-        curLang = "de";
-        this.className = "active-de"; $("langEn").className = "";
-        renderTopicFilters();
-        renderGrid();
-      });
+      /* EWA: the learning language is set once from the top flag switcher;
+         the in-story EN/DE toggle was removed. */
       document.querySelectorAll(".lvl button").forEach(function(b){
         b.addEventListener("click", function(){
           document.querySelectorAll(".lvl button").forEach(function(x){ x.classList.remove("active"); });
@@ -16825,8 +17914,6 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
         gramRule = null;
         $("gramHome").hidden = false;
         $("gramArea").innerHTML = "";
-        $("gramLangEn").className = gramLang === "en" ? "active-en" : "";
-        $("gramLangDe").className = gramLang === "de" ? "active-de" : "";
         $("gramLvlA1").className = gramLevel === "A1" ? "active-lvl" : "";
         $("gramLvlA2").className = gramLevel === "A2" ? "active-lvl" : "";
         var box = $("gramHome");
@@ -17023,12 +18110,6 @@ var GRAMMAR_A2 = {"en":[{"id":"en-past-irregular","title":"Past simple: irregula
         }
         area.appendChild(gramNav());
       }
-      $("gramLangEn").addEventListener("click", function(){
-        gramLang = "en"; $("gramLangEn").className = "active-en"; $("gramLangDe").className = ""; renderGrammarHome();
-      });
-      $("gramLangDe").addEventListener("click", function(){
-        gramLang = "de"; $("gramLangDe").className = "active-de"; $("gramLangEn").className = ""; renderGrammarHome();
-      });
       $("gramLvlA1").addEventListener("click", function(){
         gramLevel = "A1"; renderGrammarHome();
       });
@@ -17773,16 +18854,6 @@ var _ttsNoVoiceWarned = false;
           : "";
         $("bankMore").hidden = !(list.length > n);
       }
-      $("bankLangEn").addEventListener("click", function(){
-        bankLang = "en"; bankTopic = "all"; bankShown = 150;
-        this.className = "active-en"; $("bankLangDe").className = "";
-        bankCollapseBoxes(); renderBankBoxes(); renderBank();
-      });
-      $("bankLangDe").addEventListener("click", function(){
-        bankLang = "de"; bankTopic = "all"; bankShown = 150;
-        this.className = "active-de"; $("bankLangEn").className = "";
-        bankCollapseBoxes(); renderBankBoxes(); renderBank();
-      });
       $("bankTopicsHead").addEventListener("click", function(){ toggleBankBox("topics"); });
       $("bankFamHead").addEventListener("click", function(){ toggleBankBox("fam"); });
       $("bankIdiomHead").addEventListener("click", function(){ toggleBankBox("idiom"); });
