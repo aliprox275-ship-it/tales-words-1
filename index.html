@@ -1023,48 +1023,55 @@ input,textarea,select{font-size:16px}
       .wordstrip .ws-lang b{color:var(--accent)}
       .wordstrip .ws-lvl{color:var(--muted); font-weight:600}
       /* ---------- EWA Learn path ---------- */
-      .lp-units{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 10px; scrollbar-width:none}
+      .lp-seg{display:flex; justify-content:center; margin:2px 0 14px}
+      .lp-seg .switch{box-shadow:0 2px 10px rgba(0,0,0,.06)}
+      .lp-units{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 12px; scrollbar-width:none}
       .lp-units::-webkit-scrollbar{display:none}
-      .lp-unit{flex:none; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:99px; padding:8px 14px; font-weight:700; font-size:.92rem; white-space:nowrap; cursor:pointer}
+      .lp-unit{flex:none; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:99px; padding:9px 15px; font-weight:700; font-size:.92rem; white-space:nowrap; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,.05); transition:background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease}
       .lp-unit span{color:var(--muted); font-weight:600; font-size:.85rem}
-      .lp-unit.on{background:var(--purple); border-color:var(--purple); color:#fff}
+      .lp-unit.on{background:var(--purple); border-color:var(--purple); color:#fff; box-shadow:0 4px 14px rgba(158,74,247,.4)}
       .lp-unit.on span{color:rgba(255,255,255,.85)}
-      .lp-head{background:linear-gradient(135deg, #B45CFF, var(--purple) 55%, var(--purple-dark)); border-radius:18px; padding:18px; margin-bottom:8px; color:#fff; box-shadow:0 6px 18px rgba(134,74,208,.35)}
+      .lp-head{background:linear-gradient(140deg, #C07BFF 0%, var(--purple) 48%, var(--purple-dark) 100%); border-radius:20px; padding:20px; margin-bottom:10px; color:#fff; box-shadow:0 10px 26px rgba(134,74,208,.35), inset 0 1px 0 rgba(255,255,255,.25)}
       .lp-head-tx{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
       .lp-head-tx b{font-size:1.2rem}
       .lp-head-tx span{font-weight:700; opacity:.92}
-      .lp-bar{height:10px; background:rgba(255,255,255,.25); border-radius:99px; overflow:hidden; margin-top:10px}
+      .lp-bar{height:8px; background:rgba(255,255,255,.28); border-radius:99px; overflow:hidden; margin-top:12px}
       .lp-fill{height:100%; background:#fff; border-radius:99px; transition:width .4s ease}
       .lp-path{position:relative; padding:18px 0 8px}
-      .lp-path::before{content:""; position:absolute; top:0; bottom:0; left:50%; width:0; border-left:4px dotted rgba(158,74,247,.55); transform:translateX(-50%); z-index:0}
+      .lp-path::before{content:""; position:absolute; top:0; bottom:0; left:50%; width:0; border-left:3px dotted rgba(158,74,247,.45); transform:translateX(-50%); z-index:0}
       .lp-row{position:relative; z-index:1; display:flex; margin-bottom:26px}
       .lp-row.pos-l{justify-content:flex-start}
       .lp-row.pos-c{justify-content:center}
       .lp-row.pos-r{justify-content:flex-end}
       .lp-node{display:flex; flex-direction:column; align-items:center; gap:4px; background:transparent; border:0; padding:0; width:112px; cursor:pointer}
-      .lp-circle{width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.9rem; background:var(--surface2); border:2px solid var(--line); color:var(--ink)}
-      .lp-node.cur .lp-circle{width:80px; height:80px; background:var(--purple-dark); border-color:var(--purple-dark); color:#fff; box-shadow:0 0 0 6px var(--purple-tint), 0 0 28px rgba(158,74,247,.55)}
-      .lp-node.done .lp-circle{background:var(--purple); border-color:var(--purple); color:#fff}
+      .lp-circle{width:72px; height:72px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.9rem; background:var(--surface2); border:2px solid var(--line); color:var(--ink); box-shadow:0 2px 8px rgba(0,0,0,.07); transition:transform .2s ease, box-shadow .2s ease}
+      .lp-node.cur .lp-circle{width:80px; height:80px; background:var(--purple-dark); border-color:var(--purple-dark); color:#fff; box-shadow:0 0 0 6px var(--purple-tint), 0 10px 26px rgba(134,74,208,.5)}
+      .lp-node.done .lp-circle{background:var(--purple); border-color:var(--purple); color:#fff; box-shadow:0 4px 12px rgba(158,74,247,.35)}
       .lp-node.lock .lp-circle{background:var(--locked-bg); border-color:var(--locked-bg); color:var(--locked)}
       .lp-node.lock .lp-circle svg{width:34px; height:34px}
       .lp-node.cur .lp-circle svg{width:34px; height:34px}
       .lp-check{font-size:1.8rem; font-weight:800}
-      .lp-stars{font-size:.95rem; letter-spacing:2px; color:var(--locked)}
+      .lp-stars{font-size:.82rem; letter-spacing:3px; color:var(--locked)}
       .lp-stars.gold{color:var(--gold)}
       .lp-name{font-size:.9rem; font-weight:700; color:var(--ink); text-align:center; line-height:1.35; max-width:112px}
       .lp-node.gram .lp-circle{width:56px; height:56px; background:transparent; border:2px dashed var(--purple); color:var(--purple); font-size:1rem; font-weight:800}
-      .lp-gramrow{display:flex; align-items:center; gap:12px; width:100%; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px 16px; color:var(--ink); text-align:right; cursor:pointer; margin:6px 0 14px}
+      .lp-gramrow{display:flex; align-items:center; gap:12px; width:100%; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px 16px; color:var(--ink); text-align:right; cursor:pointer; margin:6px 0 14px; box-shadow:0 2px 10px rgba(0,0,0,.04)}
       .lp-gramrow-ic{width:40px; height:40px; border-radius:12px; background:var(--purple-tint); color:var(--purple); display:flex; align-items:center; justify-content:center; font-weight:800; flex:none}
       .lp-gramrow b{display:block; font-size:1.02rem}
       .lp-gramrow small{display:block; color:var(--muted); font-weight:600}
       .lp-gramrow-go{margin-inline-start:auto; color:var(--muted); font-size:1.2rem}
-      .lp-continue{position:fixed; bottom:76px; left:50%; transform:translateX(-50%); z-index:35; background:var(--accent); color:#fff; border:0; border-radius:99px; padding:16px 32px; font-size:1.12rem; font-weight:800; box-shadow:0 10px 28px rgba(14,177,246,.45); max-width:calc(100vw - 32px); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer}
+      .lp-continue{position:fixed; bottom:76px; left:50%; transform:translateX(-50%); z-index:35; background:var(--accent); color:#fff; border:0; border-radius:99px; padding:15px 30px; font-size:1.12rem; font-weight:800; box-shadow:0 12px 30px rgba(14,177,246,.45), 0 2px 8px rgba(14,177,246,.3); max-width:calc(100vw - 32px); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer}
       .lp-continue:active{transform:translateX(-50%) scale(.97)}
       /* ---------- EWA Books ---------- */
       .bk-chips{display:flex; gap:8px; overflow-x:auto; padding:2px 2px 12px; scrollbar-width:none}
       .bk-chips::-webkit-scrollbar{display:none}
       .bk-chip{flex:none; border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:99px; padding:8px 14px; font-weight:700; font-size:.92rem; cursor:pointer; white-space:nowrap}
       .bk-chip.on{background:var(--accent); border-color:var(--accent); color:#fff}
+      .bk-nav{display:flex; align-items:center; gap:12px; width:100%; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px 16px; color:var(--ink); text-align:right; cursor:pointer; margin:0 0 12px; box-shadow:0 2px 10px rgba(0,0,0,.04)}
+      .bk-nav-ic{width:40px; height:40px; border-radius:12px; background:var(--purple-tint); color:var(--purple); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex:none}
+      .bk-nav b{display:block; font-size:1.02rem}
+      .bk-nav small{display:block; color:var(--muted); font-weight:600}
+      .bk-nav-go{margin-inline-start:auto; color:var(--muted); font-size:1.2rem}
       .bk-row{margin-bottom:22px}
       .bk-row-h{display:flex; align-items:baseline; justify-content:space-between; margin:0 2px 10px}
       .bk-row-h h2{font-size:1.15rem; margin:0}
@@ -5826,30 +5833,6 @@ function sysRenderBody(id){
       }
 
       /* ---------- Story grid ---------- */
-      function buildStoryCard(s){
-        var card = document.createElement("article");
-          card.className = "card";
-          var langName = s.lang === "en" ? "English" : "Deutsch";
-          card.innerHTML =
-            '<div class="cover-art">' + topicIcon(s.topic) + '</div>' +
-            '<div class="card-body">' +
-              '<div class="card-meta">' +
-                '<span class="badge ' + s.lang + '">' + langName + '</span>' +
-                '<span class="lvl-tag ' + s.lang + '">مستوى ' + s.level + '</span>' +
-                (s.topic ? '<span class="badge topic-badge">' + s.topicAr + '</span>' : '') +
-                (s.branching ? '<span class="badge branch-badge">قصة تفاعلية</span>' : '') +
-                '<span class="mins">قراءة ' + s.mins + '</span>' +
-                (doneSet[s.id] ? '<span class="done-tag">أُنجزت ✓</span>' : '') +
-              '</div>' +
-              '<h3><span class="foreign" lang="' + s.lang + '">' + s.title + '</span> · ' + s.titleAr + '</h3>' +
-              '<button class="read-btn ' + s.lang + '">اقرأ واستمع</button>' +
-            '</div>';
-          card.querySelector(".read-btn").addEventListener("click", function(){
-            if (s.topic) openPrep(s.id); else openStory(s.id);
-          });
-          return card;
-      }
-      
 
       
       
@@ -6784,6 +6767,7 @@ function sysRenderBody(id){
           if (typeof convLang !== "undefined") st.convLang = convLang;
           if (typeof convLevel !== "undefined") st.convLevel = convLevel;
           if (typeof gramLevel !== "undefined") st.gramLevel = gramLevel;
+          if (typeof learnLevel !== "undefined") st.learnLevel = learnLevel;
           if (typeof flashLang !== "undefined") st.flashLang = flashLang;
           if (typeof flashLevel !== "undefined") st.flashLevel = flashLevel;
           if (typeof flashTopic !== "undefined") st.flashTopic = flashTopic;
@@ -6811,6 +6795,7 @@ function sysRenderBody(id){
         if ((v = ok(st.convLang, ["en", "de"]))) convLang = v;
         if ((v = ok(st.convLevel, ["A1", "A2"]))) convLevel = v;
         if ((v = ok(st.gramLevel, ["A1", "A2"]))) gramLevel = v;
+        if ((v = ok(st.learnLevel, ["A1", "A2"]))) learnLevel = v;
         if ((v = ok(st.flashLang, ["all", "en", "de"]))) flashLang = v;
         if ((v = ok(st.flashLevel, ["all", "A1", "A2"]))) flashLevel = v;
         if (typeof st.flashTopic === "string" && st.flashTopic) flashTopic = st.flashTopic;
@@ -7088,6 +7073,7 @@ function sysRenderBody(id){
       function setLearningLang(lang){
         if (lang !== "en" && lang !== "de") return;
         curLang = lang; bankLang = lang; convLang = lang; gramLang = lang;
+        try { if (typeof trainerRole !== "undefined") trainerRole = null; } catch (e) {}
         /* Complete separation: the per-view languages follow the learning
            language, so no view keeps showing the other language after a
            switch (the per-view toggles can still override inside a view). */
@@ -7109,11 +7095,12 @@ function sysRenderBody(id){
       });
       /* ---------- EWA Learn path ---------- */
       var learnUnit = null;
+      var learnLevel = "A1";
       function topicEmoji(slug){ var t = null; TOPICS.forEach(function(x){ if (x.slug === slug) t = x; }); return t ? t.emoji : "📖"; }
       function learnNextStory(){
         for (var i = 0; i < STORIES.length; i++){
           var s = STORIES[i];
-          if (s.lang === curLang && !doneSet[s.id]) return s;
+          if (s.lang === curLang && s.level === learnLevel && !doneSet[s.id]) return s;
         }
         return null;
       }
@@ -7125,12 +7112,12 @@ function sysRenderBody(id){
         var box = $("learnPath"); if (!box) return;
         var next = learnNextStory();
         if (!learnUnit) learnUnit = next ? next.topic : "intro";
-        var unitStories = STORIES.filter(function(s){ return s.lang === curLang && s.topic === learnUnit; });
+        var unitStories = STORIES.filter(function(s){ return s.lang === curLang && s.level === learnLevel && s.topic === learnUnit; });
         if (!unitStories.length){
           var found = null;
-          TOPICS.forEach(function(t){ if (!found && STORIES.some(function(s){ return s.lang === curLang && s.topic === t.slug; })) found = t.slug; });
+          TOPICS.forEach(function(t){ if (!found && STORIES.some(function(s){ return s.lang === curLang && s.level === learnLevel && s.topic === t.slug; })) found = t.slug; });
           learnUnit = found || "intro";
-          unitStories = STORIES.filter(function(s){ return s.lang === curLang && s.topic === learnUnit; });
+          unitStories = STORIES.filter(function(s){ return s.lang === curLang && s.level === learnLevel && s.topic === learnUnit; });
         }
         var topic = null;
         TOPICS.forEach(function(t){ if (t.slug === learnUnit) topic = t; });
@@ -7139,15 +7126,16 @@ function sysRenderBody(id){
         var total = unitStories.length;
         var nextInUnit = null;
         unitStories.forEach(function(s){ if (!nextInUnit && !doneSet[s.id]) nextInUnit = s; });
-        var gLevel = topic ? topic.level : "A1";
+        var gLevel = learnLevel;
         var gRules = (((gLevel === "A2" ? GRAMMAR_A2 : GRAMMAR_A1)[curLang]) || []);
         var SIL = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6z"/></svg>';
         var BOOK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
         var html = "";
+        html += '<div class="lp-seg" role="group" aria-label="المستوى"><div class="switch"><button type="button" data-learnlvl="A1" class="' + (learnLevel === "A1" ? "active-lvl" : "") + '">A1</button><button type="button" data-learnlvl="A2" class="' + (learnLevel === "A2" ? "active-lvl" : "") + '">A2</button></div></div>';
         html += '<div class="lp-units" role="group" aria-label="الوحدات">';
         TOPICS.forEach(function(t){
           var n = 0, d = 0;
-          STORIES.forEach(function(s){ if (s.lang === curLang && s.topic === t.slug){ n++; if (doneSet[s.id]) d++; } });
+          STORIES.forEach(function(s){ if (s.lang === curLang && s.level === learnLevel && s.topic === t.slug){ n++; if (doneSet[s.id]) d++; } });
           if (!n) return;
           html += '<button type="button" class="lp-unit' + (t.slug === learnUnit ? " on" : "") + '" data-lpunit="' + t.slug + '">' + escapeHtml(t.ar) + ' <span>' + arNum(d) + "/" + arNum(n) + "</span></button>";
         });
@@ -7175,6 +7163,15 @@ function sysRenderBody(id){
           html += '<button type="button" class="lp-continue" id="lpContinue">متابعة · ' + escapeHtml(next.titleAr || next.title) + "</button>";
         }
         box.innerHTML = html;
+        box.querySelectorAll("[data-learnlvl]").forEach(function(b){
+          b.addEventListener("click", function(){
+            var lv = b.getAttribute("data-learnlvl");
+            if (lv !== "A1" && lv !== "A2") return;
+            learnLevel = lv; learnUnit = null;
+            try { saveUiState(); } catch (e) {}
+            renderLearnPath();
+          });
+        });
         box.querySelectorAll("[data-lpunit]").forEach(function(b){
           b.addEventListener("click", function(){ learnUnit = b.getAttribute("data-lpunit"); renderLearnPath(); });
         });
@@ -7316,29 +7313,6 @@ function sysRenderBody(id){
         return '<section class="bk-row"><div class="bk-row-h"><h2>' + escapeHtml(title) + '</h2><span>‹</span></div>' +
           '<div class="bk-carousel">' + books.map(bkCardHTML).join("") + '</div></section>';
       }
-      function bkStoryBooks(topics, limit){
-        var arr = Array.isArray(topics) ? topics : [topics];
-        var out = [];
-        STORIES.forEach(function(s){
-          if (s.lang === curLang && arr.indexOf(s.topic) !== -1) out.push(bookFromStory(s));
-        });
-        return limit ? out.slice(0, limit) : out;
-      }
-      function bkStoryBooksLevel(level, limit){
-        var out = [];
-        STORIES.forEach(function(s){ if (s.lang === curLang && s.level === level) out.push(bookFromStory(s)); });
-        return limit ? out.slice(0, limit) : out;
-      }
-      function bkConvBooks(){
-        var out = [];
-        ["A1", "A2"].forEach(function(lv){
-          convDataFor(curLang, lv).forEach(function(d, di){
-            var b = bookFromConv(curLang, lv, di);
-            if (b) out.push(b);
-          });
-        });
-        return out;
-      }
       function bkContinueHTML(){
         var hist = bookHistory();
         if (!hist.length) return "";
@@ -7417,11 +7391,12 @@ function sysRenderBody(id){
         } else {
           html += bkContinueHTML();
           if (curLang === "en") html += bkRowHTML("قراءات علم النفس", STUDIES.map(bookFromStudy));
-          html += bkRowHTML("مواضيع المحادثة", bkConvBooks());
-          html += bkRowHTML("قصص عن الحب والعلاقات", bkStoryBooks("social", 12));
-          html += bkRowHTML("قصص يومية", bkStoryBooks(["routine", "intro"], 12));
-          html += bkRowHTML("قصص A1", bkStoryBooksLevel("A1", 12));
-          html += bkRowHTML("قصص A2", bkStoryBooksLevel("A2", 12));
+          /* Stories live in Learn and conversation stages in the Conversation
+             view — Books links to them (single navigation cards, not listings)
+             and keeps studies, search, continue and the read/favourite/history
+             filters. */
+          html += '<button type="button" class="bk-nav" data-bknav="home"><span class="bk-nav-ic">📖</span><span><b>القصص</b><small>كل القصص في تبويب «تعلّم»</small></span><span class="bk-nav-go">‹</span></button>';
+          html += '<button type="button" class="bk-nav" data-bknav="conversation"><span class="bk-nav-ic">💬</span><span><b>مواضيع المحادثة</b><small>كل المحادثات في تبويب «المحادثة»</small></span><span class="bk-nav-go">‹</span></button>';
         }
         box.innerHTML = html;
         box.querySelectorAll("[data-bkchip]").forEach(function(b){
@@ -7441,6 +7416,9 @@ function sysRenderBody(id){
           inp.addEventListener("keydown", function(e){ if (e.key === "Enter") e.preventDefault(); });
         }
         bindBookCards(box);
+        box.querySelectorAll("[data-bknav]").forEach(function(b){
+          b.addEventListener("click", function(){ showView(b.getAttribute("data-bknav")); });
+        });
       }
       function bindBookCards(root){
         if (!root) return;
@@ -7948,7 +7926,7 @@ function sysRenderBody(id){
         if (!res) return { text: "ما قدرت أحدد الفعل أو الزمن في هذه الجملة بشكل موثوق — جرّب جملة أبسط، أو اسألني عن الكلمة أو القاعدة مباشرة.", tooComplex: true };
         return res;
       }
-      /* ---------- Trainer: curated general knowledge (LIMITED, ~65 entries) ----------
+      /* ---------- Trainer: curated general knowledge (LIMITED, 79 entries) ----------
          Common OUT-OF-APP questions: grammar confusions, similar words, everyday
          expressions, classic mistakes. Short answers only. Keyword-matched
          (needs 2+ keywords, or one distinctive phrase). Anything outside this
@@ -8034,6 +8012,247 @@ function sysRenderBody(id){
         { l: "de", k: ["tschüss", "auf wiedersehen"], a: "Tschüss = باي (غير رسمي)، Auf Wiedersehen = إلى اللقاء (رسمي).", e: "Tschüss, bis morgen! / Auf Wiedersehen!" },
         { l: "de", k: ["bitte", "danke"], a: "bitte = من فضلك / عفوًا (رد على شكرًا)، danke = شكرًا. Bitte schön = تفضّل.", e: "Danke! — Bitte." }
       ];
+/* Trainer role-play scenarios (rule-based, app content only — no model).
+   Each scenario: t = Arabic title, steps = 5 turns.
+   Each step: q = trainer question (target language), a = Arabic gloss,
+   k = keywords to accept (lowercase), m = model answer, h = Arabic hint. */
+var TRAINER_ROLEPLAY = {
+en: {
+greetings: { t: "👋 التعارف", steps: [
+  { q: "Hi! What's your name?", a: "مرحباً! ما اسمك؟", k: ["my name is", "i am", "i'm"], m: "My name is Ali.", h: "عرّف بنفسك: My name is …" },
+  { q: "Nice to meet you! Where are you from?", a: "تشرفت! من أين أنت؟", k: ["from", "iraq", "i am from"], m: "I am from Iraq.", h: "قل: I am from …" },
+  { q: "What do you do?", a: "ماذا تعمل؟", k: ["student", "teacher", "work", "study", "i am"], m: "I am a student.", h: "قل: I am a student." },
+  { q: "Do you speak English?", a: "هل تتكلم الإنجليزية؟", k: ["yes", "a little", "little"], m: "Yes, a little.", h: "قل: Yes, a little." },
+  { q: "Great! See you tomorrow?", a: "رائع! أراك غداً؟", k: ["yes", "see you", "tomorrow"], m: "Yes, see you tomorrow!", h: "قل: Yes, see you tomorrow!" }
+]},
+cafe: { t: "🍽 في المقهى", steps: [
+  { q: "Hello! Welcome to our café. What would you like to drink?", a: "أهلاً! ماذا تريد أن تشرب؟", k: ["coffee", "tea", "water", "juice", "nothing"], m: "A coffee, please.", h: "اطلب مشروباً: A coffee, please." },
+  { q: "Would you like sugar with your coffee?", a: "هل تريد سكراً مع القهوة؟", k: ["yes", "no", "sugar", "milk"], m: "Yes, please. / No, thank you.", h: "قل: Yes, please. أو No, thank you." },
+  { q: "Here is your coffee. Would you like something to eat?", a: "هذه قهوتك. هل تريد شيئاً تأكله؟", k: ["cake", "sandwich", "nothing", "no"], m: "A piece of cake, please.", h: "قل: A piece of cake, please." },
+  { q: "That is 5 euros, please.", a: "الحساب ٥ يورو.", k: ["here", "card", "cash", "euro"], m: "Here you are.", h: "قل: Here you are." },
+  { q: "Thank you! Have a nice day!", a: "شكراً! يوم سعيد!", k: ["thank", "bye", "you too"], m: "Thank you, bye!", h: "قل: Thank you, bye!" }
+]},
+shopping: { t: "🛍 في السوق", steps: [
+  { q: "Hello! Can I help you?", a: "أهلاً! هل أساعدك؟", k: ["looking", "shirt", "jacket", "shoes", "just looking"], m: "I am looking for a shirt.", h: "قل: I am looking for a shirt." },
+  { q: "What size do you need?", a: "ما المقاس الذي تحتاجه؟", k: ["small", "medium", "large", "m", "l"], m: "Medium, please.", h: "قل: Medium, please." },
+  { q: "Would you like to try it on?", a: "هل تريد أن تجرّبه؟", k: ["yes", "no"], m: "Yes, please.", h: "قل: Yes, please." },
+  { q: "It costs 20 euros. Would you like to buy it?", a: "سعره ٢٠ يورو. هل تريد شراءه؟", k: ["yes", "no", "too expensive", "ok"], m: "Yes, I will take it.", h: "قل: Yes, I will take it." },
+  { q: "Thank you! Have a nice day!", a: "شكراً! يوم سعيد!", k: ["thank", "bye", "you too"], m: "Thank you, bye!", h: "قل: Thank you, bye!" }
+]},
+directions: { t: "🧭 الاتجاهات", steps: [
+  { q: "Excuse me, where is the station?", a: "عذراً، أين المحطة؟", k: ["straight", "left", "right", "near"], m: "Go straight, then turn left.", h: "قل: Go straight, then turn left." },
+  { q: "Turn left? At the traffic light?", a: "انعطف يساراً؟ عند إشارة المرور؟", k: ["yes", "no", "traffic", "light", "corner"], m: "Yes, at the traffic light.", h: "قل: Yes, at the traffic light." },
+  { q: "Is it far from here?", a: "هل هي بعيدة من هنا؟", k: ["near", "far", "minutes", "five", "ten"], m: "No, it is near. Five minutes.", h: "قل: No, it is near." },
+  { q: "Is there a bank near the station?", a: "هل يوجد بنك قرب المحطة؟", k: ["yes", "no", "near", "next"], m: "Yes, next to the station.", h: "قل: Yes, next to the station." },
+  { q: "Thank you very much!", a: "شكراً جزيلاً!", k: ["welcome", "you're welcome", "no problem"], m: "You are welcome!", h: "قل: You are welcome!" }
+]},
+weather: { t: "🌤 الطقس", steps: [
+  { q: "What is the weather like today?", a: "كيف الطقس اليوم؟", k: ["sunny", "rain", "cloudy", "cold", "hot", "nice"], m: "It is sunny today.", h: "قل: It is sunny today." },
+  { q: "Do you like this weather?", a: "هل يعجبك هذا الطقس؟", k: ["yes", "no", "like", "love"], m: "Yes, I love it!", h: "قل: Yes, I love it!" },
+  { q: "What do you do on a sunny day?", a: "ماذا تفعل في يوم مشمس؟", k: ["walk", "park", "swim", "read", "go"], m: "I go for a walk in the park.", h: "قل: I go for a walk." },
+  { q: "Will it rain tomorrow?", a: "هل ستمطر غداً؟", k: ["yes", "no", "maybe", "rain"], m: "Maybe. Take an umbrella.", h: "قل: Maybe." },
+  { q: "Enjoy your day!", a: "استمتع بيومك!", k: ["thank", "you too", "bye"], m: "Thank you, you too!", h: "قل: Thank you, you too!" }
+]},
+time: { t: "🕐 الوقت", steps: [
+  { q: "Excuse me, what time is it?", a: "عذراً، كم الساعة؟", k: ["three", "four", "o'clock", "half", "ten"], m: "It is three o'clock.", h: "قل: It is three o'clock." },
+  { q: "What time do you get up?", a: "متى تستيقظ؟", k: ["seven", "eight", "six", "morning"], m: "I get up at seven.", h: "قل: I get up at seven." },
+  { q: "What time do you go to work?", a: "متى تذهب إلى العمل؟", k: ["eight", "nine", "morning"], m: "I go to work at eight.", h: "قل: I go to work at eight." },
+  { q: "Shall we meet at six?", a: "هل نتقابل الساعة السادسة؟", k: ["yes", "ok", "good", "six"], m: "Yes, six is good.", h: "قل: Yes, six is good." },
+  { q: "See you at six!", a: "أراك الساعة السادسة!", k: ["see you", "bye", "six"], m: "See you at six!", h: "قل: See you at six!" }
+]},
+family: { t: "👨‍👩‍👧 العائلة", steps: [
+  { q: "Do you have brothers or sisters?", a: "هل عندك إخوة أو أخوات؟", k: ["brother", "sister", "one", "two", "no"], m: "Yes, I have one brother.", h: "قل: Yes, I have one brother." },
+  { q: "What does your brother do?", a: "ماذا يعمل أخوك؟", k: ["teacher", "student", "work", "doctor"], m: "He is a teacher.", h: "قل: He is a teacher." },
+  { q: "Do you live with your family?", a: "هل تعيش مع عائلتك؟", k: ["yes", "no", "family", "parents"], m: "Yes, I live with my parents.", h: "قل: Yes, I live with my parents." },
+  { q: "Who cooks at home?", a: "من يطبخ في البيت؟", k: ["mother", "father", "i", "my mother"], m: "My mother cooks.", h: "قل: My mother cooks." },
+  { q: "Family is important!", a: "العائلة مهمة!", k: ["yes", "very", "important"], m: "Yes, very important!", h: "قل: Yes, very important!" }
+]},
+work: { t: "💼 العمل", steps: [
+  { q: "What do you do?", a: "ماذا تعمل؟", k: ["teacher", "student", "doctor", "work", "engineer"], m: "I am a teacher.", h: "قل: I am a teacher." },
+  { q: "Where do you work?", a: "أين تعمل؟", k: ["school", "office", "hospital", "home"], m: "I work at a school.", h: "قل: I work at a school." },
+  { q: "Do you like your job?", a: "هل يعجبك عملك؟", k: ["yes", "no", "like", "love"], m: "Yes, I love it!", h: "قل: Yes, I love it!" },
+  { q: "What time do you finish work?", a: "متى تنتهي من العمل؟", k: ["five", "six", "four"], m: "I finish at five.", h: "قل: I finish at five." },
+  { q: "Have a nice day at work!", a: "يوم عمل سعيد!", k: ["thank", "you too", "bye"], m: "Thank you, you too!", h: "قل: Thank you, you too!" }
+]}
+},
+de: {
+greetings: { t: "👋 التعارف", steps: [
+  { q: "Hallo! Wie heißt du?", a: "مرحباً! ما اسمك؟", k: ["ich heiße", "ich bin", "mein name"], m: "Ich heiße Ali.", h: "عرّف بنفسك: Ich heiße …" },
+  { q: "Freut mich! Woher kommst du?", a: "تشرفت! من أين أنت؟", k: ["aus", "irak", "ich komme"], m: "Ich komme aus dem Irak.", h: "قل: Ich komme aus …" },
+  { q: "Was machst du?", a: "ماذا تعمل؟", k: ["student", "lehrer", "arbeite", "lerne", "ich bin"], m: "Ich bin Student.", h: "قل: Ich bin Student." },
+  { q: "Sprichst du Deutsch?", a: "هل تتكلم الألمانية؟", k: ["ja", "ein bisschen", "wenig"], m: "Ja, ein bisschen.", h: "قل: Ja, ein bisschen." },
+  { q: "Toll! Bis morgen?", a: "رائع! إلى الغد؟", k: ["ja", "bis morgen"], m: "Ja, bis morgen!", h: "قل: Ja, bis morgen!" }
+]},
+cafe: { t: "🍽 في المقهى", steps: [
+  { q: "Hallo! Willkommen in unserem Café. Was möchten Sie trinken?", a: "أهلاً! ماذا تريد أن تشرب؟", k: ["kaffee", "tee", "wasser", "saft"], m: "Einen Kaffee, bitte.", h: "اطلب مشروباً: Einen Kaffee, bitte." },
+  { q: "Möchten Sie Zucker in den Kaffee?", a: "هل تريد سكراً مع القهوة؟", k: ["ja", "nein", "zucker", "milch"], m: "Ja, bitte. / Nein, danke.", h: "قل: Ja, bitte. أو Nein, danke." },
+  { q: "Hier ist Ihr Kaffee. Möchten Sie etwas essen?", a: "هذه قهوتك. هل تريد شيئاً تأكله؟", k: ["kuchen", "sandwich", "nichts", "nein"], m: "Ein Stück Kuchen, bitte.", h: "قل: Ein Stück Kuchen, bitte." },
+  { q: "Das macht 5 Euro, bitte.", a: "الحساب ٥ يورو.", k: ["hier", "karte", "bar", "euro"], m: "Hier, bitte.", h: "قل: Hier, bitte." },
+  { q: "Danke! Einen schönen Tag noch!", a: "شكراً! يوم سعيد!", k: ["danke", "tschüss", "ebenfalls"], m: "Danke, tschüss!", h: "قل: Danke, tschüss!" }
+]},
+shopping: { t: "🛍 في السوق", steps: [
+  { q: "Hallo! Kann ich Ihnen helfen?", a: "أهلاً! هل أساعدك؟", k: ["suche", "hemd", "jacke", "schuhe", "ich schaue"], m: "Ich suche ein Hemd.", h: "قل: Ich suche ein Hemd." },
+  { q: "Welche Größe brauchen Sie?", a: "ما المقاس الذي تحتاجه؟", k: ["klein", "mittel", "groß", "m", "l"], m: "Mittel, bitte.", h: "قل: Mittel, bitte." },
+  { q: "Möchten Sie es anprobieren?", a: "هل تريد أن تجرّبه؟", k: ["ja", "nein"], m: "Ja, bitte.", h: "قل: Ja, bitte." },
+  { q: "Es kostet 20 Euro. Möchten Sie es kaufen?", a: "سعره ٢٠ يورو. هل تريد شراءه؟", k: ["ja", "nein", "zu teuer", "ok"], m: "Ja, ich nehme es.", h: "قل: Ja, ich nehme es." },
+  { q: "Danke! Einen schönen Tag noch!", a: "شكراً! يوم سعيد!", k: ["danke", "tschüss", "ebenfalls"], m: "Danke, tschüss!", h: "قل: Danke, tschüss!" }
+]},
+directions: { t: "🧭 الاتجاهات", steps: [
+  { q: "Entschuldigung, wo ist der Bahnhof?", a: "عذراً، أين المحطة؟", k: ["geradeaus", "links", "rechts", "in der nähe"], m: "Gehen Sie geradeaus, dann links.", h: "قل: Gehen Sie geradeaus, dann links." },
+  { q: "Links? An der Ampel?", a: "يساراً؟ عند إشارة المرور؟", k: ["ja", "nein", "ampel", "ecke"], m: "Ja, an der Ampel.", h: "قل: Ja, an der Ampel." },
+  { q: "Ist es weit von hier?", a: "هل هي بعيدة من هنا؟", k: ["nah", "weit", "minuten", "fünf", "zehn"], m: "Nein, es ist nah. Fünf Minuten.", h: "قل: Nein, es ist nah." },
+  { q: "Gibt es eine Bank in der Nähe des Bahnhofs?", a: "هل يوجد بنك قرب المحطة؟", k: ["ja", "nein", "nah", "neben"], m: "Ja, neben dem Bahnhof.", h: "قل: Ja, neben dem Bahnhof." },
+  { q: "Vielen Dank!", a: "شكراً جزيلاً!", k: ["gern", "bitte", "kein problem"], m: "Gern geschehen!", h: "قل: Gern geschehen!" }
+]},
+weather: { t: "🌤 الطقس", steps: [
+  { q: "Wie ist das Wetter heute?", a: "كيف الطقس اليوم؟", k: ["sonnig", "regen", "wolkig", "kalt", "heiß", "schön"], m: "Es ist sonnig heute.", h: "قل: Es ist sonnig heute." },
+  { q: "Magst du dieses Wetter?", a: "هل يعجبك هذا الطقس؟", k: ["ja", "nein", "mag", "liebe"], m: "Ja, ich liebe es!", h: "قل: Ja, ich liebe es!" },
+  { q: "Was machst du an einem sonnigen Tag?", a: "ماذا تفعل في يوم مشمس؟", k: ["spazieren", "park", "schwimmen", "lesen", "gehen"], m: "Ich gehe im Park spazieren.", h: "قل: Ich gehe spazieren." },
+  { q: "Wird es morgen regnen?", a: "هل ستمطر غداً؟", k: ["ja", "nein", "vielleicht", "regen"], m: "Vielleicht. Nimm einen Regenschirm.", h: "قل: Vielleicht." },
+  { q: "Einen schönen Tag noch!", a: "يوم سعيد!", k: ["danke", "ebenfalls", "tschüss"], m: "Danke, ebenfalls!", h: "قل: Danke, ebenfalls!" }
+]},
+time: { t: "🕐 الوقت", steps: [
+  { q: "Entschuldigung, wie spät ist es?", a: "عذراً، كم الساعة؟", k: ["drei", "vier", "uhr", "halb", "zehn"], m: "Es ist drei Uhr.", h: "قل: Es ist drei Uhr." },
+  { q: "Wann stehst du auf?", a: "متى تستيقظ؟", k: ["sieben", "acht", "sechs", "morgens"], m: "Ich stehe um sieben Uhr auf.", h: "قل: Ich stehe um sieben Uhr auf." },
+  { q: "Wann gehst du zur Arbeit?", a: "متى تذهب إلى العمل؟", k: ["acht", "neun", "morgens"], m: "Ich gehe um acht Uhr zur Arbeit.", h: "قل: Ich gehe um acht Uhr zur Arbeit." },
+  { q: "Treffen wir uns um sechs?", a: "هل نتقابل الساعة السادسة؟", k: ["ja", "ok", "gut", "sechs"], m: "Ja, sechs ist gut.", h: "قل: Ja, sechs ist gut." },
+  { q: "Bis um sechs!", a: "إلى الساعة السادسة!", k: ["bis", "tschüss", "sechs"], m: "Bis um sechs!", h: "قل: Bis um sechs!" }
+]},
+family: { t: "👨‍👩‍👧 العائلة", steps: [
+  { q: "Hast du Brüder oder Schwestern?", a: "هل عندك إخوة أو أخوات؟", k: ["bruder", "schwester", "einen", "zwei", "nein"], m: "Ja, ich habe einen Bruder.", h: "قل: Ja, ich habe einen Bruder." },
+  { q: "Was macht dein Bruder?", a: "ماذا يعمل أخوك؟", k: ["lehrer", "student", "arbeitet", "arzt"], m: "Er ist Lehrer.", h: "قل: Er ist Lehrer." },
+  { q: "Wohnst du bei deiner Familie?", a: "هل تعيش مع عائلتك؟", k: ["ja", "nein", "familie", "eltern"], m: "Ja, ich wohne bei meinen Eltern.", h: "قل: Ja, ich wohne bei meinen Eltern." },
+  { q: "Wer kocht zu Hause?", a: "من يطبخ في البيت؟", k: ["mutter", "vater", "ich", "meine mutter"], m: "Meine Mutter kocht.", h: "قل: Meine Mutter kocht." },
+  { q: "Familie ist wichtig!", a: "العائلة مهمة!", k: ["ja", "sehr", "wichtig"], m: "Ja, sehr wichtig!", h: "قل: Ja, sehr wichtig!" }
+]},
+work: { t: "💼 العمل", steps: [
+  { q: "Was machst du beruflich?", a: "ماذا تعمل؟", k: ["lehrer", "student", "arzt", "arbeite", "ingenieur"], m: "Ich bin Lehrer.", h: "قل: Ich bin Lehrer." },
+  { q: "Wo arbeitest du?", a: "أين تعمل؟", k: ["schule", "büro", "krankenhaus", "zu hause"], m: "Ich arbeite in einer Schule.", h: "قل: Ich arbeite in einer Schule." },
+  { q: "Magst du deine Arbeit?", a: "هل يعجبك عملك؟", k: ["ja", "nein", "mag", "liebe"], m: "Ja, ich liebe sie!", h: "قل: Ja, ich liebe sie!" },
+  { q: "Wann bist du mit der Arbeit fertig?", a: "متى تنتهي من العمل؟", k: ["fünf", "sechs", "vier"], m: "Ich bin um fünf Uhr fertig.", h: "قل: Ich bin um fünf Uhr fertig." },
+  { q: "Einen schönen Arbeitstag noch!", a: "يوم عمل سعيد!", k: ["danke", "ebenfalls", "tschüss"], m: "Danke, ebenfalls!", h: "قل: Danke, ebenfalls!" }
+]}
+}
+};
+/* Role-play state machine (rule-based, curLang only, no model). */
+var trainerRole = null; /* null = normal Q&A; active: {id, lang, step, score, turns, misses} */
+function trainerRoleChips(){ return ["💡 تلميح", "شرح", "✕ إنهاء المحادثة"]; }
+function trainerRoleScenarios(){
+  var pack = (TRAINER_ROLEPLAY && TRAINER_ROLEPLAY[curLang]) || TRAINER_ROLEPLAY.en;
+  var ids = Object.keys(pack);
+  return ids.map(function(id){ return { id: id, t: pack[id].t }; });
+}
+function trainerRoleFindScenario(text){
+  var pack = (TRAINER_ROLEPLAY && TRAINER_ROLEPLAY[curLang]) || null;
+  if (!pack) return null;
+  var ids = Object.keys(pack);
+  for (var i = 0; i < ids.length; i++){
+    if (pack[ids[i]].t === text) return ids[i];
+  }
+  return null;
+}
+function trainerRoleResetState(){
+  trainerState.lastWord = null; trainerState.lastRule = null;
+  trainerState.lastGeneral = null; trainerState.lastAnalysis = null;
+}
+function trainerRoleShowPicker(){
+  trainerRole = null;
+  trainerRoleResetState();
+  var list = trainerRoleScenarios();
+  var txt = "تمام، خلّ نتكلم! اختر موقف من الحياة اليومية وأنا أبدأ المحادثة:\n" +
+    list.map(function(s){ return "• " + s.t; }).join("\n") +
+    "\nأجب باللغة اللي تتعلمها، وأنا أصحح لك إذا غلطت.";
+  trainerMsgs.push({ role: "ai", text: txt, chips: list.map(function(s){ return s.t; }) });
+  trainerState.lastIntent = "roleplay";
+  trainerSave(); renderTrainer();
+}
+function trainerRoleStart(id){
+  var pack = (TRAINER_ROLEPLAY && TRAINER_ROLEPLAY[curLang]) || null;
+  if (!pack || !pack[id]) { trainerRoleShowPicker(); return; }
+  trainerRoleResetState();
+  trainerRole = { id: id, lang: curLang, step: 0, score: 0, turns: 0, misses: 0 };
+  var sc = pack[id];
+  var first = sc.steps[0];
+  var txt = "🗨 " + sc.t + "\n\n" + first.q + "\n(" + first.a + ")";
+  trainerMsgs.push({ role: "ai", text: txt, chips: trainerRoleChips() });
+  trainerState.lastIntent = "roleplay";
+  trainerSave(); renderTrainer();
+}
+function trainerRoleEnd(msg){
+  trainerRole = null;
+  trainerRoleResetState();
+  trainerState.lastIntent = "roleplay";
+  trainerMsgs.push({ role: "ai", text: msg, chips: [(curLang === "de" ? "ما معنى schön؟" : "ما معنى beautiful؟"), "الماضي البسيط", "💬 محادثة"] });
+  trainerSave(); renderTrainer();
+}
+function trainerRoleTurn(raw){
+  var ql = (raw || "").toLowerCase();
+  var pack = (TRAINER_ROLEPLAY && TRAINER_ROLEPLAY[trainerRole.lang]) || null;
+  var sc = pack ? pack[trainerRole.id] : null;
+  if (!sc){ trainerRoleEnd("تمام، رجعنا للأسئلة العادية 👍 اسألني عن أي كلمة أو قاعدة."); return; }
+  var step = sc.steps[trainerRole.step];
+  if (!step){ trainerRoleEnd("تمام، رجعنا للأسئلة العادية 👍 اسألني عن أي كلمة أو قاعدة."); return; }
+  /* exit */
+  if (/^(خلاص|كافي|كفى|stop|exit|إنهاء|انهاء)/.test(ql) || /إنهاء المحادثة/.test(raw)){
+    trainerRoleEnd("تمام، رجعنا للأسئلة العادية 👍 اسألني عن أي كلمة أو قاعدة.");
+    return;
+  }
+  /* hint chip */
+  if (/تلميح/.test(raw)){
+    trainerMsgs.push({ role: "ai", text: step.h + "\n\n" + step.q + "\n(" + step.a + ")", chips: trainerRoleChips() });
+    trainerSave(); renderTrainer(); return;
+  }
+  /* explain chip / question */
+  if (/شرح|اشرح|وضح/.test(raw)){
+    trainerMsgs.push({ role: "ai", text: "السؤال معناه: " + step.a + "\n" + step.h + "\n\n" + step.q, chips: trainerRoleChips() });
+    trainerSave(); renderTrainer(); return;
+  }
+  /* correction: reuse the sentence analyser (only for sentence-like input) */
+  var corr = "";
+  try {
+    if (trainerLooksLikeSentence(raw)){
+      var an = trainerAnalyzeSentence(raw);
+      if (an && an.corr) corr = "❌ " + an.corr + (an.reason ? "\n💡 " + an.reason : "") + "\n";
+    }
+  } catch (e) {}
+  /* keyword check against the current step */
+  var hit = false;
+  for (var i = 0; i < step.k.length; i++){ if (ql.indexOf(step.k[i]) !== -1){ hit = true; break; } }
+  trainerRole.turns++;
+  var reply = "";
+  if (hit){
+    trainerRole.score++;
+    trainerRole.misses = 0;
+    reply = corr + trainerPick(["أحسنت! 👏", "ممتاز!", "صح! 👍", "برافو!"]) + "\n";
+    trainerRole.step++;
+  } else {
+    trainerRole.misses++;
+    if (trainerRole.misses >= 2){
+      reply = corr + "الإجابة النموذجية: " + step.m + "\n";
+      trainerRole.misses = 0;
+      trainerRole.step++;
+    } else {
+      reply = corr + "قريب! " + step.h + "\n\n" + step.q + "\n(" + step.a + ")";
+      trainerMsgs.push({ role: "ai", text: reply, chips: trainerRoleChips() });
+      trainerSave(); renderTrainer(); return;
+    }
+  }
+  /* advance or finish */
+  if (trainerRole.step >= sc.steps.length){
+    var total = sc.steps.length, s = trainerRole.score;
+    reply += "✅ خلصت المحادثة! أجبت صح على " + arNum(s) + " من " + arNum(total) + ".\n" +
+      (s === total ? "ممتاز — كل إجاباتك صح!" : "جرّبها مرة ثانية لتتحسن أكثر.");
+    trainerRole = null;
+    trainerState.lastIntent = "roleplay";
+    trainerMsgs.push({ role: "ai", text: reply, chips: ["💬 محادثة جديدة", (curLang === "de" ? "ما معنى schön؟" : "ما معنى beautiful؟"), "الماضي البسيط"] });
+    trainerSave(); renderTrainer(); return;
+  }
+  var nx = sc.steps[trainerRole.step];
+  reply += nx.q + "\n(" + nx.a + ")";
+  trainerMsgs.push({ role: "ai", text: reply, chips: trainerRoleChips() });
+  trainerSave(); renderTrainer();
+}
+
       function trainerGeneralSearch(q){
         var ql = (q || "").toLowerCase();
         var best = null, bestScore = 0;
@@ -8060,6 +8279,15 @@ function sysRenderBody(id){
         if (!raw) return;
         trainerMsgs.push({ role: "user", text: raw });
         var ql = raw.toLowerCase();
+        /* Role-play: an active conversation takes over all input. */
+        if (typeof trainerRole !== "undefined" && trainerRole){ trainerRoleTurn(raw); return; }
+        /* Role-play: scenario picked (chip title or typed title). */
+        if (typeof trainerRoleFindScenario === "function"){
+          var rpId = trainerRoleFindScenario(raw);
+          if (rpId){ trainerRoleStart(rpId); return; }
+        }
+        /* Role-play: entry — show the scenario picker. */
+        if (/^(محادثة|محادثه|role.?play|conversation|أتكلم|أتدرب على الكلام|💬)/.test(ql)){ trainerRoleShowPicker(); return; }
         var answer = "", chips = ["مثال ثاني", "وليش؟", "قاعدة عن الماضي"];
         /* greeting */
         if (/^(مرحبا|هلا|السلام|اهلا|hi|hello|hey|شلونك|كيف حالك|صباح|مساء|wie geht|hallo|guten morgen|guten tag|guten abend|tschüss|tschuss)/.test(ql)){
@@ -8112,7 +8340,7 @@ function sysRenderBody(id){
           var an = trainerAnalyzeSentence(raw);
           trainerState.lastAnalysis = an; trainerState.lastWord = null; trainerState.lastRule = null; trainerState.lastGeneral = null; trainerState.lastIntent = "analysis";
           answer = an.text;
-          chips = ["مثال ثاني", "الماضي البسيط", "ما الفرق بين since و for؟"];
+          chips = ["مثال ثاني", "الماضي البسيط", (curLang === "de" ? "ما الفرق بين als و wie؟" : "ما الفرق بين since و for؟")];
         }
         /* curated general knowledge (LIMITED): common confusions / expressions */
         else if (trainerGeneralSearch(raw)){
@@ -8172,7 +8400,7 @@ function sysRenderBody(id){
                   var st = trainerStorySearch(raw);
                   if (st){
                     trainerState.lastIntent = "story"; trainerState.lastGeneral = null; trainerState.lastAnalysis = null;
-                    answer = "لقيت " + arNum(st.stories.length) + " قصص عن «" + st.topic.ar + "»:\n" + st.stories.map(function(s){ return "• " + s.titleAr + " (" + s.level + ")"; }).join("\n") + "\nافتحها من تبويب الكتب ← قصص " + st.topic.ar + ". تبغى موضوع ثاني؟";
+                    answer = "لقيت " + arNum(st.stories.length) + " قصص عن «" + st.topic.ar + "»:\n" + st.stories.map(function(s){ return "• " + s.titleAr + " (" + s.level + ")"; }).join("\n") + "\nافتحها من تبويب «تعلّم» — اختر وحدة «" + st.topic.ar + "». تبغى موضوع ثاني؟";
                     chips = ["أريد قصة عن السفر", "أريد قصة عن الحب", "الماضي البسيط"];
                   } else {
                     answer = "أي موضوع تبي القصة عنه؟ جرّب «أريد قصة عن السفر» أو «عن الحب» أو «عن الطعام».";
@@ -8202,7 +8430,11 @@ function sysRenderBody(id){
         }
         var html = '<div class="tr-chat" id="trChat">';
         if (!trainerMsgs.length){
-          html += '<div class="tr-msg ai">هلا بيك! أنا مدربك — أجاوب من محتوى التطبيق، وأحلل الجمل، وأشرح الفروقات الشائعة.\n\nاسألني مثل:\n• ما معنى beautiful؟\n• الماضي البسيط\n• She go to school. (أحللها وأصححها)\n• ما الفرق بين its و it\'s؟\n• كيف أقول «جميل» بالألماني؟\n• أريد قصة عن السفر</div>';
+          var trExWord = curLang === "de" ? "schön" : "beautiful";
+          var trExLang = curLang === "de" ? "بالألمانية" : "بالإنجليزية";
+          var trExSent = curLang === "de" ? "Ich geht zur Schule. (أحللها وأصححها)" : "She go to school. (أحللها وأصححها)";
+          var trExDiff = curLang === "de" ? "ما الفرق بين als و wie؟" : "ما الفرق بين its و it\'s؟";
+          html += '<div class="tr-msg ai">هلا بيك! أنا مدربك — أجاوب من محتوى التطبيق، وأحلل الجمل، وأشرح الفروقات الشائعة.\n\nاسألني مثل:\n• ما معنى ' + trExWord + '؟\n• الماضي البسيط\n• ' + trExSent + '\n• ' + trExDiff + '\n• كيف أقول «جميل» ' + trExLang + '؟\n• أريد قصة عن السفر\n• 💬 محادثة — اكتب «محادثة» وتكلم معي</div>';
         } else {
           trainerMsgs.forEach(function(m){
             html += '<div class="tr-msg ' + m.role + '">' + escapeHtml(m.text) + '</div>';
@@ -8213,11 +8445,11 @@ function sysRenderBody(id){
         for (var i = trainerMsgs.length - 1; i >= 0; i--){
           if (trainerMsgs[i].role === "ai" && trainerMsgs[i].chips){ lastChips = trainerMsgs[i].chips; break; }
         }
-        if (!lastChips) lastChips = [(curLang === "de" ? "ما معنى schön؟" : "ما معنى beautiful؟"), "الماضي البسيط", "الأرقام", "أريد قصة عن السفر"];
+        if (!lastChips) lastChips = [(curLang === "de" ? "ما معنى schön؟" : "ما معنى beautiful؟"), "الماضي البسيط", "الأرقام", "أريد قصة عن السفر", "💬 محادثة"];
         html += '<div class="tr-chips" id="trChips">' + lastChips.map(function(c){
           return '<button type="button" class="tr-chip" data-trchip="' + escapeHtml(c) + '">' + escapeHtml(c) + '</button>';
         }).join("") + '</div>';
-        html += '<button type="button" class="tr-clear" id="trClear">🗑 مسح المحادثة</button>';
+        html += '<button type="button" class="tr-clear" id="trRoleBtn">💬 محادثة</button><button type="button" class="tr-clear" id="trClear">🗑 مسح المحادثة</button>';
         html += '<form class="tr-input" id="trForm"><input id="trInput" type="text" placeholder="كلمة، قاعدة، أو جملة أحللها…" autocomplete="off"><button type="submit" class="tr-send" aria-label="إرسال">➤</button></form>';
         box.innerHTML = html;
         var chat = $("trChat");
@@ -8225,8 +8457,10 @@ function sysRenderBody(id){
         box.querySelectorAll("[data-trchip]").forEach(function(b){
           b.addEventListener("click", function(){ trainerAsk(b.getAttribute("data-trchip")); });
         });
+        var roleBtn = $("trRoleBtn");
+        if (roleBtn) roleBtn.addEventListener("click", function(){ trainerRoleShowPicker(); });
         var clear = $("trClear");
-        if (clear) clear.addEventListener("click", function(){ trainerMsgs = []; trainerSave(); renderTrainer(); });
+        if (clear) clear.addEventListener("click", function(){ trainerMsgs = []; try { trainerRole = null; trainerRoleResetState(); } catch (e) {} trainerSave(); renderTrainer(); });
         var form = $("trForm");
         if (form) form.addEventListener("submit", function(e){
           e.preventDefault();
