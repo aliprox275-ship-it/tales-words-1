@@ -19784,21 +19784,38 @@ var AUDIO_FILES = ["audio-obelisk/examples-de-00.aad81f35.opus", "audio-obelisk/
         });
       }
 
+      /* Safety net: the splash must NEVER stay forever. This timer is
+         scheduled BEFORE init runs, so even if an init step throws and
+         the normal splash hide is never reached, the splash is still
+         hidden and removed ~3 s after load. Idempotent with the normal
+         250 ms hide: if the splash is already gone, this does nothing. */
+      setTimeout(function(){
+        try {
+          var splashEl2 = document.getElementById("splash");
+          if (!splashEl2) return;
+          splashEl2.classList.add("hide");
+          setTimeout(function(){
+            if (splashEl2.parentNode) splashEl2.parentNode.removeChild(splashEl2);
+          }, 350);
+        } catch (e) {}
+      }, 3000);
       /* ---------- Init ---------- */
-      applySpeed();
-      saveMyWords();   // persist SRS fields added by migration to older saved words
-      applyTheme(); if ($("themeToggle")) $("themeToggle").addEventListener("click", toggleTheme); renderMyWords();
-      restoreUiState();
-      applyZen();
-      audioOfflineInit();
-      updateProgress();
-      renderExScore();
-      renderHome();
+      try { applySpeed(); } catch (e) {}
+      try { saveMyWords(); } catch (e) {}   // persist SRS fields added by migration to older saved words
+      try { applyTheme(); } catch (e) {}
+      try { if ($("themeToggle")) $("themeToggle").addEventListener("click", toggleTheme); } catch (e) {}
+      try { renderMyWords(); } catch (e) {}
+      try { restoreUiState(); } catch (e) {}
+      try { applyZen(); } catch (e) {}
+      try { audioOfflineInit(); } catch (e) {}
+      try { updateProgress(); } catch (e) {}
+      try { renderExScore(); } catch (e) {}
+      try { renderHome(); } catch (e) {}
       /* Always route boot through showView: showView("home") is the
          only place that unhides #reviewChrome + the current review
          sub-view under Home. Skipping it when startView is "home"
          left those sections hidden after every reload. */
-      showView(startView, true);
+      try { showView(startView, true); } catch (e) {}
 
       /* Splash: brief brand screen on open, then a quick fade out as
          soon as the UI is painted — never waiting on heavy index work. */

@@ -1,4 +1,4 @@
-/* تطبيق القراءة — Service Worker v19 (Obelisk redesign)
+/* تطبيق القراءة — Service Worker v20 (Obelisk redesign)
    - التثبيت: يخزّن هيكل التطبيق فقط (الصفحة + manifest + الأيقونات).
    - الصوت المسجل (Obelisk): حزم Opus تحت audio-obelisk/ — أسماؤها تحمل
      بصمة محتوى (hash) فلا يمكن أن تُقدَّم نسخة قديمة أبدًا. تُخزَّن كاملة
@@ -19,9 +19,11 @@
      572 ميغا من الحزم القديمة) لأن النظام الجديد لا يستخدمه أبدًا —
      وتُفعّل نفسها (skipWaiting + clients.claim). */
 
-var VERSION = "v19";
+var VERSION = "v20";
 var SHELL_CACHE = "reading-shell-" + VERSION;
-var AUDIO_CACHE = "tw-audio-" + VERSION;
+/* Audio cache stays v19 on purpose: bumping it would delete ~250 MB of
+   downloaded Obelisk audio and force a full re-download. */
+var AUDIO_CACHE = "tw-audio-v19";
 
 var SHELL_FILES = [
   "./",
@@ -37,7 +39,15 @@ var SHELL_FILES = [
 self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(SHELL_CACHE).then(function (cache) {
-      return cache.addAll(SHELL_FILES);
+      /* index.html (and "./", which serves the same page) are fetched
+         bypassing the browser HTTP cache, so the new shell can never
+         re-cache a stale copy of the page. */
+      var fresh = SHELL_FILES.map(function (u) {
+        return (u === "./" || u === "./index.html")
+          ? new Request(u, { cache: "reload" })
+          : u;
+      });
+      return cache.addAll(fresh);
     }).then(function () {
       return self.skipWaiting();
     })
@@ -48,7 +58,7 @@ self.addEventListener("activate", function (event) {
   event.waitUntil(
     caches.keys().then(function (keys) {
       return Promise.all(keys.map(function (key) {
-        // v19: نحذف كل كاش قديم ما عدا كاش الهيكل الحالي وكاش الصوت الجديد.
+        // v20: نحذف كل كاش قديم ما عدا كاش الهيكل الحالي وكاش الصوت الجديد.
         // كاش الصوت القديم (reading-audio-v1) يُحذف عمدًا: النظام الجديد
         // لا يطلب الحزم القديمة أبدًا، فيتحرر ~572 ميغا من الهاتف.
         if (key !== SHELL_CACHE && key !== AUDIO_CACHE) {
@@ -169,7 +179,7 @@ self.addEventListener("fetch", function (event) {
   try { url = new URL(request.url); } catch (e) { return; }
   if (url.origin !== self.location.origin) return; // خطوط Google وغيرها تمر كما هي
 
-  /* v19: حزم Obelisk (audio-obelisk/*.opus) تُخدَّم من كاش الصوت
+  /* v20: حزم Obelisk (audio-obelisk/*.opus) تُخدَّم من كاش الصوت
      (ملف كامل + تقطيع Range). أسماؤها تحمل بصمة محتوى فالكاش آمن.
      ملفات الـ manifest (JSON) تُخدَّم network-first لأنها تتحدث. */
   if (url.pathname.indexOf("/audio-obelisk/") === 0) {
