@@ -501,8 +501,6 @@
       .pf-stat{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:14px; text-align:center}
       .pf-stat b{display:block; font-size:1.3rem}
       .pf-stat span{display:block; color:var(--muted); font-weight:600; font-size:var(--fs-sec); margin-top:2px}
-      .pf-words{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:14px 16px; margin-bottom:16px; line-height:1.9}
-      .pf-words b{font-size:1.05rem}
       .pf-sec{margin-bottom:20px}
       .pf-sec h3{font-size:1.1rem; margin:0 0 10px}
       .pf-exam{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:14px 16px; margin-bottom:10px}
@@ -896,21 +894,12 @@ input,textarea,select{font-size:16px}
       .home-wide .home-hero-ar{color:var(--accent)}
 
       /* ---------- Home: level stats dashboard ---------- */
-      .home-summary{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px}
-      .hsum{
-        flex:1 1 140px; background:var(--surface); border:1px solid var(--line);
-        border-radius:var(--r-card); padding:14px 16px; display:flex; flex-direction:column; gap:2px;
-      }
-      .hsum b{font-size:var(--fs-display); font-weight:800; line-height:1.2}
-      .hsum span{color:var(--muted); font-size:.92rem}
       .home-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin-bottom:26px}
       .hcard{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:16px 18px}
       .hcard-head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:10px}
       .hcard-title{font-size:1.15rem; font-weight:800}
       .hcard-title.en{color:var(--accent)} .hcard-title.de{color:var(--accent)}
       .hcard-pct{font-size:1.3rem; font-weight:800}
-      .hcard-rows{list-style:none; margin:12px 0 0; padding:0; display:flex; flex-direction:column; gap:6px; font-size:.95rem}
-      .hcard-rows b{font-weight:800}
 
       /* ---------- Responsive + reduced motion ---------- */
       @media (max-width:560px){
@@ -921,8 +910,7 @@ input,textarea,select{font-size:16px}
         .reader-body{padding:20px 16px 190px}
         .para{padding:10px}
         .audio-dock{gap:8px; padding:9px 10px; border-radius:var(--r-card)}
-        .appbar-in{padding:0 14px}
-        .appbar-stat{font-size:.85rem}
+        .appbar-in{padding:0 10px}
       }
       @media (prefers-reduced-motion: reduce){
         html{scroll-behavior:auto}
@@ -940,24 +928,22 @@ input,textarea,select{font-size:16px}
         background:var(--surface); border-bottom:1px solid var(--line);
       }
       .appbar-in{
-        max-width:1060px; margin:0 auto; height:var(--bar-h);
-        display:flex; align-items:center; gap:10px; padding:0 18px;
+        max-width:1060px; margin:0 auto; height:44px;
+        display:flex; align-items:center; gap:8px; padding:0 12px;
       }
       .appbar-title{
         font-family:var(--font-sans); font-size:var(--fs-title); font-weight:700; color:var(--accent-dark);
         flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
       }
-      .appbar-stat{font-size:.85rem; color:var(--muted); font-weight:500; white-space:nowrap}
-      .appbar-stat b{color:var(--ink); font-weight:800}
-      .appbar-prog{height:6px; border:0}
       
       /* ---------- EWA top stats bar + language sheet ---------- */
-      .topstats{max-width:1060px; margin:0 auto; padding:9px 18px 0; display:flex; align-items:center; justify-content:space-between; gap:10px}
-      .ts-counters{display:flex; align-items:center; gap:14px}
       .ts-item{display:inline-flex; align-items:center; gap:4px; font-weight:700; font-size:.92rem; color:var(--ink); white-space:nowrap}
       .ts-item b{font-weight:800}
-      .ts-flag{flex:none; width:34px; height:34px; border-radius:50%; border:2px solid var(--line); background:var(--surface2); font-size:1.15rem; line-height:1; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer}
+      .ts-flag{flex:none; width:28px; height:28px; border-radius:50%; border:1px solid var(--line); background:var(--surface2); font-size:.95rem; line-height:1; display:inline-flex; align-items:center; justify-content:center; padding:0; cursor:pointer}
       .ts-flag:active{transform:scale(.94)}
+      .appbar .menu-btn{width:32px; height:32px; min-width:32px}
+      .appbar .menu-btn svg{width:18px; height:18px}
+      .appbar .theme-toggle{width:32px; height:32px}
       .langsheet-backdrop{position:fixed; inset:0; z-index:90; background:rgba(0,0,0,.55); display:flex; align-items:flex-end; justify-content:center}
       .langsheet-backdrop[hidden]{display:none}
       .langsheet{width:100%; max-width:560px; background:var(--surface); border-radius:var(--r-card) 18px 0 0; padding:14px 18px calc(18px + env(safe-area-inset-bottom)); box-shadow:var(--e2)}
@@ -972,10 +958,6 @@ input,textarea,select{font-size:16px}
       .lang-radio{width:22px; height:22px; border-radius:50%; border:2px solid var(--muted); flex:none}
       .lang-radio.on{background:var(--accent); border-color:var(--accent); box-shadow:inset 0 0 0 3px var(--surface)}
       /* word-count strip (Learn tab, under the top bar) */
-      .wordstrip{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); padding:10px 14px; margin:0 0 14px; font-size:.92rem; font-weight:700}
-      .wordstrip .ws-lang{color:var(--ink)}
-      .wordstrip .ws-lang b{color:var(--accent)}
-      .wordstrip .ws-lvl{color:var(--muted); font-weight:600}
       /* ---------- EWA Learn path ---------- */
       .lp-seg{display:flex; justify-content:center; margin:2px 0 14px}
       .lp-seg .switch{box-shadow:var(--e1)}
@@ -1091,11 +1073,11 @@ input,textarea,select{font-size:16px}
 
       /* one card radius / padding / shadow and one button shape across every section */
       .card,.flash,.ex-card,.bank-card,.bank-prog-card,.phrase,.mw-row,.per-row,.week-day,
-      .hcard,.hsum,.tdy-box,.rev-summary,.ltm-box,.more-link,.word-sheet{border-radius:var(--r-card)}
-      .bank-card,.phrase,.hcard,.bank-prog-card,.hsum,.tdy-box{padding:var(--pad-card)}
+      .hcard,.tdy-box,.rev-summary,.ltm-box,.more-link,.word-sheet{border-radius:var(--r-card)}
+      .bank-card,.phrase,.hcard,.bank-prog-card,.tdy-box{padding:var(--pad-card)}
       .card-body{padding:var(--pad-card)}
       .mw-row,.per-row{padding:10px var(--pad-card)}
-      .bank-card,.phrase,.mw-row,.hcard,.hsum,.tdy-box,.bank-prog-card,.per-row,.week-day{box-shadow:var(--e1)}
+      .bank-card,.phrase,.mw-row,.hcard,.tdy-box,.bank-prog-card,.per-row,.week-day{box-shadow:var(--e1)}
       .start-btn,.end-btn,.copy-btn,.bank-more,.ex-btn,.flash-controls button{border-radius:var(--r-btn)}
 
       /* soft fade when switching between views — no flash, no jump */
@@ -1210,12 +1192,7 @@ input,textarea,select{font-size:16px}
       }
       .streak-fire{font-size:2.2rem; line-height:1; filter:grayscale(1); opacity:.55}
       .streak-box.alive .streak-fire{filter:none; opacity:1}
-      .streak-main{display:flex; flex-direction:column; min-width:120px}
-      .streak-main b{font-size:1.5rem; font-weight:800; line-height:1.25}
-      .streak-main span{color:var(--muted); font-size:.88rem}
       .goal{flex:1 1 200px; display:flex; flex-direction:column; gap:6px}
-      .goal-head{display:flex; justify-content:space-between; gap:8px; font-size:.92rem; font-weight:700}
-      .goal-head span{color:var(--muted); font-weight:500}
       .goal.done .progress-fill{background:var(--ok)}
       .goal-ring-row{display:flex; align-items:center; gap:12px}
       .goal-ring-wrap{position:relative; width:64px; height:64px; flex:0 0 64px}
@@ -1226,11 +1203,6 @@ input,textarea,select{font-size:16px}
       .goal-ring-pct{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.95rem}
       .goal-nums{display:flex; flex-direction:column; gap:4px; font-size:.92rem}
       .goal-nums span{color:var(--muted)}
-      .week-dots{display:flex; gap:5px}
-      .week-dots i{
-        width:24px; height:24px; border-radius:50%; background:var(--surface2); border:1px solid var(--line);
-        display:flex; align-items:center; justify-content:center; font-style:normal; font-size:.78rem; font-weight:800; color:var(--muted)
-      }
       /* ---------- Study timer + reminder ---------- */
       .study-timer-box{display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card); box-shadow:var(--e1); padding:12px var(--pad-card); margin-bottom:12px}
       .study-timer-box .st-ic{font-size:1.4rem; line-height:1}
@@ -1243,8 +1215,6 @@ input,textarea,select{font-size:16px}
       .wbar-fill.minutes{background:#c77b2d}
       .menu-reminder{flex:1; min-width:0; display:flex; align-items:center; justify-content:space-between; gap:10px; font-weight:700}
       .menu-reminder input[type="time"]{font-size:var(--fs-body); padding:6px 10px; border:1px solid var(--line); border-radius:var(--r-btn); background:var(--surface2); color:var(--text)}
-      .week-dots i.on{background:var(--accent); border-color:var(--accent); color:#fff}
-      .week-dots i.today{outline:2px solid var(--accent); outline-offset:1px}
 
       .tool-box{
         background:var(--surface); border:1px solid var(--line); border-radius:var(--r-card);
@@ -1306,7 +1276,7 @@ input,textarea,select{font-size:16px}
     
       /* ---------- Dark theme overrides ---------- */
       .theme-toggle{flex:0 0 auto; width:36px; height:36px; padding:0; border:1px solid var(--line); border-radius:var(--r-pill); background:var(--surface); color:var(--ink); font-size:1.05rem; line-height:1}
-      [data-theme="black"] .play-btn,[data-theme="black"] .done-btn,[data-theme="black"] .start-btn,[data-theme="black"] .restart-btn,[data-theme="black"] .prep-start,[data-theme="black"] .bank-save,[data-theme="black"] .ex-btn.gold,[data-theme="black"] .tab.active,[data-theme="black"] .subnav-btn.active,[data-theme="black"] .switch button.on,[data-theme="black"] .switch button.on,[data-theme="black"] .speed-group button.active,[data-theme="black"] .goal-switch button.on,[data-theme="black"] .rtool[aria-pressed="true"],[data-theme="black"] .kara-btn[aria-pressed="true"],[data-theme="black"] .path-chip.cur,[data-theme="black"] .bank-level-chip.a1,[data-theme="black"] .badge.en,[data-theme="black"] .badge.de,[data-theme="black"] .settings-btn[aria-expanded="true"],[data-theme="black"] .rsettings .rs-pill[aria-pressed="true"],[data-theme="black"] .week-dots i.on,[data-theme="black"] [class*="rate-"]{color:#0e1f1b}
+      [data-theme="black"] .play-btn,[data-theme="black"] .done-btn,[data-theme="black"] .start-btn,[data-theme="black"] .restart-btn,[data-theme="black"] .prep-start,[data-theme="black"] .bank-save,[data-theme="black"] .ex-btn.gold,[data-theme="black"] .tab.active,[data-theme="black"] .subnav-btn.active,[data-theme="black"] .switch button.on,[data-theme="black"] .switch button.on,[data-theme="black"] .speed-group button.active,[data-theme="black"] .goal-switch button.on,[data-theme="black"] .rtool[aria-pressed="true"],[data-theme="black"] .kara-btn[aria-pressed="true"],[data-theme="black"] .path-chip.cur,[data-theme="black"] .bank-level-chip.a1,[data-theme="black"] .badge.en,[data-theme="black"] .badge.de,[data-theme="black"] .settings-btn[aria-expanded="true"],[data-theme="black"] .rsettings .rs-pill[aria-pressed="true"],[data-theme="black"] [class*="rate-"]{color:#0e1f1b}
       [data-theme="black"] .word-tip,[data-theme="black"] .word-tip .tip-mark{color:#0e1f1b}
     
       .topic-back{border:2px solid var(--line); background:var(--surface); color:var(--ink); padding:10px 16px; border-radius:var(--r-btn); font-weight:700; font-size:.95rem; box-shadow:var(--e1); margin-bottom:10px}
@@ -1424,7 +1394,7 @@ main{max-width:42rem;margin:0 auto;width:100%}
 .btn-soft:hover{background:var(--line)}
 /* old card surfaces -> shell cards */
 .home-card,.home-wide,.due-card,.study-timer-box,.streak-box,.menu-drawer{background:var(--surface2);border:1px solid var(--line);border-radius:1rem}
-.home-summary .hsum,.home-grid>*{background:var(--surface2);border:1px solid var(--line);border-radius:1rem}
+.home-grid>*{background:var(--surface2);border:1px solid var(--line);border-radius:1rem}
 .menu-drawer{background:var(--surface);border-inline-start:1px solid var(--line)}
 /* Home goal card: shell gradient */
 .goal{background:linear-gradient(135deg,var(--surface2),var(--surface));border:1px solid var(--accent-tint);border-radius:1rem;padding:16px}
@@ -1457,7 +1427,7 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 .word-pop{background:var(--surface2);border:1px solid var(--purple);border-radius:1rem;color:var(--ink)}
 .menu-backdrop{background:rgba(0,0,0,.60)}
 /* streak amber (shell) */
-.streak-box .streak-fire,.goal-head span{color:var(--gold)}
+.streak-box .streak-fire{color:var(--gold)}
 
 
 /* v3: zigzag fix — l/c/r nodes must visibly alternate across the full path width */
@@ -1588,21 +1558,12 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
 
     <!-- ======== Unified app bar (same on every section) ======== -->
     <header class="appbar">
-      <div class="topstats" id="topStats">
-        <button class="ts-flag" id="langFlagBtn" type="button" aria-label="لغة التعلّم"><span id="langFlagIc">🇺🇸</span></button>
-        <span class="ts-counters">
-          <span class="ts-item" title="أيام متتالية">🔥 <b id="tsStreak">0</b></span>
-          <span class="ts-item" title="نقاط اليوم"><b id="tsPoints">0</b></span>
-        </span>
-      </div>
       <div class="appbar-in">
         <button class="menu-btn" id="menuBtn" type="button" aria-label="القائمة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
         <span class="appbar-title" id="appTitle">Tales &amp; Words</span>
+        <span class="ts-item" title="أيام متتالية">🔥 <b id="tsStreak">0</b></span>
+        <button class="ts-flag" id="langFlagBtn" type="button" aria-label="لغة التعلّم"><span id="langFlagIc">🇺🇸</span></button>
         <button class="theme-toggle" id="themeToggle" type="button" aria-label="تبديل المظهر"><svg class="spk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
-        <span class="appbar-stat"><b id="statDone">0</b>/<b id="statTotal">322</b> قصة · <b id="statWords">0</b> كلمة جديدة</span> 
-      </div>
-      <div class="progress-track appbar-prog" role="progressbar" aria-label="تقدّم القراءة" aria-valuemin="0" aria-valuemax="322" aria-valuenow="0" id="progressBar">
-        <div class="progress-fill" id="progressFill"></div>
       </div>
     </header>
     <div class="menu-backdrop" id="menuDrawerBackdrop" hidden>
@@ -1636,11 +1597,9 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
         <!-- ======== Home: level stats dashboard ======== -->
         <section id="view-home">
           
-          <div class="wordstrip" id="wordStrip" role="status"></div>
           
           <div class="streak-box" id="streakBox"></div>
           <div class="study-timer-box" id="studyTimerBox"></div>
-          <div class="home-summary" id="homeSummary"></div>
           <div class="home-grid" id="homeLevels"></div>
           <div class="due-card" id="dueCard">
             <div class="due-card-main"><b id="dueCount">0</b><span id="dueText">كلمات مستحقة للمراجعة اليوم</span></div>
@@ -1715,10 +1674,10 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
           <div class="home-actions">
             <div class="home-pair">
               <button class="home-card" type="button" data-goto="review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><b>المراجعة</b><small id="practiceDueSub">كلمات مستحقة اليوم</small></button>
-              <button class="home-card" type="button" data-goto="bank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><b>بنك الكلمات</b><small id="practiceBankSub"></small></button>
+              <button class="home-card" type="button" data-goto="bank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><b>بنك الكلمات</b></button>
             </div>
             <div class="home-pair">
-              <button class="home-card" type="button" data-goto="words"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><b>البطاقات</b><small id="practiceSavedSub"></small></button>
+              <button class="home-card" type="button" data-goto="words"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><b>البطاقات</b></button>
               <button class="home-card" type="button" data-goto="exercises"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><b>تمارين</b><small>اختبر نفسك</small></button>
             </div>
             <button class="home-wide" type="button" data-goto="writing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg><b>الكتابة</b><span class="home-hero-ar">‹</span></button>
@@ -2176,7 +2135,6 @@ input::placeholder,textarea::placeholder{color:var(--muted)}
             <button type="button" data-statsper="daily" class="on">يومياً</button>
             <button type="button" data-statsper="monthly">شهرياً</button>
             <button type="button" data-statsper="yearly">سنوياً</button>
-            <button type="button" data-statsper="level">مستواي</button>
           </div>
           <div id="statsPeriodBox" class="ltm-box" style="margin-bottom:14px"></div>
           <div id="statsSkills"></div>
@@ -3378,8 +3336,8 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         onActivityLogged();
       }
       /* Daily goal words (2026-11-15): unique words marked «أعرفها» or
-         learned in the Learn review, per day — the goal ring's word
-         count (target 60). Deduped by lang:word so re-marking a word
+         learned in the Learn review, per day (record only — no
+         longer shown in the goal ring). Deduped by lang:word so re-marking a word
          never inflates the count. */
       var DAILY_WORDS_KEY = "readerApp.dailyWords.v1";
       var dailyWords = (function(){ try { var p = JSON.parse(localStorage.getItem(DAILY_WORDS_KEY) || "null"); if (p && typeof p === "object" && !Array.isArray(p)) return p; } catch (e) {} return {}; })();
@@ -3394,7 +3352,6 @@ var IDIOMS = {"en":[{"p":"break the ice","lv":"A1","t":"يبدأ الحديث و
         saveDailyWords();
         try { if (typeof renderStreak === "function") renderStreak(); } catch (e) {}
       }
-      function dailyWordsCount(k){ var s = dailyWords[k]; if (!s) return 0; return Object.keys(s).length; }
       var LISTEN_KEY = "readerApp.listens.v1";
       var listenCount = (function(){
         try { var v = parseInt(localStorage.getItem(LISTEN_KEY), 10); if (!isNaN(v) && v >= 0) return v; } catch (e) {}
@@ -5953,12 +5910,11 @@ function sysRenderBody(id){
         STORIES.forEach(function(s){
           if (doneSet[s.id]) { doneCount++; s.vocab.forEach(function(v){ var k = s.lang + ":" + (v.w || "").toLowerCase(); if (!seenW[k]) { seenW[k] = true; words++; } }); }
         });
-        $("statDone").textContent = arNum(doneCount);
-        $("statWords").textContent = arNum(words);
-        if ($("statTotal")) $("statTotal").textContent = arNum(STORIES.length);
-        $("progressFill").style.width = (doneCount / STORIES.length * 100) + "%";
-        $("progressBar").setAttribute("aria-valuemax", STORIES.length);
-        $("progressBar").setAttribute("aria-valuenow", doneCount);
+        var _sd = $("statDone"); if (_sd) _sd.textContent = arNum(doneCount);
+        var _sw = $("statWords"); if (_sw) _sw.textContent = arNum(words);
+        var _st = $("statTotal"); if (_st) _st.textContent = arNum(STORIES.length);
+        var _pf = $("progressFill"); if (_pf) _pf.style.width = (doneCount / STORIES.length * 100) + "%";
+        var _pb = $("progressBar"); if (_pb) { _pb.setAttribute("aria-valuemax", STORIES.length); _pb.setAttribute("aria-valuenow", doneCount); }
       }
 
       /* ---------- Story grid ---------- */
@@ -7150,7 +7106,6 @@ function sysRenderBody(id){
           b.setAttribute("aria-selected", on ? "true" : "false");
         });
         if (name === "home") renderHome();
-        if (name === "home") { try { renderWordStrip(); } catch (e) {} }
         if (name === "path") { try { renderLearnPath(); } catch (e) {} try { renderChallenge(); } catch (e) {} }
         try { renderTopStats(); syncLangFlag(); } catch (e) {}
         if (name === "home") renderLearnHome();
@@ -7187,12 +7142,7 @@ function sysRenderBody(id){
       function renderProfile(){
         var box = $("profileBody"); if (!box) return;
         var st = null; try { st = streakInfo(); } catch (e) { st = { cur: 0 }; }
-        var done = 0; try { done = STORIES.filter(function(s){ return s.lang === curLang && !!doneSet[s.id]; }).length; } catch (e) {}
-        var saved = 0, mastered = 0;
-        try { saved = myWords.filter(function(w){ return !w.lang || w.lang === curLang; }).length; mastered = myWords.filter(function(w){ return (!w.lang || w.lang === curLang) && w.interval > 14; }).length; } catch (e) {}
         var minsToday = 0; try { minsToday = studyMinFor(todayStr()); } catch (e) {}
-        var l1 = 0, l2 = 0;
-        try { l1 = bankOfficialTotal(curLang, "A1"); l2 = bankOfficialTotal(curLang, "A2"); } catch (e) {}
         var theme = "أسود";
         try { theme = (document.documentElement.getAttribute("data-theme") === "light") ? "فاتح" : "أسود"; } catch (e) {}
         var rem = "";
@@ -7200,10 +7150,7 @@ function sysRenderBody(id){
         var html = '<div class="pf-head"><div class="pf-avatar">🎓</div><div class="pf-name">ملفي</div><div class="pf-sub">' + (curLang === "de" ? "الألمانية" : "الإنجليزية") + '</div></div>' +
           '<div class="pf-stats">' +
           '<div class="pf-stat"><b>🔥 ' + arNum(st.cur || 0) + '</b><span>يوم متتالي</span></div>' +
-          '<div class="pf-stat"><b>📖 ' + arNum(done) + '</b><span>قصة أكملتها</span></div>' +
-          '<div class="pf-stat"><b>📝 ' + arNum(saved) + '</b><span>كلمة محفوظة</span></div>' +
           '<div class="pf-stat"><b>⏱ ' + arNum(minsToday) + '</b><span>دقيقة دراسة اليوم</span></div></div>' +
-          '<div class="pf-words"><b>كلمات البنك</b><br>' + (curLang === "de" ? "DE" : "EN") + ' <b>' + arNum(l1 + l2) + '</b> <span style="color:var(--muted)">A1 ' + arNum(l1) + ' · A2 ' + arNum(l2) + '</span><br>كلمات متقنة: <b>' + arNum(mastered) + '</b></div>' +
           '<div class="pf-sec"><h3>الامتحانات</h3>' +
           '<div class="pf-exam"><b>اختبار المستوى A1</b><p id="pfA1Last"></p><button type="button" class="pf-exam-btn" data-pfexam="a1test">ابدأ اختبار A1</button></div>' +
           '<div class="pf-exam"><b>الامتحان النهائي (A1 + A2)</b><p id="pfFinLast"></p><button type="button" class="pf-exam-btn" data-pfexam="finalexam">ابدأ الامتحان النهائي</button></div></div>' +
@@ -7288,14 +7235,6 @@ function sysRenderBody(id){
         }
         return n;
       }
-      function renderWordStrip(){
-        var el = $("wordStrip"); if (!el) return;
-        try {
-          var l1 = bankOfficialTotal(curLang, "A1"), l2 = bankOfficialTotal(curLang, "A2");
-          var lbl = curLang === "de" ? "DE" : "EN";
-          el.innerHTML = '<span class="ws-lang">' + lbl + ' <b>' + arNum(l1 + l2) + '</b></span><span class="ws-lvl">A1 ' + arNum(l1) + ' · A2 ' + arNum(l2) + '</span>';
-        } catch (e) {}
-      }
       var LANG_FLAG = { en: "\uD83C\uDDFA\uD83C\uDDF8", de: "\uD83C\uDDE9\uD83C\uDDEA" };
       function syncLangFlag(){
         var ic = $("langFlagIc");
@@ -7324,7 +7263,7 @@ function sysRenderBody(id){
         try { saveUiState(); } catch (e) {}
         syncLangFlag();
         closeLangSheet();
-        try { renderTopStats(); renderWordStrip(); } catch (e) {}
+        try { renderTopStats(); } catch (e) {}
         try { showView(curView, true); } catch (e) {}
       }
       if ($("langFlagBtn")) $("langFlagBtn").addEventListener("click", openLangSheet);
@@ -15586,13 +15525,6 @@ function wrCheck() {
       function renderHome(){
         renderStreak();
         renderStudyTimer();
-        var doneAll = STORIES.filter(function(s){ return s.lang === curLang && !!doneSet[s.id]; }).length;
-        var storiesLangCount = STORIES.filter(function(s){ return s.lang === curLang; }).length;
-        var masteredAll = myWords.filter(function(w){ return w.interval > 14; }).length;
-        $("homeSummary").innerHTML =
-          '<div class="hsum"><b>' + arNum(doneAll) + '</b><span>قصة أكملتها من ' + arNum(storiesLangCount) + '</span></div>' +
-          '<div class="hsum"><b>' + arNum(myWords.length) + '</b><span>كلمة محفوظة في كلماتك</span></div>' +
-          '<div class="hsum"><b>' + arNum(masteredAll) + '</b><span>كلمة متقنة — في الذاكرة طويلة المدى</span></div>';
         var combos = [
           { lang: "en", level: "A1", name: "الإنجليزية", cls: "en" },
           { lang: "en", level: "A2", name: "الإنجليزية", cls: "en" },
@@ -15609,10 +15541,7 @@ function wrCheck() {
             '<div class="hcard-head"><span class="hcard-title ' + c.cls + '">' + c.name + ' · ' + c.level + '</span>' +
             '<span class="hcard-pct">' + arNum(pct) + '٪</span></div>' +
             '<div class="progress-track" role="progressbar" aria-label="تقدّم ' + c.name + ' ' + c.level + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
-            '<ul class="hcard-rows">' +
-            '<li>كلمات البنك: <b>' + arNum(total) + '</b> · حفظت منها <b>' + arNum(bs.saved) + '</b> · أتقنت <b>' + arNum(bs.mastered) + '</b></li>' +
-            '<li>قصص المستوى: <b>' + arNum(st.length) + '</b> · أكملت منها <b>' + arNum(stDone) + '</b></li>' +
-            '</ul></article>';
+'</article>';
         }).join("");
         
         var phl = $("planHomeLine");
@@ -15624,7 +15553,6 @@ function wrCheck() {
         var el = $("dueCard");
         if (!el) return;
         var due = dueWords().length, total = myWords.filter(function(w){ return !w.lang || w.lang === curLang; }).length;
-        var mastered = myWords.filter(function(w){ return (!w.lang || w.lang === curLang) && w.interval > 14; }).length;
         $("dueCount").textContent = arNum(due);
         var btn = $("dueStart"), sub = $("dueSub"), txt = $("dueText");
         if (total === 0) {
@@ -15634,12 +15562,12 @@ function wrCheck() {
           btn.setAttribute("data-goto", "bank");
         } else if (due === 0) {
           txt.textContent = "لا كلمات مستحقة اليوم ✓";
-          sub.textContent = "كل كلماتك مراجَعة — " + arNum(total) + " محفوظة · " + arNum(mastered) + " متقنة.";
+          sub.textContent = "كل كلماتك مراجَعة ✓";
           btn.textContent = "عرض كلماتي ←";
           btn.setAttribute("data-goto", "mywords");
         } else {
           txt.textContent = due === 1 ? "كلمة واحدة مستحقة للمراجعة اليوم" : (due === 2 ? "كلمتان مستحقتان للمراجعة اليوم" : (due <= 10 ? "كلمات مستحقة للمراجعة اليوم" : "كلمة مستحقة للمراجعة اليوم"));
-          sub.textContent = arNum(total) + " كلمة محفوظة · " + arNum(mastered) + " متقنة — راجعها قبل ما تنساها.";
+          sub.textContent = "راجعها قبل ما تنساها.";
           btn.textContent = "ابدأ المراجعة ←";
           btn.setAttribute("data-goto", "review");
         }
@@ -15663,7 +15591,7 @@ function wrCheck() {
         $("challengeCount").textContent = arNum(cur);
         $("challengeText").textContent = d.start ? ("تحدي 30 يوم — اليوم " + arNum(cur) + " من 30") : "تحدي 30 يوم";
         $("challengeSub").textContent = d.start ?
-          ("بدأت في " + d.start + " · أطول سلسلة: " + arNum(st.best || 0) + " يوم" + (cur >= 30 ? " — أكملت التحدي ✓" : "")) :
+          ("بدأت في " + d.start + (cur >= 30 ? " — أكملت التحدي ✓" : "")) :
           ("ادرس كل يوم 30 يوم متتالية — سلسلتك الحالية: " + arNum(st.cur || 0) + " يوم");
         var b = $("challengeBtn");
         if (b) b.textContent = d.start ? "إعادة التحدي" : "ابدأ التحدي";
@@ -15671,12 +15599,9 @@ function wrCheck() {
         if (pl) { try { var pc = plan100CurrentDay(curLang); pl.textContent = pc > 100 ? "أكملت الـ 100 يوم ✓" : ("اليوم " + arNum(pc) + " من 100"); } catch (e) {} }
       }
       function renderPracticeHub(){
-        var due = 0, saved = 0;
+        var due = 0;
         try { due = dueWords().length; } catch (e) {}
-        try { saved = myWords.filter(function(w){ return !w.lang || w.lang === curLang; }).length; } catch (e) {}
         var dd = $("practiceDueSub"); if (dd) dd.textContent = due ? (arNum(due) + " كلمة مستحقة اليوم") : "لا كلمات مستحقة اليوم";
-        var bb = $("practiceBankSub"); if (bb) { try { bb.textContent = arNum(bankOfficialTotal(curLang, "A1") + bankOfficialTotal(curLang, "A2")) + " كلمة رسمية"; } catch (e) {} }
-        var ss = $("practiceSavedSub"); if (ss) ss.textContent = arNum(saved) + " كلمة محفوظة";
       }
       function renderSpeakHub(){
         try { renderLastResult("a1LastResult", "speakA1Last"); } catch (e) {}
@@ -17795,21 +17720,7 @@ function wrCheck() {
         /* Language separation: stories + saved words are per-language.
            (Listening plays and exercise results are not stored per-language,
            so those two rows stay overall.) */
-        var storiesLang = STORIES.filter(function(s){ return s.lang === curLang; });
         var wordsLang = myWords.filter(function(w){ return !w.lang || w.lang === curLang; });
-        var doneCount = storiesLang.filter(function(s){ return !!doneSet[s.id]; }).length;
-        var vocabPct = 0, totalReps = 0;
-        if (wordsLang.length) {
-          var sum = 0;
-          wordsLang.forEach(function(w){
-            normalizeWord(w);
-            totalReps += w.reps;
-            sum += w.interval > 14 ? 100 : w.interval >= 14 ? 85 : w.interval >= 7 ? 65 :
-                   w.interval >= 3 ? 45 : w.interval >= 1 ? 25 : (w.reps > 0 ? 15 : 5);
-          });
-          vocabPct = Math.round(sum / wordsLang.length);
-        }
-        var readPct = storiesLang.length ? Math.round(doneCount / storiesLang.length * 100) : 0;
         var listenPct = Math.min(100, Math.round(listenCount / STORIES.length * 100));
         var wT = exResults.fill.t + exResults.dict.t, wC = exResults.fill.c + exResults.dict.c;
         var writePct = wT ? Math.round(wC / wT * 100) : 0;
@@ -17817,9 +17728,6 @@ function wrCheck() {
         var undPct = oT ? Math.round(oC / oT * 100) : 0;
         var ltm = wordsLang.filter(function(w){ return w.interval > 14; }).length;
         $("statsSkills").innerHTML =
-          skillRow("المفردات (من مستويات التكرار المتباعد)", vocabPct,
-            arNum(wordsLang.length) + " كلمة محفوظة · " + arNum(totalReps) + " مراجعة منجزة") +
-          skillRow("القراءة (القصص المُنجزة)", readPct, arNum(doneCount) + " من " + arNum(storiesLang.length) + " قصص") +
           skillRow("الاستماع (تشغيل القصة كاملة)", listenPct,
             "شغّلت الصوت الكامل " + arNum(listenCount) + " مرة — الهدف مرة لكل قصة") +
           skillRow("الكتابة والإملاء (الإملاء غيبًا + إكمال الفراغ)", writePct,
@@ -17864,7 +17772,7 @@ function wrCheck() {
         renderStatsPeriod();
       }
 
-      /* ---------- Stats period switcher (merged frame): يومي/شهري/سنوي/مستواي ---------- */
+      /* ---------- Stats period switcher (merged frame): يومي/شهري/سنوي ---------- */
       var statsPeriod = "daily";
       function statsAgg(days){
         var s = { stories: 0, words: 0, reviews: 0, mins: 0 };
@@ -17879,20 +17787,11 @@ function wrCheck() {
       }
       function renderStatsPeriod(){
         var box = $("statsPeriodBox"); if (!box) return;
-        var label = statsPeriod === "daily" ? "اليوم" : statsPeriod === "monthly" ? "آخر 30 يوم" : statsPeriod === "yearly" ? "آخر 365 يوم" : "مستواي";
+        var label = statsPeriod === "daily" ? "اليوم" : statsPeriod === "monthly" ? "آخر 30 يوم" : "آخر 365 يوم";
         var html = "";
-        if (statsPeriod === "level"){
-          var done = 0, mastered = 0, total = 0;
-          try {
-            STORIES.forEach(function(s){ if (s.lang === curLang){ total++; if (doneSet[s.id]) done++; } });
-            myWords.forEach(function(w){ if ((!w.lang || w.lang === curLang) && w.interval > 14) mastered++; });
-          } catch (e) {}
-          html = '<div class="big">' + arNum(mastered) + '</div><div>كلمة متقنة · ' + arNum(done) + ' قصة أكملتها من ' + arNum(total) + ' (' + label + ')</div>';
-        } else {
-          var days = statsPeriod === "daily" ? 1 : statsPeriod === "monthly" ? 30 : 365;
-          var a = statsAgg(days);
-          html = '<div class="big">' + arNum(a.mins) + '</div><div>دقيقة دراسة · ' + arNum(a.stories) + ' قصة · ' + arNum(a.words) + ' كلمة · ' + arNum(a.reviews) + ' مراجعة (' + label + ')</div>';
-        }
+        var days = statsPeriod === "daily" ? 1 : statsPeriod === "monthly" ? 30 : 365;
+        var a = statsAgg(days);
+        html = '<div class="big">' + arNum(a.mins) + '</div><div>دقيقة دراسة · ' + arNum(a.stories) + ' قصة · ' + arNum(a.words) + ' كلمة · ' + arNum(a.reviews) + ' مراجعة (' + label + ')</div>';
         box.innerHTML = html;
         document.querySelectorAll("#statsPeriodSwitch [data-statsper]").forEach(function(b){
           var on = b.getAttribute("data-statsper") === statsPeriod;
@@ -18992,28 +18891,14 @@ var _ttsNoVoiceWarned = false;
         var st = streakInfo();
         var pts = dayPoints(todayStr());
         var pct = Math.min(100, Math.round(pts / dailyGoal * 100));
-        var title = st.cur === 0 ? "ابدأ سلسلتك اليوم" :
-          st.cur === 1 ? "يوم واحد متتالي" : arNum(st.cur) + " أيام متتالية";
-        var sub = !st.todayOn && st.cur > 0 ? "تعلّم شيئًا اليوم حتى لا تنقطع السلسلة" :
-          "أطول سلسلة: " + arNum(st.best) + " يوم";
         var minsToday = studyMinFor(todayStr());
-        if (minsToday > 0) sub += " · ⏱ " + arNum(minsToday) + " دقيقة دراسة اليوم";
-        var dots = "";
-        for (var i = 6; i >= 0; i--) {
-          var dt = new Date(); dt.setDate(dt.getDate() - i);
-          var k = dstr(dt);
-          dots += '<i class="' + (dayPoints(k) > 0 ? "on" : "") + (i === 0 ? " today" : "") + '">' + (7 - i) + '</i>';
-        }
         box.classList.toggle("alive", st.todayOn);
         var timerMin = Math.round(studyTimer.durationSec / 60) || 25;
-        var wToday = dailyWordsCount(todayStr());
         var circ = 163.36;
         var off = (circ * (1 - pct / 100)).toFixed(2);
         box.innerHTML =
           '<span class="streak-fire" aria-hidden="true">🔥</span>' +
-          '<div class="streak-main"><b>' + title + '</b><span>' + sub + '</span></div>' +
           '<div class="goal' + (pts >= dailyGoal ? " done" : "") + '">' +
-            '<div class="goal-head">هدف اليوم' + (pts >= dailyGoal ? ' <span>✓ اكتمل</span>' : '') + '</div>' +
             '<div class="goal-ring-row">' +
               '<div class="goal-ring-wrap" role="progressbar" aria-label="تقدّم هدف اليوم" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '">' +
                 '<svg class="goal-ring" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">' +
@@ -19024,10 +18909,8 @@ var _ttsNoVoiceWarned = false;
               '</div>' +
               '<div class="goal-nums">' +
                 '<span>⏱ ' + arNum(minsToday) + ' دقيقة من ' + fmtDurMin(timerMin) + '</span>' +
-                '<span>📖 ' + arNum(Math.min(wToday, 60)) + ' / ٦٠ كلمة</span>' +
               '</div>' +
             '</div>' +
-            '<div class="week-dots" aria-label="نشاط آخر 7 أيام">' + dots + '</div>' +
           '</div>';
       }
       function onActivityLogged(){
