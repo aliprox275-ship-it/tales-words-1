@@ -1,4 +1,4 @@
-/* تطبيق القراءة — Service Worker v20 (Obelisk redesign)
+/* تطبيق القراءة — Service Worker v21 (Obelisk redesign)
    - التثبيت: يخزّن هيكل التطبيق فقط (الصفحة + manifest + الأيقونات).
    - الصوت المسجل (Obelisk): حزم Opus تحت audio-obelisk/ — أسماؤها تحمل
      بصمة محتوى (hash) فلا يمكن أن تُقدَّم نسخة قديمة أبدًا. تُخزَّن كاملة
@@ -19,7 +19,7 @@
      572 ميغا من الحزم القديمة) لأن النظام الجديد لا يستخدمه أبدًا —
      وتُفعّل نفسها (skipWaiting + clients.claim). */
 
-var VERSION = "v20";
+var VERSION = "v21";
 var SHELL_CACHE = "reading-shell-" + VERSION;
 /* Audio cache stays v19 on purpose: bumping it would delete ~250 MB of
    downloaded Obelisk audio and force a full re-download. */
@@ -28,6 +28,11 @@ var AUDIO_CACHE = "tw-audio-v19";
 var SHELL_FILES = [
   "./",
   "./index.html",
+  "./data/stories.js",
+  "./data/bank.js",
+  "./data/conv.js",
+  "./data/exams.js",
+  "./data/grammar.js",
   "./manifest.webmanifest",
   "./assets/manifest.webmanifest",
   "./assets/icons/icon-192.png",
@@ -58,7 +63,7 @@ self.addEventListener("activate", function (event) {
   event.waitUntil(
     caches.keys().then(function (keys) {
       return Promise.all(keys.map(function (key) {
-        // v20: نحذف كل كاش قديم ما عدا كاش الهيكل الحالي وكاش الصوت الجديد.
+        // v21: نحذف كل كاش قديم ما عدا كاش الهيكل الحالي وكاش الصوت الجديد.
         // كاش الصوت القديم (reading-audio-v1) يُحذف عمدًا: النظام الجديد
         // لا يطلب الحزم القديمة أبدًا، فيتحرر ~572 ميغا من الهاتف.
         if (key !== SHELL_CACHE && key !== AUDIO_CACHE) {
@@ -73,12 +78,11 @@ self.addEventListener("activate", function (event) {
 
 /* Network-first: نسخة حديثة عند الاتصال تُخزَّن في كاش الهيكل،
    ونسخة الكاش عند الانقطاع. */
-function networkFirst(request, cacheName, event) {
+function networkFirst(request, cacheName) {
   return fetch(request).then(function (res) {
     if (res && res.ok) {
       var copy = res.clone();
-      var putPromise = caches.open(cacheName).then(function (cache) { return cache.put(request, copy); });
-      if (event) event.waitUntil(putPromise);
+      caches.open(cacheName).then(function (cache) { cache.put(request, copy); });
     }
     return res;
   }).catch(function () {
@@ -92,11 +96,11 @@ function networkFirst(request, cacheName, event) {
 
 /* Stale-while-revalidate للأصول الثابتة (صور/أيقونات/manifest):
    تُقدَّم نسخة الكاش فورًا وتُحدَّث من الشبكة في الخلفية. */
-function staleWhileRevalidate(request, cacheName, event) {
+function staleWhileRevalidate(request, cacheName) {
   return caches.open(cacheName).then(function (cache) {
     return cache.match(request, { ignoreSearch: true }).then(function (hit) {
       var network = fetch(request).then(function (res) {
-        if (res && res.ok) { var putPromise = cache.put(request, res.clone()); if (event) event.waitUntil(putPromise); }
+        if (res && res.ok) cache.put(request, res.clone());
         return res;
       }).catch(function () { return hit; });
       return hit || network;
@@ -156,7 +160,7 @@ function serveFromBuffer(res, rangeHeader, url) {
   });
 }
 
-function audioResponse(request, event) {
+function audioResponse(request) {
   var url = request.url;
   var rangeHeader = request.headers.get("Range");
   return caches.open(AUDIO_CACHE).then(function (cache) {
@@ -165,8 +169,7 @@ function audioResponse(request, event) {
       return fetch(url).then(function (res) {
         if (!res || !res.ok) return res;
         var copy = res.clone();
-        var putPromise = cache.put(url, copy).catch(function () {});
-        if (event) event.waitUntil(putPromise);
+        cache.put(url, copy).catch(function () {});
         return serveFromBuffer(res, rangeHeader, url);
       });
     });
@@ -186,16 +189,16 @@ self.addEventListener("fetch", function (event) {
      ملفات الـ manifest (JSON) تُخدَّم network-first لأنها تتحدث. */
   if (url.pathname.indexOf("/audio-obelisk/") === 0) {
     if (/\.json$/.test(url.pathname)) {
-      event.respondWith(networkFirst(request, SHELL_CACHE, event));
+      event.respondWith(networkFirst(request, SHELL_CACHE));
       return;
     }
-    event.respondWith(audioResponse(request, event).catch(function () {
+    event.respondWith(audioResponse(request).catch(function () {
       return new Response(null, { status: 503 });
     }));
     return;
   }
 
   var isAsset = /\.(webp|png|jpg|jpeg|svg|gif|ico|webmanifest)$/.test(url.pathname);
-  event.respondWith(isAsset ? staleWhileRevalidate(request, SHELL_CACHE, event)
-                            : networkFirst(request, SHELL_CACHE, event));
+  event.respondWith(isAsset ? staleWhileRevalidate(request, SHELL_CACHE)
+                            : networkFirst(request, SHELL_CACHE));
 });
