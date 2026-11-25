@@ -19,7 +19,7 @@
      572 ميغا من الحزم القديمة) لأن النظام الجديد لا يستخدمه أبدًا —
      وتُفعّل نفسها (skipWaiting + clients.claim). */
 
-var VERSION = "v22";
+var VERSION = "v23";
 var SHELL_CACHE = "reading-shell-" + VERSION;
 /* Audio cache stays v19 on purpose: bumping it would delete ~250 MB of
    downloaded Obelisk audio and force a full re-download. */
