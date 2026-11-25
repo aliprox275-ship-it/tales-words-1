@@ -1,4 +1,4 @@
-/* تطبيق القراءة — Service Worker v21 (Obelisk redesign)
+/* تطبيق القراءة — Service Worker v22 (Obelisk redesign)
    - التثبيت: يخزّن هيكل التطبيق فقط (الصفحة + manifest + الأيقونات).
    - الصوت المسجل (Obelisk): حزم Opus تحت audio-obelisk/ — أسماؤها تحمل
      بصمة محتوى (hash) فلا يمكن أن تُقدَّم نسخة قديمة أبدًا. تُخزَّن كاملة
@@ -19,7 +19,7 @@
      572 ميغا من الحزم القديمة) لأن النظام الجديد لا يستخدمه أبدًا —
      وتُفعّل نفسها (skipWaiting + clients.claim). */
 
-var VERSION = "v21";
+var VERSION = "v22";
 var SHELL_CACHE = "reading-shell-" + VERSION;
 /* Audio cache stays v19 on purpose: bumping it would delete ~250 MB of
    downloaded Obelisk audio and force a full re-download. */
@@ -63,7 +63,7 @@ self.addEventListener("activate", function (event) {
   event.waitUntil(
     caches.keys().then(function (keys) {
       return Promise.all(keys.map(function (key) {
-        // v21: نحذف كل كاش قديم ما عدا كاش الهيكل الحالي وكاش الصوت الجديد.
+        // v22: نحذف كل كاش قديم ما عدا كاش الهيكل الحالي وكاش الصوت الجديد.
         // كاش الصوت القديم (reading-audio-v1) يُحذف عمدًا: النظام الجديد
         // لا يطلب الحزم القديمة أبدًا، فيتحرر ~572 ميغا من الهاتف.
         if (key !== SHELL_CACHE && key !== AUDIO_CACHE) {
